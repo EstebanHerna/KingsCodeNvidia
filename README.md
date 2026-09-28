@@ -23,9 +23,25 @@ KingsCode v0.5: sistema de recuperación jurídica para el Hackathon AI Week 202
 .venv/Scripts/python.exe -m streamlit run interfaz/app.py
 ```
 
+## Comando único de reproducción (sample_50)
+
+```bash
+./run.sh                 # requiere corpus/ ya presente (ver "Corpus e índice")
+./run.sh --acquire       # además intenta construir corpus/ desde las fuentes oficiales (red)
+```
+
+Instala dependencias, corre la suite de tests, ejecuta Gate 1B (BM25 + backend determinista, sin GPU) sobre `data/sample_50.jsonl` y publica el puntaje oficial con `scripts/evaluate.py`. En contenedor limpio:
+
+```bash
+docker build -t kingscode .
+docker run --rm -v "$(pwd)/corpus:/app/corpus:ro" kingscode
+```
+
+No requiere GPU ni descarga pesos: es el piso reproducible y determinista (decoder real/bakeoff se corren aparte en la 4090, ver `docs/GPU_DAY_RUNBOOK.md`).
+
 ## Corpus e índice
 
-Pendiente: publicar el corpus enriquecido y el índice vectorial serializado bajo licencia abierta en un enlace de descarga directa (Google Drive/OneDrive/Zenodo) y declararlo aquí, conforme a la sección 9.3 del enunciado.
+Pendiente: publicar el corpus enriquecido y el índice vectorial serializado bajo licencia abierta en un enlace de descarga directa (Google Drive/OneDrive/Zenodo) y declarar aquí el enlace, conforme a la sección 9.3 del enunciado. Mientras tanto, `./run.sh --acquire` reconstruye `corpus/` desde las fuentes oficiales listadas en `data/seed_targets.json` y `CORPUS.md`.
 
 ## Después de clonar
 
