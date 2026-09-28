@@ -1,11 +1,11 @@
 {
   "version": "kingscode-ir-v1",
-  "generated_at": "2026-09-28T18:16:35.415104+00:00",
+  "generated_at": "2026-09-28T18:23:36.775832+00:00",
   "generation": {
     "kind": "deterministic_template_over_verified_corpus_metadata",
     "closed_model_used": false,
-    "cases_per_area": 10,
-    "target_total": 100
+    "cases_per_area": 20,
+    "target_total": 200
   },
   "corpus": {
     "version": "corpus-v0.1",
@@ -17,39 +17,39 @@
   "schema_sha256": "01a2d1ff1f23453d3104e620c5a919d39d4dc65f9e77939510734d3ec92bea9e",
   "splits": {
     "dev": {
-      "questions": 60,
-      "question_sha256": "0a10401962195e366efb5fc1a3711ec725270b1cd026e22afb03198c05e879b9",
-      "gold_sha256": "903ea8e85866a51daf5c33b5a0d3f06807e9733d8e88543eef92245d4ead1355"
+      "questions": 120,
+      "question_sha256": "a207bc0c72c4aac92534f61f7162db7e94708a766133d791fce4a32905e7fa22",
+      "gold_sha256": "98747f955fed138160246d2066e5a84852f54f8e73868d05cfa4e6256674b0af"
     },
     "validation": {
-      "questions": 20,
-      "question_sha256": "9153536f243d8c36770d8902516ca86ae9f57fa11e2bbf8b4b4f5b2bb67f25ee",
-      "gold_sha256": "6ae58b3de7ddfe557e3d3cad696be9195c4025f259cde63b10cac6ab496daf12"
+      "questions": 40,
+      "question_sha256": "a196b4b409acf2105afdbdb5ef71bf3e6154f2f9ac0eb269c039ea8d077ef1df",
+      "gold_sha256": "e42f9d17f442975351f14d62b698f12819eafe470e438d3c6fbf9c7bbda69f75"
     },
     "holdout": {
-      "questions": 20,
-      "question_sha256": "581d21634ccccdbcda604bb05eaaf9d7a3befa6b68c901a42258e7c39f04fd10",
-      "gold_sha256": "04341f1345f00c5e9fd2130758404b68d213ad5d12fcf217e360aa2f29fa6956"
+      "questions": 40,
+      "question_sha256": "102b0ad813360083b891bb590a5af3485549cd6e167d12f2208f444780a8d9c9",
+      "gold_sha256": "6f1bbae3c68d2233a6eecd63c3b3e9dc45e8016312507402cdea40cce8a314d6"
     }
   },
   "coverage": {
     "cases_by_area": {
-      "Derecho administrativo": 10,
-      "Derecho civil": 10,
-      "Derecho comercial y sociedades": 10,
-      "Derecho constitucional": 10,
-      "Derecho de familia": 10,
-      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]": 10,
-      "Derecho laboral": 10,
-      "Derecho penal": 10,
-      "Derecho procesal": 10,
-      "Derecho tributario": 10
+      "Derecho administrativo": 20,
+      "Derecho civil": 20,
+      "Derecho comercial y sociedades": 20,
+      "Derecho constitucional": 20,
+      "Derecho de familia": 20,
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]": 20,
+      "Derecho laboral": 20,
+      "Derecho penal": 20,
+      "Derecho procesal": 20,
+      "Derecho tributario": 20
     },
     "cases_by_tag": {
-      "EXPLICIT": 100,
-      "DISTRACTOR": 100,
-      "MULTI_EVIDENCE": 20,
-      "GRAPH": 5
+      "EXPLICIT": 200,
+      "DISTRACTOR": 200,
+      "MULTI_EVIDENCE": 40,
+      "GRAPH": 6
     },
     "human_review_queue": 20
   },

@@ -1,6 +1,6 @@
 {
   "version": "holdout-access-v1",
-  "benchmark_manifest_sha256": "284412ddde77de66c948645c8dbd4ff189ae4a9023000701259fce040021e177",
+  "benchmark_manifest_sha256": "326a405748dd20f641d5cf4103ceaafb6a19f07b43db54d95f472a2b439e3071",
   "predeclared": [
     {
       "variant": "R0",

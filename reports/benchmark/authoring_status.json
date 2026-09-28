@@ -1,0 +1,12 @@
+{
+  "version": "authoring-status-v1",
+  "benchmark_manifest_sha256": "326a405748dd20f641d5cf4103ceaafb6a19f07b43db54d95f472a2b439e3071",
+  "source": "benchmarks/kingscode_ir/authoring/review_queue.jsonl",
+  "counts": {
+    "complete": 0,
+    "needs_human_review": 20,
+    "rejected": 0,
+    "ambiguous": 0
+  },
+  "policy": "No semantic or temporal question text was fabricated. All queued items are source-derived authoring packets and are excluded from scored benchmark splits until a human supplies and verifies question text."
+}
