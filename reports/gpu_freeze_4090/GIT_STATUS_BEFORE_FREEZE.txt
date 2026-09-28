@@ -1,19 +1,11 @@
-## run/member-a-gpu-4090...origin/feat/member-a-gpu-benchmark-execution-v1 [ahead 1]
-?? reports/benchmark/gpu_overnight/
-?? reports/benchmark/r1_qwen/20260928T213008725765Z-dev/
-?? reports/benchmark/r2_qwen/20260928T213903088087Z-dev/
-?? reports/benchmark/r2_qwen/20260928T214350013287Z-dev/
-?? reports/benchmark/r2_qwen/20260928T214352077626Z-validation/
-?? reports/benchmark/r2_qwen/20260928T214606499065Z-dev/
-?? reports/benchmark/r2_qwen/20260928T214630784964Z-validation/
-?? reports/benchmark/r3/20260928T214654239405Z-dev/
-?? reports/benchmark/r4/20260928T215022648460Z-dev/
-?? reports/benchmark/r5/20260928T215655287093Z-dev/
-?? reports/benchmark/r6/20260928T220035819554Z-dev/
-?? reports/benchmark/r7/20260928T221159431813Z-dev/
-?? reports/benchmark/r8/20260928T221526969787Z-dev/
-?? reports/benchmark/search_v2/
-?? reports/benchmark/search_v2_validation/
-?? reports/gpu_freeze_4090/
-?? tools/gpu_search_v2_dev.py
-?? tools/gpu_search_v2_validation.py
+## feat/member-a-gpu-results-4090-20260928
+ M reports/benchmark/search_v2_validation/LATEST.txt
+ M reports/benchmark/search_v2_validation/VALIDATION.stderr.log
+ M reports/benchmark/search_v2_validation/VALIDATION.stdout.log
+ M reports/gpu_freeze_4090/GIT_BRANCH_BEFORE_FREEZE.txt
+ M reports/gpu_freeze_4090/GIT_COMMIT_BEFORE_FREEZE.txt
+?? reports/benchmark/search_v2_validation/20260928T233507616139Z/
+?? reports/benchmark/search_v2_validation/20260928T233551866848Z/
+?? reports/gpu_freeze_4090/SEARCH_V2_VALIDATION_BEST.txt
+?? reports/gpu_freeze_4090/SEARCH_V2_VALIDATION_SUMMARY.csv
+?? reports/gpu_freeze_4090/SEARCH_V2_VALIDATION_SUMMARY.json
