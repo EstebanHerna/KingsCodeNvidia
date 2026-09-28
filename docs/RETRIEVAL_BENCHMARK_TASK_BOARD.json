@@ -1,0 +1,118 @@
+{
+  "version": "retrieval-benchmark-task-board-v1",
+  "branch": "feat/member-a-retrieval-benchmark-v1",
+  "base_commit": "6f9b0400980726310df65640233c65014272b76c",
+  "methodology_rule": "Sequential independent roles: plan -> implement -> run -> inspect -> independent review -> accept/reject -> update board -> checkpoint commit. No phase silently advances after failure.",
+  "tasks": [
+    {
+      "id": "RB-00",
+      "phase": "setup",
+      "owner_role": "INTEGRATOR",
+      "status": "complete",
+      "dependencies": [],
+      "acceptance_criteria": ["branch originates from reviewed commit when it is not on main", "main remains unmodified"],
+      "artifacts": ["git branch feat/member-a-retrieval-benchmark-v1"],
+      "verification_result": "main ancestry check returned false; branch created at 6f9b040"
+    },
+    {
+      "id": "RB-01",
+      "phase": "specification",
+      "owner_role": "BENCHMARK CURATOR",
+      "status": "complete",
+      "dependencies": ["RB-00"],
+      "acceptance_criteria": ["schema separates retrieval-safe questions from gold", "methodology defines metrics and split/holdout policy", "no question authoring by closed model"],
+      "artifacts": ["benchmarks/kingscode_ir/README.md", "benchmarks/kingscode_ir/benchmark.schema.json", "docs/BENCHMARK_METHODOLOGY.md"],
+      "verification_result": "Critic review initially rejected: blocked-report holdout bypass, dirty-source provenance, checkpoint scope. All three fixed; 15 focused tests and schema check pass. 100-case artifact is explicitly checkpoint-only."
+    },
+    {
+      "id": "RB-02",
+      "phase": "benchmark_v1",
+      "owner_role": "BENCHMARK CURATOR",
+      "status": "complete",
+      "dependencies": ["RB-01"],
+      "acceptance_criteria": ["100 source-derived, gold-verifiable cases", "no split overlap", "uncertain/semantic candidates go to review queue"],
+      "artifacts": ["benchmarks/kingscode_ir/questions/*.jsonl", "benchmarks/kingscode_ir/gold/*.jsonl", "benchmarks/kingscode_ir/authoring/review_queue.jsonl", "benchmarks/kingscode_ir/manifests/benchmark_manifest.json"],
+      "verification_result": "Initial mixed-locator sort failure was fixed without changing methodology. 100 checkpoint built: 60 dev / 20 validation / 20 holdout, 10 cases each area, 20 review packets; schema, canonical IDs/spans, no gold leakage and split integrity pass."
+    },
+    {
+      "id": "RB-03",
+      "phase": "evaluator",
+      "owner_role": "RETRIEVAL EXPERIMENTER",
+      "status": "complete",
+      "dependencies": ["RB-01"],
+      "acceptance_criteria": ["all declared metrics have hand-verifiable tests", "gold never reaches retrieval", "deterministic outputs and stable ties", "run provenance complete"],
+      "artifacts": ["kingscode/retrieval_benchmark.py", "tools/evaluate_retrieval_benchmark.py", "tests/test_retrieval_benchmark.py"],
+      "verification_result": "15 focused tests pass. Critic-required shared holdout gate and clean-tree/source-hash provenance enforced before reports."
+    },
+    {
+      "id": "RB-04",
+      "phase": "r0_baseline",
+      "owner_role": "RETRIEVAL EXPERIMENTER",
+      "status": "pending",
+      "dependencies": ["RB-02", "RB-03"],
+      "acceptance_criteria": ["R0 runs separately for dev/validation", "holdout remains unavailable to tuning", "per-question, subgroup, context and failure reports saved"],
+      "artifacts": ["reports/benchmark/r0_bm25/"],
+      "verification_result": null
+    },
+    {
+      "id": "RB-05",
+      "phase": "neural_bakeoff_and_complementarity",
+      "owner_role": "RETRIEVAL EXPERIMENTER",
+      "status": "pending",
+      "dependencies": ["RB-04"],
+      "acceptance_criteria": ["BGE report is verified or marked user-reported only", "Qwen and BGE runs use identical benchmark variables", "complementarity stored or variants recorded GPU_BLOCKED"],
+      "artifacts": ["reports/benchmark/r1_*/", "reports/benchmark/complementarity/"],
+      "verification_result": null
+    },
+    {
+      "id": "RB-06",
+      "phase": "hybrid_reranker_graph_metadata",
+      "owner_role": "RETRIEVAL EXPERIMENTER",
+      "status": "pending",
+      "dependencies": ["RB-05"],
+      "acceptance_criteria": ["R2-R8 isolate declared variables", "dev-only selection", "GPU blocked variants have exact commands/config"],
+      "artifacts": ["reports/benchmark/r2_*/", "reports/benchmark/r3_*/", "reports/benchmark/r4_*/", "reports/benchmark/r5_*/", "reports/benchmark/r6_*/", "reports/benchmark/r7_*/", "reports/benchmark/r8_*/"],
+      "verification_result": null
+    },
+    {
+      "id": "RB-07",
+      "phase": "statistics_error_loop",
+      "owner_role": "CRITIC / AUDITOR",
+      "status": "pending",
+      "dependencies": ["RB-04", "RB-06"],
+      "acceptance_criteria": ["paired bootstrap deterministic with 10000 resamples", "error actions map to evidence-driven owners", "no conclusion exceeds data"],
+      "artifacts": ["reports/benchmark/statistics/", "reports/benchmark/error_analysis/"],
+      "verification_result": null
+    },
+    {
+      "id": "RB-08",
+      "phase": "benchmark_v1_final",
+      "owner_role": "BENCHMARK CURATOR",
+      "status": "pending",
+      "dependencies": ["RB-02", "RB-03"],
+      "acceptance_criteria": ["approximately 200 high-quality cases", "120/40/40 split", "review queue status report", "all gold IDs resolve to corpus"],
+      "artifacts": ["benchmarks/kingscode_ir/", "reports/benchmark/authoring_status.json"],
+      "verification_result": null
+    },
+    {
+      "id": "RB-09",
+      "phase": "selection_and_confirmation",
+      "owner_role": "INTEGRATOR",
+      "status": "pending",
+      "dependencies": ["RB-07", "RB-08"],
+      "acceptance_criteria": ["validation-only selection declared", "holdout run once after selection", "official-50 confirmation treated as external milestone", "no winner declared without evidence"],
+      "artifacts": ["reports/benchmark/selection/", "reports/benchmark/official50_confirmation/"],
+      "verification_result": null
+    },
+    {
+      "id": "RB-10",
+      "phase": "independent_final_review",
+      "owner_role": "CRITIC / AUDITOR",
+      "status": "pending",
+      "dependencies": ["RB-09"],
+      "acceptance_criteria": ["leakage, split, gold-ID, holdout, official-50, metric, reproducibility, corpus, Member B and official-file checks pass"],
+      "artifacts": ["reports/benchmark/audit/independent_review.json"],
+      "verification_result": null
+    }
+  ]
+}

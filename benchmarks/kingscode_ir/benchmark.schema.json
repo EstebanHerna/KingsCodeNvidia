@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "KingsCode internal legal retrieval benchmark v1",
+  "oneOf": [
+    {"$ref": "#/$defs/question"},
+    {"$ref": "#/$defs/gold"}
+  ],
+  "$defs": {
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_type", "id", "question", "area", "format", "tags"],
+      "properties": {
+        "record_type": {"const": "question"},
+        "id": {"type": "string", "pattern": "^KC-[A-Z]{2,8}-[0-9]{3}$"},
+        "question": {"type": "string", "minLength": 10},
+        "area": {"type": "string", "minLength": 1},
+        "format": {"const": "retrieval"},
+        "tags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"enum": ["EXPLICIT", "SEMANTIC", "MULTI_EVIDENCE", "CASELAW", "GRAPH", "TEMPORAL", "DISTRACTOR", "UNSEEN_SEED"]}
+        },
+        "source_derivation": {"enum": ["deterministic_template", "human_authored", "public_licensed"]}
+      }
+    },
+    "gold": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_type", "id", "gold_document_ids", "gold_fragment_ids", "evidence", "gold_spans"],
+      "properties": {
+        "record_type": {"const": "gold"},
+        "id": {"type": "string", "pattern": "^KC-[A-Z]{2,8}-[0-9]{3}$"},
+        "gold_document_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "gold_fragment_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "evidence": {
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["canonical_fragment_id", "relevance"],
+            "properties": {
+              "canonical_fragment_id": {"type": "string"},
+              "relevance": {"enum": ["direct", "supporting"]}
+            }
+          }
+        },
+        "gold_spans": {
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["canonical_fragment_id", "passage_id", "clean_start", "clean_end"],
+            "properties": {
+              "canonical_fragment_id": {"type": "string"},
+              "passage_id": {"type": "string"},
+              "clean_start": {"type": "integer", "minimum": 0},
+              "clean_end": {"type": "integer", "minimum": 1}
+            }
+          }
+        },
+        "annotation": {"type": "string"}
+      }
+    }
+  }
+}
