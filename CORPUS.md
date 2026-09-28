@@ -318,3 +318,13 @@ Los errores detallados se conservan en el manifest y en `corpus/acquisition.json
 | `ley_155_de_1959` | 1 | 3 |
 | `ley_1607_de_2012` | 1 | 2 |
 | `ley_600_de_2000` | 15 | 30 |
+
+
+## Benchmark interno de retrieval v1
+
+Sobre este mismo snapshot se creó `benchmarks/kingscode_ir/`: 200 casos
+source-derived, gold IDs/spans canónicos verificables y 120/40/40 dev/validation/holdout.
+No altera el corpus ni lo usa como proxy de calidad. R0 BM25 y los diagnósticos
+CPU están en `reports/benchmark/`; Qwen/BGE/hybrid/reranker siguen bloqueados
+por GPU/configuración. El reporte de selección declara honestamente
+`no_selection` hasta medir las variantes R1–R8 correctas sobre la 4090.

@@ -84,3 +84,12 @@ answer(question, passages, format) -> submission_row
 Si A se bloquea por obtención de fuentes, B ayuda con adquisición/QA de corpus.
 Si B se bloquea por GPU/modelos, A ayuda con evaluación y análisis de errores.
 No se paraliza el proyecto porque una capa esté esperando a la otra.
+
+
+### Benchmark interno v1 (A, con auditoría independiente)
+A es owner de `benchmarks/kingscode_ir/`, su separación input/gold, el
+evaluador de retrieval, métricas/bootstraps, complementarity y el loop de
+fallos. B no recibe estos golds ni depende de sus internals. La selección
+requiere validation + confirmación posterior; hasta entonces B no recibe un
+nuevo freeze. El auditor revisa fuga, integridad de splits/golds, metodología y
+provenance antes de aceptar cada checkpoint.

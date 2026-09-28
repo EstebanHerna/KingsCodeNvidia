@@ -48,61 +48,61 @@
       "id": "RB-04",
       "phase": "r0_baseline",
       "owner_role": "RETRIEVAL EXPERIMENTER",
-      "status": "pending",
+      "status": "complete",
       "dependencies": ["RB-02", "RB-03"],
       "acceptance_criteria": ["R0 runs separately for dev/validation", "holdout remains unavailable to tuning", "per-question, subgroup, context and failure reports saved"],
-      "artifacts": ["reports/benchmark/r0_bm25/"],
-      "verification_result": null
+      "artifacts": ["reports/benchmark/r0/"],
+      "verification_result": "Final 200-case R0 predeclared baseline passed: dev/validation/holdout stored separately with source/corpus/manifest hashes. Holdout access was predeclared and consumed only for R0 baseline; it did not influence selection."
     },
     {
       "id": "RB-05",
       "phase": "neural_bakeoff_and_complementarity",
       "owner_role": "RETRIEVAL EXPERIMENTER",
-      "status": "pending",
+      "status": "blocked",
       "dependencies": ["RB-04"],
       "acceptance_criteria": ["BGE report is verified or marked user-reported only", "Qwen and BGE runs use identical benchmark variables", "complementarity stored or variants recorded GPU_BLOCKED"],
       "artifacts": ["reports/benchmark/r1_*/", "reports/benchmark/complementarity/"],
-      "verification_result": null
+      "verification_result": "BGE-M3 values found nowhere in repository: preserved only as user-reported in complementarity/status.json. Qwen/BGE full runs GPU_BLOCKED; exact prerequisites recorded. No complementarity claim is made without same-ID dense results."
     },
     {
       "id": "RB-06",
       "phase": "hybrid_reranker_graph_metadata",
       "owner_role": "RETRIEVAL EXPERIMENTER",
-      "status": "pending",
+      "status": "blocked",
       "dependencies": ["RB-05"],
       "acceptance_criteria": ["R2-R8 isolate declared variables", "dev-only selection", "GPU blocked variants have exact commands/config"],
       "artifacts": ["reports/benchmark/r2_*/", "reports/benchmark/r3_*/", "reports/benchmark/r4_*/", "reports/benchmark/r5_*/", "reports/benchmark/r6_*/", "reports/benchmark/r7_*/", "reports/benchmark/r8_*/"],
-      "verification_result": null
+      "verification_result": "True R2-R8 are GPU_BLOCKED with exact prerequisites. CPU-only R0 graph and R6/R7/R8 BM25 diagnostics were run and explicitly do not claim to be R3-based ablations."
     },
     {
       "id": "RB-07",
       "phase": "statistics_error_loop",
       "owner_role": "CRITIC / AUDITOR",
-      "status": "pending",
+      "status": "complete",
       "dependencies": ["RB-04", "RB-06"],
       "acceptance_criteria": ["paired bootstrap deterministic with 10000 resamples", "error actions map to evidence-driven owners", "no conclusion exceeds data"],
       "artifacts": ["reports/benchmark/statistics/", "reports/benchmark/error_analysis/"],
-      "verification_result": null
+      "verification_result": "Paired bootstrap reports use same IDs, seed 0 and 10000 resamples. R0 graph diagnostics show no Recall/Completeness gain; R6 BM25 diagnostic improves explicit cases but is nonselectable; R8 diagnostic degrades. Error loop points 22 dev correct-document/wrong-passage and 27 ranking failures to locator/ranking work."
     },
     {
       "id": "RB-08",
       "phase": "benchmark_v1_final",
       "owner_role": "BENCHMARK CURATOR",
-      "status": "pending",
+      "status": "complete",
       "dependencies": ["RB-02", "RB-03"],
       "acceptance_criteria": ["approximately 200 high-quality cases", "120/40/40 split", "review queue status report", "all gold IDs resolve to corpus"],
       "artifacts": ["benchmarks/kingscode_ir/", "reports/benchmark/authoring_status.json"],
-      "verification_result": null
+      "verification_result": "Final V1 is exactly 200 deterministic source-derived cases, 20 per declared area, split 120/40/40. 40 multi-evidence cases, 6 graph-evidenced cases; 20 semantic/temporal source packets remain needs_human_review; every gold ID/span resolves."
     },
     {
       "id": "RB-09",
       "phase": "selection_and_confirmation",
       "owner_role": "INTEGRATOR",
-      "status": "pending",
+      "status": "blocked",
       "dependencies": ["RB-07", "RB-08"],
       "acceptance_criteria": ["validation-only selection declared", "holdout run once after selection", "official-50 confirmation treated as external milestone", "no winner declared without evidence"],
       "artifacts": ["reports/benchmark/selection/", "reports/benchmark/official50_confirmation/"],
-      "verification_result": null
+      "verification_result": "Selection protocol and no_selection record created. Only R0 baseline was executable; dense/hybrid/reranker variants are GPU_BLOCKED, so no post-selection holdout or official-50 confirmation is authorized. R0 holdout is retained only as predeclared baseline."
     },
     {
       "id": "RB-10",

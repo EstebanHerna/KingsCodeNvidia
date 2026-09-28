@@ -460,3 +460,20 @@ En una conversación nueva, la instrucción mínima es:
 > “Busca en mi Library la carpeta `KingsCode Hackathon 2026`, lee `KINGSCODE_MASTER_KNOWLEDGE.md` y `KINGSCODE_STATE.json`, y continúa desde `next_action` sin reconstruir el proyecto desde cero.”
 
 Este archivo prevalece sobre recuerdos parciales de chats anteriores, salvo que exista una versión más nueva explícitamente marcada.
+
+
+## Addendum — Benchmark interno de retrieval v1 (Member A)
+
+La rama `feat/member-a-retrieval-benchmark-v1` añade un benchmark interno
+separado del sample oficial: 200 casos source-derived (120/40/40; 20 por área),
+gold con IDs canónicos/spans verificables y entradas públicas sin labels. No se
+usaron LLMs cerrados ni preguntas semánticas fabricadas; 20 paquetes se
+mantienen para autoría humana. R0 BM25 quedó medido y reproducible; en validation
+obtiene Evidence Completeness@8 0.575, Recall@10 0.625 y MRR@10 0.3739. R0
+holdout se usó solo como baseline predeclarado.
+
+No hay selección de retrieval: Qwen dense/hybrid/reranker siguen pendientes de
+la 4090, y BGE-M3 no tiene lock/loader/reporte reproducible. Los diagnósticos
+CPU de grafo/R6/R7/R8 no sustituyen sus variantes R3-based. Revisar
+`docs/BENCHMARK_METHODOLOGY.md`, `docs/RETRIEVAL_BENCHMARK_TASK_BOARD.json` y
+`reports/benchmark/selection/selected_config.json` antes de continuar.

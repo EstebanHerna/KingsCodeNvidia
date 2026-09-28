@@ -59,6 +59,16 @@
       "diversification_default": "off_unless_measured"
     }
   },
+  "benchmark_v1": {
+    "manifest": "benchmarks/kingscode_ir/manifests/benchmark_manifest.json",
+    "split": {"dev": 120, "validation": 40, "holdout": 40},
+    "primary_metric": "Evidence Completeness@8",
+    "secondary_metrics": ["Recall@10", "nDCG@10", "MRR@10"],
+    "selection_policy": "validation_only_then_one_holdout_confirmation; no weighted composite; Pareto frontier when inconclusive",
+    "r0": {"mode": "bm25", "rerank": false, "graph_mode": "off"},
+    "cpu_diagnostics": ["R0-GRAPH-AUTO-DIAGNOSTIC", "R0-GRAPH-ON-DIAGNOSTIC", "R6-BM25-DIAGNOSTIC", "R7-BM25-DIAGNOSTIC", "R8-BM25-DIAGNOSTIC"],
+    "neural_status": "GPU_BLOCKED; R1-R8 results must not be inferred from CPU diagnostics"
+  },
   "decoder": {
     "D1": "qwen3-8b",
     "D2": "alia-legal-7b",

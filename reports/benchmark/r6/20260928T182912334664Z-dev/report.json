@@ -1,0 +1,99 @@
+{
+  "version": "kingscode-ir-run-v1",
+  "status": "GPU_BLOCKED",
+  "variant": "R6",
+  "split": "dev",
+  "holdout_purpose": null,
+  "reason": "Local state is CPU-only; required prerequisites are not available. No metric result is claimed.",
+  "prerequisites": [
+    "R3 prerequisites; metadata soft prior only"
+  ],
+  "exact_next_commands": [
+    "python tools/prepare_gpu_environment.py --diagnose --output reports/gpu_diagnostic.json",
+    "python tools/prepare_gpu_environment.py --configure-retrieval",
+    "python tools/member_a.py dense",
+    "python tools/evaluate_retrieval_benchmark.py --variant R6 --split dev"
+  ],
+  "benchmark": {
+    "manifest_sha256": "326a405748dd20f641d5cf4103ceaafb6a19f07b43db54d95f472a2b439e3071",
+    "manifest": {
+      "version": "kingscode-ir-v1",
+      "generated_at": "2026-09-28T18:23:36.775832+00:00",
+      "generation": {
+        "kind": "deterministic_template_over_verified_corpus_metadata",
+        "closed_model_used": false,
+        "cases_per_area": 20,
+        "target_total": 200
+      },
+      "corpus": {
+        "version": "corpus-v0.1",
+        "passages.jsonl": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+        "graph/nodes.jsonl": "7c8af359cb1ac8de13872e01d2d0faf18218d24e1e2af326529f4a11c0a39aaa",
+        "graph/edges.jsonl": "6002fdcdbb4fb673761cb2dbe949db2502306809f2179e4133d8f40c286ff634",
+        "bm25_sha256": "aa6b40c5e70f88513a7cde7e9ca96a15d1d40088c538668087700b9b46de005b"
+      },
+      "schema_sha256": "01a2d1ff1f23453d3104e620c5a919d39d4dc65f9e77939510734d3ec92bea9e",
+      "splits": {
+        "dev": {
+          "questions": 120,
+          "question_sha256": "a207bc0c72c4aac92534f61f7162db7e94708a766133d791fce4a32905e7fa22",
+          "gold_sha256": "98747f955fed138160246d2066e5a84852f54f8e73868d05cfa4e6256674b0af"
+        },
+        "validation": {
+          "questions": 40,
+          "question_sha256": "a196b4b409acf2105afdbdb5ef71bf3e6154f2f9ac0eb269c039ea8d077ef1df",
+          "gold_sha256": "e42f9d17f442975351f14d62b698f12819eafe470e438d3c6fbf9c7bbda69f75"
+        },
+        "holdout": {
+          "questions": 40,
+          "question_sha256": "102b0ad813360083b891bb590a5af3485549cd6e167d12f2208f444780a8d9c9",
+          "gold_sha256": "6f1bbae3c68d2233a6eecd63c3b3e9dc45e8016312507402cdea40cce8a314d6"
+        }
+      },
+      "coverage": {
+        "cases_by_area": {
+          "Derecho administrativo": 20,
+          "Derecho civil": 20,
+          "Derecho comercial y sociedades": 20,
+          "Derecho constitucional": 20,
+          "Derecho de familia": 20,
+          "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]": 20,
+          "Derecho laboral": 20,
+          "Derecho penal": 20,
+          "Derecho procesal": 20,
+          "Derecho tributario": 20
+        },
+        "cases_by_tag": {
+          "EXPLICIT": 200,
+          "DISTRACTOR": 200,
+          "MULTI_EVIDENCE": 40,
+          "GRAPH": 6
+        },
+        "human_review_queue": 20
+      },
+      "holdout_policy": {
+        "protected": true,
+        "allowed_purposes": [
+          "predeclared_baseline",
+          "post_selection_confirmation"
+        ],
+        "official_50": "separate external milestone; never benchmark development data"
+      },
+      "gold_input_separation": "questions contain no gold/evaluation fields; gold is scored only after rankings are captured"
+    }
+  },
+  "source_identity": {
+    "kingscode/benchmark_builder.py": "dd08c379db27b37e3abe68da6df8fbd0b47b1303b8eecad1ce65037f63539136",
+    "kingscode/retrieval_benchmark.py": "3443c66d24735e4a2a0160fb6d1d62a1035aed6f9660b409a861f70f84e4201d",
+    "kingscode/retrieval.py": "e3b20fc0fdffabf8eab17fd7a754617984a7f33b5a730f63951713bef04cacd7",
+    "kingscode/metadata.py": "0dd3b4c1168f121f8e16f33ab801809e73b45ebf11dd08796a67505a55f50d5b",
+    "kingscode/metadata_experiments.py": "4c4282aaf2136c02e35d09ced62d6703a884bc12908086091b696fa8d7352502",
+    "kingscode/diversify.py": "8f9fe5848e0247d230579c8a0e137e587bebda94e0573766b5f54d14d32ea53d",
+    "tools/evaluate_retrieval_benchmark.py": "cfb70c5eb11328aeea64543070fcb83b643b6afd34e07d6fc986d1757ea8b8c1",
+    "config/experiment_matrix.json": "89e24319a0de3fcca8c2553887f8cd9e0d8bfd3865ad8db56a67f465405d056c"
+  },
+  "git": {
+    "commit": "35e071ee1d1bba6118c04e24dc8d6e181d61af0b",
+    "branch": "feat/member-a-retrieval-benchmark-v1"
+  }
+}

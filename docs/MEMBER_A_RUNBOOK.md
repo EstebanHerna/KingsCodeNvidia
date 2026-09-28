@@ -127,3 +127,27 @@ Las variantes neuronales (hybrid + reranker) de R6/R7/R8, el índice denso y el
 benchmark neuronal completo siguen siendo exclusivos de la máquina objetivo.
 Ejecutar tras `dense`/`benchmark` según la sección GPU anterior; no cambia la
 diversificación a activa por defecto sin medición.
+
+
+## Benchmark interno de retrieval v1
+
+Construir/verificar el benchmark source-derived (no usa `sample_50`):
+
+```powershell
+.venv/Scripts/python.exe tools/build_retrieval_benchmark.py --check
+.venv/Scripts/python.exe tools/evaluate_retrieval_benchmark.py --variant R0 --split dev
+.venv/Scripts/python.exe tools/evaluate_retrieval_benchmark.py --variant R0 --split validation
+```
+
+El holdout está protegido. R0 puede usarlo solo como baseline predeclarado:
+
+```powershell
+.venv/Scripts/python.exe tools/evaluate_retrieval_benchmark.py --variant R0 --split holdout --allow-holdout --holdout-purpose predeclared_baseline
+```
+
+No usar holdout para tuning. El benchmark guarda `questions/` y `gold/` por
+separado; el evaluador falla si hashes, schema, snapshot o inputs no coinciden
+con el manifest. Para GPU: configurar/validar CUDA, construir el índice Qwen y
+ejecutar R1-QWEN/R2-QWEN antes de R3–R8. BGE-M3 requiere una decisión separada
+de lock inmutable + loader/index; no usar una revisión no fijada. Consultar
+`docs/BENCHMARK_METHODOLOGY.md` y el task board para la secuencia completa.

@@ -93,7 +93,7 @@
     ]
   },
   "next_action": {
-    "member_a": "v0.6 metadata/retrieval layer prepared and CPU-validated (canonical IDs, backlog classification, dedup/diversification, failure taxonomy, R6/R7/R8, coverage report). On the target GPU follow docs/GPU_DAY_RUNBOOK.md and docs/MEMBER_A_RUNBOOK.md: verify snapshot, diagnose/install stack, then build dense and run R0-R5 plus the neural variants of R6/R7/R8 without rebuilding the corpus.",
+    "member_a": "Internal benchmark v1 is complete and R0 baseline is measured; do not select architecture yet. On target GPU: verify snapshot, prepare Qwen dense and an approved BGE-M3 implementation/lock, run same-ID R1/R2 complementarity and R3-R8 on validation, then one post-selection holdout and official-50 confirmation without retuning.",
     "member_b": "On the target GPU run the two prepared verifications, prepare exact model snapshots, GPU smoke, freeze retrieval evidence and execute D1-D3. No new tests were run in Gate 2-Prep by user instruction.",
     "shared": "Start with git pull --ff-only origin main; verify the delivered commit. Follow docs/GPU_DAY_RUNBOOK.md. Do not claim GPU/bakeoff completion before measured results."
   },
@@ -178,6 +178,19 @@
     "verification": {"tests_passed": 132, "new_tests": 44, "first_pass": true, "second_independent_pass": true,
                       "official_files_unchanged": 19, "member_b_unchanged": true},
     "gpu_only": ["dense/hybrid index build", "hybrid+reranker R6/R7/R8 neural variants", "full neural benchmark"]
+  },
+  "member_a_retrieval_benchmark_v1": {
+    "status": "internal_benchmark_complete_neural_selection_gpu_blocked",
+    "manifest": "benchmarks/kingscode_ir/manifests/benchmark_manifest.json",
+    "manifest_sha256": "326a405748dd20f641d5cf4103ceaafb6a19f07b43db54d95f472a2b439e3071",
+    "split": {"dev": 120, "validation": 40, "holdout": 40},
+    "generation": "deterministic templates over verified corpus metadata; no closed-model questions",
+    "human_review_queue": 20,
+    "r0_validation": {"Evidence Completeness@8": 0.575, "Recall@10": 0.625, "MRR@10": 0.3738888888888889, "Document Mismatch Rate": 0.1},
+    "r0_holdout": {"purpose": "predeclared_baseline_only", "Evidence Completeness@8": 0.55, "Recall@10": 0.575, "MRR@10": 0.3564880952380952},
+    "selection": "no_selection; R1-R8 real variants GPU_BLOCKED",
+    "bge_m3": "user-reported old-sample values are unverified; no local run/report/model lock/implementation",
+    "next_action": "On RTX 4090 execute R1-QWEN and approved BGE-M3 setup, complementarity, R2-R8 validation selection, then one post-selection holdout and official-50 confirmation."
   },
   "retrieval_results": {
     "report": "reports/retrieval_bm25.json",

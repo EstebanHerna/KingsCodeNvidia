@@ -1,0 +1,7 @@
+{
+  "version": "retrieval-freeze-handoff-status-v1",
+  "status": "blocked_no_selected_retrieval_configuration",
+  "benchmark_manifest_sha256": "326a405748dd20f641d5cf4103ceaafb6a19f07b43db54d95f472a2b439e3071",
+  "reason": "B must receive one selected, measured retrieval configuration and exactly eight frozen passages per question. Dense/hybrid/reranker evidence is GPU_BLOCKED; no selection or B freeze is justified.",
+  "required_before_freeze": ["validate GPU stack and snapshots", "execute R1-R8 under isolated configs", "select using validation", "run post-selection holdout once", "confirm on official 50 without retuning"]
+}
