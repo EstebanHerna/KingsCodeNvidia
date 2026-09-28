@@ -86,6 +86,23 @@ def _passage_view(passage: dict) -> dict:
             "experiment": passage.get("experiment")}
 
 
+def _executed_config(variant: str) -> dict:
+    base = {"mode": "bm25", "rerank": False, "candidate_k": 30, "k_metrics": 10, "seed": 0}
+    if variant == "R0":
+        return {**base, "graph_mode": "off", "diagnostic": False}
+    if variant == "R0-GRAPH-AUTO-DIAGNOSTIC":
+        return {**base, "graph_mode": "auto", "diagnostic": True, "diagnostic_reason": "BM25 graph ablation, not R4"}
+    if variant == "R0-GRAPH-ON-DIAGNOSTIC":
+        return {**base, "graph_mode": "on", "diagnostic": True, "diagnostic_reason": "BM25 graph ablation, not R5"}
+    if variant == "R6-BM25-DIAGNOSTIC":
+        return {**base, "graph_mode": "off", "diagnostic": True, "experiment": "R6", "base_mode": "bm25", "effective_parameters": {"candidate_multiplier": 4}, "diagnostic_reason": "Not R3-based"}
+    if variant == "R7-BM25-DIAGNOSTIC":
+        return {**base, "graph_mode": "off", "diagnostic": True, "experiment": "R7", "base_mode": "bm25", "effective_parameters": {"doc_pool": 24}, "diagnostic_reason": "Not R3-based"}
+    if variant == "R8-BM25-DIAGNOSTIC":
+        return {**base, "graph_mode": "off", "diagnostic": True, "experiment": "R8", "base_mode": "bm25", "effective_parameters": {"collapse_level": "content", "diversify_level": "document", "max_per_group": 2}, "diagnostic_reason": "Not R3-based"}
+    raise ValueError(f"No executable configuration for {variant}")
+
+
 def _run_one(retriever: Retriever, variant: str, text: str, k: int) -> list[dict]:
     if variant == "R0":
         return retriever.retrieve(text, k, "off")
@@ -328,6 +345,8 @@ def run(variant: str, split: str, *, corpus: Path | None = None, output_root: Pa
     """Run a CPU-executable benchmark variant and save fully attributed artifacts."""
     if split not in {"dev", "validation", "holdout"}:
         raise ValueError("split must be dev, validation or holdout")
+    if split == "holdout" and output_root is not None:
+        raise PermissionError("Holdout reports must use the repository-controlled default output root")
     _assert_holdout_policy(split, variant, allow_holdout, holdout_purpose)
     corpus = corpus or (ROOT / "corpus")
     _verify_declared_hashes(corpus)
@@ -373,8 +392,7 @@ def run(variant: str, split: str, *, corpus: Path | None = None, output_root: Pa
         "git": {"commit": _git(["git", "rev-parse", "HEAD"]), "branch": _git(["git", "branch", "--show-current"])},
         "corpus": {"version": manifest["version"], "hashes": manifest["hashes"], "bm25_sha256": manifest["bm25_sha256"]},
         "benchmark": identity, "source_identity": _source_identity(),
-        "config": {"mode": "bm25", "rerank": False, "graph_mode": "off" if variant == "R0" else variant,
-                                               "candidate_k": 30, "k_metrics": 10, "seed": 0},
+        "config": _executed_config(variant),
         "model": None, "hardware": {"platform": platform.platform(), "python": sys.version, "cuda": False},
         "metrics": aggregate(rows), "subgroups": subgroup_metrics(rows),
         "failure_taxonomy": dict(sorted(Counter(row["failure"] for row in rows).items())),
@@ -387,6 +405,8 @@ def run(variant: str, split: str, *, corpus: Path | None = None, output_root: Pa
 
 def record_gpu_blocked(variant: str, split: str, *, output_root: Path | None = None,
                        allow_holdout: bool = False, holdout_purpose: str | None = None) -> dict:
+    if split == "holdout" and output_root is not None:
+        raise PermissionError("Holdout reports must use the repository-controlled default output root")
     _assert_holdout_policy(split, variant, allow_holdout, holdout_purpose)
     _verify_declared_hashes(ROOT / "corpus")
     _assert_clean_tree()

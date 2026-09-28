@@ -6,6 +6,7 @@ legal_basis and never invoke a model or network.
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 
 from kingscode.benchmark_builder import BENCHMARK_ROOT, verify as verify_benchmark
 from kingscode.common import read_jsonl
@@ -55,6 +56,11 @@ class InputBoundaryTests(unittest.TestCase):
         from kingscode.retrieval_benchmark import _assert_holdout_policy
         with self.assertRaises(PermissionError):
             _assert_holdout_policy("holdout", "R1-QWEN", True, "predeclared_baseline")
+
+    def test_holdout_rejects_custom_output_root(self):
+        with self.assertRaises(PermissionError):
+            run("R0", "holdout", output_root=Path("outside"), allow_holdout=True,
+                holdout_purpose="predeclared_baseline")
 
     def test_holdout_blocked_report_requires_same_override(self):
         from kingscode.retrieval_benchmark import record_gpu_blocked
@@ -151,6 +157,14 @@ class ArtifactIntegrityTests(unittest.TestCase):
 
 
 class VariantRegistrationTests(unittest.TestCase):
+    def test_diagnostic_configuration_records_actual_graph_and_parameters(self):
+        from kingscode.retrieval_benchmark import _executed_config
+        self.assertEqual(_executed_config("R0-GRAPH-AUTO-DIAGNOSTIC")["graph_mode"], "auto")
+        r6 = _executed_config("R6-BM25-DIAGNOSTIC")
+        self.assertEqual(r6["experiment"], "R6")
+        self.assertEqual(r6["effective_parameters"]["candidate_multiplier"], 4)
+        self.assertTrue(r6["diagnostic"])
+
     def test_all_planned_neural_variants_registered(self):
         for variant in ["R1-BGE", "R1-QWEN", "R2-BGE", "R2-QWEN", "R3", "R4", "R5", "R6", "R7", "R8"]:
             self.assertIn(variant, GPU_VARIANT_PREREQUISITES)

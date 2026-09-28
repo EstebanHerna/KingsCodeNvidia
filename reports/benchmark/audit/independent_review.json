@@ -1,0 +1,175 @@
+{
+  "version": "independent-benchmark-audit-v1",
+  "audit_role": "final critic/auditor",
+  "scope": {
+    "branch": "feat/member-a-retrieval-benchmark-v1",
+    "head": "89cb59d148a7a81729dd8e458c251cdf345458af",
+    "base": "6f9b0400980726310df65640233c65014272b76c",
+    "reviewed_diff": "git diff 6f9b040 89cb59d"
+  },
+  "verdict": "NEEDS_CHANGES",
+  "summary": "The committed benchmark artifacts pass the schema, canonical-ID/span, split, leakage-boundary, hash-pinning, test, and protected-file checks. The no_selection conclusion is supported by the committed evidence, and GPU_BLOCKED is supported in this environment. Release approval is blocked because the holdout-consumption guard can be bypassed by directing a run outside reports/benchmark, and because diagnostic run reports persist a variant label where they claim to persist the actual graph configuration.",
+  "findings": [
+    {
+      "id": "AUD-001",
+      "severity": "blocking",
+      "confidence": "confirmed",
+      "checklist_area": "holdout access predeclared/consumed correctly",
+      "title": "Holdout consumption is not enforced for an arbitrary output root",
+      "evidence": [
+        "benchmarks/kingscode_ir/manifests/holdout_access.json predeclares only R0/holdout/predeclared_baseline and binds it to manifest SHA-256 326a405748dd20f641d5cf4103ceaafb6a19f07b43db54d95f472a2b439e3071.",
+        "kingscode/retrieval_benchmark.py::_holdout_was_consumed searches only ROOT/reports/benchmark for a prior matching report.",
+        "kingscode/retrieval_benchmark.py::run accepts output_root, and tools/evaluate_retrieval_benchmark.py exposes it as --output-root without restricting it to ROOT/reports/benchmark.",
+        "A holdout run written to another path is therefore absent from the only consumption scan; a subsequent matching run can be authorized again. The current committed final artifact has exactly one matching passed R0 holdout report, but that fact does not close the future bypass."
+      ],
+      "required_action": "Bind holdout consumption to a durable, repository-controlled ledger or forbid external output roots for holdout runs. Atomically record/consume the declaration before retrieval, and add tests showing a first holdout run at a custom output root blocks a second run."
+    },
+    {
+      "id": "AUD-002",
+      "severity": "blocking",
+      "confidence": "confirmed",
+      "checklist_area": "R0-R8 variable isolation, diagnostic labeling, and reproducibility",
+      "title": "Diagnostic reports record a variant name instead of the executed configuration",
+      "evidence": [
+        "kingscode/retrieval_benchmark.py::_run_one executes R0-GRAPH-AUTO-DIAGNOSTIC with graph mode auto and R0-GRAPH-ON-DIAGNOSTIC with graph mode on, but run() writes config.graph_mode as the full variant string for every non-R0 variant.",
+        "The committed final diagnostic reports, for example reports/benchmark/r0_graph_auto_diagnostic/20260928T182523452046Z-dev/report.json, contain graph_mode=R0-GRAPH-AUTO-DIAGNOSTIC rather than auto; analogous R6/R7/R8 reports do not serialize their effective experiment parameters in the top-level configuration.",
+        "The diagnostic suffixes and selection exclusion are correctly labelled, but the persisted configuration is not an exact execution record."
+      ],
+      "required_action": "Serialize actual retrieval mode, graph mode, reranker/model identity, candidate limits, and each diagnostic experiment's effective parameters separately from the human-facing variant label. Add report-schema assertions for R0 graph diagnostics and R6-R8 diagnostics."
+    }
+  ],
+  "checklist": [
+    {
+      "area": "No benchmark leakage",
+      "status": "PASS",
+      "confidence": "confirmed",
+      "evidence": "questions contain no forbidden gold/evaluation fields (independent scan: 0); retrieval_input accepts only question text; build/check returned question_gold_separated=true; static protected-data scan found only policy/tests/forbidden-field references, not reads of sample_50, legal_basis, answers, or generation targets."
+    },
+    {
+      "area": "No closed-model-generated data",
+      "status": "PASS (repository evidence)",
+      "confidence": "confirmed",
+      "evidence": "benchmark_manifest.json records generation.closed_model_used=false and deterministic_template_over_verified_corpus_metadata; benchmark_builder.py constructs locator templates and contains no model/network invocation; semantic/temporal candidates are kept in a human-review queue. This verifies the committed implementation and artifact provenance claims, not unrecorded activity outside the repository."
+    },
+    {
+      "area": "Gold IDs and spans resolve",
+      "status": "PASS",
+      "confidence": "confirmed",
+      "evidence": "tools/build_retrieval_benchmark.py --check returned gold_ids_resolved=true for all 200 cases. The verifier resolves canonical document/fragment IDs and confirms each span's passage, fragment, and [clean_start, clean_end) containment against corpus/passages.jsonl."
+    },
+    {
+      "area": "Question/gold and split integrity",
+      "status": "PASS",
+      "confidence": "confirmed",
+      "evidence": "Independent JSONL audit found dev/validation/holdout counts 120/40/40 for both questions and gold; question/gold ID sets match per split; all pairwise split intersections are zero; manifest hashes match schema and every question/gold split."
+    },
+    {
+      "area": "No duplicate or overlap errors",
+      "status": "PASS",
+      "confidence": "confirmed",
+      "evidence": "Independent audit found 0 duplicate question texts, 0 duplicate gold evidence fragment IDs across all 200 cases, 0 duplicate gold spans, and 0 ID overlap between splits."
+    },
+    {
+      "area": "Holdout declaration and current consumption",
+      "status": "PARTIAL / BLOCKED BY AUD-001",
+      "confidence": "confirmed",
+      "evidence": "The declaration is manifest-bound and predeclares R0 only. There is exactly one matching final passed holdout report, reports/benchmark/r0/20260928T182502854311Z-holdout/report.json, with variant R0 and holdout_purpose predeclared_baseline. The arbitrary-output-root bypass prevents approval of the consumption control."
+    },
+    {
+      "area": "Official 50 not used for development",
+      "status": "PASS",
+      "confidence": "confirmed",
+      "evidence": "The diff changes neither data/sample_50.jsonl nor official starter files. reports/benchmark/official50_confirmation/status.json defers confirmation; its historical reference is explicitly marked not used for internal tuning."
+    },
+    {
+      "area": "R0-R8 isolation and diagnostic labeling",
+      "status": "PARTIAL / BLOCKED BY AUD-002",
+      "confidence": "confirmed",
+      "evidence": "experiment_matrix.json documents isolated R0-R5 definitions and R6-R8 as R3-based ablations; CPU runs are suffixed DIAGNOSTIC and selected_config.json explicitly excludes them from selection. The report configuration defect prevents complete reproducibility/audit of what the diagnostics executed."
+    },
+    {
+      "area": "Metrics, bootstraps, and reproducibility",
+      "status": "PARTIAL / BLOCKED BY AUD-002",
+      "confidence": "confirmed",
+      "evidence": "Metric tests cover multi-evidence, empty results, context cost, complementarity, equal-ID constraints, and deterministic paired bootstrap. paired_bootstrap uses seed 0 and 10,000 resamples; stored source/corpus/manifest identities reference existing ancestors of HEAD. Exact diagnostic runtime configuration is nevertheless not faithfully serialized."
+    },
+    {
+      "area": "Corpus hashes explained and enforced",
+      "status": "PASS",
+      "confidence": "confirmed",
+      "evidence": "benchmark_manifest.json pins passages, graph nodes/edges, BM25, schema, and split hashes. Both verify() and run() recompute and fail closed; --check passed with manifest SHA-256 326a405748dd20f641d5cf4103ceaafb6a19f07b43db54d95f472a2b439e3071."
+    },
+    {
+      "area": "Member B and official files unchanged",
+      "status": "PASS",
+      "confidence": "confirmed",
+      "evidence": "git diff --name-only 6f9b040 89cb59d has no paths in Member B code/config/reports and no paths in data/sample_50.jsonl, schema/, Ejemplo de entrega/, docs/OFFICIAL_SHA256.txt, or the other identified official starter-pack paths."
+    },
+    {
+      "area": "Tests pass",
+      "status": "PASS",
+      "confidence": "confirmed",
+      "evidence": ".venv/Scripts/python.exe tools/build_retrieval_benchmark.py --check passed; focused tests ran 17 tests successfully; .venv/Scripts/python.exe -m unittest discover -s tests -p test*.py ran 149 tests successfully."
+    }
+  ],
+  "conclusion_assessment": {
+    "no_selection": {
+      "status": "SUPPORTED",
+      "confidence": "confirmed",
+      "evidence": "selected_config.json has status no_selection and only R0 as an eligible validation result. Its five stored R0 validation metrics exactly match reports/benchmark/r0/20260928T182455334014Z-validation/report.json. Final-manifest reports for R1-BGE, R1-QWEN, R2-BGE, R2-QWEN, R3, R4, R5, R6, R7, and R8 are GPU_BLOCKED; CPU graph/metadata results retain DIAGNOSTIC names and are excluded from selection."
+    },
+    "gpu_blocked": {
+      "status": "SUPPORTED IN THIS AUDIT ENVIRONMENT",
+      "confidence": "confirmed",
+      "evidence": "The venv reports torch 2.12.0+cpu, cuda_available=false, cuda_device_count=0; nvidia-smi is unavailable; corpus/index/dense.npy is absent. GPU_BLOCKED reports claim no metrics and list prerequisites rather than fabricating results. This support is specific to the audited local environment and does not establish the status of another machine."
+    }
+  },
+  "exact_checks_performed": [
+    {
+      "check": "Commit and change boundary",
+      "command": "git rev-parse HEAD; git diff --stat 6f9b040 89cb59d; git diff --name-status 6f9b040 89cb59d",
+      "result": "HEAD resolved to 89cb59d148a7a81729dd8e458c251cdf345458af; reviewed the complete 112-file diff."
+    },
+    {
+      "check": "Artifact validation",
+      "command": ".venv/Scripts/python.exe tools/build_retrieval_benchmark.py --check",
+      "result": "Passed: 200 cases, 120/40/40, question/gold separation, resolved gold IDs, no split overlap, and final manifest identity."
+    },
+    {
+      "check": "Independent JSONL integrity audit",
+      "command": "Read all benchmark questions/gold JSONL and recomputed counts, ID set equality/intersections, forbidden fields, duplicate text/evidence/spans, and manifest SHA-256 values.",
+      "result": "All stated artifact checks passed; values are recorded in the checklist evidence."
+    },
+    {
+      "check": "Tests",
+      "command": ".venv/Scripts/python.exe -m unittest tests.test_retrieval_benchmark; .venv/Scripts/python.exe -m unittest discover -s tests -p test*.py",
+      "result": "17 focused and 149 full-suite tests passed."
+    },
+    {
+      "check": "Leakage and closed-model static boundary",
+      "command": "git grep on the benchmark implementation/artifact paths for sample_50, legal_basis, expected_answer, respuesta_correcta, texto_respuesta_correcta, openai, anthropic, gpt-, and claude",
+      "result": "Six matches, all policy documentation, forbidden-field constants, or tests; no protected-data/model access implementation was found."
+    },
+    {
+      "check": "Protected-file boundary",
+      "command": "Compared diff paths with base-tree official and Member B paths; separately filtered known official and Member B path prefixes.",
+      "result": "No protected official or Member B files changed."
+    },
+    {
+      "check": "Holdout and report provenance",
+      "command": "Enumerated reports/benchmark/**/report.json, compared manifest identities/statuses/purposes, and verified recorded report commits are Git ancestors of HEAD.",
+      "result": "One matching final R0 holdout report exists and prior report commits exist as ancestors. Code inspection exposed AUD-001."
+    },
+    {
+      "check": "Selection, diagnostics, and GPU prerequisites",
+      "command": "Compared selected_config metrics to final R0 validation; inspected diagnostic/GPU report configurations; probed torch CUDA, nvidia-smi, and corpus/index/dense.npy.",
+      "result": "no_selection and local GPU_BLOCKED are supported; diagnostic report configuration defect is AUD-002."
+    }
+  ],
+  "non_blocking_observations": [
+    {
+      "title": "Patch whitespace check reports CRLF lines as trailing whitespace",
+      "evidence": "git diff --check 6f9b040 89cb59d emits warnings for CRLF-added lines. .gitattributes sets * -text to preserve exact source bytes, so this is a patch-hygiene observation rather than a benchmark-data integrity finding."
+    }
+  ]
+}
