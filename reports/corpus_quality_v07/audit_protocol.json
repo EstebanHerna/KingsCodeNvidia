@@ -1,0 +1,28 @@
+{
+  "version": "corpus-quality-audit-v0.7",
+  "status": "preregistered_before_sampling_and_findings",
+  "base_commit": "a3548a16003dcc0a5165cba0829aa68c7921d9c2",
+  "seed": 0,
+  "unit": "passage with source document, neighbouring units, metadata and related graph evidence",
+  "target_units": 200,
+  "strata": [
+    {"name": "legislation", "n": 50, "predicate": "source_type == law; excluding historical and ambiguous"},
+    {"name": "codes_decrees", "n": 40, "predicate": "source_type in code,decree,constitution; excluding historical and ambiguous"},
+    {"name": "jurisprudence", "n": 50, "predicate": "source_type == decision"},
+    {"name": "historical", "n": 20, "predicate": "is_current_text is False"},
+    {"name": "ambiguous_excluded", "n": 20, "predicate": "not retrieval_eligible and not historical"},
+    {"name": "benchmark_risk", "n": 20, "predicate": "R0 dev failure gold and returned passages; categories round-robin"}
+  ],
+  "selection": "Sort document and passage IDs, shuffle with independent Random(0) for each stratum, round-robin documents before repeating one. For benchmark_risk round-robin failure categories then IDs. Record exact sample, pool sizes and overlaps. If a pool is too small, report shortfall; no easy replacements.",
+  "graph_sampling": "Up to 20 edges per actual relation, sorted by source,target,relation,evidence_passage_id then Random(0). Separate edge denominator.",
+  "benchmark_access": "Existing R0 dev outputs/gold for offline audit only; no rerun, no validation/holdout tuning.",
+  "checks": ["identity against official raw heading and URL", "body offsets vs clean", "clean vs independently decoded raw HTML/PDF", "parser and locators", "hierarchy/structure", "canonical identities and collisions", "provenance", "temporal evidence", "relation-specific graph grounding", "all 28 unresolved original targets"],
+  "verdicts": ["PASS", "FAIL", "UNKNOWN", "NOT_APPLICABLE"],
+  "denominators": "Report eligible, evaluated, numerator, unknown, exclusions per metric. Rates over evaluated units, with unknown coverage shown. No composite score. Risk-enriched sample is not a population estimate.",
+  "uncertainty": "Descriptive stratified audit; no misleading corpus-wide confidence interval. Distinguish exact automated checks from semantic/legal verification.",
+  "temporal_policy": "UNKNOWN without evidence is valid. Never infer current law; unsupported temporal assertions are defects.",
+  "canonical_policy": "Segments of one article can share a fragment ID. Different content hashes alone are not collisions; require distinct legal locators/structural units sharing an identity.",
+  "source_policy": "Official/public sources only. Retained raw snapshots evidence ingestion, not current law. Missing evidence remains UNKNOWN/UNVERIFIED.",
+  "review_roles": ["AUDITOR", "LEGAL DATA CURATOR", "CRITIC", "INTEGRATOR"],
+  "constraints": ["audit only", "no corpus/index rebuild or mutation", "no retrieval/decoder/Member B changes", "no identifier substitution", "feature branch push only; no merge"]
+}
