@@ -16,7 +16,19 @@ Responsable principal de:
 retrieve(question, k, graph_mode="auto") -> passages
 ```
 
-## Integrante B (Esteban) — Query/Reasoning Layer / Generation / Evaluation / Delivery
+A debe poder devolver el mismo formato de passage independientemente de si vino del fast path o de expansión del grafo.
+
+### Añadidos v0.6 de A (metadatos/recuperación)
+- Identidad canónica determinista independiente de la URL (`canonical_document_id`, `canonical_fragment_id`) en `kingscode/metadata.py`.
+- Clasificación del backlog de adquisición (`kingscode/acquisition_backlog.py`), sin sustituir identificadores.
+- Deduplicación/diversificación configurable y apta para ablación (`kingscode/diversify.py`), off por defecto.
+- Taxonomía de fallos de recuperación + `document_mismatch_rate` (`kingscode/failure_analysis.py`).
+- Experimentos opcionales R6/R7/R8 (`kingscode/metadata_experiments.py`) sobre la API pública; no cambian R0–R5 de B ni la ruta por defecto.
+- Reporte de cobertura v0.6 y auditoría grafo/temporal (`kingscode/coverage_report.py`).
+
+El contrato público `retrieve(...)` se mantiene idéntico; B no necesita cambios. Los scores de recuperación en tiempo de ejecución no son metadatos persistentes del corpus.
+
+## Integrante B — Query/Reasoning Layer / Generation / Evaluation / Delivery
 Responsable principal de:
 - normalización de consulta y expansión terminológica controlada (`kingscode/reasoning/query.py`);
 - política `graph_mode=off|auto|on` (`routing.py`) y de abstención (`policy.py`);
@@ -104,3 +116,12 @@ Este reparto evita que ambos intenten arreglar todo a la vez durante las pocas h
 Si A se bloquea por obtención de fuentes, B ayuda con adquisición/QA de corpus.
 Si B se bloquea por GPU/modelos, A ayuda con evaluación y análisis de errores.
 No se paraliza el proyecto porque una capa esté esperando a la otra.
+
+
+### Benchmark interno v1 (A, con auditoría independiente)
+A es owner de `benchmarks/kingscode_ir/`, su separación input/gold, el
+evaluador de retrieval, métricas/bootstraps, complementarity y el loop de
+fallos. B no recibe estos golds ni depende de sus internals. La selección
+requiere validation + confirmación posterior; hasta entonces B no recibe un
+nuevo freeze. El auditor revisa fuga, integridad de splits/golds, metodología y
+provenance antes de aceptar cada checkpoint.

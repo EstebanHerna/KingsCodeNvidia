@@ -1,0 +1,25 @@
+{
+  "version": "retrieval-selection-v1",
+  "status": "no_selection",
+  "selection_split": "validation",
+  "benchmark_manifest_sha256": "326a405748dd20f641d5cf4103ceaafb6a19f07b43db54d95f472a2b439e3071",
+  "predeclared_protocol": {
+    "primary": "Evidence Completeness@8",
+    "secondary": ["Recall@10", "nDCG@10", "MRR@10"],
+    "operational": ["Document Mismatch Rate", "retrieved_tokens", "latency_p95_ms"],
+    "rule": "Select only after candidate configurations are compared on validation; run holdout once after selection. Report Pareto tradeoffs rather than a composite score."
+  },
+  "eligible_validation_results": {
+    "R0": {
+      "Evidence Completeness@8": 0.575,
+      "Recall@10": 0.625,
+      "MRR@10": 0.3738888888888889,
+      "nDCG@10": 0.43310783421287413,
+      "Document Mismatch Rate": 0.1
+    }
+  },
+  "non_selection_reason": "R1-BGE, R1-QWEN, R2-BGE, R2-QWEN, R3, R4, R5 and true R6/R7/R8 are GPU_BLOCKED. The executed BM25 graph and metadata variants are explicitly labelled diagnostics and do not satisfy their R3-based definitions, so they cannot select architecture.",
+  "pareto_frontier": ["R0 is the only eligible executable configuration in this CPU environment; it is a baseline, not a justified winner."],
+  "next_required_evidence": ["Run same-snapshot Qwen and BGE dense variants on the RTX 4090", "compute complementarity", "select R2 on validation", "then execute R3-R8 as isolated GPU ablations"],
+  "holdout_note": "The predeclared R0 holdout baseline was run only as a baseline. No post-selection confirmation is authorized because status is no_selection."
+}

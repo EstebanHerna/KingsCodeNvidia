@@ -12,7 +12,9 @@ from kingscode.common import ROOT
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["acquire", "build", "benchmark", "verify", "query", "dense", "reproduce"])
+    parser.add_argument("command", choices=["acquire", "build", "benchmark", "verify", "query", "dense",
+                                            "reproduce", "backlog", "coverage", "failures", "experiment"])
+    parser.add_argument("--experiment-name", choices=["R6", "R7", "R8"], default="R6")
     parser.add_argument("--corpus", type=Path, default=ROOT / "corpus")
     parser.add_argument("--limit", type=int)
     parser.add_argument("--workers", type=int, default=3)
@@ -48,6 +50,29 @@ def main():
     elif args.command == "verify":
         from kingscode.validation import verify
         print(json.dumps(verify(args.corpus), ensure_ascii=False, indent=2))
+    elif args.command == "backlog":
+        from kingscode.acquisition_backlog import build_report
+        r = build_report(args.corpus)
+        print(json.dumps({"total_unresolved": r["total_unresolved"], "counts": r["counts"]},
+                         ensure_ascii=False, indent=2))
+    elif args.command == "coverage":
+        from kingscode.coverage_report import build_report
+        r = build_report(args.corpus)
+        print(json.dumps({"totals": r["totals"], "unresolved": r["unresolved_acquisition_targets"],
+                          "duplicates": r["duplicates_detected"]}, ensure_ascii=False, indent=2))
+    elif args.command == "failures":
+        from kingscode.failure_analysis import build_report
+        r = build_report(args.mode, args.graph_mode, rerank=args.rerank)
+        print(json.dumps({"overall_counts": r["overall_counts"],
+                          "document_mismatch_rate": r["document_mismatch_rate"]}, ensure_ascii=False, indent=2))
+    elif args.command == "experiment":
+        from kingscode.retrieval import Retriever
+        from kingscode.metadata_experiments import run_experiment
+        if not args.question:
+            parser.error("--question required")
+        retriever = Retriever(args.corpus, mode=args.mode, rerank=args.rerank)
+        print(json.dumps(run_experiment(args.experiment_name, retriever, args.question, args.k),
+                         ensure_ascii=False, indent=2))
     else:
         from kingscode.neural import build_dense
         print(json.dumps(build_dense(args.corpus), ensure_ascii=False, indent=2))

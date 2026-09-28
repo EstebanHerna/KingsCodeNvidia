@@ -1,0 +1,12 @@
+{
+  "version": "holdout-access-v1",
+  "benchmark_manifest_sha256": "326a405748dd20f641d5cf4103ceaafb6a19f07b43db54d95f472a2b439e3071",
+  "predeclared": [
+    {
+      "variant": "R0",
+      "split": "holdout",
+      "purpose": "predeclared_baseline"
+    }
+  ],
+  "policy": "No other holdout use is allowed absent a validation-only selected_config.json record."
+}

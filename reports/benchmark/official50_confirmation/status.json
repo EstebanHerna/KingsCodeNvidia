@@ -1,0 +1,12 @@
+{
+  "version": "official50-confirmation-status-v1",
+  "status": "deferred_no_selected_internal_configuration",
+  "benchmark_manifest_sha256": "326a405748dd20f641d5cf4103ceaafb6a19f07b43db54d95f472a2b439e3071",
+  "historical_reference_only": {
+    "BM25_OFF_Recall@10": 0.5252032520325204,
+    "BM25_ON_Recall@10": 0.5373983739837399,
+    "source": "reports/retrieval_bm25.json",
+    "note": "Historical official-50 proxy baseline. It was not used to tune the internal benchmark."
+  },
+  "reason": "No retrieval architecture was selected from internal validation because all dense/hybrid/reranker variants are GPU_BLOCKED. Running the official 50 now would not be post-selection confirmation."
+}

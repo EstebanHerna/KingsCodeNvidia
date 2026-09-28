@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-28T02:46:13.453885+00:00",
+  "timestamp": "2026-09-28T16:53:08.149409+00:00",
   "corpus_version": "corpus-v0.1",
   "runtime": {
     "python": "3.12.5 (tags/v3.12.5:ff3bc82, Aug  6 2024, 20:45:27) [MSC v.1940 64 bit (AMD64)]",
@@ -8,9 +8,17 @@
   "code_sha256": {
     "__init__.py": "93b47c0f9cde19acfe81e770642dd357d67e743d7cffaad710368ce0cdbde32f",
     "acquisition.py": "8d8b7f41762d0375d17327415b388de70c0c4c0d98f95bf05edf6ffc92afa0b5",
+    "acquisition_backlog.py": "d69304f59f968640f640be16519d14d72ce0266793cd16e0f12e1ec2ae1aa6f7",
     "common.py": "3fb32d114637fab4f8070033e54feef5675e2bceebcc4de3e49e3a9fdb8e4614",
     "corpus.py": "a2960f9b4cb1477ba2b66b66de35cbaeef3dcdd614b51fa75afd84a7d1d63dc3",
+    "coverage_report.py": "5cd5c1761cbd0d1c84fb41e8c7af6c5e770eeb9a0088c36589a9313d1aaa39d6",
+    "diversify.py": "8f9fe5848e0247d230579c8a0e137e587bebda94e0573766b5f54d14d32ea53d",
     "evaluation.py": "8197203ca96f579dad1a36545a091443bd6edd9fac831542da3d87f6645b9f2d",
+    "failure_analysis.py": "da483452ece86ede221b5865496397cf63faf78463286c242f3fdf1306363e54",
+    "gpu_environment.py": "ee74e8906e9dc873d790ed2b0893d7382bca4d0fd45db5eddb81070365b44bc7",
+    "metadata.py": "0dd3b4c1168f121f8e16f33ab801809e73b45ebf11dd08796a67505a55f50d5b",
+    "metadata_experiments.py": "4c4282aaf2136c02e35d09ced62d6703a884bc12908086091b696fa8d7352502",
+    "model_assets.py": "8ad54a28f3382070e773ee3e58c75665c4c8d5163487c175171e77ca766c3429",
     "neural.py": "6c90d17f7fd3dd7f1f36563e4ce2fb37ea7a1412a58715250098e043cbc862f0",
     "retrieval.py": "e3b20fc0fdffabf8eab17fd7a754617984a7f33b5a730f63951713bef04cacd7",
     "validation.py": "b0a8f4e2a48304befacc5bba179d093b6c14ea5637af758ce3b2dab091fce4f2"
@@ -59,8 +67,8 @@
       "legal_basis_any@10": 0.5609756097560976,
       "legal_basis_all@10": 0.5121951219512195,
       "document_mismatch@1": 0.6585365853658537,
-      "latency_p50_ms": 20.453949997317977,
-      "latency_p95_ms": 60.78859997796826,
+      "latency_p50_ms": 51.96184999658726,
+      "latency_p95_ms": 181.92840000847355,
       "by_area": {
         "Derecho administrativo": {
           "questions": 7,
@@ -74,8 +82,8 @@
           "legal_basis_any@10": 0.0,
           "legal_basis_all@10": 0.0,
           "document_mismatch@1": 1.0,
-          "latency_p50_ms": 22.467700007837266,
-          "latency_p95_ms": 75.01609998871572
+          "latency_p50_ms": 51.810899982228875,
+          "latency_p95_ms": 181.92840000847355
         },
         "Derecho civil": {
           "questions": 4,
@@ -89,8 +97,8 @@
           "legal_basis_any@10": 0.5,
           "legal_basis_all@10": 0.5,
           "document_mismatch@1": 0.5,
-          "latency_p50_ms": 13.4869999892544,
-          "latency_p95_ms": 18.468599999323487
+          "latency_p50_ms": 32.392200009780936,
+          "latency_p95_ms": 43.94539998611435
         },
         "Derecho comercial y sociedades": {
           "questions": 5,
@@ -104,8 +112,8 @@
           "legal_basis_any@10": 0.75,
           "legal_basis_all@10": 0.75,
           "document_mismatch@1": 0.75,
-          "latency_p50_ms": 31.165899999905378,
-          "latency_p95_ms": 59.15419998927973
+          "latency_p50_ms": 81.08319999882951,
+          "latency_p95_ms": 399.5981000189204
         },
         "Derecho constitucional": {
           "questions": 6,
@@ -119,8 +127,8 @@
           "legal_basis_any@10": 0.6,
           "legal_basis_all@10": 0.4,
           "document_mismatch@1": 1.0,
-          "latency_p50_ms": 22.361750015988946,
-          "latency_p95_ms": 62.66580001101829
+          "latency_p50_ms": 51.16989999078214,
+          "latency_p95_ms": 184.0010000159964
         },
         "Derecho de familia": {
           "questions": 5,
@@ -134,8 +142,8 @@
           "legal_basis_any@10": 0.8,
           "legal_basis_all@10": 0.8,
           "document_mismatch@1": 0.6,
-          "latency_p50_ms": 17.824000009568408,
-          "latency_p95_ms": 38.515199994435534
+          "latency_p50_ms": 47.45159999583848,
+          "latency_p95_ms": 101.17050001281314
         },
         "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]": {
           "questions": 5,
@@ -149,8 +157,8 @@
           "legal_basis_any@10": 0.75,
           "legal_basis_all@10": 0.75,
           "document_mismatch@1": 0.0,
-          "latency_p50_ms": 28.469400014728308,
-          "latency_p95_ms": 42.84249999909662
+          "latency_p50_ms": 71.08059999882244,
+          "latency_p95_ms": 122.04580000252463
         },
         "Derecho laboral": {
           "questions": 5,
@@ -164,8 +172,8 @@
           "legal_basis_any@10": 0.6,
           "legal_basis_all@10": 0.4,
           "document_mismatch@1": 0.6,
-          "latency_p50_ms": 30.587399989599362,
-          "latency_p95_ms": 43.61660001450218
+          "latency_p50_ms": 70.97950001480058,
+          "latency_p95_ms": 119.62790001416579
         },
         "Derecho penal": {
           "questions": 4,
@@ -179,8 +187,8 @@
           "legal_basis_any@10": 0.5,
           "legal_basis_all@10": 0.5,
           "document_mismatch@1": 0.75,
-          "latency_p50_ms": 31.257049995474517,
-          "latency_p95_ms": 54.48569997679442
+          "latency_p50_ms": 99.05060000892263,
+          "latency_p95_ms": 127.78599999728613
         },
         "Derecho procesal": {
           "questions": 5,
@@ -194,8 +202,8 @@
           "legal_basis_any@10": 0.6,
           "legal_basis_all@10": 0.6,
           "document_mismatch@1": 0.6,
-          "latency_p50_ms": 20.516499993391335,
-          "latency_p95_ms": 26.250399998389184
+          "latency_p50_ms": 38.42570001143031,
+          "latency_p95_ms": 64.52139999601059
         },
         "Derecho tributario": {
           "questions": 4,
@@ -209,8 +217,8 @@
           "legal_basis_any@10": 0.5,
           "legal_basis_all@10": 0.5,
           "document_mismatch@1": 0.5,
-          "latency_p50_ms": 8.361200001672842,
-          "latency_p95_ms": 19.751000014366582
+          "latency_p50_ms": 22.717700005159713,
+          "latency_p95_ms": 61.591100005898625
         }
       },
       "by_format": {
@@ -226,8 +234,8 @@
           "legal_basis_any@10": 0.38461538461538464,
           "legal_basis_all@10": 0.38461538461538464,
           "document_mismatch@1": 0.8461538461538461,
-          "latency_p50_ms": 16.72430001781322,
-          "latency_p95_ms": 39.998199994442984
+          "latency_p50_ms": 35.338599991519004,
+          "latency_p95_ms": 92.38379998714663
         },
         "open_ended": {
           "questions": 5,
@@ -241,8 +249,8 @@
           "legal_basis_any@10": 0.5,
           "legal_basis_all@10": 0.25,
           "document_mismatch@1": 0.75,
-          "latency_p50_ms": 59.15419998927973,
-          "latency_p95_ms": 62.66580001101829
+          "latency_p50_ms": 167.59660001844168,
+          "latency_p95_ms": 184.0010000159964
         },
         "semi_open": {
           "questions": 30,
@@ -256,8 +264,8 @@
           "legal_basis_any@10": 0.6666666666666666,
           "legal_basis_all@10": 0.625,
           "document_mismatch@1": 0.5416666666666666,
-          "latency_p50_ms": 22.491800002171658,
-          "latency_p95_ms": 54.48569997679442
+          "latency_p50_ms": 61.201999997138046,
+          "latency_p95_ms": 179.08619999070652
         }
       },
       "fully_covered_subset": {
@@ -272,8 +280,8 @@
         "legal_basis_any@10": 0.5833333333333334,
         "legal_basis_all@10": 0.5833333333333334,
         "document_mismatch@1": 0.6388888888888888,
-        "latency_p50_ms": 20.453949997317977,
-        "latency_p95_ms": 62.66580001101829
+        "latency_p50_ms": 62.60119999933522,
+        "latency_p95_ms": 184.0010000159964
       },
       "graph_triggered_questions": 0,
       "peak_vram_bytes": null
@@ -290,8 +298,8 @@
       "legal_basis_any@10": 0.5609756097560976,
       "legal_basis_all@10": 0.5121951219512195,
       "document_mismatch@1": 0.6585365853658537,
-      "latency_p50_ms": 19.771749997744337,
-      "latency_p95_ms": 52.64850001549348,
+      "latency_p50_ms": 42.456199997104704,
+      "latency_p95_ms": 119.86910001724027,
       "by_area": {
         "Derecho administrativo": {
           "questions": 7,
@@ -305,8 +313,8 @@
           "legal_basis_any@10": 0.0,
           "legal_basis_all@10": 0.0,
           "document_mismatch@1": 1.0,
-          "latency_p50_ms": 22.828899993328378,
-          "latency_p95_ms": 61.218999995617196
+          "latency_p50_ms": 43.85600000387058,
+          "latency_p95_ms": 134.97879999340512
         },
         "Derecho civil": {
           "questions": 4,
@@ -320,8 +328,8 @@
           "legal_basis_any@10": 0.5,
           "legal_basis_all@10": 0.5,
           "document_mismatch@1": 0.5,
-          "latency_p50_ms": 13.341400001081638,
-          "latency_p95_ms": 18.09019999927841
+          "latency_p50_ms": 28.608649998204783,
+          "latency_p95_ms": 41.02870001224801
         },
         "Derecho comercial y sociedades": {
           "questions": 5,
@@ -335,8 +343,8 @@
           "legal_basis_any@10": 0.75,
           "legal_basis_all@10": 0.75,
           "document_mismatch@1": 0.75,
-          "latency_p50_ms": 27.044899994507432,
-          "latency_p95_ms": 52.64850001549348
+          "latency_p50_ms": 62.121399998432025,
+          "latency_p95_ms": 119.86910001724027
         },
         "Derecho constitucional": {
           "questions": 6,
@@ -350,8 +358,8 @@
           "legal_basis_any@10": 0.6,
           "legal_basis_all@10": 0.4,
           "document_mismatch@1": 1.0,
-          "latency_p50_ms": 17.84129999577999,
-          "latency_p95_ms": 56.666200020117685
+          "latency_p50_ms": 40.88909999700263,
+          "latency_p95_ms": 124.33809999492951
         },
         "Derecho de familia": {
           "questions": 5,
@@ -365,8 +373,8 @@
           "legal_basis_any@10": 0.8,
           "legal_basis_all@10": 0.8,
           "document_mismatch@1": 0.6,
-          "latency_p50_ms": 19.65639999252744,
-          "latency_p95_ms": 40.13969999505207
+          "latency_p50_ms": 39.248299988685176,
+          "latency_p95_ms": 84.30529999895953
         },
         "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]": {
           "questions": 5,
@@ -380,8 +388,8 @@
           "legal_basis_any@10": 0.75,
           "legal_basis_all@10": 0.75,
           "document_mismatch@1": 0.0,
-          "latency_p50_ms": 23.519699985627085,
-          "latency_p95_ms": 38.90700000920333
+          "latency_p50_ms": 60.27620000531897,
+          "latency_p95_ms": 99.86669998033904
         },
         "Derecho laboral": {
           "questions": 5,
@@ -395,8 +403,8 @@
           "legal_basis_any@10": 0.6,
           "legal_basis_all@10": 0.4,
           "document_mismatch@1": 0.6,
-          "latency_p50_ms": 29.603200004203245,
-          "latency_p95_ms": 41.5295000129845
+          "latency_p50_ms": 60.28679999872111,
+          "latency_p95_ms": 86.66520001133904
         },
         "Derecho penal": {
           "questions": 4,
@@ -410,8 +418,8 @@
           "legal_basis_any@10": 0.5,
           "legal_basis_all@10": 0.5,
           "document_mismatch@1": 0.75,
-          "latency_p50_ms": 29.12664999894332,
-          "latency_p95_ms": 42.642699991120026
+          "latency_p50_ms": 67.79385000118054,
+          "latency_p95_ms": 98.12499998952262
         },
         "Derecho procesal": {
           "questions": 5,
@@ -425,8 +433,8 @@
           "legal_basis_any@10": 0.6,
           "legal_basis_all@10": 0.6,
           "document_mismatch@1": 0.6,
-          "latency_p50_ms": 17.79569999780506,
-          "latency_p95_ms": 27.93549999478273
+          "latency_p50_ms": 40.266399999381974,
+          "latency_p95_ms": 65.69789999048226
         },
         "Derecho tributario": {
           "questions": 4,
@@ -440,8 +448,8 @@
           "legal_basis_any@10": 0.5,
           "legal_basis_all@10": 0.5,
           "document_mismatch@1": 0.5,
-          "latency_p50_ms": 7.315999988350086,
-          "latency_p95_ms": 23.102199978893623
+          "latency_p50_ms": 18.423400004394352,
+          "latency_p95_ms": 49.71379999187775
         }
       },
       "by_format": {
@@ -457,8 +465,8 @@
           "legal_basis_any@10": 0.38461538461538464,
           "legal_basis_all@10": 0.38461538461538464,
           "document_mismatch@1": 0.8461538461538461,
-          "latency_p50_ms": 15.397699986351654,
-          "latency_p95_ms": 36.83529997942969
+          "latency_p50_ms": 37.08179999375716,
+          "latency_p95_ms": 86.0376000055112
         },
         "open_ended": {
           "questions": 5,
@@ -472,8 +480,8 @@
           "legal_basis_any@10": 0.5,
           "legal_basis_all@10": 0.25,
           "document_mismatch@1": 0.75,
-          "latency_p50_ms": 52.64850001549348,
-          "latency_p95_ms": 61.218999995617196
+          "latency_p50_ms": 119.86910001724027,
+          "latency_p95_ms": 134.97879999340512
         },
         "semi_open": {
           "questions": 30,
@@ -487,8 +495,8 @@
           "legal_basis_any@10": 0.6666666666666666,
           "legal_basis_all@10": 0.625,
           "document_mismatch@1": 0.5416666666666666,
-          "latency_p50_ms": 21.248750010272488,
-          "latency_p95_ms": 42.642699991120026
+          "latency_p50_ms": 48.130549999768846,
+          "latency_p95_ms": 99.86669998033904
         }
       },
       "fully_covered_subset": {
@@ -503,8 +511,8 @@
         "legal_basis_any@10": 0.5833333333333334,
         "legal_basis_all@10": 0.5833333333333334,
         "document_mismatch@1": 0.6388888888888888,
-        "latency_p50_ms": 21.248750010272488,
-        "latency_p95_ms": 52.64850001549348
+        "latency_p50_ms": 48.130549999768846,
+        "latency_p95_ms": 119.86910001724027
       },
       "graph_triggered_questions": 0,
       "peak_vram_bytes": null
@@ -521,8 +529,8 @@
       "legal_basis_any@10": 0.5853658536585366,
       "legal_basis_all@10": 0.5121951219512195,
       "document_mismatch@1": 0.6097560975609756,
-      "latency_p50_ms": 22.09664999099914,
-      "latency_p95_ms": 54.24610001500696,
+      "latency_p50_ms": 62.03554998501204,
+      "latency_p95_ms": 163.33290000329725,
       "by_area": {
         "Derecho administrativo": {
           "questions": 7,
@@ -536,8 +544,8 @@
           "legal_basis_any@10": 0.2,
           "legal_basis_all@10": 0.2,
           "document_mismatch@1": 0.8,
-          "latency_p50_ms": 21.50849997997284,
-          "latency_p95_ms": 59.03279999620281
+          "latency_p50_ms": 62.066699989372864,
+          "latency_p95_ms": 148.74910001526587
         },
         "Derecho civil": {
           "questions": 4,
@@ -551,8 +559,8 @@
           "legal_basis_any@10": 0.5,
           "legal_basis_all@10": 0.5,
           "document_mismatch@1": 0.5,
-          "latency_p50_ms": 13.095450005494058,
-          "latency_p95_ms": 20.233499992173165
+          "latency_p50_ms": 32.74534999218304,
+          "latency_p95_ms": 62.798500002827495
         },
         "Derecho comercial y sociedades": {
           "questions": 5,
@@ -566,8 +574,8 @@
           "legal_basis_any@10": 0.75,
           "legal_basis_all@10": 0.75,
           "document_mismatch@1": 0.75,
-          "latency_p50_ms": 29.705799999646842,
-          "latency_p95_ms": 49.659699987387285
+          "latency_p50_ms": 76.11339999129996,
+          "latency_p95_ms": 139.03120000031777
         },
         "Derecho constitucional": {
           "questions": 6,
@@ -581,8 +589,8 @@
           "legal_basis_any@10": 0.6,
           "legal_basis_all@10": 0.4,
           "document_mismatch@1": 1.0,
-          "latency_p50_ms": 20.097700005862862,
-          "latency_p95_ms": 63.83980001555756
+          "latency_p50_ms": 67.48440000228584,
+          "latency_p95_ms": 166.9253000000026
         },
         "Derecho de familia": {
           "questions": 5,
@@ -596,8 +604,8 @@
           "legal_basis_any@10": 0.8,
           "legal_basis_all@10": 0.8,
           "document_mismatch@1": 0.6,
-          "latency_p50_ms": 19.756599998800084,
-          "latency_p95_ms": 36.62689999327995
+          "latency_p50_ms": 49.12560002412647,
+          "latency_p95_ms": 135.9408000134863
         },
         "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]": {
           "questions": 5,
@@ -611,8 +619,8 @@
           "legal_basis_any@10": 0.75,
           "legal_basis_all@10": 0.5,
           "document_mismatch@1": 0.0,
-          "latency_p50_ms": 25.082799984375015,
-          "latency_p95_ms": 37.89229999529198
+          "latency_p50_ms": 68.33380000898615,
+          "latency_p95_ms": 102.30920001049526
         },
         "Derecho laboral": {
           "questions": 5,
@@ -626,8 +634,8 @@
           "legal_basis_any@10": 0.6,
           "legal_basis_all@10": 0.4,
           "document_mismatch@1": 0.6,
-          "latency_p50_ms": 31.187300017336383,
-          "latency_p95_ms": 40.22110000369139
+          "latency_p50_ms": 91.13260000594892,
+          "latency_p95_ms": 163.33290000329725
         },
         "Derecho penal": {
           "questions": 4,
@@ -641,8 +649,8 @@
           "legal_basis_any@10": 0.5,
           "legal_basis_all@10": 0.5,
           "document_mismatch@1": 0.5,
-          "latency_p50_ms": 38.17259999050293,
-          "latency_p95_ms": 44.30700000375509
+          "latency_p50_ms": 105.18149998097215,
+          "latency_p95_ms": 203.5316999827046
         },
         "Derecho procesal": {
           "questions": 5,
@@ -656,8 +664,8 @@
           "legal_basis_any@10": 0.6,
           "legal_basis_all@10": 0.6,
           "document_mismatch@1": 0.6,
-          "latency_p50_ms": 22.68480000202544,
-          "latency_p95_ms": 27.2036999813281
+          "latency_p50_ms": 61.47490002331324,
+          "latency_p95_ms": 71.97750001796521
         },
         "Derecho tributario": {
           "questions": 4,
@@ -671,8 +679,8 @@
           "legal_basis_any@10": 0.5,
           "legal_basis_all@10": 0.5,
           "document_mismatch@1": 0.5,
-          "latency_p50_ms": 9.836500001256354,
-          "latency_p95_ms": 23.525500000687316
+          "latency_p50_ms": 24.34129998437129,
+          "latency_p95_ms": 55.153499997686595
         }
       },
       "by_format": {
@@ -688,8 +696,8 @@
           "legal_basis_any@10": 0.46153846153846156,
           "legal_basis_all@10": 0.38461538461538464,
           "document_mismatch@1": 0.7692307692307693,
-          "latency_p50_ms": 17.342800012556836,
-          "latency_p95_ms": 43.35469999932684
+          "latency_p50_ms": 43.64349998650141,
+          "latency_p95_ms": 166.9253000000026
         },
         "open_ended": {
           "questions": 5,
@@ -703,8 +711,8 @@
           "legal_basis_any@10": 0.5,
           "legal_basis_all@10": 0.25,
           "document_mismatch@1": 0.75,
-          "latency_p50_ms": 49.659699987387285,
-          "latency_p95_ms": 63.83980001555756
+          "latency_p50_ms": 139.03120000031777,
+          "latency_p95_ms": 153.6146999860648
         },
         "semi_open": {
           "questions": 30,
@@ -718,8 +726,8 @@
           "legal_basis_any@10": 0.6666666666666666,
           "legal_basis_all@10": 0.625,
           "document_mismatch@1": 0.5,
-          "latency_p50_ms": 25.592199992388487,
-          "latency_p95_ms": 44.30700000375509
+          "latency_p50_ms": 65.56615000590682,
+          "latency_p95_ms": 163.33290000329725
         }
       },
       "fully_covered_subset": {
@@ -734,8 +742,8 @@
         "legal_basis_any@10": 0.6111111111111112,
         "legal_basis_all@10": 0.5833333333333334,
         "document_mismatch@1": 0.5833333333333334,
-        "latency_p50_ms": 25.592199992388487,
-        "latency_p95_ms": 54.24610001500696
+        "latency_p50_ms": 65.56615000590682,
+        "latency_p95_ms": 163.33290000329725
       },
       "graph_triggered_questions": 50,
       "peak_vram_bytes": null

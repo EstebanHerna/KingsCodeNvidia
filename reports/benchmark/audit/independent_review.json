@@ -1,0 +1,138 @@
+{
+  "version": "independent-benchmark-audit-v1",
+  "audit_role": "final critic/auditor",
+  "scope": {
+    "branch": "feat/member-a-retrieval-benchmark-v1",
+    "head": "fdc2e2878b70227a325326c4acef892b3b7d2462",
+    "base": "a179af7619cce7ec5b23685282dda88372117796",
+    "reviewed_change": "fdc2e28 and corrected diagnostic reports observed in the working tree",
+    "reviewed_diff": "git diff a179af7619cce7ec5b23685282dda88372117796..fdc2e2878b70227a325326c4acef892b3b7d2462"
+  },
+  "verdict": "PASS",
+  "summary": "The corrected implementation closes both prior blocking findings. Holdout execution and GPU_BLOCKED recording reject any custom output root before touching the holdout policy or artifacts, so the repository-controlled report tree remains the consumption boundary. The five corrected diagnostic variants now persist their exact runtime configuration, and each regenerated dev/validation report matches the code's execution configuration. Independent 200-case schema/hash/gold/split validation, focused and full tests, protected-file checks, and the no_selection/GPU_BLOCKED evidence all pass.",
+  "findings": [],
+  "audit_trail": [
+    {
+      "id": "AUD-001",
+      "prior_severity": "blocking",
+      "prior_confidence": "confirmed",
+      "title": "Holdout consumption could be bypassed through a custom output root",
+      "status": "RESOLVED",
+      "resolution_confidence": "confirmed",
+      "resolution_evidence": [
+        "Commit fdc2e28 rejects split=holdout with a non-null output_root in both retrieval_benchmark.run and retrieval_benchmark.record_gpu_blocked, before _assert_holdout_policy or any output operation.",
+        "An independent direct probe of both APIs with an audit-custom-root raised PermissionError: 'Holdout reports must use the repository-controlled default output root'.",
+        "tests/test_retrieval_benchmark.py includes a regression test for run(..., split='holdout', output_root=Path('outside'))."
+      ]
+    },
+    {
+      "id": "AUD-002",
+      "prior_severity": "blocking",
+      "prior_confidence": "confirmed",
+      "title": "Diagnostic reports lacked exact executed configurations",
+      "status": "RESOLVED",
+      "resolution_confidence": "confirmed",
+      "resolution_evidence": [
+        "Commit fdc2e28 adds _executed_config(), recording mode, rerank state, candidate_k, k_metrics, seed, graph_mode, diagnostic status, and R6/R7/R8 effective parameters independently of the display variant.",
+        "The corrected dev and validation reports for R0-GRAPH-AUTO-DIAGNOSTIC, R0-GRAPH-ON-DIAGNOSTIC, R6-BM25-DIAGNOSTIC, R7-BM25-DIAGNOSTIC, and R8-BM25-DIAGNOSTIC were independently compared to _executed_config(); all ten configurations matched exactly and record commit fdc2e28.",
+        "The focused regression test confirms actual graph mode and R6 effective parameters."
+      ]
+    }
+  ],
+  "checklist": [
+    {
+      "area": "200-case schema, hash, gold, and split integrity",
+      "status": "PASS",
+      "confidence": "confirmed",
+      "evidence": "tools/build_retrieval_benchmark.py --check passed with 200 cases, 120/40/40 dev/validation/holdout counts, question_gold_separated=true, gold_ids_resolved=true, split_overlap=false, and manifest SHA-256 326a405748dd20f641d5cf4103ceaafb6a19f07b43db54d95f472a2b439e3071. A separate JSONL audit recomputed question/gold counts and ID equality for every split, verified zero cross-split overlap and 200 total IDs, and matched each question, gold, and schema SHA-256 to the manifest."
+    },
+    {
+      "area": "Holdout declaration and consumption boundary",
+      "status": "PASS",
+      "confidence": "confirmed",
+      "evidence": "The manifest-bound declaration remains the authorization input, and both executable holdout paths now reject custom output roots. This removes the previously confirmed path that could write a consumed holdout report outside the repository-controlled scan."
+    },
+    {
+      "area": "Diagnostic configuration provenance",
+      "status": "PASS",
+      "confidence": "confirmed",
+      "evidence": "Corrected R0 graph diagnostics record graph_mode auto/on; corrected R6/R7/R8 diagnostics record their BM25 base, graph_mode off, diagnostic status, and effective experiment parameters. All five corrected variants have matching dev and validation reports produced at fdc2e28 and equal to the runtime configuration helper."
+    },
+    {
+      "area": "Tests",
+      "status": "PASS",
+      "confidence": "confirmed",
+      "evidence": ".venv/Scripts/python.exe -m unittest tests.test_retrieval_benchmark passed 19 tests. .venv/Scripts/python.exe -m unittest discover -s tests -p test*.py passed 151 tests."
+    },
+    {
+      "area": "Official starter-pack and Member B boundaries",
+      "status": "PASS",
+      "confidence": "confirmed",
+      "evidence": "The complete branch diff from merge-base a179af7 changes no official starter-pack path, including data/sample_50.jsonl, schema/, Ejemplo de entrega/, or docs/OFFICIAL_SHA256.txt. It changes no Member B decoder, generation, evaluation, or reasoning configuration. tools/evaluate_retrieval_benchmark.py is a retrieval benchmark evaluator within Member A's owned retrieval surface, not Member B generation/evaluation code."
+    },
+    {
+      "area": "no_selection conclusion",
+      "status": "PASS",
+      "confidence": "confirmed",
+      "evidence": "selected_config.json remains status=no_selection with only R0 eligible. Its five stated validation metrics exactly match the final R0 validation report. The CPU graph and metadata runs retain DIAGNOSTIC labels and are excluded from selection."
+    },
+    {
+      "area": "GPU_BLOCKED honesty",
+      "status": "PASS",
+      "confidence": "confirmed",
+      "evidence": "All reports for R1-BGE, R1-QWEN, R2-BGE, R2-QWEN, R3, R4, R5, R6, R7, and R8 marked GPU_BLOCKED have no metrics and state prerequisites. This audit environment has torch 2.12.0+cpu, cuda_available=false, cuda_device_count=0, no nvidia-smi, and no corpus/index/dense.npy; the blocked status is therefore supported locally without claiming status on another machine."
+    }
+  ],
+  "exact_checks_performed": [
+    {
+      "check": "Commit and corrected-artifact boundary",
+      "command": "git rev-parse HEAD; git show --stat fdc2e28; inspected corrected diagnostic reports under reports/benchmark",
+      "result": "HEAD is fdc2e2878b70227a325326c4acef892b3b7d2462. The commit modifies retrieval_benchmark.py and targeted tests; corrected diagnostic report directories were present for all five CPU diagnostic variants and both dev/validation splits."
+    },
+    {
+      "check": "Benchmark artifact validation",
+      "command": ".venv/Scripts/python.exe tools/build_retrieval_benchmark.py --check",
+      "result": "Passed with 200 cases, 120/40/40 split counts, separated question/gold inputs, resolved gold IDs, no split overlap, and the pinned manifest hash."
+    },
+    {
+      "check": "Independent JSONL/schema/hash audit",
+      "command": "Independent Python audit of benchmark questions, gold, manifest, and schema bytes",
+      "result": "Confirmed all 200 IDs, per-split question/gold ID equality, zero intersections, stated split sizes, and exact question/gold/schema manifest hashes."
+    },
+    {
+      "check": "Custom-root holdout prevention",
+      "command": "Direct calls to run('R0', 'holdout', output_root=Path('audit-custom-root'), allow_holdout=True, holdout_purpose='predeclared_baseline') and record_gpu_blocked('R1-QWEN', 'holdout', output_root=Path('audit-custom-root'), allow_holdout=True, holdout_purpose='predeclared_baseline')",
+      "result": "Both calls failed with the expected PermissionError and created no output artifact."
+    },
+    {
+      "check": "Corrected diagnostic provenance",
+      "command": "Compared each corrected report's config object to retrieval_benchmark._executed_config(variant)",
+      "result": "All ten regenerated dev/validation reports for the five diagnostic variants exactly match their execution configuration and cite fdc2e28."
+    },
+    {
+      "check": "Selection and GPU status",
+      "command": "Compared selected_config.json with the R0 validation report; enumerated GPU_BLOCKED reports; queried torch CUDA, nvidia-smi, and corpus/index/dense.npy",
+      "result": "no_selection is supported with R0 as the sole eligible validation result; the ten planned non-R0 variants are honestly GPU_BLOCKED in this CPU-only environment."
+    },
+    {
+      "check": "Regression and full-suite tests",
+      "command": ".venv/Scripts/python.exe -m unittest tests.test_retrieval_benchmark; .venv/Scripts/python.exe -m unittest discover -s tests -p test*.py",
+      "result": "19 focused tests and 151 full-suite tests passed."
+    },
+    {
+      "check": "Official and Member B boundary",
+      "command": "git diff --name-only $(git merge-base main HEAD) HEAD with official and Member B path filters",
+      "result": "No official starter-pack or Member B implementation/config/report path changed."
+    }
+  ],
+  "non_blocking_observations": [
+    {
+      "title": "Corrected diagnostics are untracked at audit time",
+      "evidence": "The corrected report directories and corrected statistics files are present as untracked working-tree artifacts. Their provenance and configurations were verified for this audit, but they must be committed with the intended change for a clean downstream handoff."
+    },
+    {
+      "title": "CRLF patch-hygiene output",
+      "evidence": "git diff --check emits CRLF trailing-whitespace notices for pre-existing branch additions because .gitattributes uses * -text. This does not affect the benchmark safety verdict."
+    }
+  ]
+}
