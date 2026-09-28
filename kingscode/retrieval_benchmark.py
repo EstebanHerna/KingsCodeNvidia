@@ -309,9 +309,18 @@ def _source_identity() -> dict:
 
 
 def _assert_clean_tree() -> None:
-    dirty = _git(["git", "status", "--porcelain"])
-    if dirty:
-        raise RuntimeError("Benchmark runs require a clean tracked working tree; commit a checkpoint first")
+    dirty = _git(["git", "status", "--porcelain"]) or ""
+    # A run may create prior immutable artifacts below reports/benchmark. They do
+    # not change the evaluator/source snapshot and are intentionally allowed so
+    # dev, validation and predeclared baseline runs can coexist. Any other
+    # tracked or untracked change blocks a reproducible run.
+    offenders = []
+    for line in dirty.splitlines():
+        path = line[3:].replace("\\", "/") if len(line) >= 4 else line
+        if not path.startswith("reports/benchmark/"):
+            offenders.append(line)
+    if offenders:
+        raise RuntimeError("Benchmark runs require a clean source tree; commit non-report changes first: " + "; ".join(offenders))
 
 
 def run(variant: str, split: str, *, corpus: Path | None = None, output_root: Path | None = None,
