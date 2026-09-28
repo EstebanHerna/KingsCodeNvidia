@@ -1,0 +1,168 @@
+{
+  "version": "benchmark-comparison-v1",
+  "benchmark": {
+    "manifest_sha256": "326a405748dd20f641d5cf4103ceaafb6a19f07b43db54d95f472a2b439e3071",
+    "manifest": {
+      "version": "kingscode-ir-v1",
+      "generated_at": "2026-09-28T18:23:36.775832+00:00",
+      "generation": {
+        "kind": "deterministic_template_over_verified_corpus_metadata",
+        "closed_model_used": false,
+        "cases_per_area": 20,
+        "target_total": 200
+      },
+      "corpus": {
+        "version": "corpus-v0.1",
+        "passages.jsonl": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+        "graph/nodes.jsonl": "7c8af359cb1ac8de13872e01d2d0faf18218d24e1e2af326529f4a11c0a39aaa",
+        "graph/edges.jsonl": "6002fdcdbb4fb673761cb2dbe949db2502306809f2179e4133d8f40c286ff634",
+        "bm25_sha256": "aa6b40c5e70f88513a7cde7e9ca96a15d1d40088c538668087700b9b46de005b"
+      },
+      "schema_sha256": "01a2d1ff1f23453d3104e620c5a919d39d4dc65f9e77939510734d3ec92bea9e",
+      "splits": {
+        "dev": {
+          "questions": 120,
+          "question_sha256": "a207bc0c72c4aac92534f61f7162db7e94708a766133d791fce4a32905e7fa22",
+          "gold_sha256": "98747f955fed138160246d2066e5a84852f54f8e73868d05cfa4e6256674b0af"
+        },
+        "validation": {
+          "questions": 40,
+          "question_sha256": "a196b4b409acf2105afdbdb5ef71bf3e6154f2f9ac0eb269c039ea8d077ef1df",
+          "gold_sha256": "e42f9d17f442975351f14d62b698f12819eafe470e438d3c6fbf9c7bbda69f75"
+        },
+        "holdout": {
+          "questions": 40,
+          "question_sha256": "102b0ad813360083b891bb590a5af3485549cd6e167d12f2208f444780a8d9c9",
+          "gold_sha256": "6f1bbae3c68d2233a6eecd63c3b3e9dc45e8016312507402cdea40cce8a314d6"
+        }
+      },
+      "coverage": {
+        "cases_by_area": {
+          "Derecho administrativo": 20,
+          "Derecho civil": 20,
+          "Derecho comercial y sociedades": 20,
+          "Derecho constitucional": 20,
+          "Derecho de familia": 20,
+          "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]": 20,
+          "Derecho laboral": 20,
+          "Derecho penal": 20,
+          "Derecho procesal": 20,
+          "Derecho tributario": 20
+        },
+        "cases_by_tag": {
+          "EXPLICIT": 200,
+          "DISTRACTOR": 200,
+          "MULTI_EVIDENCE": 40,
+          "GRAPH": 6
+        },
+        "human_review_queue": 20
+      },
+      "holdout_policy": {
+        "protected": true,
+        "allowed_purposes": [
+          "predeclared_baseline",
+          "post_selection_confirmation"
+        ],
+        "official_50": "separate external milestone; never benchmark development data"
+      },
+      "gold_input_separation": "questions contain no gold/evaluation fields; gold is scored only after rankings are captured"
+    }
+  },
+  "baseline": {
+    "variant": "R0",
+    "directory": "reports\\benchmark\\r0\\20260928T182449210095Z-dev",
+    "metrics": {
+      "Recall@1": 0.1625,
+      "Recall@3": 0.3,
+      "Recall@5": 0.4375,
+      "Recall@8": 0.6041666666666666,
+      "Recall@10": 0.65,
+      "MRR@10": 0.3064616402116402,
+      "MAP@10": 0.29333333333333333,
+      "nDCG@10": 0.3858594847420427,
+      "Document Recall@10": 1.0,
+      "Document Mismatch Rate": 0.025,
+      "Passage Recall@10": 0.65,
+      "Evidence Completeness@8": 0.5333333333333333,
+      "Evidence Completeness@10": 0.5916666666666667,
+      "Span Recall": 0.65,
+      "Span Precision": 0.08333333333333333,
+      "retrieved_passages": 10.0,
+      "retrieved_characters": 6350.241666666667,
+      "retrieved_tokens": 630.9416666666667,
+      "unique_documents": 1.6583333333333334,
+      "duplicate_fragment_count": 0.0,
+      "questions": 120,
+      "latency_p50_ms": 45.97444999672007,
+      "latency_p95_ms": 56.62879999727011
+    }
+  },
+  "candidate": {
+    "variant": "R8-BM25-DIAGNOSTIC",
+    "directory": "reports\\benchmark\\r8_bm25_diagnostic\\20260928T185620646161Z-dev",
+    "metrics": {
+      "Recall@1": 0.1625,
+      "Recall@3": 0.2791666666666667,
+      "Recall@5": 0.3625,
+      "Recall@8": 0.55,
+      "Recall@10": 0.625,
+      "MRR@10": 0.29009259259259257,
+      "MAP@10": 0.2787830687830688,
+      "nDCG@10": 0.3672456617434066,
+      "Document Recall@10": 1.0,
+      "Document Mismatch Rate": 0.025,
+      "Passage Recall@10": 0.625,
+      "Evidence Completeness@8": 0.48333333333333334,
+      "Evidence Completeness@10": 0.5666666666666667,
+      "Span Recall": 0.625,
+      "Span Precision": 0.08000000000000002,
+      "retrieved_passages": 10.0,
+      "retrieved_characters": 7681.925,
+      "retrieved_tokens": 745.9416666666667,
+      "unique_documents": 2.4916666666666667,
+      "duplicate_fragment_count": 0.0,
+      "questions": 120,
+      "latency_p50_ms": 54.339900001650676,
+      "latency_p95_ms": 60.333400033414364
+    }
+  },
+  "bootstrap": {
+    "Evidence Completeness@8": {
+      "estimate_baseline": 0.5333333333333333,
+      "estimate_candidate": 0.48333333333333334,
+      "delta": -0.05,
+      "ci_95": [
+        -0.09166666666666666,
+        -0.016666666666666666
+      ],
+      "bootstrap_seed": 0,
+      "resamples": 10000,
+      "paired_questions": 120
+    },
+    "Recall@10": {
+      "estimate_baseline": 0.65,
+      "estimate_candidate": 0.625,
+      "delta": -0.025,
+      "ci_95": [
+        -0.05416666666666667,
+        -0.004166666666666667
+      ],
+      "bootstrap_seed": 0,
+      "resamples": 10000,
+      "paired_questions": 120
+    },
+    "MRR@10": {
+      "estimate_baseline": 0.3064616402116402,
+      "estimate_candidate": 0.29009259259259257,
+      "delta": -0.01636904761904762,
+      "ci_95": [
+        -0.023125,
+        -0.010558862433862433
+      ],
+      "bootstrap_seed": 0,
+      "resamples": 10000,
+      "paired_questions": 120
+    }
+  },
+  "note": "If a confidence interval includes zero, the paired difference is inconclusive."
+}
