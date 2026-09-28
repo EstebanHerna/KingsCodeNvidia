@@ -24,16 +24,101 @@ def load_run(directory: Path) -> tuple[dict, list[dict]]:
         raise ValueError("Only passed runs can be analyzed")
     if report.get("per_question_sha256") != file_hash(directory / "per_question.jsonl"):
         raise ValueError("Per-question artifact hash mismatch")
+    if not rows or len({r["id"] for r in rows}) != len(rows):
+        raise ValueError("Run must contain nonempty unique question IDs")
     return report, rows
+
+
+def _compatible_runs(baseline, candidate):
+    if baseline["benchmark"]["manifest_sha256"] != candidate["benchmark"]["manifest_sha256"]:
+        raise ValueError("Cannot compare runs from different benchmark manifests")
+    if baseline["split"] != candidate["split"] or baseline["corpus"] != candidate["corpus"]:
+        raise ValueError("Cannot compare different splits/corpus snapshots")
+
+
+def write_complementarity(baseline_dir: Path, candidate_dir: Path, output: Path) -> dict:
+    baseline, left = load_run(baseline_dir)
+    candidate, right = load_run(candidate_dir)
+    _compatible_runs(baseline, candidate)
+    if baseline["variant"] != "R0" or candidate["variant"] != "R1-QWEN":
+        raise ValueError("This comparison requires R0 vs R1-QWEN dense-only")
+    if candidate.get("execution", {}).get("verified_real_backend") is not True:
+        raise ValueError("Complementarity requires a verified real dense run")
+    result = {"status": "analyzed", "split": baseline["split"],
+              "benchmark_manifest_sha256": baseline["benchmark"]["manifest_sha256"],
+              "reports": {"baseline": file_hash(baseline_dir / "report.json"),
+                          "candidate": file_hash(candidate_dir / "report.json")},
+              "by_k": {str(k): complementarity(left, right, k=k) for k in (1, 3, 5, 8, 10)}}
+    write_json(output, result)
+    return result
+
+
+def record_selection(run_dirs: list[Path], *, variant: str | None, rationale: str) -> dict:
+    """Record a human validation decision, never auto-select or consume holdout."""
+    if not rationale.strip() or len(run_dirs) < 2:
+        raise ValueError("Selection requires rationale and at least two validation runs")
+    loaded = [(path, *load_run(path)) for path in run_dirs]
+    manifest_sha = benchmark_identity()["manifest_sha256"]
+    reports = {}
+    for path, report, rows in loaded:
+        if (report["split"] != "validation" or report["benchmark"]["manifest_sha256"] != manifest_sha
+                or report.get("config", {}).get("diagnostic")):
+            raise ValueError("Selection accepts only non-diagnostic validation of the current manifest")
+        if report["variant"] in reports:
+            raise ValueError("Supply exactly one run per variant")
+        if report["variant"] != "R0" and report.get("execution", {}).get("verified_real_backend") is not True:
+            raise ValueError("Neural selection requires verified real weights")
+        _compatible_runs(loaded[0][1], report)
+        reports[report["variant"]] = (path, report, rows)
+    if "R0" not in reports:
+        raise ValueError("Include the R0 validation baseline")
+    baseline_rows = reports["R0"][2]
+    evidence = {}
+    for name, (path, report, rows) in reports.items():
+        evidence[name] = {"directory": str(path.resolve()), "report_sha256": file_hash(path / "report.json"),
+                          "metrics": report["metrics"], "subgroups": report["subgroups"],
+                          "peak_vram_bytes": report.get("peak_vram_bytes"),
+                          "initialization_seconds": report.get("initialization_seconds"),
+                          "retrieval_total_seconds": report.get("retrieval_total_seconds"),
+                          "bootstrap_vs_r0": bootstrap_reports(baseline_rows, rows)}
+    # Display trade-offs, never use a weighted score. Missing costs prevent a
+    # dominance claim. Secondary metrics and CIs remain available to reviewers.
+    directions = {"Evidence Completeness@8": 1, "Recall@10": 1, "MRR@10": 1,
+                  "nDCG@10": 1, "latency_p95_ms": -1, "retrieved_tokens": -1}
+    frontier = []
+    for name, item in evidence.items():
+        def dominates(other):
+            a, b = other["metrics"], item["metrics"]
+            if any(a.get(m) is None or b.get(m) is None for m in directions):
+                return False
+            return (all(sign * a[m] >= sign * b[m] for m, sign in directions.items())
+                    and any(sign * a[m] > sign * b[m] for m, sign in directions.items()))
+        if not any(dominates(other) for key, other in evidence.items() if key != name):
+            frontier.append(name)
+    if variant is not None and variant not in reports:
+        raise ValueError("Selected variant must have a supplied validation run")
+    result = {"status": "selected" if variant else "no_selection", "selection_split": "validation",
+              "variant": variant, "benchmark_manifest_sha256": manifest_sha,
+              "rationale": rationale, "decision_method": "explicit human decision; no automatic ranking",
+              "evidence": evidence, "pareto_frontier": sorted(frontier),
+              "pareto_axes": directions, "pareto_note": "Point estimates, not statistical dominance; inspect CIs and VRAM separately.",
+              "execution_identity": reports[variant][1].get("execution_identity") if variant else None,
+              "holdout_executed": False}
+    if variant and not result["execution_identity"]:
+        raise ValueError("Selected run lacks an exact execution identity; rerun validation with this harness")
+    output = ROOT / "reports/benchmark/selection/selected_config.json"
+    if output.exists():
+        previous = read_json(output)
+        if previous.get("status") == "selected":
+            raise FileExistsError("A selected configuration is immutable; do not retune after selection")
+    write_json(output, result)
+    return result
 
 
 def compare(baseline_dir: Path, candidate_dir: Path) -> dict:
     baseline, base_rows = load_run(baseline_dir)
     candidate, candidate_rows = load_run(candidate_dir)
-    if baseline["benchmark"]["manifest_sha256"] != candidate["benchmark"]["manifest_sha256"]:
-        raise ValueError("Cannot compare runs from different benchmark manifests")
-    if baseline["split"] != candidate["split"]:
-        raise ValueError("Cannot compare runs from different splits")
+    _compatible_runs(baseline, candidate)
     return {"version": "benchmark-comparison-v1", "benchmark": benchmark_identity(),
             "baseline": {"variant": baseline["variant"], "directory": baseline["directory"], "metrics": baseline["metrics"]},
             "candidate": {"variant": candidate["variant"], "directory": candidate["directory"], "metrics": candidate["metrics"]},

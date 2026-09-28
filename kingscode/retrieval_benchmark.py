@@ -24,7 +24,7 @@ from .metadata import canonical_document_id, canonical_fragment_id
 from .metadata_experiments import run_experiment
 from .retrieval import Retriever, tokenize
 
-BENCHMARK_RUN_VERSION = "kingscode-ir-run-v1"
+BENCHMARK_RUN_VERSION = "kingscode-ir-run-v2"
 MAX_K = 10
 
 # R1--R8 planned variants requiring assets / GPU state unavailable locally.
@@ -33,7 +33,7 @@ GPU_VARIANT_PREREQUISITES = {
     "R1-BGE": ["approved immutable BGE-M3 model lock (not present)", "BGE-M3 loader/index implementation", "RTX 4090 CUDA/BF16 validated"],
     "R2-QWEN": ["R1-QWEN prerequisites", "fixed RRF constant 60 and candidate_k 30"],
     "R2-BGE": ["R1-BGE prerequisites", "fixed RRF constant 60 and candidate_k 30"],
-    "R3": ["selected R2 result on dev", "Qwen reranker snapshot verified", "RTX 4090 CUDA/BF16 validated"],
+    "R3": ["explicitly chosen R2-QWEN validation run", "Qwen reranker snapshot verified", "RTX 4090 CUDA/BF16 validated"],
     "R4": ["R3 prerequisites", "deterministic B graph router available"],
     "R5": ["R3 prerequisites"],
     "R6": ["R3 prerequisites; metadata soft prior only"],
@@ -87,6 +87,9 @@ def _passage_view(passage: dict) -> dict:
 
 
 def _executed_config(variant: str) -> dict:
+    from .benchmark_runtime import EXECUTABLE, variant_config
+    if variant in EXECUTABLE:
+        return variant_config(variant)
     base = {"mode": "bm25", "rerank": False, "candidate_k": 30, "k_metrics": 10, "seed": 0}
     if variant == "R0":
         return {**base, "graph_mode": "off", "diagnostic": False}
@@ -247,7 +250,7 @@ def classify_failure(result: list[dict], candidate_result: list[dict], gold: dic
 
 def _git(command: list[str]) -> str | None:
     try:
-        return subprocess.check_output(command, cwd=ROOT, text=True, stderr=subprocess.DEVNULL).strip()
+        return subprocess.check_output(command, cwd=ROOT, text=True, stderr=subprocess.DEVNULL).rstrip("\r\n")
     except Exception:
         return None
 
@@ -263,6 +266,11 @@ def _verify_declared_hashes(corpus: Path) -> None:
         if expected.get("gold_sha256") != file_hash(BENCHMARK_ROOT / "gold" / f"{split}.jsonl"):
             raise ValueError(f"Gold split hash differs from manifest: {split}")
     corpus_manifest = read_json(corpus / "manifest.json")
+    for name, expected in corpus_manifest["hashes"].items():
+        if file_hash(corpus / name) != expected:
+            raise ValueError(f"Corpus file hash differs: {name}")
+    if file_hash(corpus / "index/bm25.json") != corpus_manifest["bm25_sha256"]:
+        raise ValueError("BM25 file hash differs")
     for name, expected in declared.get("corpus", {}).items():
         if name in {"version", "bm25_sha256"}:
             actual = corpus_manifest.get(name)
@@ -320,13 +328,15 @@ def _assert_holdout_policy(split: str, variant: str, allow_holdout: bool, holdou
 
 def _source_identity() -> dict:
     files = [ROOT / "kingscode" / name for name in [
-        "benchmark_builder.py", "retrieval_benchmark.py", "retrieval.py", "metadata.py", "metadata_experiments.py", "diversify.py"]]
+        "benchmark_builder.py", "retrieval_benchmark.py", "benchmark_runtime.py", "benchmark_analysis.py", "neural.py", "model_assets.py", "retrieval.py", "metadata.py", "metadata_experiments.py", "diversify.py", "reasoning/routing.py", "reasoning/query.py", "reasoning/policy.py", "reasoning/legal.py"]]
     files += [ROOT / "tools" / "evaluate_retrieval_benchmark.py", ROOT / "config" / "experiment_matrix.json"]
     return {path.relative_to(ROOT).as_posix(): file_hash(path) for path in files if path.exists()}
 
 
 def _assert_clean_tree() -> None:
-    dirty = _git(["git", "status", "--porcelain"]) or ""
+    dirty = _git(["git", "status", "--porcelain", "--untracked-files=all"])
+    if dirty is None:
+        raise RuntimeError("Cannot verify git source state")
     # A run may create prior immutable artifacts below reports/benchmark. They do
     # not change the evaluator/source snapshot and are intentionally allowed so
     # dev, validation and predeclared baseline runs can coexist. Any other
@@ -341,65 +351,111 @@ def _assert_clean_tree() -> None:
 
 
 def run(variant: str, split: str, *, corpus: Path | None = None, output_root: Path | None = None,
-        allow_holdout: bool = False, holdout_purpose: str | None = None) -> dict:
-    """Run a CPU-executable benchmark variant and save fully attributed artifacts."""
+        allow_holdout: bool = False, holdout_purpose: str | None = None, base_run: Path | None = None) -> dict:
+    """Run verified real retrieval, keeping all labels behind the ranking boundary."""
+    from .benchmark_runtime import EXECUTABLE, NeuralRuntime, execution_identity, validate_base_run
     if split not in {"dev", "validation", "holdout"}:
         raise ValueError("split must be dev, validation or holdout")
     if split == "holdout" and output_root is not None:
         raise PermissionError("Holdout reports must use the repository-controlled default output root")
     _assert_holdout_policy(split, variant, allow_holdout, holdout_purpose)
-    corpus = corpus or (ROOT / "corpus")
+    corpus = corpus or ROOT / "corpus"
     _verify_declared_hashes(corpus)
     _assert_clean_tree()
-    if variant in GPU_VARIANT_PREREQUISITES:
-        return record_gpu_blocked(variant, split, output_root=output_root)
-    if variant not in {"R0", "R0-GRAPH-AUTO-DIAGNOSTIC", "R0-GRAPH-ON-DIAGNOSTIC",
-                       "R6-BM25-DIAGNOSTIC", "R7-BM25-DIAGNOSTIC", "R8-BM25-DIAGNOSTIC"}:
-        raise ValueError(f"Unknown benchmark variant: {variant}")
-    corpus = corpus or (ROOT / "corpus")
-    output_root = output_root or (ROOT / "reports" / "benchmark" / variant.lower().replace("-", "_"))
-    questions = _safe_questions(split)
-    # RETRIEVAL BOUNDARY: no gold file has been read here.
-    retriever = Retriever(corpus, mode="bm25", candidate_k=30, graph_budget=10)
-    rankings, started = [], time.perf_counter()
-    for question in questions:
-        text = retrieval_input(question)
-        start = time.perf_counter()
-        candidate = _run_one(retriever, variant, text, 30)
-        rankings.append({"question": question, "latency_ms": (time.perf_counter() - start) * 1000,
-                         "result": candidate[:10], "candidate_result": candidate})
-    # EVALUATION BOUNDARY: gold is first loaded only after every ranking exists.
-    gold_by_id = _gold_after_ranking(split)
-    rows = []
-    for ranking in rankings:
-        question, gold = ranking["question"], gold_by_id[ranking["question"]["id"]]
-        metrics = per_question_metrics(ranking["result"], gold)
-        matched_by_k = {str(k): sorted(_matches_at_k(ranking["result"], gold, k)[0]) for k in (1, 3, 5, 8, 10)}
-        rows.append({"id": question["id"], "question": question, "latency_ms": ranking["latency_ms"],
-                     "metrics": metrics, "gold_direct_count": len(_direct_gold(gold)),
-                     "matched_direct_fragment_ids_by_k": matched_by_k,
-                     "retrieved": [_passage_view(p) for p in ranking["result"]],
-                     "failure": classify_failure(ranking["result"], ranking["candidate_result"], gold, question["tags"])})
+    if variant in {"R1-BGE", "R2-BGE"}:
+        return record_gpu_blocked(variant, split, output_root=output_root,
+                                  allow_holdout=allow_holdout, holdout_purpose=holdout_purpose)
+    config = _executed_config(variant)
+    neural = variant in EXECUTABLE
     identity = benchmark_identity()
     manifest = read_json(corpus / "manifest.json")
+    corpus_id = {"version": manifest["version"], "hashes": manifest["hashes"], "bm25_sha256": manifest["bm25_sha256"]}
+    source = _source_identity()
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
-    directory = output_root / f"{stamp}-{split}"
+    directory = (output_root or ROOT / "reports/benchmark" / variant.lower().replace("-", "_")) / f"{stamp}-{split}"
     directory.mkdir(parents=True, exist_ok=False)
-    write_jsonl(directory / "per_question.jsonl", rows)
-    report = {
-        "version": BENCHMARK_RUN_VERSION, "status": "passed", "variant": variant, "split": split,
-        "holdout_purpose": holdout_purpose if split == "holdout" else None,
-        "git": {"commit": _git(["git", "rev-parse", "HEAD"]), "branch": _git(["git", "branch", "--show-current"])},
-        "corpus": {"version": manifest["version"], "hashes": manifest["hashes"], "bm25_sha256": manifest["bm25_sha256"]},
-        "benchmark": identity, "source_identity": _source_identity(),
-        "config": _executed_config(variant),
-        "model": None, "hardware": {"platform": platform.platform(), "python": sys.version, "cuda": False},
-        "metrics": aggregate(rows), "subgroups": subgroup_metrics(rows),
-        "failure_taxonomy": dict(sorted(Counter(row["failure"] for row in rows).items())),
-        "per_question_sha256": file_hash(directory / "per_question.jsonl"), "total_seconds": time.perf_counter() - started,
-        "label_boundary": "all rankings completed before gold file was loaded", "directory": str(directory.relative_to(ROOT))
-    }
-    write_json(directory / "report.json", report)
+    report = {"version": BENCHMARK_RUN_VERSION, "status": "running", "variant": variant, "split": split,
+              "holdout_purpose": holdout_purpose if split == "holdout" else None,
+              "git": {"commit": _git(["git", "rev-parse", "HEAD"]), "branch": _git(["git", "branch", "--show-current"])},
+              "corpus": corpus_id, "benchmark": identity, "source_identity": source,
+              "config": config, "model": None,
+              "hardware": {"platform": platform.platform(), "python": sys.version, "cuda": False},
+              "directory": str(directory.resolve()), "completed_rankings": 0}
+    runtime, rankings = None, []
+    started = time.perf_counter()
+    try:
+        if neural and variant not in {"R1-QWEN", "R2-QWEN"}:
+            report["base_r2"] = validate_base_run(base_run, identity["manifest_sha256"], corpus_id)
+        init_start = time.perf_counter()
+        if neural:
+            runtime = NeuralRuntime(corpus, config)
+            report["execution"] = runtime.record()
+            if report["execution"].get("verified_real_backend") is not True:
+                raise RuntimeError("UNVERIFIED_BACKEND: refusing a passed GPU run")
+            report["execution_identity"] = execution_identity(config, runtime.assets, source)
+            if "base_r2" in report:
+                base_id = report["base_r2"]["execution_identity"]
+                now_id = report["execution_identity"]
+                for name in ("neural_config", "dense_sha256", "dense_meta_sha256", "source_identity"):
+                    if base_id[name] != now_id[name]:
+                        raise ValueError(f"R2 base configuration drift: {name}")
+                if base_id["models"]["encoder"] != now_id["models"]["encoder"]:
+                    raise ValueError("R2 base encoder snapshot drift")
+            report["model"] = runtime.assets["models"]
+            report["hardware"].update(cuda=True, **report["execution"]["hardware"])
+            retrieve = runtime.retrieve
+        else:
+            retriever = Retriever(corpus, mode="bm25", candidate_k=30, graph_budget=10)
+            retrieve = lambda text, k: _run_one(retriever, variant, text, k)
+            report["execution_identity"] = {"config": config, "source_identity": source}
+        report["initialization_seconds"] = time.perf_counter() - init_start
+        if split == "holdout" and holdout_purpose == "post_selection_confirmation":
+            selection = read_json(ROOT / "reports/benchmark/selection/selected_config.json")
+            if selection.get("execution_identity") != report["execution_identity"]:
+                raise PermissionError("Selected execution configuration differs from holdout configuration")
+        questions = _safe_questions(split)
+        retrieval_started = time.perf_counter()
+        for question in questions:
+            text = retrieval_input(question)
+            if runtime:
+                runtime.sync()
+            question_start = time.perf_counter()
+            candidate = retrieve(text, 30)
+            if runtime:
+                runtime.sync()
+            rankings.append({"question": question, "latency_ms": (time.perf_counter() - question_start) * 1000,
+                             "result": candidate[:10], "candidate_result": candidate})
+        report["retrieval_total_seconds"] = time.perf_counter() - retrieval_started
+        report["completed_rankings"] = len(rankings)
+        if runtime:
+            report["execution"] = runtime.record()
+            report["peak_vram_bytes"] = report["execution"]["peak_vram_bytes"]
+        else:
+            report["peak_vram_bytes"] = None
+        # No parsed gold is available to the backend, including during setup.
+        gold_by_id = _gold_after_ranking(split)
+        rows = []
+        for ranking in rankings:
+            question, gold = ranking["question"], gold_by_id[ranking["question"]["id"]]
+            metrics = per_question_metrics(ranking["result"], gold)
+            matched_by_k = {str(k): sorted(_matches_at_k(ranking["result"], gold, k)[0]) for k in (1, 3, 5, 8, 10)}
+            rows.append({"id": question["id"], "question": question, "latency_ms": ranking["latency_ms"],
+                         "metrics": metrics, "gold_direct_count": len(_direct_gold(gold)),
+                         "matched_direct_fragment_ids_by_k": matched_by_k,
+                         "retrieved": [_passage_view(p) for p in ranking["result"]],
+                         "failure": classify_failure(ranking["result"], ranking["candidate_result"], gold, question["tags"])})
+        write_jsonl(directory / "per_question.jsonl", rows)
+        report.update(status="passed", metrics=aggregate(rows), subgroups=subgroup_metrics(rows),
+                      failure_taxonomy=dict(sorted(Counter(row["failure"] for row in rows).items())),
+                      per_question_sha256=file_hash(directory / "per_question.jsonl"),
+                      label_boundary="all rankings completed before gold file was loaded")
+    except Exception as exc:
+        report.update(status="failed", completed_rankings=len(rankings),
+                      error={"type": type(exc).__name__, "message": str(exc)})
+        # No aggregate metrics or partial success artifact on failed runs.
+    finally:
+        report["total_seconds"] = time.perf_counter() - started
+        write_json(directory / "report.json", report)
     return report
 
 
@@ -425,7 +481,7 @@ def record_gpu_blocked(variant: str, split: str, *, output_root: Path | None = N
         commands.append("python tools/evaluate_retrieval_benchmark.py --variant " + variant + " --split " + split)
     report = {"version": BENCHMARK_RUN_VERSION, "status": "GPU_BLOCKED", "variant": variant, "split": split,
               "holdout_purpose": holdout_purpose if split == "holdout" else None,
-              "reason": "Local state is CPU-only; required prerequisites are not available. No metric result is claimed.",
+              "reason": "Required prerequisites are not approved/available, or operator explicitly recorded a blocked run. No metrics claimed.",
               "prerequisites": GPU_VARIANT_PREREQUISITES[variant], "exact_next_commands": commands,
               "benchmark": benchmark_identity(), "source_identity": _source_identity(),
               "git": {"commit": _git(["git", "rev-parse", "HEAD"]), "branch": _git(["git", "branch", "--show-current"])} }
@@ -438,8 +494,10 @@ def complementarity(left_rows: list[dict], right_rows: list[dict], *, k: int = 1
     left, right = {r["id"]: r for r in left_rows}, {r["id"]: r for r in right_rows}
     if set(left) != set(right):
         raise ValueError("Complementarity requires the same question IDs")
-    counts = Counter()
-    examples = {"bm25_only": [], "dense_only": [], "both_miss": []}
+    if len(left) != len(left_rows) or len(right) != len(right_rows):
+        raise ValueError("Duplicate question IDs are forbidden")
+    counts = Counter({k: 0 for k in ("both_hit", "bm25_only", "dense_only", "both_miss")})
+    examples = {k: [] for k in counts}
     union_values = []
     for qid in sorted(left):
         a, b = left[qid], right[qid]
@@ -459,7 +517,7 @@ def complementarity(left_rows: list[dict], right_rows: list[dict], *, k: int = 1
     total = len(left)
     return {"k": k, "counts": dict(counts), "intersection": counts["both_hit"] / total if total else None,
             "union": (counts["both_hit"] + counts["bm25_only"] + counts["dense_only"]) / total if total else None,
-            "oracle_union_recall": sum(union_values) / total if total else None, "examples": examples}
+            "qwen_only": counts["dense_only"], "oracle_union_recall": sum(union_values) / total if total else None, "examples": examples}
 
 
 def paired_bootstrap(baseline: list[float], candidate: list[float], *, seed: int = 0, resamples: int = 10_000) -> dict:
