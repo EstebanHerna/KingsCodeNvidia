@@ -242,6 +242,22 @@ class PipelineTests(unittest.TestCase):
         _, trace = Pipeline(retrieve).run(Question(1, "Artículo 999 de la Ley 1010 de 2006", "semi_open"))
         self.assertEqual((trace["graph_decision"], trace["graph_execution"]), ("auto", "on"))
 
+    def test_unsupported_citation_falls_back_to_abstention_instead_of_aborting_batch(self):
+        # Enunciado B.5: an unsupported citation must be corrected/suppressed, not
+        # void the whole delivery. Pipeline.run must never raise CitationGuardError
+        # so run_experiment still publishes every other question in the batch.
+        class FabricatingBackend:
+            name, version = "unit_probe_fabricator", "1"
+            def generate(self, question, passages, prompt, generation):
+                return cited_row(passages, text="Ley 9999 de 2000, norma inexistente en la evidencia.")
+        retrieve = Mock(side_effect=lambda *args: [evidence()])
+        row, trace = Pipeline(retrieve, decoder=FabricatingBackend()).run(Question(79, "Artículo 1 de la Ley 1010 de 2006", "semi_open"))
+        self.assertTrue(row["abstencion"])
+        self.assertEqual(trace["abstention_reason"], "citation_guard_rejected")
+        self.assertGreaterEqual(trace["citation_guard_fallback"]["unsupported_count"], 1)
+        self.assertTrue(trace["citation_guard"]["ok"])
+        validate_submission(row)
+
     def test_only_question_text_reaches_retrieval(self):
         q = public_question({"id": 79, "formato": "semi_open", "pregunta": "Artículo 1 de la Ley 1010 de 2006", "legal_basis": "DO_NOT_LEAK", "expected_answer": "DO_NOT_LEAK"})
         retrieve = Mock(side_effect=lambda *args: [evidence()])

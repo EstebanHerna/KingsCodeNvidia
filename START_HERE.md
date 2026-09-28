@@ -1,5 +1,8 @@
 # START HERE — KingsCode v0.5
 
+## Para Claude Code
+`CLAUDE.md` (importa `AGENTS.md` y fija el orden de lectura), luego `docs/B_EXTENSION_PLAN.md` y `docs/DECISION_LOG.md` para lo más reciente. Comandos: `/b-contexto`, `/b-medir`, `/b-tarea T1`.
+
 ## Para cualquier humano o agente
 1. `AGENTS.md`
 2. `docs/KINGSCODE_MASTER_KNOWLEDGE.md`
