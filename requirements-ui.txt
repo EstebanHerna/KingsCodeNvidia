@@ -1,0 +1,2 @@
+# Interfaz gráfica (interfaz/app.py). No entra al pipeline competitivo.
+streamlit==1.51.0

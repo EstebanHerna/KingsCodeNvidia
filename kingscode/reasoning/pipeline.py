@@ -6,7 +6,7 @@ from time import perf_counter
 
 from .contracts import Question
 from .decoder import GENERATION_CONFIG, Decoder, DummyDecoder, PromptSpec, abstention_row
-from .guards import check_passages, citation_guard, validate_submission
+from .guards import CitationGuardError, check_passages, citation_guard, validate_submission
 from .policy import assess_evidence
 from .query import normalize_query
 from .routing import RetrieverGraphRouter, route_graph
@@ -66,7 +66,19 @@ class Pipeline:
             executed = decision if decision == "on" or self.adapter else "on"
             passages = self.retrieve(query.retrieval_text, self.k, executed)
         retrieved_ms = (perf_counter() - start) * 1000
-        row, trace = _answer(question, passages, self.decoder)
+        try:
+            row, trace = _answer(question, passages, self.decoder)
+        except CitationGuardError as exc:
+            # Enunciado B.5: an unsupported/unsafe citation must be corrected or
+            # suppressed, never void the whole run. _answer/answer() still raise
+            # for direct callers (e.g. tamper-detection tests); only the batch
+            # pipeline downgrades this single item to abstention so the other
+            # 991 questions still publish. See docs/DECISION_LOG.md.
+            evidence = deepcopy(passages[:10])
+            row = abstention_row(question, evidence, "citation_guard_rejected")
+            guard = citation_guard(row, evidence)
+            trace = {"assessment": None, "abstention_reason": "citation_guard_rejected",
+                     "citation_guard": guard, "citation_guard_fallback": exc.report}
         trace.update(id=question.id, query=query.record(), graph_decision=decision, graph_execution=executed,
                      flat_passage_ids=[p["passage_id"] for p in flat], final_passage_ids=[p["passage_id"] for p in passages],
                      latency_ms=(perf_counter() - start) * 1000, retrieval_ms=retrieved_ms)

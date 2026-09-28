@@ -125,6 +125,7 @@ def run_experiment(*, config_path: Path = ROOT / "config/reasoning.json", output
             "citation_rate_note": "Zero with zero citations is vacuous, not evidence of citation quality.",
             "abstentions": sum(r["abstencion"] for r in rows),
             "abstention_reasons": dict(Counter(t["abstention_reason"] for t in traces)),
+            "citation_guard_fallbacks": sum(1 for t in traces if t.get("citation_guard_fallback")),
             "graph_decisions": dict(Counter(t["graph_decision"] for t in traces)),
             "latency_p50_ms": statistics.median(times) if times else None,
             "latency_p95_ms": times[max(0, (95 * len(times) + 99) // 100 - 1)] if times else None,

@@ -12,6 +12,20 @@ KingsCode v0.5: sistema de recuperación jurídica para el Hackathon AI Week 202
 - [Harness de B sin GPU](docs/MEMBER_B_RUNBOOK.md)
 - [Preparación y comandos para la 4090](docs/GPU_DAY_RUNBOOK.md)
 - [Revisiones, licencias y acceso de modelos](docs/MODEL_LOCKS_GATE2.md)
+- [Contexto para Claude Code](CLAUDE.md), [hallazgos de B](docs/B_FINDINGS_2026-09-28.md) y [plan de extensión](docs/B_EXTENSION_PLAN.md)
+
+## Interfaz gráfica
+
+`interfaz/app.py` (Streamlit) consulta el pipeline real de extremo a extremo (`kingscode.reasoning.Pipeline` + `kingscode.Retriever`), con la identidad visual de Software Colombia. Requiere `corpus/` construido:
+
+```powershell
+.venv/Scripts/python.exe -m pip install -r requirements-ui.txt
+.venv/Scripts/python.exe -m streamlit run interfaz/app.py
+```
+
+## Corpus e índice
+
+Pendiente: publicar el corpus enriquecido y el índice vectorial serializado bajo licencia abierta en un enlace de descarga directa (Google Drive/OneDrive/Zenodo) y declararlo aquí, conforme a la sección 9.3 del enunciado.
 
 ## Después de clonar
 
