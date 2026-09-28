@@ -70,3 +70,11 @@ Herramienta: `tools/verify_member_b_second.py`; informe: `reports/member_b_secon
 - Fingerprint: `9a776fef5883eb012f875170e6942ac2ed1aeb7621fabc322f3fb24201c849e9`.
 
 Para repetir el gate: `.venv/Scripts/python.exe tools/member_b.py smoke`. Para auditarlo otra vez: `.venv/Scripts/python.exe tools/verify_member_b_second.py`. Detalles, contradicción del schema MC, archivos cambiados y pendientes en `docs/MEMBER_B_RUNBOOK.md` y `reports/MEMBER_B_DELIVERY.md`. CUDA objetivo, decoder real, bakeoff y RAGAS siguen pendientes; no se iniciaron en esta tarea.
+
+## Gate 2-Prep — no ejecutado por instrucción del usuario
+
+La entrega posterior prepara backend real, locks, prompts, entorno, GPU smoke y experimentos. El usuario pidió expresamente **no correr pruebas**: no hay nuevos resultados de tests, CUDA, modelos grandes ni benchmarks. Se hizo revisión estática del código y documentación; esto no sustituye validación funcional.
+
+Hay 28 tests nuevos preparados en `tests/test_gpu_preparation.py`, además de los 60 tests existentes sin modificar. Para el siguiente entorno: `python tools/verify_gate2_prep.py --stage first` y `python tools/verify_gate2_prep.py --stage second`, después de instalar dependencias básicas y disponer del snapshot de A. Ambos comandos ejecutarán la suite y una reproducción del dummy en procesos nuevos, con cotejo independiente de archivos/hashes/salida. **Estos comandos no se ejecutaron en la entrega Gate 2-Prep.**
+
+El estado mantiene `target_cuda_completed=false`, `decoder_bakeoff_completed=false` y `tests_executed=false` para Gate 2-Prep. Los informes anteriores corresponden a sus commits históricos. Inventario y pendientes: `reports/GATE2_PREP_DELIVERY.md`; comandos GPU: `docs/GPU_DAY_RUNBOOK.md`.

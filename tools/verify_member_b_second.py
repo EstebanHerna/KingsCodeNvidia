@@ -52,7 +52,7 @@ def main():
             official[name] = expected
     a_paths = [f"kingscode/{name}.py" for name in ["__init__", "acquisition", "common", "corpus", "evaluation", "neural", "retrieval", "validation"]]
     a_paths += ["config/corpus_passage.schema.json", "config/legal_graph.schema.json", "config/sources.json", "config/neural.json",
-                "config/models.lock.json", "tools/member_a.py", "tests/test_knowledge.py"]
+                "tools/member_a.py", "tests/test_knowledge.py"]
     unchanged = {}
     for path in a_paths:
         # Baseline is the original member A delivery, not the working tree.
@@ -60,6 +60,13 @@ def main():
         if original != (ROOT / path).read_bytes():
             raise RuntimeError(f"Member A implementation changed: {path}")
         unchanged[path] = sha(ROOT / path)
+    # Gate 2-Prep adds decoder locks. Preserve both original retrieval entries,
+    # while allowing those additive records without falsely failing Gate 1B.
+    original_locks = json.loads(subprocess.check_output(
+        ["git", "show", "382c5eb75106183af21c53ddfe96647c4ae97171:config/models.lock.json"], cwd=ROOT))
+    current_locks = load(ROOT / "config/models.lock.json")
+    if any(current_locks.get(name) != entry for name, entry in original_locks.items()):
+        raise RuntimeError("Member A retrieval model locks changed")
     corpus = Path(first["settings"]["corpus_dir"])
     manifest = load(corpus / "manifest.json")
     for path, expected in manifest["hashes"].items():
@@ -131,6 +138,7 @@ def main():
         raise RuntimeError("Model libraries were loaded")
     result = {"ok": True, "timestamp": datetime.now(timezone.utc).isoformat(), "first_run": str(run.resolve()),
               "replay_run": str(second_dir), "official_hashes_unchanged": len(official), "member_a_files_unchanged": unchanged,
+              "member_a_model_locks_unchanged": len(original_locks),
               "rows_validated_independently": len(submissions), "evidence_records_verified_against_corpus": evidence_checks,
               "byte_identical_submissions": True, "deterministic_traces_equal": True, "official_evaluation_equal": True,
               "no_neural_modules_loaded": True, "full_test_suite_passed": True,

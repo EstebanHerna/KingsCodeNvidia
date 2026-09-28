@@ -1,0 +1,5 @@
+# Install the selected PyTorch wheel separately, after target-machine diagnosis.
+-r requirements-neural.txt
+accelerate>=1.10,<2
+# No bitsandbytes in the primary BF16 environment. Install the optional fallback
+# file explicitly only after recording a matching BF16 OOM experiment.

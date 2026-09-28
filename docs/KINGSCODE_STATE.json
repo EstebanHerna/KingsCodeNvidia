@@ -1,6 +1,6 @@
 {
   "project": "KingsCode - Hackathon AI Week 2026",
-  "last_updated": "2026-09-27",
+  "last_updated": "2026-09-28",
   "source_of_truth": "KINGSCODE_MASTER_KNOWLEDGE.md",
   "team": {
     "size": 2,
@@ -34,7 +34,7 @@
     "local_torch": "2.12.0+cpu",
     "local_cuda_available": false
   },
-  "phase": "gate_1b_complete_dummy_integration_pre_gpu",
+  "phase": "gate2_prep_prepared_pending_tests_and_target_gpu",
   "architecture_version": "0.5",
   "retrieval": {
     "chunking_primary": "legal_structure_aware",
@@ -76,24 +76,37 @@
     ],
     "generation_metrics": [
       "official_score",
+      "ragas_when_authorized",
       "valid_json_rate",
+      "citation_count",
       "unsupported_citation_rate",
-      "latency_sec_per_question",
-      "peak_vram"
+      "abstentions",
+      "latency_p50_ms",
+      "latency_p95_ms",
+      "input_tokens",
+      "output_tokens",
+      "peak_vram_bytes",
+      "output_tokens_per_generation_second",
+      "completed_questions_per_second",
+      "errors",
+      "oom_count"
     ]
   },
   "next_action": {
-    "member_a": "On the target RTX 4090 run python tools/check_cuda.py, then follow docs/MEMBER_A_RUNBOOK.md to build/benchmark dense, hybrid and reranker; resolve acquisition/ambiguity backlog before freeze.",
-    "member_b": "Reproduce Gate 1B: .venv/Scripts/python.exe tools/member_b.py smoke; review traces and independent audit before a separate real-decoder task. CUDA and bakeoff remain pending.",
-    "shared": "A retrieve() and B dummy harness are integrated on sample_50. Review the recorded baseline, then plan real-decoder/GPU integration using the same corpus snapshot."
+    "member_a": "On the target GPU follow docs/GPU_DAY_RUNBOOK.md: verify snapshot, diagnose/install stack, then build dense and run R0-R5 without rebuilding the corpus.",
+    "member_b": "On the target GPU run the two prepared verifications, prepare exact model snapshots, GPU smoke, freeze retrieval evidence and execute D1-D3. No new tests were run in Gate 2-Prep by user instruction.",
+    "shared": "Start with git pull --ff-only origin main; verify the delivered commit. Follow docs/GPU_DAY_RUNBOOK.md. Do not claim GPU/bakeoff completion before measured results."
   },
   "next_actions": [
-    "Reproduce Gate 1B: .venv/Scripts/python.exe tools/member_b.py smoke",
-    "Independent Gate 1B verification: .venv/Scripts/python.exe tools/verify_member_b_second.py",
-    "Review docs/MEMBER_B_RUNBOOK.md and reports/MEMBER_B_DELIVERY.md",
-    "Resolve 28 acquisition failures and ambiguous article groups; review legal currency before freeze",
-    "Future separate phase: diagnose the target RTX 4090, benchmark neural retrieval, then integrate an open decoder; not executed in Gate 1B",
-    "Choose processing license and delivery packaging/publication with the team"
+    "git pull --ff-only origin main",
+    "Verify delivered commit and transfer the existing corpus snapshot if using another machine",
+    "Create venv and install requirements-knowledge.txt; run preflight and the two prepared verifications on the target machine",
+    "python tools/prepare_gpu_environment.py --diagnose --output reports/gpu_diagnostic.json",
+    "python tools/prepare_gpu_environment.py --plan --report reports/gpu_diagnostic.json",
+    "Select/install compatible PyTorch manually, then requirements-gpu.txt; no CUDA wheel guessed in this delivery",
+    "Prepare approved model access, download exact snapshots and verify them offline",
+    "Run GPU smoke, build dense, benchmark R0-R5, freeze evidence, then compare D1-D3 with the same freeze",
+    "Keep RAGAS authorization/key, fine-tuning and competitive freeze separate"
   ],
   "do_not_forget": [
     "OpenRouter key is for evaluator, not the competitive system",
@@ -114,11 +127,10 @@
       "public_retrieve_integrated_with_member_b_dummy"
     ],
     "member_b": [
-      "gate_1b_complete_and_independently_verified",
-      "query_normalizer_and_graph_router_v1_implemented",
-      "schema_and_citation_guards_implemented",
-      "official_evaluator_and_experiment_registry_integrated",
-      "real_decoder_cuda_bakeoff_ragas_and_delivery_pending"
+      "gate_1b_historically_verified_dummy_preserved",
+      "gate2_prep_code_and_commands_prepared",
+      "new_tests_and_regression_replay_not_run_per_user_request",
+      "target_gpu_real_decoders_bakeoff_and_ragas_not_executed"
     ]
   },
   "corpus": {
@@ -167,7 +179,9 @@
     "member_b_smoke": "reports/member_b/20260928T035443616407Z-9a776fef5883/experiment.json",
     "member_b_second": "reports/member_b_second_verification.json",
     "member_b_tests": "reports/member_b_tests_second.txt",
-    "member_b_delivery": "reports/MEMBER_B_DELIVERY.md"
+    "member_b_delivery": "reports/MEMBER_B_DELIVERY.md",
+    "gate2_prep_delivery": "reports/GATE2_PREP_DELIVERY.md",
+    "model_sources": "reports/gate2_prep/model_sources.json"
   },
   "verification_status": {
     "first_pass": true,
@@ -242,6 +256,29 @@
         "nota": "los 20 pts restantes son interfaz grafica, bitacora de corpus, video y reproducibilidad"
       },
       "limitation": "50 deliberate dummy abstentions; 5/50 without RAGAS is an integration baseline, not evidence of legal reasoning quality. Zero citations cannot certify citation quality."
-    }
+    },
+    "real_decoder_backend_prepared": true
+  },
+  "gate2_prep": {
+    "status": "prepared_not_runtime_validated",
+    "base_commit": "254fa3a1ecd528137943007ef8946d9662d5bab7",
+    "runbook": "docs/GPU_DAY_RUNBOOK.md",
+    "models_lock": "config/models.lock.json",
+    "bakeoff_config": "config/decoder_bakeoff.json",
+    "matrix": "config/experiment_matrix.json",
+    "model_access_notes": "docs/MODEL_LOCKS_GATE2.md",
+    "new_test_cases_prepared": 28,
+    "tests_executed": false,
+    "smokes_executed": false,
+    "verification_reason": "User explicitly requested safe changes on main without running tests; first/second verification commands prepared for the target machine.",
+    "target_cuda_completed": false,
+    "decoder_weights_downloaded": false,
+    "real_decoder_executed": false,
+    "decoder_bakeoff_completed": false,
+    "full_neural_benchmark_completed": false,
+    "ragas_executed": false,
+    "fine_tuning_implemented": false,
+    "first_command_on_gpu": "git pull --ff-only origin main",
+    "first_diagnostic": "python tools/prepare_gpu_environment.py --diagnose --output reports/gpu_diagnostic.json"
   }
 }

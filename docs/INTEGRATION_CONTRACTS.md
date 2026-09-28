@@ -44,3 +44,11 @@ Importar B desde `kingscode.reasoning`: `Question`, `normalize_query`, `route_gr
 - Las salidas/decisiones son deterministas. Los tiempos se guardan en la traza/registro para no alterar el JSONL final entre repeticiones.
 
 Detalles y ejemplo completo: `MEMBER_B_RUNBOOK.md`.
+
+## Gate 2-Prep — contrato preparado, sin ejecución real
+
+`kingscode.generation.hf_decoder.HFDecoder` implementa el mismo `Decoder.generate(Question, passages, PromptSpec, generation)`. Importar el módulo no carga librerías neuronales ni pesos. El modelo emite un JSON intermedio con abstención/campos del formato; el adaptador adjunta identidad y evidencia literal, sin permitir al modelo fabricarlas. `answer` aplica después las guardas originales. Un output inválido/OOM detiene el experimento sin fallback automático.
+
+El descriptor genérico de prompt de Gate 1B se conserva. El backend real materializa explícitamente `grounded-formats-v2`, registrado en su configuración/experimento. Las reglas del router no cambian ni se convierten en prompts.
+
+Para comparar decoders, A produce rankings mediante su API pública y el experimento de retrieval congela ocho evidencias por pregunta. B consume ese archivo autenticado por hashes; no carga índices ni mantiene modelos de retrieval en VRAM durante generación. Sus tiempos de decoder y los de retrieval se reportan por separado. Mismo freeze, configuración y prompt para D1–D4; cambios de precisión/contexto son experimentos distintos.

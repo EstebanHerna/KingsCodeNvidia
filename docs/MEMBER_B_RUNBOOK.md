@@ -1,6 +1,6 @@
 # Gate 1B — Harness pre-GPU
 
-Implementación en `kingscode/reasoning/`. Consume la API pública de A sin cambiar sus módulos, corpus, índices ni grafo. El único backend habilitado por el comando de ejecución es `DummyDecoder`: siempre se abstiene y no carga modelos. Esto verifica integración, trazabilidad y evaluación; no mide calidad de razonamiento jurídico.
+Implementación en `kingscode/reasoning/`. Consume la API pública de A sin cambiar sus módulos, corpus, índices ni grafo. El único backend habilitado por el comando `smoke` es `DummyDecoder`: siempre se abstiene y no carga modelos. Esto verifica integración, trazabilidad y evaluación; no mide calidad de razonamiento jurídico.
 
 ## Reproducir exactamente el flujo
 
@@ -91,6 +91,12 @@ Las carpetas son nuevas por corrida. El fingerprint, JSONL final, decisiones y t
 
 ## Límites y siguiente paso
 
-No hay decoder real, calibración de confianza, RAGAS, interfaz de usuario, benchmark neuronal completo ni bakeoff. La guarda comprueba identidad de cita y trazabilidad, no implicación semántica de toda una conclusión. Las reglas de routing/abstención son conservadoras y deben evaluarse por área al incorporar razonamiento real. Temperatura prevista: 0, `do_sample=false`, semilla 0.
+No se ha ejecutado decoder real, calibración de confianza, RAGAS, interfaz de usuario, benchmark neuronal completo ni bakeoff. Gate 2-Prep añade código separado para esa fase, todavía sin probar por instrucción del usuario. La guarda comprueba identidad de cita y trazabilidad, no implicación semántica de toda una conclusión. Las reglas de routing/abstención son conservadoras y deben evaluarse por área al incorporar razonamiento real. Temperatura prevista: 0, `do_sample=false`, semilla 0.
 
 Siguiente comando para repetir Gate 1B: `.venv/Scripts/python.exe tools/member_b.py smoke`. Revisar sus trazas y la segunda verificación antes de una tarea separada de integración del decoder/GPU; este gate no instala ni inicia esa fase.
+
+## Comandos preparados para Gate 2
+
+`decoder-smoke --model qwen3-8b`, `sample --model qwen3-8b` y `bakeoff` son ramas nuevas de `tools/member_b.py`. Admiten `--dry-run` para inspección futura sin modelos; no se ejecutaron durante la preparación. Usan `kingscode/generation/`, no sustituyen al dummy y vuelven a pasar por `answer`/citation guard/schema. `sample` requiere evidencia congelada y validada. Runbook completo: `GPU_DAY_RUNBOOK.md`.
+
+La auditoría histórica `verify_member_b_second.py` ahora permite entradas adicionales de decoders en el lock, pero sigue exigiendo igualdad de las dos entradas originales de retrieval. Los informes anteriores que dicen 15 archivos intactos corresponden a Gate 1B; una ejecución futura distingue 14 archivos idénticos más dos entradas originales del lock.

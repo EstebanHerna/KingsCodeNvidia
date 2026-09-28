@@ -1,9 +1,9 @@
 # KINGSCODE MASTER KNOWLEDGE — Hackathon AI Week 2026
 
 **Fuente canónica del proyecto.**  
-**Última actualización:** 2026-09-27  
+**Última actualización:** 2026-09-28\
 **Equipo activo:** 2 integrantes  
-**Estado:** v0.5; Corpus v0.1/retrieval de A y Gate 1B integrados con backend dummy pre-GPU. El decoder real, CUDA objetivo y benchmark neuronal completo siguen pendientes.
+**Estado:** v0.5; A y Gate 1B conservados. Gate 2-Prep tiene código/configuración/runbook preparados, sin ejecutar pruebas por instrucción final del usuario. CUDA objetivo, inferencia real, benchmark neuronal completo y bakeoff siguen pendientes.
 
 > En un chat nuevo, leer primero este archivo y luego `KINGSCODE_STATE.json`. No reconstruir decisiones desde memoria si existe una versión más reciente de estos archivos.
 
@@ -421,7 +421,11 @@ No asumir versión de CUDA/PyTorch antes de diagnosticar la máquina.
 5. continuar UI/delivery y freeze cuando exista ejecución competitiva validada.
 
 ### Integración siguiente
-El retrieval real de A ya está conectado al harness de B sobre las 50 preguntas con dummy y verificación independiente. La próxima fase separada será integrar razonamiento real y comparar modelos/retrieval bajo el mismo snapshot. El smoke no inicia CUDA ni bakeoff.
+El retrieval real de A ya está conectado al harness de B sobre las 50 preguntas con dummy y verificación histórica independiente. Gate 2-Prep añade `kingscode/generation/`, los locks de decoders, prompts versionados, preparación de caché verificado, diagnóstico/plan, GPU smoke y matriz R0–R5/D1–D4. No se ejecutó ninguno de los tests/smokes nuevos por instrucción del usuario; el resultado histórico de 60 tests no valida estos cambios.
+
+La comparación de decoders usa los mismos pasajes congelados después del benchmark de retrieval. El router continúa siendo determinista y no recibe un prompt. La inferencia real mantiene temperatura 0, batch 1 y BF16 inicial; no hay fallback automático ni afirmación de que quepa en la 4090. Salamandra y Llama requieren aprobación de acceso. Revisiones/licencias y el conteo exacto de parámetros de los modelos nominales 8B: `MODEL_LOCKS_GATE2.md`.
+
+La siguiente ejecución debe seguir `GPU_DAY_RUNBOOK.md`, empezando por `git pull --ff-only origin main`, verificar el commit, disponer del snapshot del corpus y ejecutar las dos verificaciones preparadas antes de cargar modelos. Las herramientas no actualizan automáticamente el estado a CUDA/bakeoff completados.
 
 Comando local exacto para repetir el gate actual: `.venv/Scripts/python.exe tools/member_b.py smoke`. Segundo pase: `.venv/Scripts/python.exe tools/verify_member_b_second.py`. Ver `MEMBER_B_RUNBOOK.md`. Para reconstruir A se mantienen sus comandos en `MEMBER_A_RUNBOOK.md`; B no necesita rehacerlo. Los archivos oficiales permanecen intactos; solo se han generado submissions de prueba con abstención, no una entrega competitiva.
 

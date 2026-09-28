@@ -10,6 +10,8 @@ KingsCode v0.5: sistema de recuperación jurídica para el Hackathon AI Week 202
 - [Instalación, ejecución e integración con B](docs/MEMBER_A_RUNBOOK.md)
 - [Verificaciones realizadas](docs/VERIFICATION.md)
 - [Harness de B sin GPU](docs/MEMBER_B_RUNBOOK.md)
+- [Preparación y comandos para la 4090](docs/GPU_DAY_RUNBOOK.md)
+- [Revisiones, licencias y acceso de modelos](docs/MODEL_LOCKS_GATE2.md)
 
 ## Después de clonar
 
@@ -28,3 +30,5 @@ python -m venv .venv
 La adquisición requiere red y `curl` con verificación TLS. Una descarga nueva puede reflejar cambios en las fuentes; para reproducir exactamente los hashes publicados debe usarse el snapshot raw conservado por el equipo. El runbook explica cómo preparar los pesos y ejecutar el benchmark neuronal completo en la GPU objetivo.
 
 Los archivos oficiales se conservan byte a byte. Gate 1B está implementado con dummy y se ejecuta con `.venv/Scripts/python.exe tools/member_b.py smoke` después de disponer del corpus. Decoder real, benchmark neuronal completo, resolución de fuentes pendientes y freeze competitivo siguen pendientes.
+
+Gate 2-Prep añade la infraestructura de ejecución real y comparación de modelos, **sin ejecutar pruebas ni smokes por instrucción del usuario**. No hay resultados nuevos de GPU. Para llegar a la 4090 con el mismo corpus, seguir el runbook GPU y transferir el snapshot conservado, en lugar de volver a adquirir fuentes.

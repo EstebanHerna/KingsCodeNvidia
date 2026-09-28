@@ -23,13 +23,17 @@ A y B ocurren en paralelo.
 
 Implementación y reproducción en `MEMBER_B_RUNBOOK.md`. El smoke usa A real y un dummy con abstención total; no cuenta como decoder/bakeoff ni ejecución competitiva.
 
+## Gate 2-Prep — preparado, pendiente de ejecutar pruebas
+
+Locks de los cuatro decoders, configuración BF16/bakeoff, backend lazy, prompts, diagnóstico/plan, preparación de modelos, GPU smoke y matriz de experimentos implementados. No se ejecutaron pruebas ni smokes por la instrucción final del usuario; no se valida GPU ni bakeoff. Ver `GPU_DAY_RUNBOOK.md` y `MODEL_LOCKS_GATE2.md`. Gate 1B mantiene su dummy sin cambios funcionales previstos; su reproducción se deja preparada para comprobarla en el siguiente entorno.
+
 ## Gate 2A — Retrieval baseline [A]
 BM25 -> dense -> RRF -> reranker -> Graph OFF/AUTO.
 
 BM25 y grafo OFF/AUTO/ON medidos. Dense/RRF/reranker implementados y probados con pesos reales en un índice pequeño; benchmark de todo el corpus pendiente de la 4090. Ver `MEMBER_A_RUNBOOK.md` para comandos exactos.
 
 ## Gate 2B — CUDA/4090 + decoder harness [B]
-Diagnosticar máquina, instalar según hardware real, smoke test e inferencia mínima.
+Diagnosticar máquina, instalar según hardware real, smoke test e inferencia mínima. Comandos preparados en `GPU_DAY_RUNBOOK.md`; ejecución real pendiente.
 
 ## Gate 3 — Integración A+B
 Conectar retrieval real al harness de B y producir primeras 50 respuestas end-to-end.

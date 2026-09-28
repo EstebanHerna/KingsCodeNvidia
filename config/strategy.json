@@ -60,7 +60,11 @@
     "active_backend": "dummy_abstain",
     "real_decoder_loaded": false,
     "decoder_bakeoff_completed": false,
-    "seed": 0
+    "seed": 0,
+    "bakeoff_config": "config/decoder_bakeoff.json",
+    "prepared_backend": "transformers_local_lazy_unvalidated",
+    "prepared_prompt_version": "grounded-formats-v2",
+    "comparison_retrieval": "frozen_exact_evidence_same_for_all_decoders"
   },
   "finetuning": {
     "decoder_initial": false,
@@ -69,9 +73,9 @@
   },
   "version": "0.5",
   "next_action": {
-    "member_a": "target_gpu_diagnostic_then_dense_hybrid_reranker_benchmark_and_corpus_qa",
-    "member_b": "reproduce_and_review_gate_1b_before_separate_real_decoder_task",
-    "shared": "dummy_integration_complete; plan_future_open_decoder_and_target_gpu_comparison_on_same_snapshot"
+    "member_a": "target_gpu_runbook_then_retrieval_matrix_R0_R5",
+    "member_b": "execute_deferred_verifications_on_target_then_gpu_smoke_and_decoder_sample",
+    "shared": "gate2_prep_prepared_not_tested; no_gpu_or_bakeoff_results"
   },
   "interfaces": {
     "retrieve": "retrieve(question, k, graph_mode=\"auto\") -> passages",

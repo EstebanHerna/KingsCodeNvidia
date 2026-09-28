@@ -1,0 +1,90 @@
+{
+  "version": "gate2-prep-v1",
+  "prompt_version": "grounded-formats-v2",
+  "sample": "data/sample_50.jsonl",
+  "retrieval_freeze": "artifacts/retrieval_freeze.json",
+  "cache_dir": "models",
+  "device": "cuda:0",
+  "generation": {
+    "temperature": 0.0,
+    "do_sample": false,
+    "seed": 0
+  },
+  "max_new_tokens": {
+    "multiple_choice": 512,
+    "semi_open": 512,
+    "open_ended": 1024
+  },
+  "precision": {
+    "primary": "bf16",
+    "fallbacks": [
+      "int8",
+      "int4"
+    ],
+    "automatic_fallback": false,
+    "fallback_requires_matching_bf16_oom_record": true
+  },
+  "candidates": {
+    "qwen3-8b": {
+      "repo_id": "Qwen/Qwen3-8B",
+      "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+      "enabled": true,
+      "backend": "transformers",
+      "preferred_dtype": "bfloat16",
+      "max_context_tokens": 8192,
+      "batch_size": 1,
+      "local_files_only": true,
+      "trust_remote_code": false,
+      "chat_template_kwargs": {
+        "enable_thinking": false
+      },
+      "requirements": [
+        "Disable thinking explicitly. Publisher parameter count is 8,190,735,360: confirm nominal 8B eligibility with organizers before competitive delivery."
+      ]
+    },
+    "alia-legal-7b": {
+      "repo_id": "SINAI/ALIA-es-legal-administrative-7B-Instruct",
+      "revision": "4215a455e668d033bfd7cf34c358cbb62ae20514",
+      "enabled": true,
+      "backend": "transformers",
+      "preferred_dtype": "bfloat16",
+      "max_context_tokens": 8192,
+      "batch_size": 1,
+      "local_files_only": true,
+      "trust_remote_code": false,
+      "chat_template_kwargs": {},
+      "requirements": []
+    },
+    "salamandra-7b": {
+      "repo_id": "BSC-LT/salamandra-7b-fc-2607",
+      "revision": "6d4fe322555ae6f35a90f9077f526886b075fdb5",
+      "enabled": true,
+      "backend": "transformers",
+      "preferred_dtype": "bfloat16",
+      "max_context_tokens": 8192,
+      "batch_size": 1,
+      "local_files_only": true,
+      "trust_remote_code": false,
+      "chat_template_kwargs": {},
+      "requirements": [
+        "Manual Hugging Face access approval and authorized HF_TOKEN/login required before download; access not verified."
+      ]
+    },
+    "llama31-8b": {
+      "repo_id": "meta-llama/Llama-3.1-8B-Instruct",
+      "revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+      "enabled": false,
+      "backend": "transformers",
+      "preferred_dtype": "bfloat16",
+      "max_context_tokens": 8192,
+      "batch_size": 1,
+      "local_files_only": true,
+      "trust_remote_code": false,
+      "chat_template_kwargs": {},
+      "requirements": [
+        "Manual Hugging Face access approval and authorized HF_TOKEN/login required before download; access not verified.",
+        "Optional control; Llama 3.1 Community License and Acceptable Use Policy, not Apache-2.0. Parameter count 8,030,261,248; eligibility requires organizer confirmation."
+      ]
+    }
+  }
+}

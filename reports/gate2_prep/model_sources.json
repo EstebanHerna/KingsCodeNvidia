@@ -1,0 +1,74 @@
+{
+  "verified_at": "2026-09-28",
+  "sources": {
+    "Qwen/Qwen3-8B": {
+      "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+      "gated": false,
+      "license": "apache-2.0",
+      "license_source": "https://huggingface.co/Qwen/Qwen3-8B/blob/b968826d9c46dd6066d109eabc6255188de91218/LICENSE",
+      "metadata_source": "https://huggingface.co/api/models/Qwen/Qwen3-8B",
+      "readme_sha256": "0f36caaff9c2516411a7738db384606263ba653c1e63e61d72f511606164d5a6",
+      "license_document_sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e",
+      "parameters_reported": 8190735360,
+      "metadata_access": {
+        "config.json": 200,
+        "tokenizer_config.json": 200,
+        "README.md": 200,
+        "LICENSE": 200
+      },
+      "weights_downloaded": false
+    },
+    "SINAI/ALIA-es-legal-administrative-7B-Instruct": {
+      "revision": "4215a455e668d033bfd7cf34c358cbb62ae20514",
+      "gated": false,
+      "license": "apache-2.0",
+      "license_source": "https://huggingface.co/SINAI/ALIA-es-legal-administrative-7B-Instruct/blob/4215a455e668d033bfd7cf34c358cbb62ae20514/README.md",
+      "metadata_source": "https://huggingface.co/api/models/SINAI/ALIA-es-legal-administrative-7B-Instruct",
+      "readme_sha256": "0fc9d6c5d1be19af2b2c88d57211d5557ea5f231cb7306912420f2ddb1cd9ec9",
+      "license_document_sha256": "0fc9d6c5d1be19af2b2c88d57211d5557ea5f231cb7306912420f2ddb1cd9ec9",
+      "parameters_reported": 7768117248,
+      "metadata_access": {
+        "config.json": 200,
+        "tokenizer_config.json": 200,
+        "README.md": 200,
+        "LICENSE": 404
+      },
+      "weights_downloaded": false
+    },
+    "BSC-LT/salamandra-7b-fc-2607": {
+      "revision": "6d4fe322555ae6f35a90f9077f526886b075fdb5",
+      "gated": "manual",
+      "license": "apache-2.0",
+      "license_source": "https://huggingface.co/BSC-LT/salamandra-7b-fc-2607/blob/6d4fe322555ae6f35a90f9077f526886b075fdb5/README.md",
+      "metadata_source": "https://huggingface.co/api/models/BSC-LT/salamandra-7b-fc-2607",
+      "readme_sha256": "78d6884e44af7e38114fb284a4be963a42abd57d712eaf526c8871d414281b5d",
+      "license_document_sha256": "78d6884e44af7e38114fb284a4be963a42abd57d712eaf526c8871d414281b5d",
+      "parameters_reported": 7768117248,
+      "metadata_access": {
+        "config.json": 401,
+        "tokenizer_config.json": 401,
+        "README.md": 200,
+        "LICENSE": 404
+      },
+      "weights_downloaded": false
+    },
+    "meta-llama/Llama-3.1-8B-Instruct": {
+      "revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+      "gated": "manual",
+      "license": "llama3.1",
+      "license_source": "https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/blob/0e9e39f249a16976918f6564b8830bc894c89659/LICENSE",
+      "metadata_source": "https://huggingface.co/api/models/meta-llama/Llama-3.1-8B-Instruct",
+      "readme_sha256": "ed0e2e86f7a40c38b793b0a04dfd993b2c1dfb34906804f96b999f0bbd8d70e6",
+      "license_document_sha256": "64e1b2889b7892e6bbe7a7ed5bfe6ff793c61f9d584345f8f41cf9f5cb30a369",
+      "parameters_reported": 8030261248,
+      "metadata_access": {
+        "config.json": 401,
+        "tokenizer_config.json": 401,
+        "README.md": 200,
+        "LICENSE": 200
+      },
+      "weights_downloaded": false
+    }
+  },
+  "scope": "Official metadata/cards/licenses only. Gated weights/configs not accessed; no decoder weights downloaded."
+}

@@ -1,5 +1,7 @@
 # Estrategia de modelos — KingsCode v0.5
 
+Gate 2-Prep: revisiones/licencias fijadas en `config/models.lock.json`, parámetros en `config/decoder_bakeoff.json` y matriz en `config/experiment_matrix.json`. Ver `MODEL_LOCKS_GATE2.md` para acceso gated y la diferencia entre tamaño nominal 8B y conteo exacto. El código está preparado, pero los tests nuevos y todos los benchmarks GPU siguen pendientes por instrucción del usuario. No hay ganador seleccionado.
+
 ## Decoder bakeoff
 1. `Qwen/Qwen3-8B` — baseline general fuerte y sugerido por el enunciado.
 2. `SINAI/ALIA-es-legal-administrative-7B-Instruct` — candidato especializado en español jurídico/administrativo.

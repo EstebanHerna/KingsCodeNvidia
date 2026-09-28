@@ -1,0 +1,47 @@
+{
+  "version": "gate2-prep-v1",
+  "query_normalization": "legal-query-v1",
+  "k_metrics": 10,
+  "k_evidence": 8,
+  "candidate_k": 30,
+  "graph_budget": 10,
+  "retrieval": {
+    "R0": {
+      "mode": "bm25",
+      "rerank": false,
+      "graph_mode": "off"
+    },
+    "R1": {
+      "mode": "dense",
+      "rerank": false,
+      "graph_mode": "off"
+    },
+    "R2": {
+      "mode": "hybrid",
+      "rerank": false,
+      "graph_mode": "off"
+    },
+    "R3": {
+      "mode": "hybrid",
+      "rerank": true,
+      "graph_mode": "off"
+    },
+    "R4": {
+      "mode": "hybrid",
+      "rerank": true,
+      "graph_mode": "auto"
+    },
+    "R5": {
+      "mode": "hybrid",
+      "rerank": true,
+      "graph_mode": "on"
+    }
+  },
+  "decoder": {
+    "D1": "qwen3-8b",
+    "D2": "alia-legal-7b",
+    "D3": "salamandra-7b",
+    "D4": "llama31-8b"
+  },
+  "rule": "Retrieval-only experiments first. Freeze the selected exact evidence, then vary only decoder; precision fallback is a separate experiment."
+}

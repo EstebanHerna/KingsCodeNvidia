@@ -10,5 +10,68 @@
     "repo_id": "Qwen/Qwen3-Reranker-0.6B",
     "model_card": "https://huggingface.co/Qwen/Qwen3-Reranker-0.6B",
     "license": "apache-2.0"
+  },
+  "Qwen/Qwen3-8B": {
+    "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+    "repo_id": "Qwen/Qwen3-8B",
+    "model_card": "https://huggingface.co/Qwen/Qwen3-8B/blob/b968826d9c46dd6066d109eabc6255188de91218/README.md",
+    "license": "apache-2.0",
+    "license_source": "https://huggingface.co/Qwen/Qwen3-8B/blob/b968826d9c46dd6066d109eabc6255188de91218/LICENSE",
+    "gated": false,
+    "role": "decoder",
+    "alias": "qwen3-8b",
+    "parameters_reported": 8190735360,
+    "requirements": [
+      "Disable thinking explicitly. Publisher parameter count is 8,190,735,360: confirm nominal 8B eligibility with organizers before competitive delivery."
+    ],
+    "verified_at": "2026-09-28",
+    "metadata_source": "https://huggingface.co/api/models/Qwen/Qwen3-8B"
+  },
+  "SINAI/ALIA-es-legal-administrative-7B-Instruct": {
+    "revision": "4215a455e668d033bfd7cf34c358cbb62ae20514",
+    "repo_id": "SINAI/ALIA-es-legal-administrative-7B-Instruct",
+    "model_card": "https://huggingface.co/SINAI/ALIA-es-legal-administrative-7B-Instruct/blob/4215a455e668d033bfd7cf34c358cbb62ae20514/README.md",
+    "license": "apache-2.0",
+    "license_source": "https://huggingface.co/SINAI/ALIA-es-legal-administrative-7B-Instruct/blob/4215a455e668d033bfd7cf34c358cbb62ae20514/README.md",
+    "gated": false,
+    "role": "decoder",
+    "alias": "alia-legal-7b",
+    "parameters_reported": 7768117248,
+    "requirements": [],
+    "verified_at": "2026-09-28",
+    "metadata_source": "https://huggingface.co/api/models/SINAI/ALIA-es-legal-administrative-7B-Instruct"
+  },
+  "BSC-LT/salamandra-7b-fc-2607": {
+    "revision": "6d4fe322555ae6f35a90f9077f526886b075fdb5",
+    "repo_id": "BSC-LT/salamandra-7b-fc-2607",
+    "model_card": "https://huggingface.co/BSC-LT/salamandra-7b-fc-2607/blob/6d4fe322555ae6f35a90f9077f526886b075fdb5/README.md",
+    "license": "apache-2.0",
+    "license_source": "https://huggingface.co/BSC-LT/salamandra-7b-fc-2607/blob/6d4fe322555ae6f35a90f9077f526886b075fdb5/README.md",
+    "gated": "manual",
+    "role": "decoder",
+    "alias": "salamandra-7b",
+    "parameters_reported": 7768117248,
+    "requirements": [
+      "Manual Hugging Face access approval and authorized HF_TOKEN/login required before download; access not verified."
+    ],
+    "verified_at": "2026-09-28",
+    "metadata_source": "https://huggingface.co/api/models/BSC-LT/salamandra-7b-fc-2607"
+  },
+  "meta-llama/Llama-3.1-8B-Instruct": {
+    "revision": "0e9e39f249a16976918f6564b8830bc894c89659",
+    "repo_id": "meta-llama/Llama-3.1-8B-Instruct",
+    "model_card": "https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/blob/0e9e39f249a16976918f6564b8830bc894c89659/README.md",
+    "license": "llama3.1",
+    "license_source": "https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/blob/0e9e39f249a16976918f6564b8830bc894c89659/LICENSE",
+    "gated": "manual",
+    "role": "decoder",
+    "alias": "llama31-8b",
+    "parameters_reported": 8030261248,
+    "requirements": [
+      "Manual Hugging Face access approval and authorized HF_TOKEN/login required before download; access not verified.",
+      "Optional control; Llama 3.1 Community License and Acceptable Use Policy, not Apache-2.0. Parameter count 8,030,261,248; eligibility requires organizer confirmation."
+    ],
+    "verified_at": "2026-09-28",
+    "metadata_source": "https://huggingface.co/api/models/meta-llama/Llama-3.1-8B-Instruct"
   }
 }

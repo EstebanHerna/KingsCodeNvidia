@@ -116,8 +116,12 @@ Dejar explícito:
 
 ## 9. Estado actual
 Versión: **v0.5**.
-Fase: **trabajo paralelo A/B previo a integración GPU completa**.
+Fase: **Gate 2-Prep preparado; pruebas nuevas y ejecución GPU pendientes**.
 - A: Corpus v0 + grafo + retrieval baseline.
-- B: harness de generación/evaluación + query router + citation guard + bakeoff preparado.
+- B: Gate 1B con dummy verificado históricamente; backend real, prompts, modelos fijados y comandos de bakeoff preparados en Gate 2-Prep, aún sin ejecutar.
+
+Protocolo para continuar en la GPU: leer `docs/GPU_DAY_RUNBOOK.md`, `docs/MODEL_LOCKS_GATE2.md`, `config/decoder_bakeoff.json` y `config/experiment_matrix.json`. No sustituir `smoke` (dummy). Los experimentos reales usan evidencia congelada, snapshots locales verificados y BF16 primero; un fallback exige registrar el OOM y mantener las demás variables.
+
+En esta entrega el usuario pidió expresamente no ejecutar pruebas. Se dejan preparadas dos verificaciones para el siguiente entorno; no presentar los 60 tests históricos como validación de Gate 2-Prep ni marcar CUDA/bakeoff completados sin resultados reales.
 
 No asumir que CUDA ya está configurado.
