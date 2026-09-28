@@ -37,6 +37,28 @@
       "graph_mode": "on"
     }
   },
+  "retrieval_metadata_experiments": {
+    "owner": "member_a",
+    "status": "optional_prepared_ablation",
+    "base": "R3",
+    "note": "Member A metadata-aware experiments. Layered on the public retrieve() API via kingscode.metadata_experiments; they never replace R0-R5 nor change the default retrieval path. Metadata features are optional soft priors over a candidate union, never hard filters. Runnable on CPU in bm25 mode; neural (hybrid+rerank) variants are prepared for the target GPU only.",
+    "R6": {
+      "definition": "R3 + exact legal locator / metadata features (candidate union, soft re-rank)",
+      "runner": "kingscode.metadata_experiments.run_r6",
+      "features": ["exact_norm_match", "exact_article_match", "same_document", "source_type_match", "temporal_match", "graph_distance"],
+      "hard_filter": false
+    },
+    "R7": {
+      "definition": "document-first -> passage retrieval",
+      "runner": "kingscode.metadata_experiments.run_r7",
+      "hard_filter": false
+    },
+    "R8": {
+      "definition": "R3 + diversification (collapse content mirrors, then diversify by canonical document)",
+      "runner": "kingscode.metadata_experiments.run_r8",
+      "diversification_default": "off_unless_measured"
+    }
+  },
   "decoder": {
     "D1": "qwen3-8b",
     "D2": "alia-legal-7b",

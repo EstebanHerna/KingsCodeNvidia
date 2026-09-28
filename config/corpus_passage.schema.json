@@ -159,7 +159,29 @@
         "string",
         "null"
       ]
-    }
+    },
+    "canonical_document_id": {
+      "type": ["string", "null"],
+      "description": "v0.6 derived: stable id for the legal work, independent of source_url."
+    },
+    "canonical_fragment_id": {
+      "type": ["string", "null"],
+      "description": "v0.6 derived: stable id for the fragment within its work; separate namespace from the document id."
+    },
+    "content_hash": {
+      "type": ["string", "null"],
+      "description": "v0.6 derived: hash of the semantic body only (text_prefix excluded). Technical field; never part of embedding text."
+    },
+    "status_assertion": {
+      "enum": ["current", "historical", "repealed", "modified", "unknown", null],
+      "description": "v0.6 temporal state; defaults to unknown unless the source carries explicit evidence."
+    },
+    "status_source_passage_id": {"type": ["string", "null"]},
+    "effective_from": {"type": ["string", "null"]},
+    "effective_to": {"type": ["string", "null"]},
+    "version_date": {"type": ["string", "null"]},
+    "metadata_version": {"type": ["string", "null"]}
   },
-  "additionalProperties": true
+  "additionalProperties": true,
+  "x-v0.6-notes": "All v0.6 canonical/temporal fields are OPTIONAL and additive. They are derived deterministically by kingscode.metadata from existing fields and do not change the required Corpus v0.1 contract. Runtime retrieval scores (bm25_score, dense_score, rrf_score, reranker_score, graph_score, final_score) are NOT persistent corpus metadata and must not be stored on passages."
 }

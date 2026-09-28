@@ -93,7 +93,7 @@
     ]
   },
   "next_action": {
-    "member_a": "On the target GPU follow docs/GPU_DAY_RUNBOOK.md: verify snapshot, diagnose/install stack, then build dense and run R0-R5 without rebuilding the corpus.",
+    "member_a": "v0.6 metadata/retrieval layer prepared and CPU-validated (canonical IDs, backlog classification, dedup/diversification, failure taxonomy, R6/R7/R8, coverage report). On the target GPU follow docs/GPU_DAY_RUNBOOK.md and docs/MEMBER_A_RUNBOOK.md: verify snapshot, diagnose/install stack, then build dense and run R0-R5 plus the neural variants of R6/R7/R8 without rebuilding the corpus.",
     "member_b": "On the target GPU run the two prepared verifications, prepare exact model snapshots, GPU smoke, freeze retrieval evidence and execute D1-D3. No new tests were run in Gate 2-Prep by user instruction.",
     "shared": "Start with git pull --ff-only origin main; verify the delivered commit. Follow docs/GPU_DAY_RUNBOOK.md. Do not claim GPU/bakeoff completion before measured results."
   },
@@ -151,6 +151,33 @@
     "frozen_for_competition": false,
     "manifest": "corpus_manifest.json",
     "report": "CORPUS.md"
+  },
+  "member_a_v06": {
+    "status": "prepared_not_gpu_validated",
+    "scope": "knowledge_layer_metadata_and_retrieval_only",
+    "metadata_version": "metadata-v0.6",
+    "modules": [
+      "kingscode/metadata.py",
+      "kingscode/acquisition_backlog.py",
+      "kingscode/diversify.py",
+      "kingscode/metadata_experiments.py",
+      "kingscode/failure_analysis.py",
+      "kingscode/coverage_report.py"
+    ],
+    "canonical_ids": "deterministic, url-independent; document and fragment namespaces separate",
+    "acquisition_backlog": {"total": 28, "source_unavailable": 14, "not_found": 11, "identifier_suspect": 2, "ambiguous": 1,
+                             "policy": "identifiers never rewritten or substituted"},
+    "dedup_diversification": "configurable, off by default, provenance preserved; ablation-ready",
+    "failure_taxonomy": ["success", "corpus_missing", "correct_document_wrong_passage", "wrong_document", "ranking_failure", "graph_failure", "ambiguous_ground_truth"],
+    "document_mismatch_rate": {"bm25_off": 0.6585, "bm25_on": 0.6098, "note": "own definition; not claimed identical to academic DRM"},
+    "experiments": {"R6": "exact locator + metadata features (soft prior, union)", "R7": "document-first -> passage", "R8": "R3 + diversification", "owner": "member_a", "changes_default_path": false},
+    "embedding_representation": "experimental only; excludes technical provenance; not a measured replacement",
+    "reports": ["reports/acquisition_backlog_v06.json", "reports/corpus_coverage_v06.json",
+                 "reports/retrieval_failures_bm25_off.json", "reports/retrieval_failures_bm25_auto.json", "reports/retrieval_failures_bm25_on.json"],
+    "corpus_rebuild": "byte-identical to corpus-v0.1; hashes unchanged; metric changes none (only timestamps/latency/code_sha256 differ in run reports)",
+    "verification": {"tests_passed": 132, "new_tests": 44, "first_pass": true, "second_independent_pass": true,
+                      "official_files_unchanged": 19, "member_b_unchanged": true},
+    "gpu_only": ["dense/hybrid index build", "hybrid+reranker R6/R7/R8 neural variants", "full neural benchmark"]
   },
   "retrieval_results": {
     "report": "reports/retrieval_bm25.json",

@@ -1,0 +1,563 @@
+{
+  "version": "acquisition-backlog-v0.6",
+  "generated_at": "2026-09-28T16:54:02.065208+00:00",
+  "total_unresolved": 28,
+  "classes": [
+    "resolved",
+    "not_found",
+    "ambiguous",
+    "source_unavailable",
+    "identifier_suspect"
+  ],
+  "counts": {
+    "ambiguous": 1,
+    "identifier_suspect": 2,
+    "not_found": 11,
+    "source_unavailable": 14
+  },
+  "by_area": {
+    "Derecho constitucional": {
+      "ambiguous": 1,
+      "identifier_suspect": 1,
+      "not_found": 1
+    },
+    "Derecho administrativo": {
+      "identifier_suspect": 1,
+      "not_found": 2
+    },
+    "Derecho comercial y sociedades": {
+      "not_found": 2,
+      "source_unavailable": 4
+    },
+    "Derecho procesal": {
+      "not_found": 1
+    },
+    "Derecho laboral": {
+      "not_found": 2,
+      "source_unavailable": 4
+    },
+    "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]": {
+      "not_found": 1
+    },
+    "Derecho tributario": {
+      "not_found": 1
+    },
+    "Derecho penal": {
+      "not_found": 1,
+      "source_unavailable": 4
+    },
+    "Derecho civil": {
+      "source_unavailable": 1
+    },
+    "Derecho de familia": {
+      "source_unavailable": 1
+    }
+  },
+  "targets": [
+    {
+      "doc_id": "acuerdo_02_de_2015",
+      "resolution": "ambiguous",
+      "signals": [
+        "named_instrument_without_verified_url"
+      ],
+      "canonical_body": [
+        "acuerdo",
+        "02",
+        "2015"
+      ],
+      "norm_name": "Acuerdo 02 de 2015",
+      "issuing_body_hint": null,
+      "note": "Named instrument requires a manually verified official URL; the canonical target cannot be resolved deterministically. Seed preserved.",
+      "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Acuerdo%2002%20de%202015",
+      "original_error": "Needs manually verified official URL for named code/instrument",
+      "action_required": "provide_verified_official_url"
+    },
+    {
+      "doc_id": "ley_11500_de_2007",
+      "resolution": "identifier_suspect",
+      "signals": [
+        "law_number_out_of_range"
+      ],
+      "canonical_body": [
+        "ley",
+        "11500",
+        "2007"
+      ],
+      "norm_name": "Ley 11500 de 2007",
+      "issuing_body_hint": "Función Pública / SUIN-Juriscol",
+      "note": "Law number is out of the plausible range for annual consecutive numbering (>= 10000). Likely a mis-transcribed seed identifier; preserved verbatim and flagged, never replaced by a similar law.",
+      "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%2011500%20de%202007",
+      "original_error": "No exact document found in official catalogue",
+      "action_required": "human_verify_identifier"
+    },
+    {
+      "doc_id": "sentencia_su_6_de_1991",
+      "resolution": "identifier_suspect",
+      "signals": [
+        "implausible_decision_sequence_number"
+      ],
+      "canonical_body": [
+        "jurisprudencia",
+        "SU-6",
+        "1991"
+      ],
+      "norm_name": "Sentencia SU-6 de 1991",
+      "issuing_body_hint": "Corte Constitucional",
+      "note": "Constitutional Court decision sequence number is structurally implausible (too short/zero). Seed identifier preserved; needs human confirmation of the exact radicado before acquisition.",
+      "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-6%20de%201991",
+      "original_error": "Decision identity not found in downloaded document",
+      "action_required": "human_verify_identifier"
+    },
+    {
+      "doc_id": "decreto_046_de_2024",
+      "resolution": "not_found",
+      "signals": [
+        "catalogue_search_no_exact_match"
+      ],
+      "canonical_body": [
+        "decreto",
+        "046",
+        "2024"
+      ],
+      "norm_name": "Decreto 046 de 2024",
+      "issuing_body_hint": "Función Pública / SUIN-Juriscol",
+      "note": "Official catalogue search returned no exact number/year match. The identifier is structurally plausible; it may be repealed, renumbered, or absent from this catalogue. Not substituted.",
+      "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%20046%20de%202024",
+      "original_error": "No exact document found in official catalogue",
+      "action_required": "human_verify_or_alternate_official_source"
+    },
+    {
+      "doc_id": "decreto_1563_de_2012",
+      "resolution": "not_found",
+      "signals": [
+        "catalogue_search_no_exact_match"
+      ],
+      "canonical_body": [
+        "decreto",
+        "1563",
+        "2012"
+      ],
+      "norm_name": "Decreto 1563 de 2012",
+      "issuing_body_hint": "Función Pública / SUIN-Juriscol",
+      "note": "Official catalogue search returned no exact number/year match. The identifier is structurally plausible; it may be repealed, renumbered, or absent from this catalogue. Not substituted.",
+      "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%201563%20de%202012",
+      "original_error": "No exact document found in official catalogue",
+      "action_required": "human_verify_or_alternate_official_source"
+    },
+    {
+      "doc_id": "decreto_875_de_2008",
+      "resolution": "not_found",
+      "signals": [
+        "catalogue_search_no_exact_match"
+      ],
+      "canonical_body": [
+        "decreto",
+        "875",
+        "2008"
+      ],
+      "norm_name": "Decreto 875 de 2008",
+      "issuing_body_hint": "Función Pública / SUIN-Juriscol",
+      "note": "Official catalogue search returned no exact number/year match. The identifier is structurally plausible; it may be repealed, renumbered, or absent from this catalogue. Not substituted.",
+      "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%20875%20de%202008",
+      "original_error": "No exact document found in official catalogue",
+      "action_required": "human_verify_or_alternate_official_source"
+    },
+    {
+      "doc_id": "ley_1150_de_2005",
+      "resolution": "not_found",
+      "signals": [
+        "catalogue_search_no_exact_match"
+      ],
+      "canonical_body": [
+        "ley",
+        "1150",
+        "2005"
+      ],
+      "norm_name": "Ley 1150 de 2005",
+      "issuing_body_hint": "Función Pública / SUIN-Juriscol",
+      "note": "Official catalogue search returned no exact number/year match. The identifier is structurally plausible; it may be repealed, renumbered, or absent from this catalogue. Not substituted.",
+      "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201150%20de%202005",
+      "original_error": "No exact document found in official catalogue",
+      "action_required": "human_verify_or_alternate_official_source"
+    },
+    {
+      "doc_id": "ley_116_de_2006",
+      "resolution": "not_found",
+      "signals": [
+        "catalogue_search_no_exact_match"
+      ],
+      "canonical_body": [
+        "ley",
+        "116",
+        "2006"
+      ],
+      "norm_name": "Ley 116 de 2006",
+      "issuing_body_hint": "Función Pública / SUIN-Juriscol",
+      "note": "Official catalogue search returned no exact number/year match. The identifier is structurally plausible; it may be repealed, renumbered, or absent from this catalogue. Not substituted.",
+      "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20116%20de%202006",
+      "original_error": "No exact document found in official catalogue",
+      "action_required": "human_verify_or_alternate_official_source"
+    },
+    {
+      "doc_id": "ley_1692_de_2017",
+      "resolution": "not_found",
+      "signals": [
+        "catalogue_search_no_exact_match"
+      ],
+      "canonical_body": [
+        "ley",
+        "1692",
+        "2017"
+      ],
+      "norm_name": "Ley 1692 de 2017",
+      "issuing_body_hint": "Función Pública / SUIN-Juriscol",
+      "note": "Official catalogue search returned no exact number/year match. The identifier is structurally plausible; it may be repealed, renumbered, or absent from this catalogue. Not substituted.",
+      "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201692%20de%202017",
+      "original_error": "No exact document found in official catalogue",
+      "action_required": "human_verify_or_alternate_official_source"
+    },
+    {
+      "doc_id": "ley_23_de_1961",
+      "resolution": "not_found",
+      "signals": [
+        "catalogue_search_no_exact_match"
+      ],
+      "canonical_body": [
+        "ley",
+        "23",
+        "1961"
+      ],
+      "norm_name": "Ley 23 de 1961",
+      "issuing_body_hint": "Función Pública / SUIN-Juriscol",
+      "note": "Official catalogue search returned no exact number/year match. The identifier is structurally plausible; it may be repealed, renumbered, or absent from this catalogue. Not substituted.",
+      "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%2023%20de%201961",
+      "original_error": "No exact document found in official catalogue",
+      "action_required": "human_verify_or_alternate_official_source"
+    },
+    {
+      "doc_id": "ley_2737_de_1989",
+      "resolution": "not_found",
+      "signals": [
+        "catalogue_search_no_exact_match"
+      ],
+      "canonical_body": [
+        "ley",
+        "2737",
+        "1989"
+      ],
+      "norm_name": "Ley 2737 de 1989",
+      "issuing_body_hint": "Función Pública / SUIN-Juriscol",
+      "note": "Official catalogue search returned no exact number/year match. The identifier is structurally plausible; it may be repealed, renumbered, or absent from this catalogue. Not substituted.",
+      "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%202737%20de%201989",
+      "original_error": "No exact document found in official catalogue",
+      "action_required": "human_verify_or_alternate_official_source"
+    },
+    {
+      "doc_id": "ley_964_de_2006",
+      "resolution": "not_found",
+      "signals": [
+        "catalogue_search_no_exact_match"
+      ],
+      "canonical_body": [
+        "ley",
+        "964",
+        "2006"
+      ],
+      "norm_name": "Ley 964 de 2006",
+      "issuing_body_hint": "Función Pública / SUIN-Juriscol",
+      "note": "Official catalogue search returned no exact number/year match. The identifier is structurally plausible; it may be repealed, renumbered, or absent from this catalogue. Not substituted.",
+      "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20964%20de%202006",
+      "original_error": "No exact document found in official catalogue",
+      "action_required": "human_verify_or_alternate_official_source"
+    },
+    {
+      "doc_id": "sentencia_su_488_de_2011",
+      "resolution": "not_found",
+      "signals": [
+        "court_page_identity_mismatch"
+      ],
+      "canonical_body": [
+        "jurisprudencia",
+        "SU-488",
+        "2011"
+      ],
+      "norm_name": "Sentencia SU-488 de 2011",
+      "issuing_body_hint": "Corte Constitucional",
+      "note": "Constitutional Court page did not confirm the requested identity; the exact decision was not found at the resolved URL. Identifier preserved, not substituted.",
+      "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-488%20de%202011",
+      "original_error": "Decision identity not found in downloaded document",
+      "action_required": "human_verify_identifier"
+    },
+    {
+      "doc_id": "sentencia_t_248_de_2025",
+      "resolution": "not_found",
+      "signals": [
+        "court_page_identity_mismatch"
+      ],
+      "canonical_body": [
+        "jurisprudencia",
+        "T-248",
+        "2025"
+      ],
+      "norm_name": "Sentencia T-248 de 2025",
+      "issuing_body_hint": "Corte Constitucional",
+      "note": "Constitutional Court page did not confirm the requested identity; the exact decision was not found at the resolved URL. Identifier preserved, not substituted.",
+      "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-248%20de%202025",
+      "original_error": "Decision identity not found in downloaded document",
+      "action_required": "human_verify_identifier"
+    },
+    {
+      "doc_id": "sentencia_sc_1121_de_2018",
+      "resolution": "source_unavailable",
+      "signals": [
+        "high_court_without_verified_resolver"
+      ],
+      "canonical_body": [
+        "jurisprudencia",
+        "SC-1121",
+        "2018"
+      ],
+      "norm_name": "Sentencia SC-1121 de 2018",
+      "issuing_body_hint": "Corte Suprema de Justicia / Consejo de Estado",
+      "note": "Ordinary/high-court decision. The official resolver only builds Constitutional Court relatoría URLs; a manually verified source URL for this court is required before acquisition.",
+      "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-1121%20de%202018",
+      "original_error": "Needs verified Corte Suprema/Consejo de Estado URL",
+      "action_required": "provide_verified_high_court_url"
+    },
+    {
+      "doc_id": "sentencia_sc_18392_de_2017",
+      "resolution": "source_unavailable",
+      "signals": [
+        "high_court_without_verified_resolver"
+      ],
+      "canonical_body": [
+        "jurisprudencia",
+        "SC-18392",
+        "2017"
+      ],
+      "norm_name": "Sentencia SC-18392 de 2017",
+      "issuing_body_hint": "Corte Suprema de Justicia / Consejo de Estado",
+      "note": "Ordinary/high-court decision. The official resolver only builds Constitutional Court relatoría URLs; a manually verified source URL for this court is required before acquisition.",
+      "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-18392%20de%202017",
+      "original_error": "Needs verified Corte Suprema/Consejo de Estado URL",
+      "action_required": "provide_verified_high_court_url"
+    },
+    {
+      "doc_id": "sentencia_sc_3085_de_2024",
+      "resolution": "source_unavailable",
+      "signals": [
+        "high_court_without_verified_resolver"
+      ],
+      "canonical_body": [
+        "jurisprudencia",
+        "SC-3085",
+        "2024"
+      ],
+      "norm_name": "Sentencia SC-3085 de 2024",
+      "issuing_body_hint": "Corte Suprema de Justicia / Consejo de Estado",
+      "note": "Ordinary/high-court decision. The official resolver only builds Constitutional Court relatoría URLs; a manually verified source URL for this court is required before acquisition.",
+      "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-3085%20de%202024",
+      "original_error": "Needs verified Corte Suprema/Consejo de Estado URL",
+      "action_required": "provide_verified_high_court_url"
+    },
+    {
+      "doc_id": "sentencia_sc_3674_de_2021",
+      "resolution": "source_unavailable",
+      "signals": [
+        "high_court_without_verified_resolver"
+      ],
+      "canonical_body": [
+        "jurisprudencia",
+        "SC-3674",
+        "2021"
+      ],
+      "norm_name": "Sentencia SC-3674 de 2021",
+      "issuing_body_hint": "Corte Suprema de Justicia / Consejo de Estado",
+      "note": "Ordinary/high-court decision. The official resolver only builds Constitutional Court relatoría URLs; a manually verified source URL for this court is required before acquisition.",
+      "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-3674%20de%202021",
+      "original_error": "Needs verified Corte Suprema/Consejo de Estado URL",
+      "action_required": "provide_verified_high_court_url"
+    },
+    {
+      "doc_id": "sentencia_sc_425_de_2024",
+      "resolution": "source_unavailable",
+      "signals": [
+        "high_court_without_verified_resolver"
+      ],
+      "canonical_body": [
+        "jurisprudencia",
+        "SC-425",
+        "2024"
+      ],
+      "norm_name": "Sentencia SC-425 de 2024",
+      "issuing_body_hint": "Corte Suprema de Justicia / Consejo de Estado",
+      "note": "Ordinary/high-court decision. The official resolver only builds Constitutional Court relatoría URLs; a manually verified source URL for this court is required before acquisition.",
+      "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-425%20de%202024",
+      "original_error": "Needs verified Corte Suprema/Consejo de Estado URL",
+      "action_required": "provide_verified_high_court_url"
+    },
+    {
+      "doc_id": "sentencia_sc_8453_de_2016",
+      "resolution": "source_unavailable",
+      "signals": [
+        "high_court_without_verified_resolver"
+      ],
+      "canonical_body": [
+        "jurisprudencia",
+        "SC-8453",
+        "2016"
+      ],
+      "norm_name": "Sentencia SC-8453 de 2016",
+      "issuing_body_hint": "Corte Suprema de Justicia / Consejo de Estado",
+      "note": "Ordinary/high-court decision. The official resolver only builds Constitutional Court relatoría URLs; a manually verified source URL for this court is required before acquisition.",
+      "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-8453%20de%202016",
+      "original_error": "Needs verified Corte Suprema/Consejo de Estado URL",
+      "action_required": "provide_verified_high_court_url"
+    },
+    {
+      "doc_id": "sentencia_sl_1050_de_2023",
+      "resolution": "source_unavailable",
+      "signals": [
+        "high_court_without_verified_resolver"
+      ],
+      "canonical_body": [
+        "jurisprudencia",
+        "SL-1050",
+        "2023"
+      ],
+      "norm_name": "Sentencia SL-1050 de 2023",
+      "issuing_body_hint": "Corte Suprema de Justicia / Consejo de Estado",
+      "note": "Ordinary/high-court decision. The official resolver only builds Constitutional Court relatoría URLs; a manually verified source URL for this court is required before acquisition.",
+      "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SL-1050%20de%202023",
+      "original_error": "Needs verified Corte Suprema/Consejo de Estado URL",
+      "action_required": "provide_verified_high_court_url"
+    },
+    {
+      "doc_id": "sentencia_sl_1730_de_2020",
+      "resolution": "source_unavailable",
+      "signals": [
+        "high_court_without_verified_resolver"
+      ],
+      "canonical_body": [
+        "jurisprudencia",
+        "SL-1730",
+        "2020"
+      ],
+      "norm_name": "Sentencia SL-1730 de 2020",
+      "issuing_body_hint": "Corte Suprema de Justicia / Consejo de Estado",
+      "note": "Ordinary/high-court decision. The official resolver only builds Constitutional Court relatoría URLs; a manually verified source URL for this court is required before acquisition.",
+      "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SL-1730%20de%202020",
+      "original_error": "Needs verified Corte Suprema/Consejo de Estado URL",
+      "action_required": "provide_verified_high_court_url"
+    },
+    {
+      "doc_id": "sentencia_sl_1972_de_2025",
+      "resolution": "source_unavailable",
+      "signals": [
+        "high_court_without_verified_resolver"
+      ],
+      "canonical_body": [
+        "jurisprudencia",
+        "SL-1972",
+        "2025"
+      ],
+      "norm_name": "Sentencia SL-1972 de 2025",
+      "issuing_body_hint": "Corte Suprema de Justicia / Consejo de Estado",
+      "note": "Ordinary/high-court decision. The official resolver only builds Constitutional Court relatoría URLs; a manually verified source URL for this court is required before acquisition.",
+      "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SL-1972%20de%202025",
+      "original_error": "Needs verified Corte Suprema/Consejo de Estado URL",
+      "action_required": "provide_verified_high_court_url"
+    },
+    {
+      "doc_id": "sentencia_sl_648_de_2018",
+      "resolution": "source_unavailable",
+      "signals": [
+        "high_court_without_verified_resolver"
+      ],
+      "canonical_body": [
+        "jurisprudencia",
+        "SL-648",
+        "2018"
+      ],
+      "norm_name": "Sentencia SL-648 de 2018",
+      "issuing_body_hint": "Corte Suprema de Justicia / Consejo de Estado",
+      "note": "Ordinary/high-court decision. The official resolver only builds Constitutional Court relatoría URLs; a manually verified source URL for this court is required before acquisition.",
+      "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SL-648%20de%202018",
+      "original_error": "Needs verified Corte Suprema/Consejo de Estado URL",
+      "action_required": "provide_verified_high_court_url"
+    },
+    {
+      "doc_id": "sentencia_sp_1167_de_2022",
+      "resolution": "source_unavailable",
+      "signals": [
+        "high_court_without_verified_resolver"
+      ],
+      "canonical_body": [
+        "jurisprudencia",
+        "SP-1167",
+        "2022"
+      ],
+      "norm_name": "Sentencia SP-1167 de 2022",
+      "issuing_body_hint": "Corte Suprema de Justicia / Consejo de Estado",
+      "note": "Ordinary/high-court decision. The official resolver only builds Constitutional Court relatoría URLs; a manually verified source URL for this court is required before acquisition.",
+      "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SP-1167%20de%202022",
+      "original_error": "Needs verified Corte Suprema/Consejo de Estado URL",
+      "action_required": "provide_verified_high_court_url"
+    },
+    {
+      "doc_id": "sentencia_sp_1680_de_2022",
+      "resolution": "source_unavailable",
+      "signals": [
+        "high_court_without_verified_resolver"
+      ],
+      "canonical_body": [
+        "jurisprudencia",
+        "SP-1680",
+        "2022"
+      ],
+      "norm_name": "Sentencia SP-1680 de 2022",
+      "issuing_body_hint": "Corte Suprema de Justicia / Consejo de Estado",
+      "note": "Ordinary/high-court decision. The official resolver only builds Constitutional Court relatoría URLs; a manually verified source URL for this court is required before acquisition.",
+      "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SP-1680%20de%202022",
+      "original_error": "Needs verified Corte Suprema/Consejo de Estado URL",
+      "action_required": "provide_verified_high_court_url"
+    },
+    {
+      "doc_id": "sentencia_sp_1945_de_2019",
+      "resolution": "source_unavailable",
+      "signals": [
+        "high_court_without_verified_resolver"
+      ],
+      "canonical_body": [
+        "jurisprudencia",
+        "SP-1945",
+        "2019"
+      ],
+      "norm_name": "Sentencia SP-1945 de 2019",
+      "issuing_body_hint": "Corte Suprema de Justicia / Consejo de Estado",
+      "note": "Ordinary/high-court decision. The official resolver only builds Constitutional Court relatoría URLs; a manually verified source URL for this court is required before acquisition.",
+      "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SP-1945%20de%202019",
+      "original_error": "Needs verified Corte Suprema/Consejo de Estado URL",
+      "action_required": "provide_verified_high_court_url"
+    },
+    {
+      "doc_id": "sentencia_sp_3218_de_2021",
+      "resolution": "source_unavailable",
+      "signals": [
+        "high_court_without_verified_resolver"
+      ],
+      "canonical_body": [
+        "jurisprudencia",
+        "SP-3218",
+        "2021"
+      ],
+      "norm_name": "Sentencia SP-3218 de 2021",
+      "issuing_body_hint": "Corte Suprema de Justicia / Consejo de Estado",
+      "note": "Ordinary/high-court decision. The official resolver only builds Constitutional Court relatoría URLs; a manually verified source URL for this court is required before acquisition.",
+      "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SP-3218%20de%202021",
+      "original_error": "Needs verified Corte Suprema/Consejo de Estado URL",
+      "action_required": "provide_verified_high_court_url"
+    }
+  ],
+  "policy": "Official/public sources only. Seed identifiers are never rewritten and no similar norm/year/number/decision is ever substituted. Unverified identity stays unresolved with a provenance note."
+}

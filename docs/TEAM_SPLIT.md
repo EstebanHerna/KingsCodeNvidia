@@ -25,6 +25,16 @@ retrieve(question, k, graph_mode="auto") -> passages
 
 A debe poder devolver el mismo formato de passage independientemente de si vino del fast path o de expansión del grafo.
 
+### Añadidos v0.6 de A (metadatos/recuperación)
+- Identidad canónica determinista independiente de la URL (`canonical_document_id`, `canonical_fragment_id`) en `kingscode/metadata.py`.
+- Clasificación del backlog de adquisición (`kingscode/acquisition_backlog.py`), sin sustituir identificadores.
+- Deduplicación/diversificación configurable y apta para ablación (`kingscode/diversify.py`), off por defecto.
+- Taxonomía de fallos de recuperación + `document_mismatch_rate` (`kingscode/failure_analysis.py`).
+- Experimentos opcionales R6/R7/R8 (`kingscode/metadata_experiments.py`) sobre la API pública; no cambian R0–R5 de B ni la ruta por defecto.
+- Reporte de cobertura v0.6 y auditoría grafo/temporal (`kingscode/coverage_report.py`).
+
+El contrato público `retrieve(...)` se mantiene idéntico; B no necesita cambios. Los scores de recuperación en tiempo de ejecución no son metadatos persistentes del corpus.
+
 ## Integrante B — Query/Reasoning Layer / Generation / Evaluation / Delivery
 Responsable principal de:
 - normalización de consulta y expansión terminológica controlada;

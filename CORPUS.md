@@ -2,6 +2,35 @@
 
 Snapshot `corpus-v0.1`, parser `legal-blocks-1.2`. Estado: baseline local previo a integración GPU y freeze competitivo.
 
+## Capa v0.6 (metadatos + recuperación)
+
+La v0.6 añade una capa de derivación determinista sobre el mismo snapshot
+`corpus-v0.1`, **sin reconstruir ni modificar** los artefactos del corpus: el
+build se reproduce byte a byte con los mismos hashes. Aporta:
+
+- Identidad canónica independiente de la URL: `canonical_document_id`
+  (`ley:1564:2012`, `decreto:410:1971`, `codigo_civil`, `constitucion:1991`,
+  `corte_constitucional:c355:2006`, `corte_suprema:sl3385:2022`) y
+  `canonical_fragment_id` (`ley:1564:2012:articulo:391`), en espacios de nombres
+  separados; variantes históricas y encabezados repetidos se conservan distintos.
+- Metadatos temporales conservadores (`status_assertion` con
+  `current/historical/repealed/modified/unknown`, por defecto `unknown`) y
+  `content_hash` del cuerpo semántico (excluye el encabezado de norma/jerarquía).
+- Clasificación de los 28 objetivos de adquisición no resueltos
+  (`resolved/not_found/ambiguous/source_unavailable/identifier_suspect`) sin
+  sustituir identificadores.
+- Deduplicación/diversificación configurable (apta para ablación, no activa por
+  defecto) que conserva la procedencia de espejos.
+- Taxonomía de fallos de recuperación y `document_mismatch_rate` (definición
+  propia; no se afirma equivalencia con una métrica académica DRM).
+- Experimentos opcionales R6/R7/R8 sobre la API pública, sin cambiar la ruta por
+  defecto ni las métricas de R0–R5.
+
+Reportes: `reports/corpus_coverage_v06.json`,
+`reports/acquisition_backlog_v06.json`,
+`reports/retrieval_failures_bm25_<modo>.json`. Ver `docs/MEMBER_A_RUNBOOK.md`.
+El conteo de documentos no se usa como proxy de calidad.
+
 ## Inventario medido
 
 - 163 documentos oficiales adquiridos y parseados; 28 objetivos pendientes, registrados sin sustituir su identidad.

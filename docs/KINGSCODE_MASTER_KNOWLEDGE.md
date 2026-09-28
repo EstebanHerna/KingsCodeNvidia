@@ -3,7 +3,7 @@
 **Fuente canónica del proyecto.**  
 **Última actualización:** 2026-09-28\
 **Equipo activo:** 2 integrantes  
-**Estado:** v0.5; A y Gate 1B conservados. Gate 2-Prep tiene código/configuración/runbook preparados, sin ejecutar pruebas por instrucción final del usuario. CUDA objetivo, inferencia real, benchmark neuronal completo y bakeoff siguen pendientes.
+**Estado:** v0.5 + capa v0.6 de A (metadatos/recuperación) preparada y validada en CPU; A y Gate 1B conservados. Gate 2-Prep tiene código/configuración/runbook preparados, sin ejecutar pruebas por instrucción final del usuario. CUDA objetivo, inferencia real, benchmark neuronal completo y bakeoff siguen pendientes.
 
 > En un chat nuevo, leer primero este archivo y luego `KINGSCODE_STATE.json`. No reconstruir decisiones desde memoria si existe una versión más reciente de estos archivos.
 
@@ -397,6 +397,7 @@ No asumir versión de CUDA/PyTorch antes de diagnosticar la máquina.
 - contratos de integración;
 - `AGENTS.md` para continuidad multi-agente.
 - Corpus v0.1: 163 documentos oficiales, 26.558 pasajes conservados y 26.060 elegibles; 498 históricos/ambiguos excluidos de recuperación. Raw, clean, hashes, URLs, fechas y offsets disponibles en `../corpus_manifest.json`.
+- Capa v0.6 de A (metadatos + recuperación): identidad canónica determinista independiente de la URL (`canonical_document_id`/`canonical_fragment_id`), metadatos temporales conservadores (`unknown` por defecto), `content_hash`, clasificación de los 28 objetivos de adquisición, dedup/diversificación configurable, taxonomía de fallos con `document_mismatch_rate`, experimentos opcionales R6/R7/R8 y representación de embedding experimental. Todo aditivo y determinista; el corpus se reconstruye byte a byte idéntico (mismos hashes que v0.1). Módulos en `kingscode/metadata.py`, `acquisition_backlog.py`, `diversify.py`, `metadata_experiments.py`, `failure_analysis.py`, `coverage_report.py`; reportes `reports/*_v06.json`. 44 tests nuevos en verde; sin GPU/bakeoff/RAGAS/fine-tuning; B intacto. La idea de que el corpus responda casi cualquier pregunta es solo hipótesis de diseño, no requisito oficial.
 - Grafo desde ingesta: 59.236 nodos y 75.380 edges con evidencia; no se inventan tipos de relación ni se certifica vigencia. Tags y relaciones adicionales quedan pendientes de evidencia explícita.
 - API pública `from kingscode import retrieve, Retriever`, BM25 persistido, expansión acotada, RRF y adaptadores Qwen de embeddings/reranker con commits fijos.
 - Benchmark BM25 OFF/AUTO/ON, auditoría de etiquetas y reportes por área/formato. Resultados vigentes: `../CORPUS.md` y `../reports/retrieval_bm25.json`; no equivalen a score oficial de respuestas.

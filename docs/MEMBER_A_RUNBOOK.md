@@ -77,3 +77,53 @@ Referencias de implementación: [Qwen3 Embedding](https://huggingface.co/Qwen/Qw
 - Recall/MRR son métricas de recuperación, no el puntaje oficial de respuestas. El score end-to-end queda pendiente de B.
 - Revisar casos fallidos de adquisición y ambigüedades del parser antes de un freeze competitivo. Conectar el harness, routing y citation guard de B usando exclusivamente la interfaz pública.
 - Empaquetar corpus/índice y elegir licencia de procesamiento/enlace público cuando el equipo prepare la entrega; todavía no se ha publicado ni congelado el índice final.
+
+## Capa de metadatos y recuperación v0.6
+
+La v0.6 añade una capa de derivación determinista sobre el Corpus v0.1 **sin
+cambiar el build ni los hashes del corpus**. Todo es aditivo, opcional y no
+altera la ruta por defecto de `retrieve(...)`. El corpus se reconstruye byte a
+byte idéntico (mismos hashes de `passages.jsonl`, `graph/*` y `index/bm25.json`).
+
+Módulos nuevos (Integrante A):
+- `kingscode/metadata.py`: `canonical_document_id`, `canonical_fragment_id`,
+  `content_hash`, `temporal_status`, `document_metadata`, `passage_metadata`,
+  `enrich_passage`, `embedding_representation`.
+- `kingscode/acquisition_backlog.py`: clasificación de objetivos no resueltos.
+- `kingscode/diversify.py`: dedup/diversificación y rasgos de metadatos.
+- `kingscode/metadata_experiments.py`: R6/R7/R8.
+- `kingscode/failure_analysis.py`: taxonomía de fallos + `document_mismatch_rate`.
+- `kingscode/coverage_report.py`: reporte de cobertura v0.6 + auditoría grafo/temporal.
+
+Comandos (CPU, sin GPU):
+
+```powershell
+.venv/Scripts/python.exe tools/member_a.py backlog
+.venv/Scripts/python.exe tools/member_a.py coverage
+.venv/Scripts/python.exe tools/member_a.py failures --mode bm25 --graph-mode off
+.venv/Scripts/python.exe tools/member_a.py experiment --experiment-name R6 --question "Ley 1564 de 2012 artículo 391" --mode bm25
+```
+
+Reportes generados: `reports/acquisition_backlog_v06.json`,
+`reports/corpus_coverage_v06.json`, `reports/retrieval_failures_bm25_<modo>.json`.
+
+### Identidad canónica
+
+`canonical_document_id` y `canonical_fragment_id` son deterministas e
+independientes de la URL (misma referencia legal → mismo ID; documento y
+fragmento en espacios de nombres separados; variantes históricas y encabezados
+repetidos se mantienen distintos). No se infiere validez legal: los campos
+temporales usan `unknown`/`null` salvo evidencia explícita. La procedencia
+técnica (sha256, ruta, HTTP, timestamp) nunca entra al texto de embedding.
+
+### Scores en tiempo de ejecución
+
+`bm25_score`, `dense_score`, `rrf_score`, `reranker_score`, `graph_score` y
+`final_score` son de ejecución y **no** se persisten como metadatos del corpus.
+
+### Pendiente de GPU (4090)
+
+Las variantes neuronales (hybrid + reranker) de R6/R7/R8, el índice denso y el
+benchmark neuronal completo siguen siendo exclusivos de la máquina objetivo.
+Ejecutar tras `dense`/`benchmark` según la sección GPU anterior; no cambia la
+diversificación a activa por defecto sin medición.

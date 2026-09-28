@@ -1,0 +1,469 @@
+{
+  "version": "failure-analysis-v0.6",
+  "generated_at": "2026-09-28T16:54:02.103208+00:00",
+  "run": {
+    "mode": "bm25",
+    "rerank": false,
+    "graph_mode": "off"
+  },
+  "taxonomy": [
+    "success",
+    "corpus_missing",
+    "correct_document_wrong_passage",
+    "wrong_document",
+    "ranking_failure",
+    "graph_failure",
+    "ambiguous_ground_truth"
+  ],
+  "evaluable_questions": 41,
+  "overall_counts": {
+    "ambiguous_ground_truth": 6,
+    "correct_document_wrong_passage": 8,
+    "success": 23,
+    "wrong_document": 4
+  },
+  "by_area": {
+    "Derecho administrativo": {
+      "ambiguous_ground_truth": 3,
+      "correct_document_wrong_passage": 1,
+      "wrong_document": 1
+    },
+    "Derecho civil": {
+      "correct_document_wrong_passage": 1,
+      "success": 1
+    },
+    "Derecho comercial y sociedades": {
+      "success": 3,
+      "wrong_document": 1
+    },
+    "Derecho constitucional": {
+      "ambiguous_ground_truth": 1,
+      "success": 3,
+      "wrong_document": 1
+    },
+    "Derecho de familia": {
+      "ambiguous_ground_truth": 1,
+      "success": 4
+    },
+    "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]": {
+      "correct_document_wrong_passage": 1,
+      "success": 3
+    },
+    "Derecho laboral": {
+      "ambiguous_ground_truth": 1,
+      "correct_document_wrong_passage": 1,
+      "success": 3
+    },
+    "Derecho penal": {
+      "correct_document_wrong_passage": 2,
+      "success": 2
+    },
+    "Derecho procesal": {
+      "correct_document_wrong_passage": 2,
+      "success": 3
+    },
+    "Derecho tributario": {
+      "success": 1,
+      "wrong_document": 1
+    }
+  },
+  "by_format": {
+    "multiple_choice": {
+      "ambiguous_ground_truth": 3,
+      "correct_document_wrong_passage": 3,
+      "success": 5,
+      "wrong_document": 2
+    },
+    "open_ended": {
+      "ambiguous_ground_truth": 2,
+      "success": 2
+    },
+    "semi_open": {
+      "ambiguous_ground_truth": 1,
+      "correct_document_wrong_passage": 5,
+      "success": 16,
+      "wrong_document": 2
+    }
+  },
+  "document_mismatch_rate": {
+    "value": 0.6585365853658537,
+    "hits": 27,
+    "evaluable": 41,
+    "definition": "Fraction of evaluable questions whose rank-1 passage belongs to a document that is not any gold-target document. Own definition; not claimed identical to any academic DRM metric."
+  },
+  "per_question": [
+    {
+      "id": 51,
+      "area": "Derecho constitucional",
+      "format": "multiple_choice",
+      "class": "wrong_document",
+      "reason": "topk_all_other_documents",
+      "coverage": 0.3333333333333333,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 58,
+      "area": "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]",
+      "format": "multiple_choice",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": false
+    },
+    {
+      "id": 60,
+      "area": "Derecho procesal",
+      "format": "multiple_choice",
+      "class": "correct_document_wrong_passage",
+      "reason": "right_work_wrong_locator",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 79,
+      "area": "Derecho laboral",
+      "format": "semi_open",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 128,
+      "area": "Derecho comercial y sociedades",
+      "format": "multiple_choice",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 140,
+      "area": "Derecho comercial y sociedades",
+      "format": "semi_open",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": false
+    },
+    {
+      "id": 218,
+      "area": "Derecho administrativo",
+      "format": "semi_open",
+      "class": "correct_document_wrong_passage",
+      "reason": "right_work_wrong_locator",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 239,
+      "area": "Derecho comercial y sociedades",
+      "format": "semi_open",
+      "class": "wrong_document",
+      "reason": "topk_all_other_documents",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 247,
+      "area": "Derecho administrativo",
+      "format": "open_ended",
+      "class": "ambiguous_ground_truth",
+      "reason": "audit_flagged_label",
+      "coverage": 0.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 253,
+      "area": "Derecho laboral",
+      "format": "open_ended",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 0.6,
+      "document_mismatch_at_1": false
+    },
+    {
+      "id": 272,
+      "area": "Derecho comercial y sociedades",
+      "format": "open_ended",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 280,
+      "area": "Derecho penal",
+      "format": "semi_open",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": false
+    },
+    {
+      "id": 290,
+      "area": "Derecho administrativo",
+      "format": "multiple_choice",
+      "class": "wrong_document",
+      "reason": "topk_all_other_documents",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 352,
+      "area": "Derecho constitucional",
+      "format": "multiple_choice",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 358,
+      "area": "Derecho civil",
+      "format": "multiple_choice",
+      "class": "correct_document_wrong_passage",
+      "reason": "right_work_wrong_locator",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 442,
+      "area": "Derecho laboral",
+      "format": "semi_open",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": false
+    },
+    {
+      "id": 453,
+      "area": "Derecho constitucional",
+      "format": "semi_open",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 0.3333333333333333,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 472,
+      "area": "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]",
+      "format": "semi_open",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": false
+    },
+    {
+      "id": 487,
+      "area": "Derecho de familia",
+      "format": "multiple_choice",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": false
+    },
+    {
+      "id": 490,
+      "area": "Derecho de familia",
+      "format": "semi_open",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 528,
+      "area": "Derecho procesal",
+      "format": "multiple_choice",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 563,
+      "area": "Derecho administrativo",
+      "format": "semi_open",
+      "class": "ambiguous_ground_truth",
+      "reason": "audit_flagged_label",
+      "coverage": 0.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 589,
+      "area": "Derecho procesal",
+      "format": "semi_open",
+      "class": "correct_document_wrong_passage",
+      "reason": "right_work_wrong_locator",
+      "coverage": 1.0,
+      "document_mismatch_at_1": false
+    },
+    {
+      "id": 600,
+      "area": "Derecho penal",
+      "format": "multiple_choice",
+      "class": "correct_document_wrong_passage",
+      "reason": "right_work_wrong_locator",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 617,
+      "area": "Derecho laboral",
+      "format": "multiple_choice",
+      "class": "ambiguous_ground_truth",
+      "reason": "audit_flagged_label",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 647,
+      "area": "Derecho de familia",
+      "format": "multiple_choice",
+      "class": "ambiguous_ground_truth",
+      "reason": "audit_flagged_label",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 661,
+      "area": "Derecho tributario",
+      "format": "semi_open",
+      "class": "wrong_document",
+      "reason": "topk_all_other_documents",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 674,
+      "area": "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]",
+      "format": "semi_open",
+      "class": "correct_document_wrong_passage",
+      "reason": "right_work_wrong_locator",
+      "coverage": 1.0,
+      "document_mismatch_at_1": false
+    },
+    {
+      "id": 679,
+      "area": "Derecho constitucional",
+      "format": "open_ended",
+      "class": "ambiguous_ground_truth",
+      "reason": "audit_flagged_label",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 748,
+      "area": "Derecho administrativo",
+      "format": "multiple_choice",
+      "class": "ambiguous_ground_truth",
+      "reason": "audit_flagged_label",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 865,
+      "area": "Derecho de familia",
+      "format": "semi_open",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 879,
+      "area": "Derecho procesal",
+      "format": "semi_open",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 919,
+      "area": "Derecho civil",
+      "format": "semi_open",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": false
+    },
+    {
+      "id": 946,
+      "area": "Derecho de familia",
+      "format": "semi_open",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": false
+    },
+    {
+      "id": 960,
+      "area": "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]",
+      "format": "semi_open",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": false
+    },
+    {
+      "id": 991,
+      "area": "Derecho tributario",
+      "format": "semi_open",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": false
+    },
+    {
+      "id": 1005,
+      "area": "Derecho constitucional",
+      "format": "semi_open",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 1015,
+      "area": "Derecho penal",
+      "format": "semi_open",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 1065,
+      "area": "Derecho penal",
+      "format": "semi_open",
+      "class": "correct_document_wrong_passage",
+      "reason": "right_work_wrong_locator",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 1073,
+      "area": "Derecho laboral",
+      "format": "semi_open",
+      "class": "correct_document_wrong_passage",
+      "reason": "right_work_wrong_locator",
+      "coverage": 1.0,
+      "document_mismatch_at_1": true
+    },
+    {
+      "id": 1089,
+      "area": "Derecho procesal",
+      "format": "semi_open",
+      "class": "success",
+      "reason": "gold_target_in_topk",
+      "coverage": 1.0,
+      "document_mismatch_at_1": false
+    }
+  ],
+  "caveats": [
+    "legal_basis is a noisy proxy; ambiguous/contradictory labels are not forced into a failure class.",
+    "Classification is offline error analysis, not an official QA score."
+  ]
+}
