@@ -1,0 +1,76 @@
+{
+  "team": {
+    "size": 2,
+    "split": "layered_parallel",
+    "member_a": "knowledge_corpus_graph_retrieval",
+    "member_b": "query_reasoning_generation_evaluation_delivery"
+  },
+  "retrieval": {
+    "lexical": "BM25",
+    "encoder_primary": "Qwen/Qwen3-Embedding-0.6B",
+    "encoder_fallback": "BAAI/bge-m3",
+    "reranker_primary": "Qwen/Qwen3-Reranker-0.6B",
+    "candidate_k": 30,
+    "evidence_k": 8,
+    "max_evidence_k_for_evaluator": 10,
+    "fusion": "RRF",
+    "chunking": "legal_structure_aware_adaptive",
+    "controlled_legal_query_expansion": true,
+    "graph_rag": "graph_aware_from_corpus_v0_selective",
+    "graph_relations": [
+      "CONTIENE",
+      "REMITE_A",
+      "CITA",
+      "MODIFICA",
+      "DEROGA",
+      "REGLAMENTA",
+      "DESARROLLA",
+      "EXCEPCIONA"
+    ],
+    "graph_query_policy": "graph exists from corpus v0; member B routes OFF/AUTO/ON, member A executes expansion and retrieval",
+    "active_backend": "bm25",
+    "full_neural_benchmark_completed": false,
+    "models_lock": "config/models.lock.json",
+    "neural_config": "config/neural.json",
+    "controlled_legal_query_expansion_status": "pending member B",
+    "graph_relations_implemented": [
+      "CONTIENE",
+      "REMITE_A",
+      "CITA",
+      "MODIFICA",
+      "DEROGA"
+    ],
+    "graph_budget": 10,
+    "rrf_constant": 60,
+    "exclude_ambiguous_articles": true
+  },
+  "decoder_candidates": [
+    "Qwen/Qwen3-8B",
+    "SINAI/ALIA-es-legal-administrative-7B-Instruct",
+    "BSC-LT/salamandra-7b-fc-2607",
+    "meta-llama/Llama-3.1-8B-Instruct"
+  ],
+  "decoder_primary_prior": "Qwen/Qwen3-8B",
+  "generation": {
+    "temperature": 0.0,
+    "do_sample": false,
+    "max_context_target_tokens": 8192,
+    "citation_guard": true,
+    "preserve_document_structure_order": true
+  },
+  "finetuning": {
+    "decoder_initial": false,
+    "first_candidate": "reranker_hard_negative_finetune",
+    "decoder_qlora_only_if": "retrieval_good_generation_bad"
+  },
+  "version": "0.5",
+  "next_action": {
+    "member_a": "target_gpu_diagnostic_then_dense_hybrid_reranker_benchmark_and_corpus_qa",
+    "member_b": "pre_gpu_harness_router_citation_guard_evaluator",
+    "shared": "integrate_retrieve_with_B_harness_then_compare_on_same_snapshot"
+  },
+  "interfaces": {
+    "retrieve": "retrieve(question, k, graph_mode=\"auto\") -> passages",
+    "answer": "answer(question, passages, format) -> submission_row"
+  }
+}

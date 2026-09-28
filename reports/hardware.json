@@ -1,0 +1,14 @@
+{
+  "python": "3.12.5 (tags/v3.12.5:ff3bc82, Aug  6 2024, 20:45:27) [MSC v.1940 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "nvidia_smi_found": false,
+  "nvcc_found": false,
+  "torch": {
+    "version": "2.12.0+cpu",
+    "built_with_cuda": null,
+    "cuda_available": false,
+    "device_count": 0
+  },
+  "kingscode_profile": "unknown",
+  "next_decision": "use quantized decoder path and keep retrieval models small"
+}

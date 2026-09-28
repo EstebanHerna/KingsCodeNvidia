@@ -1,0 +1,455 @@
+# KINGSCODE MASTER KNOWLEDGE — Hackathon AI Week 2026
+
+**Fuente canónica del proyecto.**  
+**Última actualización:** 2026-09-27  
+**Equipo activo:** 2 integrantes  
+**Estado:** v0.5; Corpus v0.1 y retrieval baseline de A implementados y medidos. Integración B y benchmark neuronal completo pendientes. Máquina local CPU; 4090 objetivo aún por diagnosticar.
+
+> En un chat nuevo, leer primero este archivo y luego `KINGSCODE_STATE.json`. No reconstruir decisiones desde memoria si existe una versión más reciente de estos archivos.
+
+---
+
+## 1. Qué es la Hackathon
+
+Reto de AI Week 2026 de la Universidad de los Andes: construir un sistema que responda preguntas de **derecho colombiano** usando un **modelo abierto de máximo 8B parámetros** y un **corpus jurídico propio**, buscando superar modelos grandes evaluados sin fuentes externas.
+
+La hipótesis del reto es que un corpus sólido y una buena recuperación pueden ser más determinantes que aumentar el tamaño del modelo.
+
+### Banco
+- Total: 1.042 preguntas.
+- Desarrollo: 50 preguntas conocidas con respuesta esperada y `legal_basis`.
+- Evaluación ciega del sábado: 992 preguntas nuevas.
+- Tipos: 15 cerradas, 30 semiabiertas y 5 abiertas en el sample de 50.
+- Áreas: constitucional, administrativo, penal, procesal, comercial/sociedades, civil, familia, tributario, laboral, mercados/consumidor/datos/PI.
+
+### Restricciones centrales
+- Decoder abierto <= 8B.
+- Encoder abierto.
+- Temperatura 0 en ejecución final.
+- Sistema determinista y reproducible.
+- Prohibidos modelos cerrados (OpenAI, Anthropic, Google, Cohere, etc.) en cualquier componente competitivo; el enunciado también prohíbe usarlos para datos sintéticos de apoyo.
+- No editar manualmente respuestas después de la ejecución.
+- No indexar banco de evaluación ni material con respuestas esperadas.
+- Índice congelado tras la entrega.
+
+### Computación
+- Hardware objetivo del equipo: **RTX 4090 24 GB** en Sala Turing.
+- Colab no es el plan principal.
+- La organización permite Sala Turing/Colab para quienes necesiten GPU, pero KingsCode prioriza 4090.
+
+---
+
+## 2. Cronograma operativo
+
+### Lunes
+- sesión inaugural presencial;
+- entrega de material;
+- kit del evento;
+- material oficial y llave del juez.
+
+### Martes a viernes
+- desarrollo principalmente remoto;
+- construcción y enriquecimiento de corpus;
+- ejecución repetida de `evaluate.py` sobre las 50 preguntas;
+- workshops/charlas obligatorias según agenda.
+
+### Viernes 17:00
+Entregar reporte de avance de una página con score del sample, estado del corpus y riesgos.
+
+### Sábado
+- 09:00: entrega de 992 preguntas secretas;
+- 09:00–15:00: ejecución ciega + terminación de interfaz;
+- 15:00: cierre;
+- 15:00–17:00: verificación en vivo, 2–3 preguntas se regeneran;
+- 18:00–19:00: resultados/premiación.
+
+Presupuesto conceptual: ~22 s/pregunta si se usan las seis horas completas para 992 preguntas. En práctica el objetivo de KingsCode es bastante menor para dejar margen de validación y fallos.
+
+---
+
+## 3. Cómo se califica
+
+### Automático — 80 puntos
+- 20: exactitud en cerradas.
+- 30: corrección en texto libre / RAGAS.
+- 20: calidad de citación.
+- 10: abstención calibrada.
+
+### Ingeniería/interfaz — 20 puntos
+- 10: interfaz gráfica.
+- 5: corpus + bitácora.
+- 3: video <=5 min.
+- 2: reproducibilidad.
+
+**Consecuencia estratégica:** retrieval + citas + grounding tienen un peso enorme. Una respuesta jurídicamente plausible sin evidencia recuperada pierde valor.
+
+---
+
+## 4. Material oficial disponible
+
+- `data/sample_50.jsonl` — 50 preguntas de desarrollo.
+- `data/seed_targets.json` — listado inicial no exhaustivo de fuentes/normas.
+- `schema/submission.schema.json` — contrato de salida.
+- `scripts/evaluate.py` — evaluador oficial.
+- `scripts/citations.py` y `scripts/common.py` — utilidades.
+- `scripts/requirements-evaluador.txt` — dependencias del juez.
+- `Ejemplo de entrega/` — ejemplo de submissions, corpus y manifest.
+- `entregables/` — plantillas/instrucciones.
+- OpenRouter API key — solo para el juez de evaluación de texto libre, no para el sistema competitivo.
+
+Preflight realizado en v0.1/v0.2:
+- archivos oficiales mínimos presentes;
+- 50 preguntas válidas, IDs únicos;
+- 186 seed targets;
+- ejemplo oficial validado contra schema;
+- scripts oficiales compilan;
+- `evaluate.py` se ejecutó sobre el ejemplo sin `--ragas`;
+- archivos oficiales preservados byte a byte en el paquete generado.
+
+---
+
+## 5. División del equipo — 2 integrantes — v0.5
+
+La división se hace por capas estables, no por áreas jurídicas. Ver `TEAM_SPLIT.md`.
+
+### Integrante A — Knowledge Layer / Corpus / Graph / Retrieval
+Responsable de:
+- adquisición y trazabilidad de fuentes oficiales;
+- normalización y chunking jurídico;
+- metadatos y jerarquía documental;
+- construcción del grafo desde Corpus v0;
+- BM25, embeddings, RRF y reranking;
+- métricas de retrieval y cobertura;
+- `CORPUS.md` y `corpus_manifest.json`.
+
+Contrato estable:
+```text
+retrieve(question, k, graph_mode="auto") -> [passages]
+```
+
+### Integrante B — Query / Reasoning / Generation / Evaluation / Delivery
+Responsable de:
+- normalización de consulta y expansión terminológica controlada;
+- `graph_router` y política OFF/AUTO/ON;
+- decoder bakeoff;
+- prompts y JSON estricto;
+- citation guard y abstención;
+- `evaluate.py`, RAGAS, latencia y VRAM;
+- interfaz, comando único, reproducibilidad y entregables.
+
+Contrato estable:
+```text
+answer(question, passages, format) -> submission_row
+```
+
+### Trabajo compartido
+- experiment design;
+- integración A↔B;
+- revisión de errores del sample;
+- decisiones de freeze;
+- ejecución final.
+
+### Regla de integración
+Nadie cambia simultáneamente retrieval y decoder en el mismo experimento sin registrar una ablation. Una variable por experimento siempre que sea posible.
+
+---
+
+## 6. Arquitectura actual v0.5 — Graph-Aware Hybrid RAG
+
+```text
+                         Pregunta
+                            |
+                            v
+          normalización jurídica / expansión controlada
+                            |
+          +-----------------+------------------+
+          |                 |                  |
+         BM25        Qwen3-Embedding      grafo jurídico
+          |                 |                  |
+          +------- RRF -----+          expansión selectiva
+                  |                            |
+               top 30                         |
+                  +-------------+--------------+
+                                |
+                         Qwen3-Reranker
+                                |
+                             top 6-8
+                                |
+                         decoder <=8B
+                                |
+                           JSON grounded
+                                |
+                         citation_guard
+                       /                \
+                  soportado          no soportado
+                     |                  |
+                  entregar         corregir/abstener
+```
+
+### Por qué esta arquitectura
+La literatura legal reciente favorece:
+- retrieval preciso como principal driver;
+- chunks pequeños/estructurales;
+- híbrido sparse+dense;
+- cross-encoder reranking;
+- evidencia mínima;
+- auditoría de citas;
+- evaluación separada de retrieval y generation;
+- preservación de jerarquía y relaciones jurídicas.
+
+**Decisión v0.5:** el grafo existe desde Corpus v0. No se usa obligatoriamente en cada consulta. El camino BM25+dense+RRF sigue siendo el fast path; el grafo se consulta/expande cuando una pregunta o un pasaje requiere relaciones como `REMITE_A`, `MODIFICA`, `DEROGA`, `REGLAMENTA`, `CITA`, o navegación jerárquica norma→artículo→parágrafo/inciso. Esto evita pagar el costo de GraphRAG completo en preguntas directas sin perder la estructura jurídica desde la ingesta.
+
+Ver `LITERATURE_REVIEW_2026-09-27.md`, `MEMBER_A_CORPUS_PLAN.md`, `MEMBER_B_REASONING_EVAL_PLAN.md` y `ARCHITECTURE_V05.md`.
+
+---
+
+## 7. Estrategia de chunking
+
+No usar chunking fijo ciego como diseño principal.
+
+### Leyes/códigos/decretos
+Unidad principal: **artículo**.  
+Mantener en metadata:
+- norma;
+- número/año;
+- artículo;
+- parágrafo/inciso/numeral cuando aplique;
+- título/capítulo;
+- órgano;
+- vigencia si se puede verificar;
+- URL oficial;
+- orden dentro del documento.
+
+Si un artículo es enorme: split-then-merge respetando subestructura y repitiendo encabezado/contexto mínimo.
+
+### Sentencias
+Segmentación por secciones jurídicas si la fuente lo permite: hechos, problema jurídico, consideraciones, ratio/fundamento, decisión, con metadatos de corporación/sala/fecha/radicado.
+
+### Regla
+No cortar referencias legales o listas de incisos a mitad si puede evitarse.
+
+---
+
+## 8. Retrieval experiments
+
+Baseline mínimo a ejecutar en orden:
+
+1. BM25.
+2. Dense (`Qwen3-Embedding-0.6B`).
+3. BM25 + dense con RRF.
+4. Híbrido + `Qwen3-Reranker-0.6B`.
+5. Híbrido + reranker + expansión terminológica jurídica controlada.
+6. Comparar chunking estructural vs adaptive chunking.
+
+### Métricas
+- Recall@1, 3, 5, 10.
+- MRR.
+- nDCG@10 si es viable.
+- `% legal_basis encontrado en top-10`.
+- tasa de documento equivocado / DRM.
+- latencia de retrieval.
+
+### Gate
+Si `Recall@10` no es alto, NO perder tiempo fine-tuneando decoder.
+
+---
+
+## 9. Decoder candidates — bakeoff
+
+### Candidato 1 — Qwen3-8B
+Baseline principal por capacidad general/multilingüe y porque el enunciado lo menciona como opción sugerida.
+
+### Candidato 2 — SINAI/ALIA-es-legal-administrative-7B-Instruct
+Añadido tras revisión bibliográfica. Modelo 7B especializado en español jurídico/administrativo, basado en Salamandra. Puede aportar vocabulario/estilo legal, pero hay riesgo de priors del derecho español. Solo se adopta si gana sobre las 50 preguntas bajo el mismo retrieval.
+
+### Candidato 3 — BSC-LT/salamandra-7b-fc-2607
+Alternativa hispanohablante abierta.
+
+### Candidato 4 — Llama-3.1-8B-Instruct
+Control adicional si el tiempo lo permite.
+
+### Comparación justa
+Mismos:
+- retrieval congelado;
+- top-k;
+- prompt;
+- temperatura 0;
+- schema;
+- preguntas;
+- evaluador.
+
+Medir:
+- score oficial;
+- valid JSON;
+- citas no soportadas;
+- abstenciones;
+- segundos/pregunta;
+- VRAM pico.
+
+---
+
+## 10. Fine-tuning — decisión vigente
+
+### Decoder
+**NO inicialmente.**
+
+Razones:
+- solo 50 preguntas oficiales de desarrollo;
+- riesgo alto de overfitting/memorización;
+- literatura reciente sugiere que retrieval fija el techo en Legal RAG;
+- RAG suele ganar sobre FT para conocimiento factual raro/específico;
+- tiempo de hackathon limitado.
+
+### Primer fine-tune candidato
+**Reranker con hard negatives**, solo si retrieval muestra confusiones entre normas/artículos similares.
+
+Construcción:
+- query = pregunta;
+- positivo = pasaje que contiene `legal_basis`;
+- negativos duros = top resultados incorrectos de BM25+dense;
+- entrenar/rerankear y medir ganancia en Recall/MRR + score end-to-end.
+
+### QLoRA/SFT decoder solo si
+- Recall@10 es alto;
+- evidencia correcta llega al decoder;
+- el decoder aun falla consistentemente en formato/razonamiento;
+- existe un conjunto de entrenamiento legítimo suficiente sin violar reglas.
+
+---
+
+## 11. Citation guard
+
+Componente determinista obligatorio de nuestra arquitectura:
+
+1. extraer toda referencia legal generada;
+2. normalizar forma canónica;
+3. comprobar existencia en los pasajes recuperados;
+4. verificar artículo/norma;
+5. si la cita no está soportada:
+   - eliminarla y regenerar desde evidencia, o
+   - abstener, según tipo de pregunta y suficiente/insuficiente evidencia;
+6. nunca editar manualmente una respuesta final de evaluación.
+
+---
+
+## 12. Uso de estructura y terminología
+
+### Terminología
+Mantener un diccionario/normalizador pequeño y auditable de:
+- abreviaturas;
+- nombres alternos;
+- cuerpos normativos;
+- entidades/cortes;
+- sinónimos jurídicos frecuentes.
+
+No usar expansión generativa descontrolada por defecto.
+
+### Estructura / grafo jurídico desde Corpus v0
+Preservar jerarquía y orden del documento en cada pasaje **y construir el grafo desde la ingesta**.
+
+Tipos de nodo previstos (habilitados cuando exista evidencia):
+- documento/norma o sentencia;
+- artículo;
+- parágrafo/inciso/numeral cuando exista;
+- sección relevante de sentencia;
+- tags jurídicos controlados.
+
+Tipos de relación previstos (no es obligatorio emitir tipos sin evidencia):
+- `CONTIENE`;
+- `REMITE_A`;
+- `CITA`;
+- `MODIFICA`;
+- `DEROGA`;
+- `REGLAMENTA`;
+- `DESARROLLA`;
+- `EXCEPCIONA`.
+
+El grafo no sustituye BM25+dense. Es una capa estructural y de expansión selectiva. Si varios pasajes del mismo documento sobreviven al reranker, considerar presentarlos al decoder en orden original.
+
+---
+
+## 13. GPU / inferencia
+
+Hardware objetivo: RTX 4090, 24 GB.
+
+Fase CUDA todavía pendiente. Orden correcto:
+1. `python tools/preflight.py`
+2. `python tools/check_cuda.py`
+3. observar driver/CUDA/PyTorch/VRAM reales;
+4. instalar stack compatible;
+5. smoke test GPU;
+6. cargar decoder baseline;
+7. medir BF16 primero;
+8. cuantizar solo si VRAM/latencia lo justifican.
+
+No asumir versión de CUDA/PyTorch antes de diagnosticar la máquina.
+
+---
+
+## 14. Estado actual y siguiente acción
+
+### Completado
+- lectura del enunciado y starter pack;
+- preflight/integridad;
+- revisión de literatura 2024–2026;
+- arquitectura Graph-Aware;
+- división A/B revisada para v0.5;
+- contratos de integración;
+- `AGENTS.md` para continuidad multi-agente.
+- Corpus v0.1: 163 documentos oficiales, 26.558 pasajes conservados y 26.060 elegibles; 498 históricos/ambiguos excluidos de recuperación. Raw, clean, hashes, URLs, fechas y offsets disponibles en `../corpus_manifest.json`.
+- Grafo desde ingesta: 59.236 nodos y 75.380 edges con evidencia; no se inventan tipos de relación ni se certifica vigencia. Tags y relaciones adicionales quedan pendientes de evidencia explícita.
+- API pública `from kingscode import retrieve, Retriever`, BM25 persistido, expansión acotada, RRF y adaptadores Qwen de embeddings/reranker con commits fijos.
+- Benchmark BM25 OFF/AUTO/ON, auditoría de etiquetas y reportes por área/formato. Resultados vigentes: `../CORPUS.md` y `../reports/retrieval_bm25.json`; no equivalen a score oficial de respuestas.
+- Diagnóstico local CPU; modelos abiertos probados con pesos reales sobre dos pasajes oficiales. Esto no equivale al benchmark de todo el corpus.
+
+### Trabajo inmediato en paralelo
+
+#### Integrante A
+1. revisar los 28 objetivos de adquisición pendientes y los grupos de artículos ambiguos conservados;
+2. ampliar/revisar vigencia y atribución antes del freeze competitivo;
+3. en la máquina 4090, ejecutar `python tools/check_cuda.py`, configurar el stack comprobado y seguir `MEMBER_A_RUNBOOK.md` para dense → hybrid → hybrid+reranker;
+4. comparar retrieval manteniendo corpus, preguntas y labels originales fijos; no iniciar decoder FT con este nivel de recuperación;
+5. acordar licencia, empaquetado y publicación del corpus para entrega final.
+
+#### Integrante B
+1. crear harness pre-GPU desacoplado del retrieval interno;
+2. implementar normalizador jurídico y `graph_router` determinista;
+3. implementar schema validator y `citation_guard`;
+4. preparar evaluator runner + experiment registry;
+5. parametrizar bakeoff de decoders para la 4090.
+
+### Integración siguiente
+Conectar retrieval real de A al harness de B y producir el primer end-to-end sobre las 50 preguntas. Luego validar CUDA/4090 para dense/reranker/decoder cuando corresponda.
+
+Comando local exacto para reconstruir y comprobar A desde el snapshot conservado: `.venv/Scripts/python.exe tools/member_a.py reproduce`. Segundo pase: `.venv/Scripts/python.exe tools/verify_member_a_second.py`. Evidencia y límites en `MEMBER_A_RUNBOOK.md`, `VERIFICATION.md` y reportes asociados al hash del corpus. Los archivos oficiales permanecen sin cambios; no se han generado submissions.
+
+---
+
+## 15. Literatura que cambió decisiones
+
+- Legal RAG Bench 2026: retrieval como principal driver.
+- LegalBench-RAG 2024: fragmentos mínimos y precisos.
+- Adaptive Chunking 2026: chunking adaptativo/estructural puede mejorar notablemente RAG sin cambiar modelos.
+- HyPA-RAG 2024 + SemEval 2026: hybrid retrieval + reranking como pipeline fuerte.
+- Grounded in Law 2026: auditoría de referencias después de generar.
+- Spanish Legal Terminology RAG 2025: expansión terminológica controlada útil en español jurídico.
+- Qwen Goes Brrr 2026: reranking puede mejorar mucho recall y accuracy en un reto documental.
+- Fine-tuning vs RAG: priorizar retrieval antes del decoder FT.
+- ALIA Spanish Legal 7B 2026: nuevo candidato especializado que debe entrar al bakeoff.
+
+---
+
+## 16. Protocolo de continuidad
+
+`AGENTS.md` es la guía operativa universal para cualquier agente que entre al proyecto. Cada cambio importante debe actualizar:
+1. este archivo;
+2. `KINGSCODE_STATE.json`;
+3. `config/strategy.json`;
+4. `docs/DECISION_LOG.md`;
+5. el plan específico de A/B si cambia ownership o contrato.
+
+En una conversación nueva, la instrucción mínima es:
+
+> “Busca en mi Library la carpeta `KingsCode Hackathon 2026`, lee `KINGSCODE_MASTER_KNOWLEDGE.md` y `KINGSCODE_STATE.json`, y continúa desde `next_action` sin reconstruir el proyecto desde cero.”
+
+Este archivo prevalece sobre recuerdos parciales de chats anteriores, salvo que exista una versión más nueva explícitamente marcada.

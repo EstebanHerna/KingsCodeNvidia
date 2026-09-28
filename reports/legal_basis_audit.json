@@ -1,0 +1,1218 @@
+[
+  {
+    "id": 51,
+    "legal_basis": "Constitución Política, artículo 88; Ley 472 de 1998, artículos 3 y 46.",
+    "targets": [
+      [
+        "constitucion",
+        null,
+        null,
+        "88"
+      ],
+      [
+        "ley",
+        "472",
+        "1998",
+        "3"
+      ],
+      [
+        "ley",
+        "472",
+        "1998",
+        "46"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "constitucion",
+        null,
+        null,
+        "88"
+      ]
+    ],
+    "coverage": 0.3333333333333333,
+    "notes": []
+  },
+  {
+    "id": 58,
+    "legal_basis": "Ley 1564 de 2002 (El Estatuto del Consumidor). ",
+    "targets": [
+      [
+        "codigo_general_proceso",
+        null,
+        null,
+        null
+      ],
+      [
+        "estatuto_consumidor",
+        null,
+        null,
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_general_proceso",
+        null,
+        null,
+        null
+      ],
+      [
+        "estatuto_consumidor",
+        null,
+        null,
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified",
+      "Original basis conflicts in norm number/year/name; official extractor aliases by number; review separately"
+    ]
+  },
+  {
+    "id": 60,
+    "legal_basis": "Constitución Política de Colombia, artículo 29; Código General del Proceso (Ley 1564 de 2012), artículo 6.",
+    "targets": [
+      [
+        "codigo_general_proceso",
+        null,
+        null,
+        "6"
+      ],
+      [
+        "constitucion",
+        null,
+        null,
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_general_proceso",
+        null,
+        null,
+        "6"
+      ],
+      [
+        "constitucion",
+        null,
+        null,
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": []
+  },
+  {
+    "id": 128,
+    "legal_basis": "Decreto Ley 663 de 1993",
+    "targets": [
+      [
+        "decreto",
+        "663",
+        "1993",
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "decreto",
+        "663",
+        "1993",
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 290,
+    "legal_basis": "Artículo 11 ley 1150 de 2007",
+    "targets": [
+      [
+        "ley",
+        "1150",
+        "2007",
+        "11"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "ley",
+        "1150",
+        "2007",
+        "11"
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": []
+  },
+  {
+    "id": 308,
+    "legal_basis": "Art 44 ley 1150 ",
+    "targets": [],
+    "covered_targets": [],
+    "coverage": null,
+    "notes": [
+      "No unambiguous machine-extractable legal citation; excluded from retrieval metrics",
+      "Bare law citation and article absent from acquired source; original label preserved"
+    ]
+  },
+  {
+    "id": 352,
+    "legal_basis": "Decreto 2067 de 1991, art. 49 (nulidad por violación del debido proceso).",
+    "targets": [
+      [
+        "decreto",
+        "2067",
+        "1991",
+        "49"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "decreto",
+        "2067",
+        "1991",
+        "49"
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": []
+  },
+  {
+    "id": 358,
+    "legal_basis": "c) Acción reivindicatoria, disponible únicamente para los dueños legales del bien, de acuerdo con el artículo 946 del C.C.\n",
+    "targets": [
+      [
+        "codigo_civil",
+        null,
+        null,
+        "946"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_civil",
+        null,
+        null,
+        "946"
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": []
+  },
+  {
+    "id": 487,
+    "legal_basis": "1820 del Código Civil. ",
+    "targets": [
+      [
+        "codigo_civil",
+        null,
+        null,
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_civil",
+        null,
+        null,
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 528,
+    "legal_basis": "Código General del Proceso. Art. 25.",
+    "targets": [
+      [
+        "codigo_general_proceso",
+        null,
+        null,
+        "25"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_general_proceso",
+        null,
+        null,
+        "25"
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": []
+  },
+  {
+    "id": 600,
+    "legal_basis": "Artículo 241 del Código Penal. ",
+    "targets": [
+      [
+        "codigo_penal",
+        null,
+        null,
+        "241"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_penal",
+        null,
+        null,
+        "241"
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": []
+  },
+  {
+    "id": 617,
+    "legal_basis": "Código Sustantivo del Trabajo. ",
+    "targets": [
+      [
+        "codigo_sustantivo_trabajo",
+        null,
+        null,
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_sustantivo_trabajo",
+        null,
+        null,
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 647,
+    "legal_basis": "Código civil.",
+    "targets": [
+      [
+        "codigo_civil",
+        null,
+        null,
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_civil",
+        null,
+        null,
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 671,
+    "legal_basis": "Doctrina. ",
+    "targets": [],
+    "covered_targets": [],
+    "coverage": null,
+    "notes": [
+      "No unambiguous machine-extractable legal citation; excluded from retrieval metrics"
+    ]
+  },
+  {
+    "id": 748,
+    "legal_basis": "CPACA ",
+    "targets": [
+      [
+        "cpaca",
+        null,
+        null,
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "cpaca",
+        null,
+        null,
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 247,
+    "legal_basis": "ley 472 de 1998 ",
+    "targets": [
+      [
+        "ley",
+        "472",
+        "1998",
+        null
+      ]
+    ],
+    "covered_targets": [],
+    "coverage": 0.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 253,
+    "legal_basis": "Sentencia SL3385-2022.\nLey 1562 de 2012.  \nartículo 56 y 57 del CST.  ",
+    "targets": [
+      [
+        "codigo_sustantivo_trabajo",
+        null,
+        null,
+        "56"
+      ],
+      [
+        "codigo_sustantivo_trabajo",
+        null,
+        null,
+        "57"
+      ],
+      [
+        "jurisprudencia",
+        "SL-3385",
+        "2022",
+        null
+      ],
+      [
+        "ley",
+        "1562",
+        "2012",
+        "56"
+      ],
+      [
+        "ley",
+        "1562",
+        "2012",
+        "57"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_sustantivo_trabajo",
+        null,
+        null,
+        "56"
+      ],
+      [
+        "codigo_sustantivo_trabajo",
+        null,
+        null,
+        "57"
+      ],
+      [
+        "jurisprudencia",
+        "SL-3385",
+        "2022",
+        null
+      ]
+    ],
+    "coverage": 0.6,
+    "notes": []
+  },
+  {
+    "id": 272,
+    "legal_basis": "Ley 1116 de 2006 y jurisprudencia de la superintendencia de sociedades en especial el auto auto No. 2025-01-730337",
+    "targets": [
+      [
+        "ley",
+        "1116",
+        "2006",
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "ley",
+        "1116",
+        "2006",
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 513,
+    "legal_basis": "https://www.wipo.int/edocs/mdocs/mdocs/en/wipo_ip_bog_12/wipo_ip_bog_12_ref_u14b_aleman.pdf ",
+    "targets": [],
+    "covered_targets": [],
+    "coverage": null,
+    "notes": [
+      "No unambiguous machine-extractable legal citation; excluded from retrieval metrics"
+    ]
+  },
+  {
+    "id": 679,
+    "legal_basis": " Ley 1581 de 2012",
+    "targets": [
+      [
+        "ley",
+        "1581",
+        "2012",
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "ley",
+        "1581",
+        "2012",
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 24,
+    "legal_basis": null,
+    "targets": [],
+    "covered_targets": [],
+    "coverage": null,
+    "notes": [
+      "No unambiguous machine-extractable legal citation; excluded from retrieval metrics"
+    ]
+  },
+  {
+    "id": 79,
+    "legal_basis": "Ley 1010 de 2006 ",
+    "targets": [
+      [
+        "ley",
+        "1010",
+        "2006",
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "ley",
+        "1010",
+        "2006",
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 140,
+    "legal_basis": "Sentencia C 145 de 2018",
+    "targets": [
+      [
+        "jurisprudencia",
+        "C-145",
+        "2018",
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "jurisprudencia",
+        "C-145",
+        "2018",
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 142,
+    "legal_basis": "Sentencia de unificación 2020CE-SUJ-4-005 del 26 de noviembre de 2020 con expediente 21329.",
+    "targets": [],
+    "covered_targets": [],
+    "coverage": null,
+    "notes": [
+      "No unambiguous machine-extractable legal citation; excluded from retrieval metrics"
+    ]
+  },
+  {
+    "id": 168,
+    "legal_basis": "Sentencia del 18 de julio de 2017, de la Sala Civil de la Corte Suprema de Justicia",
+    "targets": [],
+    "covered_targets": [],
+    "coverage": null,
+    "notes": [
+      "No unambiguous machine-extractable legal citation; excluded from retrieval metrics"
+    ]
+  },
+  {
+    "id": 190,
+    "legal_basis": "sentencia t-256",
+    "targets": [],
+    "covered_targets": [],
+    "coverage": null,
+    "notes": [
+      "No unambiguous machine-extractable legal citation; excluded from retrieval metrics"
+    ]
+  },
+  {
+    "id": 218,
+    "legal_basis": "Artículo 311 y 313 de la Constitución Política",
+    "targets": [
+      [
+        "constitucion",
+        null,
+        null,
+        "311"
+      ],
+      [
+        "constitucion",
+        null,
+        null,
+        "313"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "constitucion",
+        null,
+        null,
+        "311"
+      ],
+      [
+        "constitucion",
+        null,
+        null,
+        "313"
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": []
+  },
+  {
+    "id": 239,
+    "legal_basis": "Artículos 1324 y 1325 del Código de Comercio. Así como en los principios de autonomía de la voluntad privada (Artículos 16, 822 y 871).",
+    "targets": [
+      [
+        "codigo_comercio",
+        null,
+        null,
+        "1324"
+      ],
+      [
+        "codigo_comercio",
+        null,
+        null,
+        "1325"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_comercio",
+        null,
+        null,
+        "1324"
+      ],
+      [
+        "codigo_comercio",
+        null,
+        null,
+        "1325"
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": []
+  },
+  {
+    "id": 280,
+    "legal_basis": "Artículo 64 del código penal colombiano",
+    "targets": [
+      [
+        "codigo_penal",
+        null,
+        null,
+        "64"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_penal",
+        null,
+        null,
+        "64"
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": []
+  },
+  {
+    "id": 442,
+    "legal_basis": "El Código sustantivo del trabajo ",
+    "targets": [
+      [
+        "codigo_sustantivo_trabajo",
+        null,
+        null,
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_sustantivo_trabajo",
+        null,
+        null,
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 453,
+    "legal_basis": "Sentencia C-468 de 2024, sentencia C-332 de 2025 y SU-016 de 2020",
+    "targets": [
+      [
+        "jurisprudencia",
+        "C-332",
+        "2025",
+        null
+      ],
+      [
+        "jurisprudencia",
+        "C-468",
+        "2024",
+        null
+      ],
+      [
+        "jurisprudencia",
+        "SU-16",
+        "2020",
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "jurisprudencia",
+        "C-332",
+        "2025",
+        null
+      ]
+    ],
+    "coverage": 0.3333333333333333,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 472,
+    "legal_basis": "Ley 1340 de 2009",
+    "targets": [
+      [
+        "ley",
+        "1340",
+        "2009",
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "ley",
+        "1340",
+        "2009",
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 490,
+    "legal_basis": "1796 del Código Civil. ",
+    "targets": [
+      [
+        "codigo_civil",
+        null,
+        null,
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_civil",
+        null,
+        null,
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 563,
+    "legal_basis": "Sentencia SU-277/25",
+    "targets": [
+      [
+        "jurisprudencia",
+        "SU-277",
+        "2025",
+        null
+      ]
+    ],
+    "covered_targets": [],
+    "coverage": 0.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 589,
+    "legal_basis": "Artículo 60 del Código General del Proceso. ",
+    "targets": [
+      [
+        "codigo_general_proceso",
+        null,
+        null,
+        "60"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_general_proceso",
+        null,
+        null,
+        "60"
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": []
+  },
+  {
+    "id": 661,
+    "legal_basis": "Artículos 29 y 338 de la Constitución Política, sentencia C-89112 de la Corte Constitucional. ",
+    "targets": [
+      [
+        "constitucion",
+        null,
+        null,
+        "29"
+      ],
+      [
+        "constitucion",
+        null,
+        null,
+        "338"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "constitucion",
+        null,
+        null,
+        "29"
+      ],
+      [
+        "constitucion",
+        null,
+        null,
+        "338"
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": []
+  },
+  {
+    "id": 674,
+    "legal_basis": "Artículos 3, 23 y 24 del Estatuto del Consumidor",
+    "targets": [
+      [
+        "estatuto_consumidor",
+        null,
+        null,
+        "23"
+      ],
+      [
+        "estatuto_consumidor",
+        null,
+        null,
+        "24"
+      ],
+      [
+        "estatuto_consumidor",
+        null,
+        null,
+        "3"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "estatuto_consumidor",
+        null,
+        null,
+        "23"
+      ],
+      [
+        "estatuto_consumidor",
+        null,
+        null,
+        "24"
+      ],
+      [
+        "estatuto_consumidor",
+        null,
+        null,
+        "3"
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": []
+  },
+  {
+    "id": 697,
+    "legal_basis": "caso francés de Dow Chemical",
+    "targets": [],
+    "covered_targets": [],
+    "coverage": null,
+    "notes": [
+      "No unambiguous machine-extractable legal citation; excluded from retrieval metrics"
+    ]
+  },
+  {
+    "id": 857,
+    "legal_basis": "Doctrina. ",
+    "targets": [],
+    "covered_targets": [],
+    "coverage": null,
+    "notes": [
+      "No unambiguous machine-extractable legal citation; excluded from retrieval metrics"
+    ]
+  },
+  {
+    "id": 865,
+    "legal_basis": "artículo 113 del Código Civil",
+    "targets": [
+      [
+        "codigo_civil",
+        null,
+        null,
+        "113"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_civil",
+        null,
+        null,
+        "113"
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": []
+  },
+  {
+    "id": 879,
+    "legal_basis": "Código General del Proceso. ",
+    "targets": [
+      [
+        "codigo_general_proceso",
+        null,
+        null,
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_general_proceso",
+        null,
+        null,
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 919,
+    "legal_basis": "Sentencia SU-455 de 2020 de la Corte Constitucional. ",
+    "targets": [
+      [
+        "jurisprudencia",
+        "SU-455",
+        "2020",
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "jurisprudencia",
+        "SU-455",
+        "2020",
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 946,
+    "legal_basis": " Sentencia C-039 de 2025 de la Corte Constitucional",
+    "targets": [
+      [
+        "jurisprudencia",
+        "C-39",
+        "2025",
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "jurisprudencia",
+        "C-39",
+        "2025",
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 960,
+    "legal_basis": "Artículo 45 del Decreto 2153 de 1992",
+    "targets": [
+      [
+        "decreto",
+        "2153",
+        "1992",
+        "45"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "decreto",
+        "2153",
+        "1992",
+        "45"
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": []
+  },
+  {
+    "id": 991,
+    "legal_basis": "Sentencia C-891 del 2012 de la Corte Constitucional",
+    "targets": [
+      [
+        "jurisprudencia",
+        "C-891",
+        "2012",
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "jurisprudencia",
+        "C-891",
+        "2012",
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 1005,
+    "legal_basis": "Constitución Política. ",
+    "targets": [
+      [
+        "constitucion",
+        null,
+        null,
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "constitucion",
+        null,
+        null,
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 1015,
+    "legal_basis": "Sentencia C-355 de 2006",
+    "targets": [
+      [
+        "jurisprudencia",
+        "C-355",
+        "2006",
+        null
+      ]
+    ],
+    "covered_targets": [
+      [
+        "jurisprudencia",
+        "C-355",
+        "2006",
+        null
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": [
+      "Document-level label only; passage relevance unverified"
+    ]
+  },
+  {
+    "id": 1065,
+    "legal_basis": "Artículo 20 del Código Penal. ",
+    "targets": [
+      [
+        "codigo_penal",
+        null,
+        null,
+        "20"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_penal",
+        null,
+        null,
+        "20"
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": []
+  },
+  {
+    "id": 1073,
+    "legal_basis": "Artículo 53 de la Constitución Política. \nArtículos 23 y 34 del Código Sustantivo del Trabajo. ",
+    "targets": [
+      [
+        "codigo_sustantivo_trabajo",
+        null,
+        null,
+        "23"
+      ],
+      [
+        "codigo_sustantivo_trabajo",
+        null,
+        null,
+        "34"
+      ],
+      [
+        "constitucion",
+        null,
+        null,
+        "23"
+      ],
+      [
+        "constitucion",
+        null,
+        null,
+        "34"
+      ],
+      [
+        "constitucion",
+        null,
+        null,
+        "53"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "codigo_sustantivo_trabajo",
+        null,
+        null,
+        "23"
+      ],
+      [
+        "codigo_sustantivo_trabajo",
+        null,
+        null,
+        "34"
+      ],
+      [
+        "constitucion",
+        null,
+        null,
+        "23"
+      ],
+      [
+        "constitucion",
+        null,
+        null,
+        "34"
+      ],
+      [
+        "constitucion",
+        null,
+        null,
+        "53"
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": []
+  },
+  {
+    "id": 1089,
+    "legal_basis": "Artículo 246 del CPACA. ",
+    "targets": [
+      [
+        "cpaca",
+        null,
+        null,
+        "246"
+      ]
+    ],
+    "covered_targets": [
+      [
+        "cpaca",
+        null,
+        null,
+        "246"
+      ]
+    ],
+    "coverage": 1.0,
+    "notes": []
+  }
+]

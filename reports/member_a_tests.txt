@@ -1,0 +1,21 @@
+test_contract_limits_errors_and_no_mutation (test_knowledge.IntegrationTests.test_contract_limits_errors_and_no_mutation) ... ok
+test_missing_dense_is_explicit (test_knowledge.IntegrationTests.test_missing_dense_is_explicit) ... ok
+test_repeated_queries_and_graph_modes (test_knowledge.IntegrationTests.test_repeated_queries_and_graph_modes) ... ok
+test_mention_is_not_source_evidence (test_knowledge.MetricTests.test_mention_is_not_source_evidence) ... ok
+test_no_labels_not_counted_as_success (test_knowledge.MetricTests.test_no_labels_not_counted_as_success) ... ok
+test_recall_counts_distinct_targets (test_knowledge.MetricTests.test_recall_counts_distinct_targets) ... ok
+test_all_ambiguous_article_occurrences_are_excluded (test_knowledge.ParserTests.test_all_ambiguous_article_occurrences_are_excluded) ... ok
+test_chunk_offsets_preserve_every_nonspace_character (test_knowledge.ParserTests.test_chunk_offsets_preserve_every_nonspace_character) ... ok
+test_dom_preserves_text_outside_paragraphs_and_skips_hidden (test_knowledge.ParserTests.test_dom_preserves_text_outside_paragraphs_and_skips_hidden) ... ok
+test_full_dotted_article_number_from_official_heading (test_knowledge.ParserTests.test_full_dotted_article_number_from_official_heading) ... ok
+test_real_amendment_not_mislabelled_as_new_article (test_knowledge.ParserTests.test_real_amendment_not_mislabelled_as_new_article) ... ok
+test_accent_stopwords_and_exact_numbers (test_knowledge.SparseTests.test_accent_stopwords_and_exact_numbers) ... ok
+test_bm25_hand_calculation_and_stable_tie (test_knowledge.SparseTests.test_bm25_hand_calculation_and_stable_tie) ... ok
+test_empty_and_unknown (test_knowledge.SparseTests.test_empty_and_unknown) ... ok
+test_rrf_deduplicates_within_ranker (test_knowledge.SparseTests.test_rrf_deduplicates_within_ranker) ... ok
+test_stale_index_rejected (test_knowledge.SparseTests.test_stale_index_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 13.253s
+
+OK

@@ -1,0 +1,5 @@
+# CPU corpus/BM25/validation. Neural dependencies are separate.
+beautifulsoup4==4.15.0
+jsonschema==4.26.0
+numpy==2.2.6
+pdfplumber==0.11.10

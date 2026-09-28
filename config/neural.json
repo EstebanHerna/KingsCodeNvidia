@@ -1,0 +1,11 @@
+{
+  "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+  "reranker_model": "Qwen/Qwen3-Reranker-0.6B",
+  "device": "cpu",
+  "dtype": "float32",
+  "batch_size": 2,
+  "max_length": 4096,
+  "instruction": "Given a question about Colombian law, retrieve official legal passages that provide the evidence needed to answer it.",
+  "local_files_only": true,
+  "seed": 0
+}

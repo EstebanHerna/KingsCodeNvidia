@@ -1,0 +1,48 @@
+{
+  "ok": true,
+  "stage": "pre-CUDA",
+  "python": "3.13.5",
+  "checks": {
+    "required_files": "OK: 11/11",
+    "sample_rows": 50,
+    "sample_unique_ids": 50,
+    "formats": {
+      "multiple_choice": 15,
+      "open_ended": 5,
+      "semi_open": 30
+    },
+    "areas": 10,
+    "seed_documents": 186,
+    "example_rows": 5,
+    "schema_example": "OK: 5/5 registros del ejemplo validan",
+    "official_example_eval_total_without_ragas": 5.24
+  },
+  "warnings": [],
+  "errors": []
+}
+MUESTRA
+  total: 50
+  formatos: {'multiple_choice': 15, 'open_ended': 5, 'semi_open': 30}
+  areas: {'Derecho constitucional': 6, 'Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]': 5, 'Derecho procesal': 5, 'Derecho comercial y sociedades': 5, 'Derecho administrativo': 7, 'Derecho civil': 4, 'Derecho de familia': 5, 'Derecho penal': 4, 'Derecho laboral': 5, 'Derecho tributario': 4}
+  complejidad: {'None': 20, 'low': 10, 'medium': 10, 'high': 10}
+
+SEED TARGETS
+  seed: 20260830
+  documentos: 186
+
+TOP 15 por items_del_banco
+   90 | Constitucion
+   65 | Codigo general proceso
+   37 | Codigo sustantivo trabajo
+   35 | Estatuto tributario
+   23 | Decision andina 486
+   13 | Estatuto consumidor
+   12 | Ley 80 de 1993
+   11 | Ley 2220 de 2022
+   10 | Decreto 2153 de 1992
+    7 | Sentencia C-355 de 2006
+    7 | Ley 1116 de 2006
+    6 | Ley 1581 de 2012
+    5 | Codigo infancia
+    4 | Sentencia C-207 de 2019
+    4 | Sentencia SL-3385 de 2022

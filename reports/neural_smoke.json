@@ -1,0 +1,116 @@
+{
+  "ok": true,
+  "config": {
+    "embedding_model": "Qwen/Qwen3-Embedding-0.6B",
+    "reranker_model": "Qwen/Qwen3-Reranker-0.6B",
+    "device": "cpu",
+    "dtype": "float32",
+    "batch_size": 2,
+    "max_length": 4096,
+    "instruction": "Given a question about Colombian law, retrieve official legal passages that provide the evidence needed to answer it.",
+    "local_files_only": true,
+    "seed": 0
+  },
+  "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+  "model_lock": {
+    "Qwen/Qwen3-Embedding-0.6B": {
+      "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+      "repo_id": "Qwen/Qwen3-Embedding-0.6B",
+      "model_card": "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B",
+      "license": "apache-2.0"
+    },
+    "Qwen/Qwen3-Reranker-0.6B": {
+      "revision": "e61197ed45024b0ed8a2d74b80b4d909f1255473",
+      "repo_id": "Qwen/Qwen3-Reranker-0.6B",
+      "model_card": "https://huggingface.co/Qwen/Qwen3-Reranker-0.6B",
+      "license": "apache-2.0"
+    }
+  },
+  "integration": {
+    "dense": {
+      "passage_ids": [
+        "constitucion:00000:2621a83a23cc",
+        "codigo_general_proceso:00000:7e5b524b91ca"
+      ],
+      "scores": [
+        {
+          "bm25": 3.162284372139843,
+          "dense": 0.7947220802307129,
+          "rrf": 0.01639344262295082,
+          "graph": null,
+          "reranker": null
+        },
+        {
+          "bm25": null,
+          "dense": 0.32362064719200134,
+          "rrf": 0.016129032258064516,
+          "graph": null,
+          "reranker": null
+        }
+      ]
+    },
+    "hybrid": {
+      "passage_ids": [
+        "constitucion:00000:2621a83a23cc",
+        "codigo_general_proceso:00000:7e5b524b91ca"
+      ],
+      "scores": [
+        {
+          "bm25": 3.162284372139843,
+          "dense": 0.7947220802307129,
+          "rrf": 0.03278688524590164,
+          "graph": null,
+          "reranker": null
+        },
+        {
+          "bm25": null,
+          "dense": 0.32362064719200134,
+          "rrf": 0.016129032258064516,
+          "graph": null,
+          "reranker": null
+        }
+      ]
+    },
+    "hybrid_reranker": {
+      "passage_ids": [
+        "constitucion:00000:2621a83a23cc",
+        "codigo_general_proceso:00000:7e5b524b91ca"
+      ],
+      "scores": [
+        {
+          "bm25": 3.162284372139843,
+          "dense": 0.7947220802307129,
+          "rrf": 0.03278688524590164,
+          "graph": null,
+          "reranker": 0.9798058867454529
+        },
+        {
+          "bm25": null,
+          "dense": 0.32362064719200134,
+          "rrf": 0.016129032258064516,
+          "graph": null,
+          "reranker": 0.00035424597444944084
+        }
+      ]
+    }
+  },
+  "embedding_shape": [
+    2,
+    1024
+  ],
+  "embedding_cosines": [
+    0.7947220802307129,
+    0.32362064719200134
+  ],
+  "reranker_probabilities": [
+    0.9798058867454529,
+    0.00035424597444944084
+  ],
+  "encoder_seconds": 73.44306439999491,
+  "reranker_seconds": 24.79557320001186,
+  "passage_ids": [
+    "constitucion:00000:2621a83a23cc",
+    "codigo_general_proceso:00000:7e5b524b91ca"
+  ],
+  "scope": "real weights, two official passages; not full-corpus benchmark"
+}

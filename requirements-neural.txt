@@ -1,0 +1,6 @@
+-r requirements-knowledge.txt
+# Install the appropriate PyTorch build only after diagnosing the target GPU.
+# Observed CPU smoke environment: torch 2.12.0+cpu, transformers 5.8.1.
+transformers==5.8.1
+safetensors>=0.5
+huggingface-hub>=0.34

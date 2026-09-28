@@ -1,0 +1,3330 @@
+[
+  {
+    "doc_id": "constitucion",
+    "norm_name": "Constitución Política de Colombia de 1991",
+    "canonical_body": [
+      "constitucion",
+      null,
+      null
+    ],
+    "areas": [
+      "Derecho administrativo",
+      "Derecho comercial y sociedades",
+      "Derecho constitucional",
+      "Derecho de familia",
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]",
+      "Derecho laboral",
+      "Derecho penal",
+      "Derecho procesal",
+      "Derecho tributario"
+    ],
+    "priority": 90,
+    "seed_url": "http://www.secretariasenado.gov.co/senado/basedoc/constitucion_politica_1991.html?q=Constitucion",
+    "source_type": "constitution",
+    "norm_number": null,
+    "year": 1991,
+    "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=4125"
+  },
+  {
+    "doc_id": "codigo_general_proceso",
+    "norm_name": "Código General del Proceso (Ley 1564 de 2012)",
+    "canonical_body": [
+      "codigo_general_proceso",
+      null,
+      null
+    ],
+    "areas": [
+      "Derecho civil",
+      "Derecho comercial y sociedades",
+      "Derecho de familia",
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]",
+      "Derecho penal",
+      "Derecho procesal",
+      "Derecho tributario"
+    ],
+    "priority": 65,
+    "seed_url": "http://www.secretariasenado.gov.co/senado/basedoc/?q=Codigo%20general%20proceso",
+    "source_type": "code",
+    "norm_number": "1564",
+    "year": 2012,
+    "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=48425"
+  },
+  {
+    "doc_id": "codigo_sustantivo_trabajo",
+    "norm_name": "Código Sustantivo del Trabajo (Decreto 2663 de 1950)",
+    "canonical_body": [
+      "codigo_sustantivo_trabajo",
+      null,
+      null
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 37,
+    "seed_url": "http://www.secretariasenado.gov.co/senado/basedoc/?q=Codigo%20sustantivo%20trabajo",
+    "source_type": "code",
+    "norm_number": "2663",
+    "year": 1950,
+    "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=199983"
+  },
+  {
+    "doc_id": "estatuto_tributario",
+    "norm_name": "Estatuto Tributario (Decreto 624 de 1989)",
+    "canonical_body": [
+      "estatuto_tributario",
+      null,
+      null
+    ],
+    "areas": [
+      "Derecho civil",
+      "Derecho constitucional",
+      "Derecho tributario"
+    ],
+    "priority": 35,
+    "seed_url": "http://www.secretariasenado.gov.co/senado/basedoc/?q=Estatuto%20tributario",
+    "source_type": "code",
+    "norm_number": "624",
+    "year": 1989,
+    "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=6533"
+  },
+  {
+    "doc_id": "decision_andina_486",
+    "norm_name": "Decisión Andina 486 de 2000",
+    "canonical_body": [
+      "decision_andina_486",
+      null,
+      null
+    ],
+    "areas": [
+      "Derecho comercial y sociedades",
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]"
+    ],
+    "priority": 23,
+    "seed_url": "http://www.secretariasenado.gov.co/senado/basedoc/?q=Decision%20andina%20486",
+    "source_type": "other",
+    "norm_number": "486",
+    "year": 2000,
+    "url": "https://www.comunidadandina.org/StaticFiles/DocOf/DEC486.pdf",
+    "pdf_identity": "DECISION\\s+486",
+    "pdf_skip_pages": [
+      1
+    ],
+    "pdf_notes": "Cover has an invalid Symbol font mapping; normative text starts at page 2, verified visually.",
+    "institution": "Comunidad Andina"
+  },
+  {
+    "doc_id": "estatuto_consumidor",
+    "norm_name": "Estatuto del Consumidor (Ley 1480 de 2011)",
+    "canonical_body": [
+      "estatuto_consumidor",
+      null,
+      null
+    ],
+    "areas": [
+      "Derecho civil",
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]"
+    ],
+    "priority": 13,
+    "seed_url": "http://www.secretariasenado.gov.co/senado/basedoc/?q=Estatuto%20consumidor",
+    "source_type": "code",
+    "norm_number": "1480",
+    "year": 2011,
+    "resolve_as": [
+      "ley",
+      "1480",
+      "2011"
+    ]
+  },
+  {
+    "doc_id": "ley_80_de_1993",
+    "norm_name": "Ley 80 de 1993",
+    "canonical_body": [
+      "ley",
+      "80",
+      "1993"
+    ],
+    "areas": [
+      "Derecho administrativo",
+      "Derecho laboral"
+    ],
+    "priority": 12,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%2080%20de%201993",
+    "source_type": "law",
+    "norm_number": "80",
+    "year": 1993
+  },
+  {
+    "doc_id": "ley_2220_de_2022",
+    "norm_name": "Ley 2220 de 2022",
+    "canonical_body": [
+      "ley",
+      "2220",
+      "2022"
+    ],
+    "areas": [
+      "Derecho civil",
+      "Derecho procesal"
+    ],
+    "priority": 11,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%202220%20de%202022",
+    "source_type": "law",
+    "norm_number": "2220",
+    "year": 2022
+  },
+  {
+    "doc_id": "decreto_2153_de_1992",
+    "norm_name": "Decreto 2153 de 1992",
+    "canonical_body": [
+      "decreto",
+      "2153",
+      "1992"
+    ],
+    "areas": [
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]"
+    ],
+    "priority": 10,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%202153%20de%201992",
+    "source_type": "decree",
+    "norm_number": "2153",
+    "year": 1992
+  },
+  {
+    "doc_id": "ley_1116_de_2006",
+    "norm_name": "Ley 1116 de 2006",
+    "canonical_body": [
+      "ley",
+      "1116",
+      "2006"
+    ],
+    "areas": [
+      "Derecho comercial y sociedades",
+      "Derecho procesal"
+    ],
+    "priority": 7,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201116%20de%202006",
+    "source_type": "law",
+    "norm_number": "1116",
+    "year": 2006
+  },
+  {
+    "doc_id": "sentencia_c_355_de_2006",
+    "norm_name": "Sentencia C-355 de 2006",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-355",
+      "2006"
+    ],
+    "areas": [
+      "Derecho constitucional",
+      "Derecho penal"
+    ],
+    "priority": 7,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-355%20de%202006",
+    "source_type": "decision",
+    "norm_number": "C-355",
+    "year": 2006
+  },
+  {
+    "doc_id": "ley_1581_de_2012",
+    "norm_name": "Ley 1581 de 2012",
+    "canonical_body": [
+      "ley",
+      "1581",
+      "2012"
+    ],
+    "areas": [
+      "Derecho administrativo",
+      "Derecho constitucional",
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]"
+    ],
+    "priority": 6,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201581%20de%202012",
+    "source_type": "law",
+    "norm_number": "1581",
+    "year": 2012
+  },
+  {
+    "doc_id": "codigo_infancia",
+    "norm_name": "Código de la Infancia y la Adolescencia (Ley 1098 de 2006)",
+    "canonical_body": [
+      "codigo_infancia",
+      null,
+      null
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 5,
+    "seed_url": "http://www.secretariasenado.gov.co/senado/basedoc/?q=Codigo%20infancia",
+    "source_type": "code",
+    "norm_number": "1098",
+    "year": 2006,
+    "resolve_as": [
+      "ley",
+      "1098",
+      "2006"
+    ]
+  },
+  {
+    "doc_id": "ley_1258_de_2008",
+    "norm_name": "Ley 1258 de 2008",
+    "canonical_body": [
+      "ley",
+      "1258",
+      "2008"
+    ],
+    "areas": [
+      "Derecho comercial y sociedades"
+    ],
+    "priority": 4,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201258%20de%202008",
+    "source_type": "law",
+    "norm_number": "1258",
+    "year": 2008
+  },
+  {
+    "doc_id": "sentencia_c_207_de_2019",
+    "norm_name": "Sentencia C-207 de 2019",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-207",
+      "2019"
+    ],
+    "areas": [
+      "Derecho administrativo"
+    ],
+    "priority": 4,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-207%20de%202019",
+    "source_type": "decision",
+    "norm_number": "C-207",
+    "year": 2019
+  },
+  {
+    "doc_id": "sentencia_sl_3385_de_2022",
+    "norm_name": "Sentencia SL-3385 de 2022",
+    "canonical_body": [
+      "jurisprudencia",
+      "SL-3385",
+      "2022"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 4,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SL-3385%20de%202022",
+    "source_type": "decision",
+    "norm_number": "SL-3385",
+    "year": 2022,
+    "url": "https://cortesuprema.gov.co/corte/wp-content/uploads/relatorias/la/bnov2022/SL3385-2022.pdf",
+    "pdf_identity": "SL3385-2022",
+    "court": "Corte Suprema de Justicia - Sala de Casación Laboral",
+    "institution": "Corte Suprema de Justicia"
+  },
+  {
+    "doc_id": "sentencia_t_323_de_2024",
+    "norm_name": "Sentencia T-323 de 2024",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-323",
+      "2024"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 4,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-323%20de%202024",
+    "source_type": "decision",
+    "norm_number": "T-323",
+    "year": 2024
+  },
+  {
+    "doc_id": "ley_1010_de_2006",
+    "norm_name": "Ley 1010 de 2006",
+    "canonical_body": [
+      "ley",
+      "1010",
+      "2006"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 3,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201010%20de%202006",
+    "source_type": "law",
+    "norm_number": "1010",
+    "year": 2006
+  },
+  {
+    "doc_id": "ley_1150_de_2007",
+    "norm_name": "Ley 1150 de 2007",
+    "canonical_body": [
+      "ley",
+      "1150",
+      "2007"
+    ],
+    "areas": [
+      "Derecho administrativo"
+    ],
+    "priority": 3,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201150%20de%202007",
+    "source_type": "law",
+    "norm_number": "1150",
+    "year": 2007
+  },
+  {
+    "doc_id": "ley_1340_de_2009",
+    "norm_name": "Ley 1340 de 2009",
+    "canonical_body": [
+      "ley",
+      "1340",
+      "2009"
+    ],
+    "areas": [
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]"
+    ],
+    "priority": 3,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201340%20de%202009",
+    "source_type": "law",
+    "norm_number": "1340",
+    "year": 2009
+  },
+  {
+    "doc_id": "ley_153_de_1887",
+    "norm_name": "Ley 153 de 1887",
+    "canonical_body": [
+      "ley",
+      "153",
+      "1887"
+    ],
+    "areas": [
+      "Derecho civil",
+      "Derecho tributario"
+    ],
+    "priority": 3,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20153%20de%201887",
+    "source_type": "law",
+    "norm_number": "153",
+    "year": 1887
+  },
+  {
+    "doc_id": "ley_2437_de_2024",
+    "norm_name": "Ley 2437 de 2024",
+    "canonical_body": [
+      "ley",
+      "2437",
+      "2024"
+    ],
+    "areas": [
+      "Derecho civil",
+      "Derecho procesal"
+    ],
+    "priority": 3,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%202437%20de%202024",
+    "source_type": "law",
+    "norm_number": "2437",
+    "year": 2024
+  },
+  {
+    "doc_id": "ley_54_de_1990",
+    "norm_name": "Ley 54 de 1990",
+    "canonical_body": [
+      "ley",
+      "54",
+      "1990"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 3,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%2054%20de%201990",
+    "source_type": "law",
+    "norm_number": "54",
+    "year": 1990
+  },
+  {
+    "doc_id": "ley_979_de_2005",
+    "norm_name": "Ley 979 de 2005",
+    "canonical_body": [
+      "ley",
+      "979",
+      "2005"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 3,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20979%20de%202005",
+    "source_type": "law",
+    "norm_number": "979",
+    "year": 2005
+  },
+  {
+    "doc_id": "sentencia_c_394_de_2017",
+    "norm_name": "Sentencia C-394 de 2017",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-394",
+      "2017"
+    ],
+    "areas": [
+      "Derecho constitucional",
+      "Derecho de familia"
+    ],
+    "priority": 3,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-394%20de%202017",
+    "source_type": "decision",
+    "norm_number": "C-394",
+    "year": 2017
+  },
+  {
+    "doc_id": "sentencia_c_55_de_2022",
+    "norm_name": "Sentencia C-55 de 2022",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-55",
+      "2022"
+    ],
+    "areas": [
+      "Derecho constitucional",
+      "Derecho penal"
+    ],
+    "priority": 3,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-55%20de%202022",
+    "source_type": "decision",
+    "norm_number": "C-55",
+    "year": 2022
+  },
+  {
+    "doc_id": "sentencia_su_315_de_2025",
+    "norm_name": "Sentencia SU-315 de 2025",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-315",
+      "2025"
+    ],
+    "areas": [
+      "Derecho civil"
+    ],
+    "priority": 3,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-315%20de%202025",
+    "source_type": "decision",
+    "norm_number": "SU-315",
+    "year": 2025
+  },
+  {
+    "doc_id": "sentencia_t_243_de_2018",
+    "norm_name": "Sentencia T-243 de 2018",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-243",
+      "2018"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 3,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-243%20de%202018",
+    "source_type": "decision",
+    "norm_number": "T-243",
+    "year": 2018
+  },
+  {
+    "doc_id": "sentencia_t_760_de_2008",
+    "norm_name": "Sentencia T-760 de 2008",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-760",
+      "2008"
+    ],
+    "areas": [
+      "Derecho administrativo",
+      "Derecho constitucional"
+    ],
+    "priority": 3,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-760%20de%202008",
+    "source_type": "decision",
+    "norm_number": "T-760",
+    "year": 2008
+  },
+  {
+    "doc_id": "decreto_1563_de_2012",
+    "norm_name": "Decreto 1563 de 2012",
+    "canonical_body": [
+      "decreto",
+      "1563",
+      "2012"
+    ],
+    "areas": [
+      "Derecho procesal"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%201563%20de%202012",
+    "source_type": "decree",
+    "norm_number": "1563",
+    "year": 2012
+  },
+  {
+    "doc_id": "ley_1095_de_2006",
+    "norm_name": "Ley 1095 de 2006",
+    "canonical_body": [
+      "ley",
+      "1095",
+      "2006"
+    ],
+    "areas": [
+      "Derecho constitucional",
+      "Derecho penal"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201095%20de%202006",
+    "source_type": "law",
+    "norm_number": "1095",
+    "year": 2006
+  },
+  {
+    "doc_id": "ley_2141_de_2021",
+    "norm_name": "Ley 2141 de 2021",
+    "canonical_body": [
+      "ley",
+      "2141",
+      "2021"
+    ],
+    "areas": [
+      "Derecho constitucional",
+      "Derecho laboral"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%202141%20de%202021",
+    "source_type": "law",
+    "norm_number": "2141",
+    "year": 2021
+  },
+  {
+    "doc_id": "ley_2452_de_2025",
+    "norm_name": "Ley 2452 de 2025",
+    "canonical_body": [
+      "ley",
+      "2452",
+      "2025"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%202452%20de%202025",
+    "source_type": "law",
+    "norm_number": "2452",
+    "year": 2025
+  },
+  {
+    "doc_id": "ley_2466_de_2025",
+    "norm_name": "Ley 2466 de 2025",
+    "canonical_body": [
+      "ley",
+      "2466",
+      "2025"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%202466%20de%202025",
+    "source_type": "law",
+    "norm_number": "2466",
+    "year": 2025
+  },
+  {
+    "doc_id": "ley_256_de_1996",
+    "norm_name": "Ley 256 de 1996",
+    "canonical_body": [
+      "ley",
+      "256",
+      "1996"
+    ],
+    "areas": [
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20256%20de%201996",
+    "source_type": "law",
+    "norm_number": "256",
+    "year": 1996
+  },
+  {
+    "doc_id": "ley_50_de_1990",
+    "norm_name": "Ley 50 de 1990",
+    "canonical_body": [
+      "ley",
+      "50",
+      "1990"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%2050%20de%201990",
+    "source_type": "law",
+    "norm_number": "50",
+    "year": 1990
+  },
+  {
+    "doc_id": "sentencia_c_117_de_2018",
+    "norm_name": "Sentencia C-117 de 2018",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-117",
+      "2018"
+    ],
+    "areas": [
+      "Derecho tributario"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-117%20de%202018",
+    "source_type": "decision",
+    "norm_number": "C-117",
+    "year": 2018
+  },
+  {
+    "doc_id": "sentencia_c_127_de_2011",
+    "norm_name": "Sentencia C-127 de 2011",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-127",
+      "2011"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-127%20de%202011",
+    "source_type": "decision",
+    "norm_number": "C-127",
+    "year": 2011
+  },
+  {
+    "doc_id": "sentencia_c_134_de_2019",
+    "norm_name": "Sentencia C-134 de 2019",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-134",
+      "2019"
+    ],
+    "areas": [
+      "Derecho constitucional",
+      "Derecho de familia"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-134%20de%202019",
+    "source_type": "decision",
+    "norm_number": "C-134",
+    "year": 2019
+  },
+  {
+    "doc_id": "sentencia_c_15_de_2018",
+    "norm_name": "Sentencia C-15 de 2018",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-15",
+      "2018"
+    ],
+    "areas": [
+      "Derecho constitucional",
+      "Derecho penal"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-15%20de%202018",
+    "source_type": "decision",
+    "norm_number": "C-15",
+    "year": 2018
+  },
+  {
+    "doc_id": "sentencia_c_164_de_2022",
+    "norm_name": "Sentencia C-164 de 2022",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-164",
+      "2022"
+    ],
+    "areas": [
+      "Derecho constitucional",
+      "Derecho penal"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-164%20de%202022",
+    "source_type": "decision",
+    "norm_number": "C-164",
+    "year": 2022
+  },
+  {
+    "doc_id": "sentencia_c_259_de_2015",
+    "norm_name": "Sentencia C-259 de 2015",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-259",
+      "2015"
+    ],
+    "areas": [
+      "Derecho administrativo",
+      "Derecho procesal"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-259%20de%202015",
+    "source_type": "decision",
+    "norm_number": "C-259",
+    "year": 2015
+  },
+  {
+    "doc_id": "sentencia_c_35_de_2009",
+    "norm_name": "Sentencia C-35 de 2009",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-35",
+      "2009"
+    ],
+    "areas": [
+      "Derecho tributario"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-35%20de%202009",
+    "source_type": "decision",
+    "norm_number": "C-35",
+    "year": 2009
+  },
+  {
+    "doc_id": "sentencia_c_431_de_2001",
+    "norm_name": "Sentencia C-431 de 2001",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-431",
+      "2001"
+    ],
+    "areas": [
+      "Derecho constitucional",
+      "Derecho penal"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-431%20de%202001",
+    "source_type": "decision",
+    "norm_number": "C-431",
+    "year": 2001
+  },
+  {
+    "doc_id": "sentencia_c_500_de_2024",
+    "norm_name": "Sentencia C-500 de 2024",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-500",
+      "2024"
+    ],
+    "areas": [
+      "Derecho procesal",
+      "Derecho tributario"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-500%20de%202024",
+    "source_type": "decision",
+    "norm_number": "C-500",
+    "year": 2024
+  },
+  {
+    "doc_id": "sentencia_c_507_de_2004",
+    "norm_name": "Sentencia C-507 de 2004",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-507",
+      "2004"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-507%20de%202004",
+    "source_type": "decision",
+    "norm_number": "C-507",
+    "year": 2004
+  },
+  {
+    "doc_id": "sentencia_c_540_de_2023",
+    "norm_name": "Sentencia C-540 de 2023",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-540",
+      "2023"
+    ],
+    "areas": [
+      "Derecho tributario"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-540%20de%202023",
+    "source_type": "decision",
+    "norm_number": "C-540",
+    "year": 2023
+  },
+  {
+    "doc_id": "sentencia_c_582_de_1999",
+    "norm_name": "Sentencia C-582 de 1999",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-582",
+      "1999"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-582%20de%201999",
+    "source_type": "decision",
+    "norm_number": "C-582",
+    "year": 1999
+  },
+  {
+    "doc_id": "sentencia_c_746_de_2011",
+    "norm_name": "Sentencia C-746 de 2011",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-746",
+      "2011"
+    ],
+    "areas": [
+      "Derecho constitucional",
+      "Derecho de familia"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-746%20de%202011",
+    "source_type": "decision",
+    "norm_number": "C-746",
+    "year": 2011
+  },
+  {
+    "doc_id": "sentencia_c_748_de_2011",
+    "norm_name": "Sentencia C-748 de 2011",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-748",
+      "2011"
+    ],
+    "areas": [
+      "Derecho civil",
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-748%20de%202011",
+    "source_type": "decision",
+    "norm_number": "C-748",
+    "year": 2011
+  },
+  {
+    "doc_id": "sentencia_c_94_de_2021",
+    "norm_name": "Sentencia C-94 de 2021",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-94",
+      "2021"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-94%20de%202021",
+    "source_type": "decision",
+    "norm_number": "C-94",
+    "year": 2021
+  },
+  {
+    "doc_id": "sentencia_c_96_de_2024",
+    "norm_name": "Sentencia C-96 de 2024",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-96",
+      "2024"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-96%20de%202024",
+    "source_type": "decision",
+    "norm_number": "C-96",
+    "year": 2024
+  },
+  {
+    "doc_id": "sentencia_sl_648_de_2018",
+    "norm_name": "Sentencia SL-648 de 2018",
+    "canonical_body": [
+      "jurisprudencia",
+      "SL-648",
+      "2018"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SL-648%20de%202018",
+    "source_type": "decision",
+    "norm_number": "SL-648",
+    "year": 2018
+  },
+  {
+    "doc_id": "sentencia_sp_1680_de_2022",
+    "norm_name": "Sentencia SP-1680 de 2022",
+    "canonical_body": [
+      "jurisprudencia",
+      "SP-1680",
+      "2022"
+    ],
+    "areas": [
+      "Derecho penal"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SP-1680%20de%202022",
+    "source_type": "decision",
+    "norm_number": "SP-1680",
+    "year": 2022
+  },
+  {
+    "doc_id": "sentencia_sp_1945_de_2019",
+    "norm_name": "Sentencia SP-1945 de 2019",
+    "canonical_body": [
+      "jurisprudencia",
+      "SP-1945",
+      "2019"
+    ],
+    "areas": [
+      "Derecho penal"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SP-1945%20de%202019",
+    "source_type": "decision",
+    "norm_number": "SP-1945",
+    "year": 2019
+  },
+  {
+    "doc_id": "sentencia_su_111_de_2025",
+    "norm_name": "Sentencia SU-111 de 2025",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-111",
+      "2025"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-111%20de%202025",
+    "source_type": "decision",
+    "norm_number": "SU-111",
+    "year": 2025
+  },
+  {
+    "doc_id": "sentencia_su_214_de_2016",
+    "norm_name": "Sentencia SU-214 de 2016",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-214",
+      "2016"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-214%20de%202016",
+    "source_type": "decision",
+    "norm_number": "SU-214",
+    "year": 2016
+  },
+  {
+    "doc_id": "sentencia_t_547_de_2017",
+    "norm_name": "Sentencia T-547 de 2017",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-547",
+      "2017"
+    ],
+    "areas": [
+      "Derecho constitucional",
+      "Derecho laboral"
+    ],
+    "priority": 2,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-547%20de%202017",
+    "source_type": "decision",
+    "norm_number": "T-547",
+    "year": 2017
+  },
+  {
+    "doc_id": "acuerdo_02_de_2015",
+    "norm_name": "Acuerdo 02 de 2015",
+    "canonical_body": [
+      "acuerdo",
+      "02",
+      "2015"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Acuerdo%2002%20de%202015",
+    "source_type": "code",
+    "norm_number": "02",
+    "year": 2015
+  },
+  {
+    "doc_id": "codigo_disciplinario",
+    "norm_name": "Código General Disciplinario (Ley 1952 de 2019)",
+    "canonical_body": [
+      "codigo_disciplinario",
+      null,
+      null
+    ],
+    "areas": [
+      "Derecho administrativo"
+    ],
+    "priority": 1,
+    "seed_url": "http://www.secretariasenado.gov.co/senado/basedoc/?q=Codigo%20disciplinario",
+    "source_type": "code",
+    "norm_number": "1952",
+    "year": 2019,
+    "resolve_as": [
+      "ley",
+      "1952",
+      "2019"
+    ]
+  },
+  {
+    "doc_id": "codigo_nacional_policia",
+    "norm_name": "Código Nacional de Seguridad y Convivencia Ciudadana (Ley 1801 de 2016)",
+    "canonical_body": [
+      "codigo_nacional_policia",
+      null,
+      null
+    ],
+    "areas": [
+      "Derecho procesal"
+    ],
+    "priority": 1,
+    "seed_url": "http://www.secretariasenado.gov.co/senado/basedoc/?q=Codigo%20nacional%20policia",
+    "source_type": "code",
+    "norm_number": "1801",
+    "year": 2016,
+    "resolve_as": [
+      "ley",
+      "1801",
+      "2016"
+    ]
+  },
+  {
+    "doc_id": "decreto_046_de_2024",
+    "norm_name": "Decreto 046 de 2024",
+    "canonical_body": [
+      "decreto",
+      "046",
+      "2024"
+    ],
+    "areas": [
+      "Derecho comercial y sociedades"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%20046%20de%202024",
+    "source_type": "decree",
+    "norm_number": "046",
+    "year": 2024
+  },
+  {
+    "doc_id": "decreto_1082_de_2015",
+    "norm_name": "Decreto 1082 de 2015",
+    "canonical_body": [
+      "decreto",
+      "1082",
+      "2015"
+    ],
+    "areas": [
+      "Derecho administrativo"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%201082%20de%202015",
+    "source_type": "decree",
+    "norm_number": "1082",
+    "year": 2015
+  },
+  {
+    "doc_id": "decreto_1742_de_2020",
+    "norm_name": "Decreto 1742 de 2020",
+    "canonical_body": [
+      "decreto",
+      "1742",
+      "2020"
+    ],
+    "areas": [
+      "Derecho tributario"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%201742%20de%202020",
+    "source_type": "decree",
+    "norm_number": "1742",
+    "year": 2020
+  },
+  {
+    "doc_id": "decreto_175_de_2025",
+    "norm_name": "Decreto 175 de 2025",
+    "canonical_body": [
+      "decreto",
+      "175",
+      "2025"
+    ],
+    "areas": [
+      "Derecho tributario"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%20175%20de%202025",
+    "source_type": "decree",
+    "norm_number": "175",
+    "year": 2025
+  },
+  {
+    "doc_id": "decreto_2067_de_1991",
+    "norm_name": "Decreto 2067 de 1991",
+    "canonical_body": [
+      "decreto",
+      "2067",
+      "1991"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%202067%20de%201991",
+    "source_type": "decree",
+    "norm_number": "2067",
+    "year": 1991
+  },
+  {
+    "doc_id": "decreto_24_de_2016",
+    "norm_name": "Decreto 24 de 2016",
+    "canonical_body": [
+      "decreto",
+      "24",
+      "2016"
+    ],
+    "areas": [
+      "Derecho comercial y sociedades"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%2024%20de%202016",
+    "source_type": "decree",
+    "norm_number": "24",
+    "year": 2016
+  },
+  {
+    "doc_id": "decreto_405_de_2025",
+    "norm_name": "Decreto 405 de 2025",
+    "canonical_body": [
+      "decreto",
+      "405",
+      "2025"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%20405%20de%202025",
+    "source_type": "decree",
+    "norm_number": "405",
+    "year": 2025
+  },
+  {
+    "doc_id": "decreto_4334_de_2008",
+    "norm_name": "Decreto 4334 de 2008",
+    "canonical_body": [
+      "decreto",
+      "4334",
+      "2008"
+    ],
+    "areas": [
+      "Derecho comercial y sociedades"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%204334%20de%202008",
+    "source_type": "decree",
+    "norm_number": "4334",
+    "year": 2008
+  },
+  {
+    "doc_id": "decreto_4436_de_2005",
+    "norm_name": "Decreto 4436 de 2005",
+    "canonical_body": [
+      "decreto",
+      "4436",
+      "2005"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%204436%20de%202005",
+    "source_type": "decree",
+    "norm_number": "4436",
+    "year": 2005
+  },
+  {
+    "doc_id": "decreto_4886_de_2011",
+    "norm_name": "Decreto 4886 de 2011",
+    "canonical_body": [
+      "decreto",
+      "4886",
+      "2011"
+    ],
+    "areas": [
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%204886%20de%202011",
+    "source_type": "decree",
+    "norm_number": "4886",
+    "year": 2011
+  },
+  {
+    "doc_id": "decreto_663_de_1993",
+    "norm_name": "Decreto 663 de 1993",
+    "canonical_body": [
+      "decreto",
+      "663",
+      "1993"
+    ],
+    "areas": [
+      "Derecho comercial y sociedades"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%20663%20de%201993",
+    "source_type": "decree",
+    "norm_number": "663",
+    "year": 1993
+  },
+  {
+    "doc_id": "decreto_780_de_2016",
+    "norm_name": "Decreto 780 de 2016",
+    "canonical_body": [
+      "decreto",
+      "780",
+      "2016"
+    ],
+    "areas": [
+      "Derecho penal"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%20780%20de%202016",
+    "source_type": "decree",
+    "norm_number": "780",
+    "year": 2016
+  },
+  {
+    "doc_id": "decreto_875_de_2008",
+    "norm_name": "Decreto 875 de 2008",
+    "canonical_body": [
+      "decreto",
+      "875",
+      "2008"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%20875%20de%202008",
+    "source_type": "decree",
+    "norm_number": "875",
+    "year": 2008
+  },
+  {
+    "doc_id": "decreto_960_de_1970",
+    "norm_name": "Decreto 960 de 1970",
+    "canonical_body": [
+      "decreto",
+      "960",
+      "1970"
+    ],
+    "areas": [
+      "Derecho civil"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%20960%20de%201970",
+    "source_type": "decree",
+    "norm_number": "960",
+    "year": 1970
+  },
+  {
+    "doc_id": "ley_11500_de_2007",
+    "norm_name": "Ley 11500 de 2007",
+    "canonical_body": [
+      "ley",
+      "11500",
+      "2007"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%2011500%20de%202007",
+    "source_type": "law",
+    "norm_number": "11500",
+    "year": 2007
+  },
+  {
+    "doc_id": "ley_1150_de_2005",
+    "norm_name": "Ley 1150 de 2005",
+    "canonical_body": [
+      "ley",
+      "1150",
+      "2005"
+    ],
+    "areas": [
+      "Derecho administrativo"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201150%20de%202005",
+    "source_type": "law",
+    "norm_number": "1150",
+    "year": 2005
+  },
+  {
+    "doc_id": "ley_1151_de_2007",
+    "norm_name": "Ley 1151 de 2007",
+    "canonical_body": [
+      "ley",
+      "1151",
+      "2007"
+    ],
+    "areas": [
+      "Derecho administrativo"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201151%20de%202007",
+    "source_type": "law",
+    "norm_number": "1151",
+    "year": 2007
+  },
+  {
+    "doc_id": "ley_116_de_2006",
+    "norm_name": "Ley 116 de 2006",
+    "canonical_body": [
+      "ley",
+      "116",
+      "2006"
+    ],
+    "areas": [
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20116%20de%202006",
+    "source_type": "law",
+    "norm_number": "116",
+    "year": 2006
+  },
+  {
+    "doc_id": "ley_137_de_1994",
+    "norm_name": "Ley 137 de 1994",
+    "canonical_body": [
+      "ley",
+      "137",
+      "1994"
+    ],
+    "areas": [
+      "Derecho tributario"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20137%20de%201994",
+    "source_type": "law",
+    "norm_number": "137",
+    "year": 1994
+  },
+  {
+    "doc_id": "ley_1473_de_2011",
+    "norm_name": "Ley 1473 de 2011",
+    "canonical_body": [
+      "ley",
+      "1473",
+      "2011"
+    ],
+    "areas": [
+      "Derecho tributario"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201473%20de%202011",
+    "source_type": "law",
+    "norm_number": "1473",
+    "year": 2011
+  },
+  {
+    "doc_id": "ley_155_de_1959",
+    "norm_name": "Ley 155 de 1959",
+    "canonical_body": [
+      "ley",
+      "155",
+      "1959"
+    ],
+    "areas": [
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20155%20de%201959",
+    "source_type": "law",
+    "norm_number": "155",
+    "year": 1959
+  },
+  {
+    "doc_id": "ley_1562_de_2012",
+    "norm_name": "Ley 1562 de 2012",
+    "canonical_body": [
+      "ley",
+      "1562",
+      "2012"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201562%20de%202012",
+    "source_type": "law",
+    "norm_number": "1562",
+    "year": 2012
+  },
+  {
+    "doc_id": "ley_1607_de_2012",
+    "norm_name": "Ley 1607 de 2012",
+    "canonical_body": [
+      "ley",
+      "1607",
+      "2012"
+    ],
+    "areas": [
+      "Derecho tributario"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201607%20de%202012",
+    "source_type": "law",
+    "norm_number": "1607",
+    "year": 2012
+  },
+  {
+    "doc_id": "ley_160_de_1994",
+    "norm_name": "Ley 160 de 1994",
+    "canonical_body": [
+      "ley",
+      "160",
+      "1994"
+    ],
+    "areas": [
+      "Derecho civil"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20160%20de%201994",
+    "source_type": "law",
+    "norm_number": "160",
+    "year": 1994
+  },
+  {
+    "doc_id": "ley_1692_de_2017",
+    "norm_name": "Ley 1692 de 2017",
+    "canonical_body": [
+      "ley",
+      "1692",
+      "2017"
+    ],
+    "areas": [
+      "Derecho tributario"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201692%20de%202017",
+    "source_type": "law",
+    "norm_number": "1692",
+    "year": 2017
+  },
+  {
+    "doc_id": "ley_1700_de_2013",
+    "norm_name": "Ley 1700 de 2013",
+    "canonical_body": [
+      "ley",
+      "1700",
+      "2013"
+    ],
+    "areas": [
+      "Derecho comercial y sociedades"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201700%20de%202013",
+    "source_type": "law",
+    "norm_number": "1700",
+    "year": 2013
+  },
+  {
+    "doc_id": "ley_1755_de_2015",
+    "norm_name": "Ley 1755 de 2015",
+    "canonical_body": [
+      "ley",
+      "1755",
+      "2015"
+    ],
+    "areas": [
+      "Derecho administrativo"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201755%20de%202015",
+    "source_type": "law",
+    "norm_number": "1755",
+    "year": 2015
+  },
+  {
+    "doc_id": "ley_1819_de_2016",
+    "norm_name": "Ley 1819 de 2016",
+    "canonical_body": [
+      "ley",
+      "1819",
+      "2016"
+    ],
+    "areas": [
+      "Derecho tributario"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201819%20de%202016",
+    "source_type": "law",
+    "norm_number": "1819",
+    "year": 2016
+  },
+  {
+    "doc_id": "ley_1909_de_2018",
+    "norm_name": "Ley 1909 de 2018",
+    "canonical_body": [
+      "ley",
+      "1909",
+      "2018"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201909%20de%202018",
+    "source_type": "law",
+    "norm_number": "1909",
+    "year": 2018
+  },
+  {
+    "doc_id": "ley_2114_de_2021",
+    "norm_name": "Ley 2114 de 2021",
+    "canonical_body": [
+      "ley",
+      "2114",
+      "2021"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%202114%20de%202021",
+    "source_type": "law",
+    "norm_number": "2114",
+    "year": 2021
+  },
+  {
+    "doc_id": "ley_2157_de_2021",
+    "norm_name": "Ley 2157 de 2021",
+    "canonical_body": [
+      "ley",
+      "2157",
+      "2021"
+    ],
+    "areas": [
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%202157%20de%202021",
+    "source_type": "law",
+    "norm_number": "2157",
+    "year": 2021
+  },
+  {
+    "doc_id": "ley_2160_de_2021",
+    "norm_name": "Ley 2160 de 2021",
+    "canonical_body": [
+      "ley",
+      "2160",
+      "2021"
+    ],
+    "areas": [
+      "Derecho administrativo"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%202160%20de%202021",
+    "source_type": "law",
+    "norm_number": "2160",
+    "year": 2021
+  },
+  {
+    "doc_id": "ley_2251_de_2022",
+    "norm_name": "Ley 2251 de 2022",
+    "canonical_body": [
+      "ley",
+      "2251",
+      "2022"
+    ],
+    "areas": [
+      "Derecho civil"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%202251%20de%202022",
+    "source_type": "law",
+    "norm_number": "2251",
+    "year": 2022
+  },
+  {
+    "doc_id": "ley_23_de_1961",
+    "norm_name": "Ley 23 de 1961",
+    "canonical_body": [
+      "ley",
+      "23",
+      "1961"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%2023%20de%201961",
+    "source_type": "law",
+    "norm_number": "23",
+    "year": 1961
+  },
+  {
+    "doc_id": "ley_2737_de_1989",
+    "norm_name": "Ley 2737 de 1989",
+    "canonical_body": [
+      "ley",
+      "2737",
+      "1989"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%202737%20de%201989",
+    "source_type": "law",
+    "norm_number": "2737",
+    "year": 1989
+  },
+  {
+    "doc_id": "ley_29_de_1982",
+    "norm_name": "Ley 29 de 1982",
+    "canonical_body": [
+      "ley",
+      "29",
+      "1982"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%2029%20de%201982",
+    "source_type": "law",
+    "norm_number": "29",
+    "year": 1982
+  },
+  {
+    "doc_id": "ley_527_de_1999",
+    "norm_name": "Ley 527 de 1999",
+    "canonical_body": [
+      "ley",
+      "527",
+      "1999"
+    ],
+    "areas": [
+      "Derecho comercial y sociedades"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20527%20de%201999",
+    "source_type": "law",
+    "norm_number": "527",
+    "year": 1999
+  },
+  {
+    "doc_id": "ley_600_de_2000",
+    "norm_name": "Ley 600 de 2000",
+    "canonical_body": [
+      "ley",
+      "600",
+      "2000"
+    ],
+    "areas": [
+      "Derecho penal"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20600%20de%202000",
+    "source_type": "law",
+    "norm_number": "600",
+    "year": 2000
+  },
+  {
+    "doc_id": "ley_640_de_2001",
+    "norm_name": "Ley 640 de 2001",
+    "canonical_body": [
+      "ley",
+      "640",
+      "2001"
+    ],
+    "areas": [
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20640%20de%202001",
+    "source_type": "law",
+    "norm_number": "640",
+    "year": 2001
+  },
+  {
+    "doc_id": "ley_678_de_2001",
+    "norm_name": "Ley 678 de 2001",
+    "canonical_body": [
+      "ley",
+      "678",
+      "2001"
+    ],
+    "areas": [
+      "Derecho procesal"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20678%20de%202001",
+    "source_type": "law",
+    "norm_number": "678",
+    "year": 2001
+  },
+  {
+    "doc_id": "ley_721_de_2001",
+    "norm_name": "Ley 721 de 2001",
+    "canonical_body": [
+      "ley",
+      "721",
+      "2001"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20721%20de%202001",
+    "source_type": "law",
+    "norm_number": "721",
+    "year": 2001
+  },
+  {
+    "doc_id": "ley_75_de_1968",
+    "norm_name": "Ley 75 de 1968",
+    "canonical_body": [
+      "ley",
+      "75",
+      "1968"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%2075%20de%201968",
+    "source_type": "law",
+    "norm_number": "75",
+    "year": 1968
+  },
+  {
+    "doc_id": "ley_769_de_2002",
+    "norm_name": "Ley 769 de 2002",
+    "canonical_body": [
+      "ley",
+      "769",
+      "2002"
+    ],
+    "areas": [
+      "Derecho civil"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20769%20de%202002",
+    "source_type": "law",
+    "norm_number": "769",
+    "year": 2002
+  },
+  {
+    "doc_id": "ley_820_de_2003",
+    "norm_name": "Ley 820 de 2003",
+    "canonical_body": [
+      "ley",
+      "820",
+      "2003"
+    ],
+    "areas": [
+      "Derecho comercial y sociedades"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20820%20de%202003",
+    "source_type": "law",
+    "norm_number": "820",
+    "year": 2003
+  },
+  {
+    "doc_id": "ley_964_de_2006",
+    "norm_name": "Ley 964 de 2006",
+    "canonical_body": [
+      "ley",
+      "964",
+      "2006"
+    ],
+    "areas": [
+      "Derecho comercial y sociedades"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20964%20de%202006",
+    "source_type": "law",
+    "norm_number": "964",
+    "year": 2006
+  },
+  {
+    "doc_id": "sentencia_c_1033_de_2002",
+    "norm_name": "Sentencia C-1033 de 2002",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-1033",
+      "2002"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-1033%20de%202002",
+    "source_type": "decision",
+    "norm_number": "C-1033",
+    "year": 2002
+  },
+  {
+    "doc_id": "sentencia_c_106_de_2018",
+    "norm_name": "Sentencia C-106 de 2018",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-106",
+      "2018"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-106%20de%202018",
+    "source_type": "decision",
+    "norm_number": "C-106",
+    "year": 2018
+  },
+  {
+    "doc_id": "sentencia_c_1189_de_2000",
+    "norm_name": "Sentencia C-1189 de 2000",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-1189",
+      "2000"
+    ],
+    "areas": [
+      "Derecho penal"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-1189%20de%202000",
+    "source_type": "decision",
+    "norm_number": "C-1189",
+    "year": 2000
+  },
+  {
+    "doc_id": "sentencia_c_131_de_2018",
+    "norm_name": "Sentencia C-131 de 2018",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-131",
+      "2018"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-131%20de%202018",
+    "source_type": "decision",
+    "norm_number": "C-131",
+    "year": 2018
+  },
+  {
+    "doc_id": "sentencia_c_145_de_2018",
+    "norm_name": "Sentencia C-145 de 2018",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-145",
+      "2018"
+    ],
+    "areas": [
+      "Derecho comercial y sociedades"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-145%20de%202018",
+    "source_type": "decision",
+    "norm_number": "C-145",
+    "year": 2018
+  },
+  {
+    "doc_id": "sentencia_c_145_de_2020",
+    "norm_name": "Sentencia C-145 de 2020",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-145",
+      "2020"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-145%20de%202020",
+    "source_type": "decision",
+    "norm_number": "C-145",
+    "year": 2020
+  },
+  {
+    "doc_id": "sentencia_c_149_de_1993",
+    "norm_name": "Sentencia C-149 de 1993",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-149",
+      "1993"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-149%20de%201993",
+    "source_type": "decision",
+    "norm_number": "C-149",
+    "year": 1993
+  },
+  {
+    "doc_id": "sentencia_c_170_de_2004",
+    "norm_name": "Sentencia C-170 de 2004",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-170",
+      "2004"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-170%20de%202004",
+    "source_type": "decision",
+    "norm_number": "C-170",
+    "year": 2004
+  },
+  {
+    "doc_id": "sentencia_c_183_de_2025",
+    "norm_name": "Sentencia C-183 de 2025",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-183",
+      "2025"
+    ],
+    "areas": [
+      "Derecho civil"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-183%20de%202025",
+    "source_type": "decision",
+    "norm_number": "C-183",
+    "year": 2025
+  },
+  {
+    "doc_id": "sentencia_c_201_de_2002",
+    "norm_name": "Sentencia C-201 de 2002",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-201",
+      "2002"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-201%20de%202002",
+    "source_type": "decision",
+    "norm_number": "C-201",
+    "year": 2002
+  },
+  {
+    "doc_id": "sentencia_c_225_de_1995",
+    "norm_name": "Sentencia C-225 de 1995",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-225",
+      "1995"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-225%20de%201995",
+    "source_type": "decision",
+    "norm_number": "C-225",
+    "year": 1995
+  },
+  {
+    "doc_id": "sentencia_c_22_de_1996",
+    "norm_name": "Sentencia C-22 de 1996",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-22",
+      "1996"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-22%20de%201996",
+    "source_type": "decision",
+    "norm_number": "C-22",
+    "year": 1996
+  },
+  {
+    "doc_id": "sentencia_c_233_de_2021",
+    "norm_name": "Sentencia C-233 de 2021",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-233",
+      "2021"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-233%20de%202021",
+    "source_type": "decision",
+    "norm_number": "C-233",
+    "year": 2021
+  },
+  {
+    "doc_id": "sentencia_c_239_de_1997",
+    "norm_name": "Sentencia C-239 de 1997",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-239",
+      "1997"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-239%20de%201997",
+    "source_type": "decision",
+    "norm_number": "C-239",
+    "year": 1997
+  },
+  {
+    "doc_id": "sentencia_c_276_de_2025",
+    "norm_name": "Sentencia C-276 de 2025",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-276",
+      "2025"
+    ],
+    "areas": [
+      "Derecho comercial y sociedades"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-276%20de%202025",
+    "source_type": "decision",
+    "norm_number": "C-276",
+    "year": 2025
+  },
+  {
+    "doc_id": "sentencia_c_332_de_2025",
+    "norm_name": "Sentencia C-332 de 2025",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-332",
+      "2025"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-332%20de%202025",
+    "source_type": "decision",
+    "norm_number": "C-332",
+    "year": 2025
+  },
+  {
+    "doc_id": "sentencia_c_335_de_2008",
+    "norm_name": "Sentencia C-335 de 2008",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-335",
+      "2008"
+    ],
+    "areas": [
+      "Derecho penal"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-335%20de%202008",
+    "source_type": "decision",
+    "norm_number": "C-335",
+    "year": 2008
+  },
+  {
+    "doc_id": "sentencia_c_345_de_2017",
+    "norm_name": "Sentencia C-345 de 2017",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-345",
+      "2017"
+    ],
+    "areas": [
+      "Derecho civil"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-345%20de%202017",
+    "source_type": "decision",
+    "norm_number": "C-345",
+    "year": 2017
+  },
+  {
+    "doc_id": "sentencia_c_389_de_2023",
+    "norm_name": "Sentencia C-389 de 2023",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-389",
+      "2023"
+    ],
+    "areas": [
+      "Derecho tributario"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-389%20de%202023",
+    "source_type": "decision",
+    "norm_number": "C-389",
+    "year": 2023
+  },
+  {
+    "doc_id": "sentencia_c_39_de_2025",
+    "norm_name": "Sentencia C-39 de 2025",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-39",
+      "2025"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-39%20de%202025",
+    "source_type": "decision",
+    "norm_number": "C-39",
+    "year": 2025
+  },
+  {
+    "doc_id": "sentencia_c_413_de_1996",
+    "norm_name": "Sentencia C-413 de 1996",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-413",
+      "1996"
+    ],
+    "areas": [
+      "Derecho tributario"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-413%20de%201996",
+    "source_type": "decision",
+    "norm_number": "C-413",
+    "year": 1996
+  },
+  {
+    "doc_id": "sentencia_c_459_de_2023",
+    "norm_name": "Sentencia C-459 de 2023",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-459",
+      "2023"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-459%20de%202023",
+    "source_type": "decision",
+    "norm_number": "C-459",
+    "year": 2023
+  },
+  {
+    "doc_id": "sentencia_c_486_de_1993",
+    "norm_name": "Sentencia C-486 de 1993",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-486",
+      "1993"
+    ],
+    "areas": [
+      "Derecho comercial y sociedades"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-486%20de%201993",
+    "source_type": "decision",
+    "norm_number": "C-486",
+    "year": 1993
+  },
+  {
+    "doc_id": "sentencia_c_4_de_1998",
+    "norm_name": "Sentencia C-4 de 1998",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-4",
+      "1998"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-4%20de%201998",
+    "source_type": "decision",
+    "norm_number": "C-4",
+    "year": 1998
+  },
+  {
+    "doc_id": "sentencia_c_533_de_2000",
+    "norm_name": "Sentencia C-533 de 2000",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-533",
+      "2000"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-533%20de%202000",
+    "source_type": "decision",
+    "norm_number": "C-533",
+    "year": 2000
+  },
+  {
+    "doc_id": "sentencia_c_535_de_2002",
+    "norm_name": "Sentencia C-535 de 2002",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-535",
+      "2002"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-535%20de%202002",
+    "source_type": "decision",
+    "norm_number": "C-535",
+    "year": 2002
+  },
+  {
+    "doc_id": "sentencia_c_537_de_1995",
+    "norm_name": "Sentencia C-537 de 1995",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-537",
+      "1995"
+    ],
+    "areas": [
+      "Derecho tributario"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-537%20de%201995",
+    "source_type": "decision",
+    "norm_number": "C-537",
+    "year": 1995
+  },
+  {
+    "doc_id": "sentencia_c_683_de_2015",
+    "norm_name": "Sentencia C-683 de 2015",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-683",
+      "2015"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-683%20de%202015",
+    "source_type": "decision",
+    "norm_number": "C-683",
+    "year": 2015
+  },
+  {
+    "doc_id": "sentencia_c_700_de_1999",
+    "norm_name": "Sentencia C-700 de 1999",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-700",
+      "1999"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-700%20de%201999",
+    "source_type": "decision",
+    "norm_number": "C-700",
+    "year": 1999
+  },
+  {
+    "doc_id": "sentencia_c_80_de_2025",
+    "norm_name": "Sentencia C-80 de 2025",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-80",
+      "2025"
+    ],
+    "areas": [
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-80%20de%202025",
+    "source_type": "decision",
+    "norm_number": "C-80",
+    "year": 2025
+  },
+  {
+    "doc_id": "sentencia_c_891_de_2012",
+    "norm_name": "Sentencia C-891 de 2012",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-891",
+      "2012"
+    ],
+    "areas": [
+      "Derecho tributario"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-891%20de%202012",
+    "source_type": "decision",
+    "norm_number": "C-891",
+    "year": 2012
+  },
+  {
+    "doc_id": "sentencia_c_964_de_2003",
+    "norm_name": "Sentencia C-964 de 2003",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-964",
+      "2003"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-964%20de%202003",
+    "source_type": "decision",
+    "norm_number": "C-964",
+    "year": 2003
+  },
+  {
+    "doc_id": "sentencia_c_985_de_2010",
+    "norm_name": "Sentencia C-985 de 2010",
+    "canonical_body": [
+      "jurisprudencia",
+      "C-985",
+      "2010"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20C-985%20de%202010",
+    "source_type": "decision",
+    "norm_number": "C-985",
+    "year": 2010
+  },
+  {
+    "doc_id": "sentencia_sc_1121_de_2018",
+    "norm_name": "Sentencia SC-1121 de 2018",
+    "canonical_body": [
+      "jurisprudencia",
+      "SC-1121",
+      "2018"
+    ],
+    "areas": [
+      "Derecho civil"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-1121%20de%202018",
+    "source_type": "decision",
+    "norm_number": "SC-1121",
+    "year": 2018
+  },
+  {
+    "doc_id": "sentencia_sc_18392_de_2017",
+    "norm_name": "Sentencia SC-18392 de 2017",
+    "canonical_body": [
+      "jurisprudencia",
+      "SC-18392",
+      "2017"
+    ],
+    "areas": [
+      "Derecho comercial y sociedades"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-18392%20de%202017",
+    "source_type": "decision",
+    "norm_number": "SC-18392",
+    "year": 2017
+  },
+  {
+    "doc_id": "sentencia_sc_3085_de_2024",
+    "norm_name": "Sentencia SC-3085 de 2024",
+    "canonical_body": [
+      "jurisprudencia",
+      "SC-3085",
+      "2024"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-3085%20de%202024",
+    "source_type": "decision",
+    "norm_number": "SC-3085",
+    "year": 2024
+  },
+  {
+    "doc_id": "sentencia_sc_3674_de_2021",
+    "norm_name": "Sentencia SC-3674 de 2021",
+    "canonical_body": [
+      "jurisprudencia",
+      "SC-3674",
+      "2021"
+    ],
+    "areas": [
+      "Derecho comercial y sociedades"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-3674%20de%202021",
+    "source_type": "decision",
+    "norm_number": "SC-3674",
+    "year": 2021
+  },
+  {
+    "doc_id": "sentencia_sc_425_de_2024",
+    "norm_name": "Sentencia SC-425 de 2024",
+    "canonical_body": [
+      "jurisprudencia",
+      "SC-425",
+      "2024"
+    ],
+    "areas": [
+      "Derecho comercial y sociedades"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-425%20de%202024",
+    "source_type": "decision",
+    "norm_number": "SC-425",
+    "year": 2024
+  },
+  {
+    "doc_id": "sentencia_sc_8453_de_2016",
+    "norm_name": "Sentencia SC-8453 de 2016",
+    "canonical_body": [
+      "jurisprudencia",
+      "SC-8453",
+      "2016"
+    ],
+    "areas": [
+      "Derecho comercial y sociedades"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-8453%20de%202016",
+    "source_type": "decision",
+    "norm_number": "SC-8453",
+    "year": 2016
+  },
+  {
+    "doc_id": "sentencia_sl_1050_de_2023",
+    "norm_name": "Sentencia SL-1050 de 2023",
+    "canonical_body": [
+      "jurisprudencia",
+      "SL-1050",
+      "2023"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SL-1050%20de%202023",
+    "source_type": "decision",
+    "norm_number": "SL-1050",
+    "year": 2023
+  },
+  {
+    "doc_id": "sentencia_sl_1730_de_2020",
+    "norm_name": "Sentencia SL-1730 de 2020",
+    "canonical_body": [
+      "jurisprudencia",
+      "SL-1730",
+      "2020"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SL-1730%20de%202020",
+    "source_type": "decision",
+    "norm_number": "SL-1730",
+    "year": 2020
+  },
+  {
+    "doc_id": "sentencia_sl_1972_de_2025",
+    "norm_name": "Sentencia SL-1972 de 2025",
+    "canonical_body": [
+      "jurisprudencia",
+      "SL-1972",
+      "2025"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SL-1972%20de%202025",
+    "source_type": "decision",
+    "norm_number": "SL-1972",
+    "year": 2025
+  },
+  {
+    "doc_id": "sentencia_sp_1167_de_2022",
+    "norm_name": "Sentencia SP-1167 de 2022",
+    "canonical_body": [
+      "jurisprudencia",
+      "SP-1167",
+      "2022"
+    ],
+    "areas": [
+      "Derecho penal"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SP-1167%20de%202022",
+    "source_type": "decision",
+    "norm_number": "SP-1167",
+    "year": 2022
+  },
+  {
+    "doc_id": "sentencia_sp_3218_de_2021",
+    "norm_name": "Sentencia SP-3218 de 2021",
+    "canonical_body": [
+      "jurisprudencia",
+      "SP-3218",
+      "2021"
+    ],
+    "areas": [
+      "Derecho penal"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SP-3218%20de%202021",
+    "source_type": "decision",
+    "norm_number": "SP-3218",
+    "year": 2021
+  },
+  {
+    "doc_id": "sentencia_su_11_de_2020",
+    "norm_name": "Sentencia SU-11 de 2020",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-11",
+      "2020"
+    ],
+    "areas": [
+      "Derecho administrativo"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-11%20de%202020",
+    "source_type": "decision",
+    "norm_number": "SU-11",
+    "year": 2020
+  },
+  {
+    "doc_id": "sentencia_su_138_de_2024",
+    "norm_name": "Sentencia SU-138 de 2024",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-138",
+      "2024"
+    ],
+    "areas": [
+      "Derecho civil"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-138%20de%202024",
+    "source_type": "decision",
+    "norm_number": "SU-138",
+    "year": 2024
+  },
+  {
+    "doc_id": "sentencia_su_149_de_2021",
+    "norm_name": "Sentencia SU-149 de 2021",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-149",
+      "2021"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-149%20de%202021",
+    "source_type": "decision",
+    "norm_number": "SU-149",
+    "year": 2021
+  },
+  {
+    "doc_id": "sentencia_su_207_de_2022",
+    "norm_name": "Sentencia SU-207 de 2022",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-207",
+      "2022"
+    ],
+    "areas": [
+      "Derecho civil"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-207%20de%202022",
+    "source_type": "decision",
+    "norm_number": "SU-207",
+    "year": 2022
+  },
+  {
+    "doc_id": "sentencia_su_240_de_2015",
+    "norm_name": "Sentencia SU-240 de 2015",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-240",
+      "2015"
+    ],
+    "areas": [
+      "Derecho administrativo"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-240%20de%202015",
+    "source_type": "decision",
+    "norm_number": "SU-240",
+    "year": 2015
+  },
+  {
+    "doc_id": "sentencia_su_27_de_2021",
+    "norm_name": "Sentencia SU-27 de 2021",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-27",
+      "2021"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-27%20de%202021",
+    "source_type": "decision",
+    "norm_number": "SU-27",
+    "year": 2021
+  },
+  {
+    "doc_id": "sentencia_su_296_de_2023",
+    "norm_name": "Sentencia SU-296 de 2023",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-296",
+      "2023"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-296%20de%202023",
+    "source_type": "decision",
+    "norm_number": "SU-296",
+    "year": 2023
+  },
+  {
+    "doc_id": "sentencia_su_380_de_2021",
+    "norm_name": "Sentencia SU-380 de 2021",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-380",
+      "2021"
+    ],
+    "areas": [
+      "Derecho civil"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-380%20de%202021",
+    "source_type": "decision",
+    "norm_number": "SU-380",
+    "year": 2021
+  },
+  {
+    "doc_id": "sentencia_su_396_de_2024",
+    "norm_name": "Sentencia SU-396 de 2024",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-396",
+      "2024"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-396%20de%202024",
+    "source_type": "decision",
+    "norm_number": "SU-396",
+    "year": 2024
+  },
+  {
+    "doc_id": "sentencia_su_425_de_2025",
+    "norm_name": "Sentencia SU-425 de 2025",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-425",
+      "2025"
+    ],
+    "areas": [
+      "Derecho civil"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-425%20de%202025",
+    "source_type": "decision",
+    "norm_number": "SU-425",
+    "year": 2025
+  },
+  {
+    "doc_id": "sentencia_su_429_de_2024",
+    "norm_name": "Sentencia SU-429 de 2024",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-429",
+      "2024"
+    ],
+    "areas": [
+      "Derecho penal"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-429%20de%202024",
+    "source_type": "decision",
+    "norm_number": "SU-429",
+    "year": 2024
+  },
+  {
+    "doc_id": "sentencia_su_431_de_2015",
+    "norm_name": "Sentencia SU-431 de 2015",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-431",
+      "2015"
+    ],
+    "areas": [
+      "Derecho civil"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-431%20de%202015",
+    "source_type": "decision",
+    "norm_number": "SU-431",
+    "year": 2015
+  },
+  {
+    "doc_id": "sentencia_su_455_de_2020",
+    "norm_name": "Sentencia SU-455 de 2020",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-455",
+      "2020"
+    ],
+    "areas": [
+      "Derecho civil"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-455%20de%202020",
+    "source_type": "decision",
+    "norm_number": "SU-455",
+    "year": 2020
+  },
+  {
+    "doc_id": "sentencia_su_488_de_2011",
+    "norm_name": "Sentencia SU-488 de 2011",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-488",
+      "2011"
+    ],
+    "areas": [
+      "Derecho administrativo"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-488%20de%202011",
+    "source_type": "decision",
+    "norm_number": "SU-488",
+    "year": 2011
+  },
+  {
+    "doc_id": "sentencia_su_500_de_2015",
+    "norm_name": "Sentencia SU-500 de 2015",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-500",
+      "2015"
+    ],
+    "areas": [
+      "Derecho civil"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-500%20de%202015",
+    "source_type": "decision",
+    "norm_number": "SU-500",
+    "year": 2015
+  },
+  {
+    "doc_id": "sentencia_su_566_de_2015",
+    "norm_name": "Sentencia SU-566 de 2015",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-566",
+      "2015"
+    ],
+    "areas": [
+      "Derecho administrativo"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-566%20de%202015",
+    "source_type": "decision",
+    "norm_number": "SU-566",
+    "year": 2015
+  },
+  {
+    "doc_id": "sentencia_su_6_de_1991",
+    "norm_name": "Sentencia SU-6 de 1991",
+    "canonical_body": [
+      "jurisprudencia",
+      "SU-6",
+      "1991"
+    ],
+    "areas": [
+      "Derecho administrativo"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-6%20de%201991",
+    "source_type": "decision",
+    "norm_number": "SU-6",
+    "year": 1991
+  },
+  {
+    "doc_id": "sentencia_t_1001_de_2001",
+    "norm_name": "Sentencia T-1001 de 2001",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-1001",
+      "2001"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-1001%20de%202001",
+    "source_type": "decision",
+    "norm_number": "T-1001",
+    "year": 2001
+  },
+  {
+    "doc_id": "sentencia_t_1059_de_2001",
+    "norm_name": "Sentencia T-1059 de 2001",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-1059",
+      "2001"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-1059%20de%202001",
+    "source_type": "decision",
+    "norm_number": "T-1059",
+    "year": 2001
+  },
+  {
+    "doc_id": "sentencia_t_1096_de_2008",
+    "norm_name": "Sentencia T-1096 de 2008",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-1096",
+      "2008"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-1096%20de%202008",
+    "source_type": "decision",
+    "norm_number": "T-1096",
+    "year": 2008
+  },
+  {
+    "doc_id": "sentencia_t_145_de_2016",
+    "norm_name": "Sentencia T-145 de 2016",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-145",
+      "2016"
+    ],
+    "areas": [
+      "Derecho laboral"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-145%20de%202016",
+    "source_type": "decision",
+    "norm_number": "T-145",
+    "year": 2016
+  },
+  {
+    "doc_id": "sentencia_t_230_de_2023",
+    "norm_name": "Sentencia T-230 de 2023",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-230",
+      "2023"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-230%20de%202023",
+    "source_type": "decision",
+    "norm_number": "T-230",
+    "year": 2023
+  },
+  {
+    "doc_id": "sentencia_t_232_de_2025",
+    "norm_name": "Sentencia T-232 de 2025",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-232",
+      "2025"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-232%20de%202025",
+    "source_type": "decision",
+    "norm_number": "T-232",
+    "year": 2025
+  },
+  {
+    "doc_id": "sentencia_t_248_de_2025",
+    "norm_name": "Sentencia T-248 de 2025",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-248",
+      "2025"
+    ],
+    "areas": [
+      "Derecho penal"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-248%20de%202025",
+    "source_type": "decision",
+    "norm_number": "T-248",
+    "year": 2025
+  },
+  {
+    "doc_id": "sentencia_t_262_de_2025",
+    "norm_name": "Sentencia T-262 de 2025",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-262",
+      "2025"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-262%20de%202025",
+    "source_type": "decision",
+    "norm_number": "T-262",
+    "year": 2025
+  },
+  {
+    "doc_id": "sentencia_t_26_de_2025",
+    "norm_name": "Sentencia T-26 de 2025",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-26",
+      "2025"
+    ],
+    "areas": [
+      "Derecho civil"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-26%20de%202025",
+    "source_type": "decision",
+    "norm_number": "T-26",
+    "year": 2025
+  },
+  {
+    "doc_id": "sentencia_t_325_de_2025",
+    "norm_name": "Sentencia T-325 de 2025",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-325",
+      "2025"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-325%20de%202025",
+    "source_type": "decision",
+    "norm_number": "T-325",
+    "year": 2025
+  },
+  {
+    "doc_id": "sentencia_t_350_de_2025",
+    "norm_name": "Sentencia T-350 de 2025",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-350",
+      "2025"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-350%20de%202025",
+    "source_type": "decision",
+    "norm_number": "T-350",
+    "year": 2025
+  },
+  {
+    "doc_id": "sentencia_t_429_de_2011",
+    "norm_name": "Sentencia T-429 de 2011",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-429",
+      "2011"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-429%20de%202011",
+    "source_type": "decision",
+    "norm_number": "T-429",
+    "year": 2011
+  },
+  {
+    "doc_id": "sentencia_t_445_de_2024",
+    "norm_name": "Sentencia T-445 de 2024",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-445",
+      "2024"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-445%20de%202024",
+    "source_type": "decision",
+    "norm_number": "T-445",
+    "year": 2024
+  },
+  {
+    "doc_id": "sentencia_t_4_de_2026",
+    "norm_name": "Sentencia T-4 de 2026",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-4",
+      "2026"
+    ],
+    "areas": [
+      "Derecho civil"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-4%20de%202026",
+    "source_type": "decision",
+    "norm_number": "T-4",
+    "year": 2026
+  },
+  {
+    "doc_id": "sentencia_t_67_de_2025",
+    "norm_name": "Sentencia T-67 de 2025",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-67",
+      "2025"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-67%20de%202025",
+    "source_type": "decision",
+    "norm_number": "T-67",
+    "year": 2025
+  },
+  {
+    "doc_id": "sentencia_t_71_de_2016",
+    "norm_name": "Sentencia T-71 de 2016",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-71",
+      "2016"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-71%20de%202016",
+    "source_type": "decision",
+    "norm_number": "T-71",
+    "year": 2016
+  },
+  {
+    "doc_id": "sentencia_t_77_de_2025",
+    "norm_name": "Sentencia T-77 de 2025",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-77",
+      "2025"
+    ],
+    "areas": [
+      "Derecho de familia"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-77%20de%202025",
+    "source_type": "decision",
+    "norm_number": "T-77",
+    "year": 2025
+  },
+  {
+    "doc_id": "sentencia_t_925_de_2014",
+    "norm_name": "Sentencia T-925 de 2014",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-925",
+      "2014"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-925%20de%202014",
+    "source_type": "decision",
+    "norm_number": "T-925",
+    "year": 2014
+  },
+  {
+    "doc_id": "sentencia_t_970_de_2014",
+    "norm_name": "Sentencia T-970 de 2014",
+    "canonical_body": [
+      "jurisprudencia",
+      "T-970",
+      "2014"
+    ],
+    "areas": [
+      "Derecho constitucional"
+    ],
+    "priority": 1,
+    "seed_url": "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-970%20de%202014",
+    "source_type": "decision",
+    "norm_number": "T-970",
+    "year": 2014
+  },
+  {
+    "doc_id": "codigo_comercio",
+    "canonical_body": [
+      "codigo_comercio",
+      null,
+      null
+    ],
+    "norm_name": "Código de Comercio (Decreto 410 de 1971)",
+    "source_type": "code",
+    "norm_number": "410",
+    "year": 1971,
+    "areas": [],
+    "priority": 0,
+    "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=41102"
+  },
+  {
+    "doc_id": "codigo_penal",
+    "canonical_body": [
+      "codigo_penal",
+      null,
+      null
+    ],
+    "norm_name": "Código Penal (Ley 599 de 2000)",
+    "source_type": "code",
+    "norm_number": "599",
+    "year": 2000,
+    "areas": [],
+    "priority": 0,
+    "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=6388"
+  },
+  {
+    "doc_id": "cpaca",
+    "norm_name": "Código de Procedimiento Administrativo y de lo Contencioso Administrativo (Ley 1437 de 2011)",
+    "canonical_body": [
+      "cpaca",
+      null,
+      null
+    ],
+    "resolve_as": [
+      "ley",
+      "1437",
+      "2011"
+    ],
+    "norm_number": "1437",
+    "year": 2011,
+    "areas": [
+      "Derecho administrativo"
+    ],
+    "source_type": "code",
+    "priority": 2
+  },
+  {
+    "doc_id": "codigo_procedimiento_penal",
+    "norm_name": "Código de Procedimiento Penal (Ley 906 de 2004)",
+    "canonical_body": [
+      "codigo_procedimiento_penal",
+      null,
+      null
+    ],
+    "resolve_as": [
+      "ley",
+      "906",
+      "2004"
+    ],
+    "norm_number": "906",
+    "year": 2004,
+    "areas": [
+      "Derecho penal",
+      "Derecho procesal"
+    ],
+    "source_type": "code",
+    "priority": 2
+  },
+  {
+    "doc_id": "codigo_civil",
+    "norm_name": "Código Civil (Ley 84 de 1873; Ley 57 de 1887)",
+    "canonical_body": [
+      "codigo_civil",
+      null,
+      null
+    ],
+    "norm_number": "84",
+    "year": 1873,
+    "areas": [
+      "Derecho civil",
+      "Derecho de familia"
+    ],
+    "source_type": "code",
+    "priority": 2,
+    "url": "https://normograma.sena.edu.co/compilacion/docs/codigo_civil.htm"
+  }
+]

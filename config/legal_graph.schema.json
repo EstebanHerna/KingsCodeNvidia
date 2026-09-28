@@ -1,0 +1,37 @@
+{
+  "version": "0.5",
+  "node_types": [
+    "DOCUMENT",
+    "NORM",
+    "DECISION",
+    "ARTICLE",
+    "PARAGRAPH",
+    "CLAUSE",
+    "SECTION",
+    "TAG"
+  ],
+  "edge_types": [
+    "CONTIENE",
+    "REMITE_A",
+    "CITA",
+    "MODIFICA",
+    "DEROGA",
+    "REGLAMENTA",
+    "DESARROLLA",
+    "EXCEPCIONA",
+    "TAGGED_AS"
+  ],
+  "node_required_fields": [
+    "node_id",
+    "node_type",
+    "label",
+    "doc_id"
+  ],
+  "edge_required_fields": [
+    "source",
+    "target",
+    "relation",
+    "evidence_passage_id"
+  ],
+  "policy": "Preserve structural CONTAINS edges for all ingested sources. Add normative/citation relations only when evidenced in source text or reliable metadata; never infer a legal relation solely from semantic similarity."
+}

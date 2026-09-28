@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "official_files_byte_identical": 19,
+  "sample_rows": 50,
+  "sample_unique_ids": 50,
+  "formats": {
+    "multiple_choice": 15,
+    "semi_open": 30,
+    "open_ended": 5
+  },
+  "areas": 10,
+  "seed_documents": 186,
+  "example_schema_valid": "5/5",
+  "example_evaluator_expected_partial_result": 5.24,
+  "official_example_backed_citations": 7,
+  "cuda_checked": false,
+  "note": "No se ejecutó nvidia-smi, nvcc ni torch.cuda en esta etapa."
+}

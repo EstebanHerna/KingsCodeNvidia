@@ -1,0 +1,50 @@
+/mnt/data/KingsCode_v0.3_literature_memory/.gitignore
+/mnt/data/KingsCode_v0.3_literature_memory/Ejemplo de entrega/CORPUS.md
+/mnt/data/KingsCode_v0.3_literature_memory/Ejemplo de entrega/README.md
+/mnt/data/KingsCode_v0.3_literature_memory/Ejemplo de entrega/corpus_manifest.json
+/mnt/data/KingsCode_v0.3_literature_memory/Ejemplo de entrega/submissions.jsonl
+/mnt/data/KingsCode_v0.3_literature_memory/README_KINGSCODE.md
+/mnt/data/KingsCode_v0.3_literature_memory/START_HERE.md
+/mnt/data/KingsCode_v0.3_literature_memory/artifacts/challenge_summary_v02.txt
+/mnt/data/KingsCode_v0.3_literature_memory/artifacts/file_manifest_v03.txt
+/mnt/data/KingsCode_v0.3_literature_memory/artifacts/preflight_console.txt
+/mnt/data/KingsCode_v0.3_literature_memory/artifacts/preflight_console_v02.txt
+/mnt/data/KingsCode_v0.3_literature_memory/artifacts/preflight_report.json
+/mnt/data/KingsCode_v0.3_literature_memory/artifacts/second_verification.json
+/mnt/data/KingsCode_v0.3_literature_memory/artifacts/strategy_verification_v02.json
+/mnt/data/KingsCode_v0.3_literature_memory/config/strategy.json
+/mnt/data/KingsCode_v0.3_literature_memory/data/sample_50.jsonl
+/mnt/data/KingsCode_v0.3_literature_memory/data/seed_targets.json
+/mnt/data/KingsCode_v0.3_literature_memory/docs/ARCHITECTURE_V02.md
+/mnt/data/KingsCode_v0.3_literature_memory/docs/DECISION_LOG.md
+/mnt/data/KingsCode_v0.3_literature_memory/docs/DECISION_MATRIX.md
+/mnt/data/KingsCode_v0.3_literature_memory/docs/EXPERIMENT_PLAN.md
+/mnt/data/KingsCode_v0.3_literature_memory/docs/KINGSCODE_MASTER_KNOWLEDGE.md
+/mnt/data/KingsCode_v0.3_literature_memory/docs/KINGSCODE_STATE.json
+/mnt/data/KingsCode_v0.3_literature_memory/docs/LITERATURE_REVIEW_2026-09-27.md
+/mnt/data/KingsCode_v0.3_literature_memory/docs/MODEL_STRATEGY.md
+/mnt/data/KingsCode_v0.3_literature_memory/docs/OFFICIAL_SHA256.txt
+/mnt/data/KingsCode_v0.3_literature_memory/docs/PRE_CUDA_NOTES.md
+/mnt/data/KingsCode_v0.3_literature_memory/docs/ROADMAP.md
+/mnt/data/KingsCode_v0.3_literature_memory/docs/TEAM_SPLIT.md
+/mnt/data/KingsCode_v0.3_literature_memory/docs/VERIFICATION.md
+/mnt/data/KingsCode_v0.3_literature_memory/entregables/README.md
+/mnt/data/KingsCode_v0.3_literature_memory/entregables/sabado/CORPUS.md
+/mnt/data/KingsCode_v0.3_literature_memory/entregables/sabado/INFORME_TECNICO.md
+/mnt/data/KingsCode_v0.3_literature_memory/entregables/sabado/README.md
+/mnt/data/KingsCode_v0.3_literature_memory/entregables/sabado/README_EQUIPO.md
+/mnt/data/KingsCode_v0.3_literature_memory/entregables/sabado/corpus_manifest.ejemplo.json
+/mnt/data/KingsCode_v0.3_literature_memory/entregables/viernes/README.md
+/mnt/data/KingsCode_v0.3_literature_memory/entregables/viernes/REPORTE_AVANCE.md
+/mnt/data/KingsCode_v0.3_literature_memory/preflight.ps1
+/mnt/data/KingsCode_v0.3_literature_memory/preflight.sh
+/mnt/data/KingsCode_v0.3_literature_memory/schema/submission.schema.json
+/mnt/data/KingsCode_v0.3_literature_memory/scripts/__pycache__/citations.cpython-313.pyc
+/mnt/data/KingsCode_v0.3_literature_memory/scripts/citations.py
+/mnt/data/KingsCode_v0.3_literature_memory/scripts/common.py
+/mnt/data/KingsCode_v0.3_literature_memory/scripts/evaluate.py
+/mnt/data/KingsCode_v0.3_literature_memory/scripts/requirements-evaluador.txt
+/mnt/data/KingsCode_v0.3_literature_memory/tools/benchmark_budget.py
+/mnt/data/KingsCode_v0.3_literature_memory/tools/check_cuda.py
+/mnt/data/KingsCode_v0.3_literature_memory/tools/inspect_challenge.py
+/mnt/data/KingsCode_v0.3_literature_memory/tools/preflight.py

@@ -1,0 +1,180 @@
+{
+  "project": "KingsCode - Hackathon AI Week 2026",
+  "last_updated": "2026-09-27",
+  "source_of_truth": "KINGSCODE_MASTER_KNOWLEDGE.md",
+  "team": {
+    "size": 2,
+    "split": {
+      "member_a": "knowledge_corpus_graph_retrieval",
+      "member_b": "query_reasoning_generation_evaluation_delivery"
+    },
+    "shared": [
+      "integration",
+      "experiment_design",
+      "freeze",
+      "final_execution"
+    ]
+  },
+  "challenge": {
+    "domain": "Colombian law QA",
+    "development_questions": 50,
+    "blind_questions": 992,
+    "decoder_max_parameters": "8B",
+    "temperature_final": 0,
+    "closed_models_in_competitive_pipeline": false
+  },
+  "hardware": {
+    "target": "NVIDIA RTX 4090",
+    "vram_gb": 24,
+    "colab_primary": false,
+    "cuda_checked": true,
+    "target_cuda_checked": false,
+    "checked_machine": "local Windows CPU; not the target RTX 4090",
+    "local_report": "reports/hardware.json",
+    "local_torch": "2.12.0+cpu",
+    "local_cuda_available": false
+  },
+  "phase": "member_a_baseline_ready_pre_gpu_integration",
+  "architecture_version": "0.5",
+  "retrieval": {
+    "chunking_primary": "legal_structure_aware",
+    "lexical": "BM25",
+    "dense_primary": "Qwen/Qwen3-Embedding-0.6B",
+    "fusion": "RRF",
+    "reranker_primary": "Qwen/Qwen3-Reranker-0.6B",
+    "candidate_k": 30,
+    "evidence_k": 8,
+    "controlled_legal_query_expansion": true,
+    "graph_rag": "graph_aware_from_corpus_v0_selective_query_expansion",
+    "graph_fast_path": "BM25+dense+RRF; graph only when relationship/hierarchy helps",
+    "active_backend": "bm25",
+    "dense_implementation": "implemented; real-weight two-passage CPU smoke",
+    "full_dense_index_built": false,
+    "full_neural_benchmark_completed": false,
+    "graph_router": "provisional; injectable policy owned by B",
+    "controlled_legal_query_expansion_status": "pending member B"
+  },
+  "decoder_bakeoff": [
+    "Qwen/Qwen3-8B",
+    "SINAI/ALIA-es-legal-administrative-7B-Instruct",
+    "BSC-LT/salamandra-7b-fc-2607",
+    "meta-llama/Llama-3.1-8B-Instruct"
+  ],
+  "finetuning": {
+    "decoder_initial": false,
+    "first_candidate_if_needed": "reranker_hard_negative_finetune",
+    "decoder_qlora_gate": "retrieval_good_generation_bad"
+  },
+  "quality_gates": {
+    "retrieval_metrics": [
+      "Recall@1",
+      "Recall@3",
+      "Recall@5",
+      "Recall@10",
+      "MRR",
+      "legal_basis_top10_rate"
+    ],
+    "generation_metrics": [
+      "official_score",
+      "valid_json_rate",
+      "unsupported_citation_rate",
+      "latency_sec_per_question",
+      "peak_vram"
+    ]
+  },
+  "next_action": {
+    "member_a": "On the target RTX 4090 run python tools/check_cuda.py, then follow docs/MEMBER_A_RUNBOOK.md to build/benchmark dense, hybrid and reranker; resolve acquisition/ambiguity backlog before freeze.",
+    "member_b": "Build the pre-GPU generation/evaluation harness with query normalizer, graph router, schema validator and citation guard.",
+    "shared": "Integrate A retrieve() with B answer(), router and citation guard on sample_50; then compare neural retrieval with the same corpus snapshot."
+  },
+  "next_actions": [
+    "Local reproduction: .venv/Scripts/python.exe tools/member_a.py reproduce",
+    "Independent verification: .venv/Scripts/python.exe tools/verify_member_a_second.py",
+    "Target GPU diagnostic: python tools/check_cuda.py",
+    "After verified CUDA/configuration: .venv/Scripts/python.exe tools/member_a.py dense",
+    "Benchmark dense, hybrid and hybrid --rerank as described in docs/MEMBER_A_RUNBOOK.md",
+    "Resolve 28 acquisition failures and ambiguous article groups; review legal currency before freeze",
+    "Integrate member B and measure end-to-end score without changing official labels",
+    "Choose processing license and delivery packaging/publication with the team"
+  ],
+  "do_not_forget": [
+    "OpenRouter key is for evaluator, not the competitive system",
+    "Do not use closed models inside the competitive pipeline or for support synthetic data",
+    "No manual editing of blind answers",
+    "Index must be frozen at submission",
+    "Do not fine-tune decoder before measuring retrieval",
+    "One variable per experiment where possible"
+  ],
+  "version": "0.5",
+  "architecture": "graph_aware_hybrid_rag_v0.5",
+  "agents_protocol": "AGENTS.md",
+  "current_work": {
+    "member_a": [
+      "baseline_complete_and_verified",
+      "full_neural_index_and_benchmark_pending_target_gpu",
+      "source_ambiguity_and_acquisition_backlog",
+      "integration_with_member_b"
+    ],
+    "member_b": [
+      "build_pre_gpu_harness",
+      "implement_query_normalizer",
+      "implement_graph_router_v0",
+      "implement_schema_validator_and_citation_guard",
+      "prepare_evaluator_and_experiment_registry",
+      "parameterize_decoder_bakeoff"
+    ]
+  },
+  "corpus": {
+    "version": "corpus-v0.1",
+    "parser_version": "legal-blocks-1.2",
+    "n_documentos": 163,
+    "n_fragmentos": 26558,
+    "n_indexed": 26060,
+    "n_nodes": 59236,
+    "n_edges": 75380,
+    "hashes": {
+      "passages.jsonl": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+      "graph/nodes.jsonl": "7c8af359cb1ac8de13872e01d2d0faf18218d24e1e2af326529f4a11c0a39aaa",
+      "graph/edges.jsonl": "6002fdcdbb4fb673761cb2dbe949db2502306809f2179e4133d8f40c286ff634"
+    },
+    "failed_targets": 28,
+    "excluded_passages": 498,
+    "frozen_for_competition": false,
+    "manifest": "corpus_manifest.json",
+    "report": "CORPUS.md"
+  },
+  "retrieval_results": {
+    "report": "reports/retrieval_bm25.json",
+    "coverage": {
+      "evaluable_questions": 41,
+      "fully_covered_questions": 36,
+      "macro_target_coverage": 0.9089430894308943
+    },
+    "off": {
+      "Recall@10": 0.5252032520325204,
+      "MRR@10": 0.3401374370886566
+    },
+    "on": {
+      "Recall@10": 0.5373983739837399,
+      "MRR@10": 0.36814750290360043
+    },
+    "auto_triggered": 0,
+    "official_qa_score": null
+  },
+  "verification_reports": {
+    "first": "reports/member_a_verification.json",
+    "second": "reports/member_a_second_verification.json",
+    "unit_tests": "reports/member_a_tests.json",
+    "neural_smoke": "reports/neural_smoke.json",
+    "preflight": "artifacts/preflight_report.json"
+  },
+  "verification_status": {
+    "first_pass": true,
+    "second_independent_pass": true,
+    "tests_passed": 16,
+    "rankings_repeated": 150,
+    "official_hashes_unchanged": 19,
+    "neural_smoke_with_real_weights": true,
+    "full_neural_benchmark": false
+  }
+}

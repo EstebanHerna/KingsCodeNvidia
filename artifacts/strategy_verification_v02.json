@@ -1,0 +1,40 @@
+{
+  "official_core_unchanged": true,
+  "files": [
+    {
+      "file": "data/sample_50.jsonl",
+      "same": true,
+      "sha256": "ab8feef09f4a74f00a4b73fd77b7e0a8f019ae6710eb7cfa543cabf6ec0c1589"
+    },
+    {
+      "file": "data/seed_targets.json",
+      "same": true,
+      "sha256": "4a05f3e3b6c0c7475cae262593e6c8cee7f9f51cadbb075445f89c39e1553193"
+    },
+    {
+      "file": "schema/submission.schema.json",
+      "same": true,
+      "sha256": "84068e6793b7e8a9a58f974cc238524ab631ed6dffc0310475e493dc30060c72"
+    },
+    {
+      "file": "scripts/evaluate.py",
+      "same": true,
+      "sha256": "6fc8e98abf0675dd2a6bd9a052676f7f52f585f329435bb48fa29c7af711fdbf"
+    },
+    {
+      "file": "scripts/citations.py",
+      "same": true,
+      "sha256": "87993aba7d21611d1f3730233ac58e4af9334fe86de3f8e86bce46c7cef0bf9f"
+    },
+    {
+      "file": "scripts/common.py",
+      "same": true,
+      "sha256": "52545d1ec2d62c1936150426be9455449d6e5b9157e91beba281852b7783ff34"
+    },
+    {
+      "file": "scripts/requirements-evaluador.txt",
+      "same": true,
+      "sha256": "13582d3c0350ad2481bccd2a0f1d4d8d3701fad9b5c74f15e9b6de9874c8f21d"
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "KingsCode canonical legal passage v0.5",
+  "type": "object",
+  "required": [
+    "passage_id",
+    "doc_id",
+    "source_type",
+    "title",
+    "norm_name",
+    "article",
+    "retrieval_eligible",
+    "text",
+    "source_url",
+    "order_index",
+    "hierarchy_path",
+    "graph_node_ids",
+    "source_sha256",
+    "retrieved_at"
+  ],
+  "properties": {
+    "retrieval_eligible": {"type": "boolean"},
+    "index_exclusion_reasons": {"type": "array", "items": {"type": "string"}},
+    "passage_id": {
+      "type": "string"
+    },
+    "doc_id": {
+      "type": "string"
+    },
+    "source_type": {
+      "enum": [
+        "constitution",
+        "law",
+        "decree",
+        "code",
+        "decision",
+        "doctrine",
+        "other"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "norm_name": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "norm_number": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "year": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "court": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "decision_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "article": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "paragraph": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "clause": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "section": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "hierarchy_path": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_url": {
+      "type": "string"
+    },
+    "source_domain": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "areas": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "graph_node_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "order_index": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "source_sha256": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "retrieved_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "is_current_text": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": true
+}

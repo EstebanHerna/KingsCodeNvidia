@@ -1,0 +1,62 @@
+MUESTRA
+  total: 50
+  formatos: {'multiple_choice': 15, 'open_ended': 5, 'semi_open': 30}
+  areas:
+     7 | Derecho administrativo
+     6 | Derecho constitucional
+     5 | Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]
+     5 | Derecho procesal
+     5 | Derecho comercial y sociedades
+     5 | Derecho de familia
+     5 | Derecho laboral
+     4 | Derecho civil
+     4 | Derecho penal
+     4 | Derecho tributario
+  complejidad: {'None': 20, 'low': 10, 'medium': 10, 'high': 10}
+  subtareas:
+    20 | None
+     6 | Definición básica
+     6 | Problema jurídico
+     4 | Requisitos legales
+     3 | Precedente jurisprudencial
+     2 | Existencia normativa
+     2 | Fundamento jurídico central (ratio decidendi)
+     2 | Reproducción literal
+     1 | Elemento esencial
+     1 | Antecedentes fácticos
+     1 | Conflicto normativo
+     1 | Jerarquía legal
+     1 | Distinción conceptual
+
+SEED TARGETS
+  seed: 20260830
+  documentos: 186
+  suma items_del_banco: 559
+
+TOP 20 por items_del_banco
+   1.  90 | Constitucion
+   2.  65 | Codigo general proceso
+   3.  37 | Codigo sustantivo trabajo
+   4.  35 | Estatuto tributario
+   5.  23 | Decision andina 486
+   6.  13 | Estatuto consumidor
+   7.  12 | Ley 80 de 1993
+   8.  11 | Ley 2220 de 2022
+   9.  10 | Decreto 2153 de 1992
+  10.   7 | Sentencia C-355 de 2006
+  11.   7 | Ley 1116 de 2006
+  12.   6 | Ley 1581 de 2012
+  13.   5 | Codigo infancia
+  14.   4 | Sentencia C-207 de 2019
+  15.   4 | Sentencia SL-3385 de 2022
+  16.   4 | Sentencia T-323 de 2024
+  17.   4 | Ley 1258 de 2008
+  18.   3 | Sentencia C-394 de 2017
+  19.   3 | Sentencia C-55 de 2022
+  20.   3 | Sentencia SU-315 de 2025
+
+COBERTURA ACUMULADA (conteo seed, no preguntas únicas)
+  top-5: 250
+  top-10: 303
+  top-20: 346
+  top-50: 415

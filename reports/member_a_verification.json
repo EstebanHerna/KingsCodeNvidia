@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "official_files_unchanged": 19,
+  "documents": 163,
+  "passages_valid": 26558,
+  "nodes_valid": 59236,
+  "edges_grounded": 75380,
+  "offsets_verified": 26558,
+  "deterministic_query_checks": 9,
+  "indexed_passages": 26060,
+  "excluded_passages": 498,
+  "hashes": {
+    "passages.jsonl": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+    "graph/nodes.jsonl": "7c8af359cb1ac8de13872e01d2d0faf18218d24e1e2af326529f4a11c0a39aaa",
+    "graph/edges.jsonl": "6002fdcdbb4fb673761cb2dbe949db2502306809f2179e4133d8f40c286ff634"
+  },
+  "unresolved_external_nodes": 2484
+}
