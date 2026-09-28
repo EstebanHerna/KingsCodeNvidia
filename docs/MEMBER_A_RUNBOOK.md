@@ -151,3 +151,19 @@ con el manifest. Para GPU: configurar/validar CUDA, construir el índice Qwen y
 ejecutar R1-QWEN/R2-QWEN antes de R3–R8. BGE-M3 requiere una decisión separada
 de lock inmutable + loader/index; no usar una revisión no fijada. Consultar
 `docs/BENCHMARK_METHODOLOGY.md` y el task board para la secuencia completa.
+
+
+## Estado actual del Benchmark v1 (mergeado)
+
+El benchmark interno v1 está implementado y auditado: 200 casos
+(120 dev / 40 validation / 40 holdout), R0 medido, y **Evidence
+Completeness@8** como métrica primaria. R0 holdout fue un baseline
+predeclarado; no hay selección de retrieval ni freeze para B.
+
+Los resultados CPU de graph AUTO/ON y R6/R7/R8-BM25 son diagnósticos: no son
+ablationes reales R3-based y no pueden activar configuraciones por defecto. Los
+resultados reales R1-Qwen, R1-BGE, R2, R3–R8 permanecen sin GPU versionada.
+BGE-M3 no puede ejecutarse aún como fallback: requiere lock inmutable,
+loader/index y benchmark same-ID aprobados. Ver
+`reports/benchmark/selection/selected_config.json` y
+`reports/benchmark/freeze_handoff/status.json` antes de cualquier freeze.

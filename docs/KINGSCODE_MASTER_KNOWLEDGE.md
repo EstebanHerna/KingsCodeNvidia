@@ -3,7 +3,7 @@
 **Fuente canónica del proyecto.**  
 **Última actualización:** 2026-09-28\
 **Equipo activo:** 2 integrantes  
-**Estado:** v0.5 + capa v0.6 de A (metadatos/recuperación) preparada y validada en CPU; A y Gate 1B conservados. Gate 2-Prep tiene código/configuración/runbook preparados, sin ejecutar pruebas por instrucción final del usuario. CUDA objetivo, inferencia real, benchmark neuronal completo y bakeoff siguen pendientes.
+**Estado:** v0.5 + A v0.6 + Benchmark interno v1 mergeados/auditados. Benchmark: 200 casos 120/40/40, R0 medido, sin selección final ni freeze. Gate 2-Prep/decoder real están preparados; CUDA objetivo, retrieval neuronal, bakeoff y throughput real siguen sin evidencia GPU versionada.
 
 > En un chat nuevo, leer primero este archivo y luego `KINGSCODE_STATE.json`. No reconstruir decisiones desde memoria si existe una versión más reciente de estos archivos.
 
@@ -477,3 +477,47 @@ la 4090, y BGE-M3 no tiene lock/loader/reporte reproducible. Los diagnósticos
 CPU de grafo/R6/R7/R8 no sustituyen sus variantes R3-based. Revisar
 `docs/BENCHMARK_METHODOLOGY.md`, `docs/RETRIEVAL_BENCHMARK_TASK_BOARD.json` y
 `reports/benchmark/selection/selected_config.json` antes de continuar.
+
+
+---
+
+## Estado mergeado en `main` — reconciliación 2026-09-28 (`a3548a1`)
+
+Esta sección prevalece para el estado operativo actual. Las secciones previas
+conservan la historia de v0.1–v0.6 y Gate 2-Prep; no deben leerse como pruebas
+de GPU posterior.
+
+### A: conocimiento y benchmark
+- A v0.6 está implementado y auditado; conserva el Corpus v0.1, sus hashes y el
+  contrato `retrieve(...)`.
+- Benchmark interno v1 está mergeado/auditado: 200 casos, 120 dev / 40
+  validation / 40 holdout, con pregunta/gold separados. La métrica primaria es
+  **Evidence Completeness@8** porque B recibirá ocho pasajes.
+- R0 BM25 está medido. Validation: EC@8=0.575, Recall@10=0.625,
+  MRR@10=0.3739. El holdout R0 fue un baseline predeclarado, no una selección ni
+  una confirmación posterior.
+- CPU graph AUTO/ON y R6/R7/R8-BM25 son **diagnósticos**, no variantes reales
+  R3-based; no seleccionan arquitectura.
+- R1-Qwen, R1-BGE, R2, R3–R8 reales no tienen resultados GPU versionados. No
+  existe BGE-M3 reproducible (lock/loader/index/reporte) en el repo; valores
+  externos son solo `user-reported`.
+- No existe selección final de retrieval ni freeze para B. El protocolo es:
+  GPU dense/complementarity → validation R2/R3–R8 → una confirmación holdout
+  posterior → confirmación oficial-50 sin retuning → freeze de ocho pasajes.
+
+### B: razonamiento, guardas y entrega
+- El dummy Gate 1B y su 5/50 son históricos de integración, no resultado de
+  decoder real ni de calidad de citas.
+- Están mergeados: fallback de `CitationGuardError` a abstención por ítem,
+  política mínima de abstención, recuperación determinista por opciones en
+  cerradas con RRF, UI Streamlit, `run.sh` y Dockerfile.
+- UI/run/Docker están implementados, pero no hay ejecución end-to-end
+  versionada con corpus/GPU en este estado. El decoder real está preparado y
+  bloqueado por pesos/GPU/freeze; no hay bakeoff real, RAGAS ni throughput T6
+  medido.
+
+### GPU y evidencia
+`target_cuda_checked=false` sigue siendo el hecho del repo. Solo hay diagnóstico
+local CPU; no se convierte conversación externa, 4090 objetivo, peso descargado
+o comando preparado en resultado. BF16 sigue siendo el primer experimento y
+INT8/INT4 requieren OOM BF16 compatible y registrado.

@@ -8,12 +8,7 @@
       "member_a": "knowledge_corpus_graph_retrieval",
       "member_b": "query_reasoning_generation_evaluation_delivery"
     },
-    "shared": [
-      "integration",
-      "experiment_design",
-      "freeze",
-      "final_execution"
-    ]
+    "shared": ["integration", "experiment_design", "freeze", "final_execution"]
   },
   "challenge": {
     "domain": "Colombian law QA",
@@ -27,14 +22,16 @@
     "target": "NVIDIA RTX 4090",
     "vram_gb": 24,
     "colab_primary": false,
-    "cuda_checked": true,
+    "local_environment_diagnosed": true,
+    "local_cuda_available": false,
     "target_cuda_checked": false,
+    "target_gpu_report": null,
     "checked_machine": "local Windows CPU; not the target RTX 4090",
     "local_report": "reports/hardware.json",
     "local_torch": "2.12.0+cpu",
-    "local_cuda_available": false
+    "cuda_status_note": "No target CUDA claim without versioned target diagnostic/smoke evidence. Historical local cuda_checked was renamed because it meant CPU diagnosis, not CUDA success."
   },
-  "phase": "gate2_prep_prepared_pending_tests_and_target_gpu",
+  "phase": "benchmark_v1_audited_no_retrieval_selection_target_gpu_pending",
   "architecture_version": "0.5",
   "retrieval": {
     "chunking_primary": "legal_structure_aware",
@@ -66,47 +63,23 @@
     "decoder_qlora_gate": "retrieval_good_generation_bad"
   },
   "quality_gates": {
-    "retrieval_metrics": [
-      "Recall@1",
-      "Recall@3",
-      "Recall@5",
-      "Recall@10",
-      "MRR",
-      "legal_basis_top10_rate"
-    ],
-    "generation_metrics": [
-      "official_score",
-      "ragas_when_authorized",
-      "valid_json_rate",
-      "citation_count",
-      "unsupported_citation_rate",
-      "abstentions",
-      "latency_p50_ms",
-      "latency_p95_ms",
-      "input_tokens",
-      "output_tokens",
-      "peak_vram_bytes",
-      "output_tokens_per_generation_second",
-      "completed_questions_per_second",
-      "errors",
-      "oom_count"
-    ]
+    "retrieval_metrics": ["Recall@1", "Recall@3", "Recall@5", "Recall@10", "MRR", "nDCG@10", "Evidence Completeness@8", "Document Mismatch Rate", "legal_basis_top10_rate"],
+    "generation_metrics": ["official_score", "ragas_when_authorized", "valid_json_rate", "citation_count", "unsupported_citation_rate", "abstentions", "latency_p50_ms", "latency_p95_ms", "input_tokens", "output_tokens", "peak_vram_bytes", "output_tokens_per_generation_second", "completed_questions_per_second", "errors", "oom_count"]
   },
   "next_action": {
-    "member_a": "Internal benchmark v1 is complete and R0 baseline is measured; do not select architecture yet. On target GPU: verify snapshot, prepare Qwen dense and an approved BGE-M3 implementation/lock, run same-ID R1/R2 complementarity and R3-R8 on validation, then one post-selection holdout and official-50 confirmation without retuning.",
-    "member_b": "On the target GPU run the two prepared verifications, prepare exact model snapshots, GPU smoke, freeze retrieval evidence and execute D1-D3. No new tests were run in Gate 2-Prep by user instruction.",
-    "shared": "Start with git pull --ff-only origin main; verify the delivered commit. Follow docs/GPU_DAY_RUNBOOK.md. Do not claim GPU/bakeoff completion before measured results."
+    "member_a": "On target GPU verify snapshot/diagnostics, then follow benchmark v1: same-ID dense/complementarity -> R2 -> R3-R8 validation -> one post-selection holdout -> official-50 confirmation without retuning. Do not select/freeze before measured evidence.",
+    "member_b": "Blocked until A has selected retrieval and frozen eight passages. Meanwhile preserve the merged citation fallback/abstention/MC retrieval/UI/delivery code; target decoder smoke/bakeoff remain unexecuted.",
+    "shared": "Start with git pull --ff-only origin main; verify the delivered commit and corpus snapshot. Do not claim target CUDA, decoder bakeoff, freeze, RAGAS or throughput before versioned reports."
   },
   "next_actions": [
     "git pull --ff-only origin main",
-    "Verify delivered commit and transfer the existing corpus snapshot if using another machine",
-    "Create venv and install requirements-knowledge.txt; run preflight and the two prepared verifications on the target machine",
-    "python tools/prepare_gpu_environment.py --diagnose --output reports/gpu_diagnostic.json",
-    "python tools/prepare_gpu_environment.py --plan --report reports/gpu_diagnostic.json",
-    "Select/install compatible PyTorch manually, then requirements-gpu.txt; no CUDA wheel guessed in this delivery",
-    "Prepare approved model access, download exact snapshots and verify them offline",
-    "Run GPU smoke, build dense, benchmark R0-R5, freeze evidence, then compare D1-D3 with the same freeze",
-    "Keep RAGAS authorization/key, fine-tuning and competitive freeze separate"
+    "Verify delivered commit and transfer the preserved corpus snapshot without rebuilding/downloading",
+    "Run preflight and target diagnostics; record a versioned target GPU report before changing target_cuda_checked",
+    "Prepare/verify approved Qwen retrieval assets; BGE-M3 stays blocked until immutable lock + loader/index are approved",
+    "Build dense index and execute benchmark-v1 same-ID dense/complementarity, then R2/R3-R8 on validation",
+    "Record validation selection, run one post-selection holdout and official-50 confirmation without retuning",
+    "Freeze eight passages for B only after selected retrieval configuration; then run decoder smoke/bakeoff",
+    "Measure throughput/VRAM on the real path before planning the 992-question execution"
   ],
   "do_not_forget": [
     "OpenRouter key is for evaluator, not the competitive system",
@@ -120,18 +93,8 @@
   "architecture": "graph_aware_hybrid_rag_v0.5",
   "agents_protocol": "AGENTS.md",
   "current_work": {
-    "member_a": [
-      "baseline_complete_and_verified",
-      "full_neural_index_and_benchmark_pending_target_gpu",
-      "source_ambiguity_and_acquisition_backlog",
-      "public_retrieve_integrated_with_member_b_dummy"
-    ],
-    "member_b": [
-      "gate_1b_historically_verified_dummy_preserved",
-      "gate2_prep_code_and_commands_prepared",
-      "new_tests_and_regression_replay_not_run_per_user_request",
-      "target_gpu_real_decoders_bakeoff_and_ragas_not_executed"
-    ]
+    "member_a": ["v06_implemented_and_audited", "benchmark_v1_200_cases_audited_r0_measured", "no_retrieval_selection_or_freeze", "target_gpu_dense_hybrid_reranker_and_same_id_complementarity_pending"],
+    "member_b": ["gate1b_historical_dummy_preserved", "citation_fallback_minimal_abstention_and_mc_option_retrieval_merged", "ui_run_sh_dockerfile_implemented_not_end_to_end_validated_here", "target_gpu_real_decoder_bakeoff_ragas_and_throughput_not_executed"]
   },
   "corpus": {
     "version": "corpus-v0.1",
@@ -153,60 +116,57 @@
     "report": "CORPUS.md"
   },
   "member_a_v06": {
-    "status": "prepared_not_gpu_validated",
+    "status": "implemented_audited_cpu_validated_gpu_neural_pending",
     "scope": "knowledge_layer_metadata_and_retrieval_only",
     "metadata_version": "metadata-v0.6",
-    "modules": [
-      "kingscode/metadata.py",
-      "kingscode/acquisition_backlog.py",
-      "kingscode/diversify.py",
-      "kingscode/metadata_experiments.py",
-      "kingscode/failure_analysis.py",
-      "kingscode/coverage_report.py"
-    ],
+    "modules": ["kingscode/metadata.py", "kingscode/acquisition_backlog.py", "kingscode/diversify.py", "kingscode/metadata_experiments.py", "kingscode/failure_analysis.py", "kingscode/coverage_report.py"],
     "canonical_ids": "deterministic, url-independent; document and fragment namespaces separate",
-    "acquisition_backlog": {"total": 28, "source_unavailable": 14, "not_found": 11, "identifier_suspect": 2, "ambiguous": 1,
-                             "policy": "identifiers never rewritten or substituted"},
+    "acquisition_backlog": {
+      "total": 28,
+      "source_unavailable": 14,
+      "not_found": 11,
+      "identifier_suspect": 2,
+      "ambiguous": 1,
+      "policy": "identifiers never rewritten or substituted"
+    },
     "dedup_diversification": "configurable, off by default, provenance preserved; ablation-ready",
     "failure_taxonomy": ["success", "corpus_missing", "correct_document_wrong_passage", "wrong_document", "ranking_failure", "graph_failure", "ambiguous_ground_truth"],
     "document_mismatch_rate": {"bm25_off": 0.6585, "bm25_on": 0.6098, "note": "own definition; not claimed identical to academic DRM"},
     "experiments": {"R6": "exact locator + metadata features (soft prior, union)", "R7": "document-first -> passage", "R8": "R3 + diversification", "owner": "member_a", "changes_default_path": false},
     "embedding_representation": "experimental only; excludes technical provenance; not a measured replacement",
-    "reports": ["reports/acquisition_backlog_v06.json", "reports/corpus_coverage_v06.json",
-                 "reports/retrieval_failures_bm25_off.json", "reports/retrieval_failures_bm25_auto.json", "reports/retrieval_failures_bm25_on.json"],
+    "reports": ["reports/acquisition_backlog_v06.json", "reports/corpus_coverage_v06.json", "reports/retrieval_failures_bm25_off.json", "reports/retrieval_failures_bm25_auto.json", "reports/retrieval_failures_bm25_on.json"],
     "corpus_rebuild": "byte-identical to corpus-v0.1; hashes unchanged; metric changes none (only timestamps/latency/code_sha256 differ in run reports)",
-    "verification": {"tests_passed": 132, "new_tests": 44, "first_pass": true, "second_independent_pass": true,
-                      "official_files_unchanged": 19, "member_b_unchanged": true},
+    "verification": {"tests_passed": 132, "new_tests": 44, "first_pass": true, "second_independent_pass": true, "official_files_unchanged": 19, "member_b_unchanged": true},
     "gpu_only": ["dense/hybrid index build", "hybrid+reranker R6/R7/R8 neural variants", "full neural benchmark"]
   },
   "member_a_retrieval_benchmark_v1": {
-    "status": "internal_benchmark_complete_neural_selection_gpu_blocked",
+    "status": "implemented_audited_no_selection",
+    "as_of_commit": "a3548a16003dcc0a5165cba0829aa68c7921d9c2",
     "manifest": "benchmarks/kingscode_ir/manifests/benchmark_manifest.json",
+    "audit": "reports/benchmark/audit/independent_review.json",
     "manifest_sha256": "326a405748dd20f641d5cf4103ceaafb6a19f07b43db54d95f472a2b439e3071",
     "split": {"dev": 120, "validation": 40, "holdout": 40},
+    "primary_metric": "Evidence Completeness@8",
     "generation": "deterministic templates over verified corpus metadata; no closed-model questions",
     "human_review_queue": 20,
     "r0_validation": {"Evidence Completeness@8": 0.575, "Recall@10": 0.625, "MRR@10": 0.3738888888888889, "Document Mismatch Rate": 0.1},
-    "r0_holdout": {"purpose": "predeclared_baseline_only", "Evidence Completeness@8": 0.55, "Recall@10": 0.575, "MRR@10": 0.3564880952380952},
-    "selection": "no_selection; R1-R8 real variants GPU_BLOCKED",
-    "bge_m3": "user-reported old-sample values are unverified; no local run/report/model lock/implementation",
-    "next_action": "On RTX 4090 execute R1-QWEN and approved BGE-M3 setup, complementarity, R2-R8 validation selection, then one post-selection holdout and official-50 confirmation."
+    "r0_holdout": {"purpose": "predeclared_baseline_only_not_post_selection_confirmation", "Evidence Completeness@8": 0.55, "Recall@10": 0.575, "MRR@10": 0.3564880952380952},
+    "cpu_diagnostics": "graph AUTO/ON and R6/R7/R8-BM25 are diagnostics only; not true R3-based variants and not selection eligible",
+    "selected_variant": null,
+    "selection_status": "no_selection",
+    "eligible_validation_variants": ["R0"],
+    "post_selection_holdout_completed": false,
+    "official50_confirmation_completed": false,
+    "freeze_status": "blocked_no_selected_retrieval_configuration",
+    "bge_m3": "user-reported old-sample values are non-evidence; no local run/report/model lock/loader/index",
+    "real_gpu_variant_results": {"R1-Qwen": false, "R1-BGE": false, "R2": false, "R3_to_R8": false},
+    "next_action": "On RTX 4090 execute same-ID R1-Qwen and approved BGE-M3 setup, complementarity, R2-R8 validation selection, then one post-selection holdout and official-50 confirmation."
   },
   "retrieval_results": {
     "report": "reports/retrieval_bm25.json",
-    "coverage": {
-      "evaluable_questions": 41,
-      "fully_covered_questions": 36,
-      "macro_target_coverage": 0.9089430894308943
-    },
-    "off": {
-      "Recall@10": 0.5252032520325204,
-      "MRR@10": 0.3401374370886566
-    },
-    "on": {
-      "Recall@10": 0.5373983739837399,
-      "MRR@10": 0.36814750290360043
-    },
+    "coverage": {"evaluable_questions": 41, "fully_covered_questions": 36, "macro_target_coverage": 0.9089430894308943},
+    "off": {"Recall@10": 0.5252032520325204, "MRR@10": 0.3401374370886566},
+    "on": {"Recall@10": 0.5373983739837399, "MRR@10": 0.36814750290360043},
     "auto_triggered": 0,
     "official_qa_score": null
   },
@@ -231,7 +191,7 @@
     "official_hashes_unchanged": 19,
     "neural_smoke_with_real_weights": true,
     "full_neural_benchmark": false,
-    "scope": "member_a; Gate 1B status is under member_b.verification"
+    "scope": "historical member_a baseline; Gate 1B and benchmark audit are recorded separately"
   },
   "member_b": {
     "gate": "1B",
@@ -264,40 +224,26 @@
       "run": "reports/member_b/20260928T035443616407Z-9a776fef5883",
       "fingerprint": "9a776fef5883eb012f875170e6942ac2ed1aeb7621fabc322f3fb24201c849e9",
       "submission_sha256": "09d9ac32ac981162105d91fc127dedd770023e6b5ca122d8cedfca5190f4767a",
-      "metrics": {
-        "questions": 50,
-        "attempted": 50,
-        "completed": 50,
-        "valid_json_rate": 1.0,
-        "schema_rejections": 0,
-        "citation_rejections": 0,
-        "citation_count": 0,
-        "unsupported_citation_count": 0,
-        "unsupported_citation_rate": 0.0,
-        "citation_rate_note": "Zero with zero citations is vacuous, not evidence of citation quality.",
-        "abstentions": 50,
-        "abstention_reasons": {
-          "dummy_backend_no_legal_reasoning": 44,
-          "missing_explicit_reference": 6
-        },
-        "graph_decisions": {
-          "off": 40,
-          "auto": 6,
-          "on": 4
-        },
-        "latency_p50_ms": 44.48965001211036,
-        "latency_p95_ms": 139.1738999809604,
-        "total_seconds": 6.956745799980126
-      },
-      "official_total": {
-        "obtenidos": 5.0,
-        "posibles": 50.0,
-        "de_100_del_ranking": 80.0,
-        "nota": "los 20 pts restantes son interfaz grafica, bitacora de corpus, video y reproducibilidad"
-      },
+      "metrics": {"questions": 50, "attempted": 50, "completed": 50, "valid_json_rate": 1.0, "schema_rejections": 0, "citation_rejections": 0, "citation_count": 0, "unsupported_citation_count": 0, "unsupported_citation_rate": 0.0, "citation_rate_note": "Zero with zero citations is vacuous, not evidence of citation quality.", "abstentions": 50, "abstention_reasons": {"dummy_backend_no_legal_reasoning": 44, "missing_explicit_reference": 6}, "graph_decisions": {"off": 40, "auto": 6, "on": 4}, "latency_p50_ms": 44.48965001211036, "latency_p95_ms": 139.1738999809604, "total_seconds": 6.956745799980126},
+      "official_total": {"obtenidos": 5.0, "posibles": 50.0, "de_100_del_ranking": 80.0, "nota": "los 20 pts restantes son interfaz grafica, bitacora de corpus, video y reproducibilidad"},
       "limitation": "50 deliberate dummy abstentions; 5/50 without RAGAS is an integration baseline, not evidence of legal reasoning quality. Zero citations cannot certify citation quality."
     },
-    "real_decoder_backend_prepared": true
+    "real_decoder_backend_prepared": true,
+    "merged_extensions": {
+      "citation_guard_fallback_to_item_abstention": true,
+      "minimal_abstention_policy": true,
+      "multiple_choice_option_retrieval_rrf": true,
+      "ui_implemented": true,
+      "run_sh_and_dockerfile_implemented": true
+    },
+    "runtime_evidence": {
+      "ui_end_to_end_with_corpus_gpu": false,
+      "run_sh_docker_end_to_end": false,
+      "real_decoder_bakeoff_versioned": false,
+      "throughput_992_implemented": false,
+      "throughput_992_measured": false
+    },
+    "freeze_dependency": "blocked_until_member_a_benchmark_selection_and_eight_passage_freeze"
   },
   "gate2_prep": {
     "status": "prepared_not_runtime_validated",
@@ -310,6 +256,7 @@
     "new_test_cases_prepared": 28,
     "tests_executed": false,
     "smokes_executed": false,
+    "test_scope_note": "These flags are Gate 2-Prep runtime validation only; they do not negate the later v0.6/benchmark unit tests and audit.",
     "verification_reason": "User explicitly requested safe changes on main without running tests; first/second verification commands prepared for the target machine.",
     "target_cuda_completed": false,
     "decoder_weights_downloaded": false,

@@ -8,7 +8,11 @@
   "retrieval": {
     "lexical": "BM25",
     "encoder_primary": "Qwen/Qwen3-Embedding-0.6B",
-    "encoder_fallback": "BAAI/bge-m3",
+    "encoder_fallback": null,
+    "bge_m3_candidate": {
+      "status": "blocked_requires_approved_immutable_lock_loader_index_and_same_id_gpu_benchmark",
+      "user_reported_metrics_are_non_evidence": true
+    },
     "reranker_primary": "Qwen/Qwen3-Reranker-0.6B",
     "candidate_k": 30,
     "evidence_k": 8,
@@ -17,39 +21,26 @@
     "chunking": "legal_structure_aware_adaptive",
     "controlled_legal_query_expansion": true,
     "graph_rag": "graph_aware_from_corpus_v0_selective",
-    "graph_relations": [
-      "CONTIENE",
-      "REMITE_A",
-      "CITA",
-      "MODIFICA",
-      "DEROGA",
-      "REGLAMENTA",
-      "DESARROLLA",
-      "EXCEPCIONA"
-    ],
+    "graph_relations": ["CONTIENE", "REMITE_A", "CITA", "MODIFICA", "DEROGA", "REGLAMENTA", "DESARROLLA", "EXCEPCIONA"],
     "graph_query_policy": "B legal-router-v1 uses question and initial flat evidence to choose OFF/AUTO/ON; boolean adapter for A; A executes expansion unchanged",
     "active_backend": "bm25",
     "full_neural_benchmark_completed": false,
+    "benchmark_v1": {
+      "status": "implemented_audited_no_selection",
+      "primary_metric": "Evidence Completeness@8",
+      "freeze_status": "blocked_no_selected_retrieval_configuration",
+      "r0_measured": true,
+      "real_r1_to_r8_gpu_results": false
+    },
     "models_lock": "config/models.lock.json",
     "neural_config": "config/neural.json",
     "controlled_legal_query_expansion_status": "implemented by B legal-query-v1; finite aliases, deterministic, references preserved",
-    "graph_relations_implemented": [
-      "CONTIENE",
-      "REMITE_A",
-      "CITA",
-      "MODIFICA",
-      "DEROGA"
-    ],
+    "graph_relations_implemented": ["CONTIENE", "REMITE_A", "CITA", "MODIFICA", "DEROGA"],
     "graph_budget": 10,
     "rrf_constant": 60,
     "exclude_ambiguous_articles": true
   },
-  "decoder_candidates": [
-    "Qwen/Qwen3-8B",
-    "SINAI/ALIA-es-legal-administrative-7B-Instruct",
-    "BSC-LT/salamandra-7b-fc-2607",
-    "meta-llama/Llama-3.1-8B-Instruct"
-  ],
+  "decoder_candidates": ["Qwen/Qwen3-8B", "SINAI/ALIA-es-legal-administrative-7B-Instruct", "BSC-LT/salamandra-7b-fc-2607", "meta-llama/Llama-3.1-8B-Instruct"],
   "decoder_primary_prior": "Qwen/Qwen3-8B",
   "generation": {
     "temperature": 0.0,
@@ -60,6 +51,10 @@
     "active_backend": "dummy_abstain",
     "real_decoder_loaded": false,
     "decoder_bakeoff_completed": false,
+    "throughput_992": {
+      "status": "not_implemented_not_measured",
+      "requires": "real corpus and GPU measurement"
+    },
     "seed": 0,
     "bakeoff_config": "config/decoder_bakeoff.json",
     "prepared_backend": "transformers_local_lazy_unvalidated",
@@ -73,9 +68,9 @@
   },
   "version": "0.5",
   "next_action": {
-    "member_a": "target_gpu_runbook_then_retrieval_matrix_R0_R5",
-    "member_b": "execute_deferred_verifications_on_target_then_gpu_smoke_and_decoder_sample",
-    "shared": "gate2_prep_prepared_not_tested; no_gpu_or_bakeoff_results"
+    "member_a": "target_gpu_diagnose_then_benchmark_v1_same_id_dense_complementarity_R2_R3_to_R8_validation_selection",
+    "member_b": "blocked_until_retrieval_selection_and_freeze; then target verifications, decoder smoke and bakeoff",
+    "shared": "no_target_cuda_or_bakeoff_results; do not freeze evidence or claim throughput before measured reports"
   },
   "interfaces": {
     "retrieve": "retrieve(question, k, graph_mode=\"auto\") -> passages",

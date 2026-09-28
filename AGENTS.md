@@ -114,14 +114,14 @@ Dejar explícito:
 - qué falta;
 - cuál es el siguiente comando/tarea exacta.
 
-## 9. Estado actual
-Versión: **v0.5**.
-Fase: **Gate 2-Prep preparado; pruebas nuevas y ejecución GPU pendientes**.
-- A: Corpus v0 + grafo + retrieval baseline.
-- B: Gate 1B con dummy verificado históricamente; backend real, prompts, modelos fijados y comandos de bakeoff preparados en Gate 2-Prep, aún sin ejecutar.
+## 9. Estado mergeado en `main` (reconciliado 2026-09-28)
+Versión arquitectónica: **v0.5**; capa A v0.6 y Benchmark interno v1 ya están mergeados y auditados.
 
-Protocolo para continuar en la GPU: leer `docs/GPU_DAY_RUNBOOK.md`, `docs/MODEL_LOCKS_GATE2.md`, `config/decoder_bakeoff.json` y `config/experiment_matrix.json`. No sustituir `smoke` (dummy). Los experimentos reales usan evidencia congelada, snapshots locales verificados y BF16 primero; un fallback exige registrar el OOM y mantener las demás variables.
+- **A v0.6:** implementado/auditado; corpus v0.1, grafo y contrato público permanecen intactos.
+- **Benchmark v1:** implementado/auditado, 200 casos (120 dev / 40 validation / 40 holdout). R0 está medido. `Evidence Completeness@8` es la métrica primaria. CPU graph/R6/R7/R8 son diagnósticos, no ablations R3-based. No hay selección final ni freeze para B.
+- **GPU/retrieval real:** R1-Qwen, R1-BGE, R2, R3–R8 reales no tienen resultados GPU versionados. No afirmar benchmark neuronal, BGE reproducible, CUDA objetivo o mejora de grafo sin el reporte correspondiente.
+- **B:** Gate 1B dummy es histórico; el decoder real/preparación Gate 2 siguen sin bakeoff GPU versionado. Sí están mergeados el fallback de `CitationGuardError` a abstención por ítem, política mínima de abstención, retrieval por opciones en cerradas, UI, `run.sh` y `Dockerfile`; su ejecución end-to-end/throughput real no está medida.
 
-En esta entrega el usuario pidió expresamente no ejecutar pruebas. Se dejan preparadas dos verificaciones para el siguiente entorno; no presentar los 60 tests históricos como validación de Gate 2-Prep ni marcar CUDA/bakeoff completados sin resultados reales.
+La frase histórica de que Gate 2-Prep no ejecutó sus pruebas/runtime sigue siendo válida **solo para Gate 2-Prep/target GPU**; no borra las verificaciones posteriores de A v0.6 ni la auditoría del Benchmark v1. `target_cuda_checked` solo cambia con evidencia versionada del destino.
 
-No asumir que CUDA ya está configurado.
+Para continuar: leer `docs/KINGSCODE_STATE.json`, `docs/BENCHMARK_METHODOLOGY.md`, `docs/GPU_DAY_RUNBOOK.md`, `docs/MEMBER_A_RUNBOOK.md`, `docs/MEMBER_B_RUNBOOK.md`, los locks/configs y los reportes versionados antes de ejecutar la 4090. No asumir CUDA, freeze, bakeoff ni throughput medidos.

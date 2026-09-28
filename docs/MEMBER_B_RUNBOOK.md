@@ -64,14 +64,17 @@ Reconoce referencias explícitas a normas con número/año, códigos, artículos
 
 El callback de A recibe solo texto y espera un booleano. `RetrieverGraphRouter` enlaza la decisión de B a la consulta exacta y devuelve `bool`, evitando que el string `"off"` active el grafo por ser truthy. Se usa una instancia por pipeline secuencial. Si el caller no proporciona adaptador, el coordinador resuelve AUTO a una llamada ON explícita y deja ambos valores en la traza. El grafo puede no aportar evidencia cuando no hay semillas; la política sigue absteniéndose. El número de activaciones no prueba mejora de retrieval ni del score.
 
-## Política y guardas
+## Política, retrieval y guardas — estado mergeado
 
-- Abstención antes del backend ante consulta/retrieval vacíos, referencia explícita ausente/ambigua, evidencia léxica insuficiente, pasajes no elegibles, conflicto fuerte, vigencia no certificada o falta de evidencia de la relación solicitada.
+- **Bloqueo antes del backend:** texto libre bloquea solo por razones duras: `empty_question`, `retrieval_empty`, `conflicting_evidence` o `ineligible_evidence` (`is_current_text=false` / pasaje no elegible). Referencia ausente/ambigua, solapamiento léxico débil, vigencia no certificada (`unknown`) o falta de relación son advertencias en la traza, no bloqueos. `multiple_choice` nunca pre-bloquea; puede abstenerse después si decoder/guardas lo exigen.
+- **Opciones de cerradas:** para `multiple_choice` con opciones, B recupera una variante determinista por opción y las fusiona con RRF (`k=60`) usando exclusivamente la API pública de A. Sin opciones, el flujo de recuperación es el mismo de una sola consulta. Está implementado, pero su efecto real aún no está medido con corpus/GPU.
+- **Fallback de citas:** en `Pipeline.run`, un `CitationGuardError` se convierte en abstención para ese ítem usando la misma evidencia y aumenta `citation_guard_fallbacks`; el lote continúa. Esto no altera `answer()` ni `citation_guard` para llamadores directos. JSON/schema/identidad inválidos siguen siendo fallos de corrida, sin publicación parcial ni edición manual.
 - Conflictos mecánicos: mismo ID con textos distintos; misma norma/artículo/intervalo con textos distintos; textos del mismo artículo opuestos únicamente por negación modal. No pretende resolver todas las contradicciones jurídicas.
 - El dummy también se abstiene cuando hay evidencia suficiente. Nunca copia una opción como respuesta sustantiva ni infiere una conclusión jurídica.
 - Cada `pasajes_recuperados` conserva exactamente el texto de A y añade `passage_id`, `doc_id`, URL, identidad normativa, artículo, jerarquía, nodos y hashes disponibles. Omite offsets oficiales opcionales porque `text_prefix` de A no pertenece al intervalo clean.
 - Citation guard verifica todas las cadenas emitidas, incluidos keywords y descarte de opciones. Exige fuente/artículo compatibles, referencia visible y evidencia incluida en la salida. Rechaza texto/URL/metadata alterados, pasajes duplicados, citas sin respaldo y respuestas no abstencionistas sin cita verificable. Una mera mención a otra ley dentro de un pasaje no lo convierte en evidencia del artículo de esa otra ley.
-- La validación usa el schema oficial intacto, más comprobaciones de JSON estricto, evidencia no vacía para respuestas y máximo diez pasajes. Una salida inválida o una cita rechazada aborta la corrida y registra el fallo; no se publica un JSONL final parcial ni se edita manualmente.
+
+**Pendiente de revisión cruzada:** la diferencia cuerpo-versus-artículo frente al evaluador oficial sigue documentada en `docs/B_EXTENSION_PLAN.md` T1b; no se cambió esa semántica en esta reconciliación.
 
 ### Contradicción oficial de opción múltiple
 
@@ -91,9 +94,11 @@ Las carpetas son nuevas por corrida. El fingerprint, JSONL final, decisiones y t
 
 ## Límites y siguiente paso
 
-No se ha ejecutado decoder real, calibración de confianza, RAGAS, interfaz de usuario, benchmark neuronal completo ni bakeoff. Gate 2-Prep añade código separado para esa fase, todavía sin probar por instrucción del usuario. La guarda comprueba identidad de cita y trazabilidad, no implicación semántica de toda una conclusión. Las reglas de routing/abstención son conservadoras y deben evaluarse por área al incorporar razonamiento real. Temperatura prevista: 0, `do_sample=false`, semilla 0.
+El **decoder real está preparado** en `kingscode/generation/`, pero no hay pesos reales/bakeoff GPU versionados; tampoco hay calibración, RAGAS ni throughput T6 real. La **UI está implementada** en `interfaz/app.py` y conectada al pipeline, pero no tiene ejecución end-to-end versionada con corpus/GPU. `run.sh`, `Dockerfile` y `.dockerignore` están mergeados; su ejecución completa requiere un snapshot de corpus provisto/preservado y no está verificada en este checkout CPU.
 
-Siguiente comando para repetir Gate 1B: `.venv/Scripts/python.exe tools/member_b.py smoke`. Revisar sus trazas y la segunda verificación antes de una tarea separada de integración del decoder/GPU; este gate no instala ni inicia esa fase.
+Gate 2-Prep añade código separado para la fase GPU; su estado preparado no equivale a runtime validado. La guarda comprueba identidad de cita y trazabilidad, no implicación semántica de toda una conclusión. Temperatura prevista: 0, `do_sample=false`, semilla 0. Throughput/concurrencia para las 992 preguntas sigue **no implementado ni medido** deliberadamente: no inferir capacidad desde el dummy.
+
+Siguiente comando para repetir Gate 1B: `.venv/Scripts/python.exe tools/member_b.py smoke`. Para GPU, B queda bloqueado hasta que A complete selección interna de retrieval y freeze de ocho pasajes; ver `docs/KINGSCODE_STATE.json`, `docs/BENCHMARK_METHODOLOGY.md` y `reports/benchmark/freeze_handoff/status.json`.
 
 ## Comandos preparados para Gate 2
 
