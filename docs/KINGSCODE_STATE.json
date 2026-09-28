@@ -34,7 +34,7 @@
     "local_torch": "2.12.0+cpu",
     "local_cuda_available": false
   },
-  "phase": "member_a_baseline_ready_pre_gpu_integration",
+  "phase": "gate_1b_complete_dummy_integration_pre_gpu",
   "architecture_version": "0.5",
   "retrieval": {
     "chunking_primary": "legal_structure_aware",
@@ -51,8 +51,8 @@
     "dense_implementation": "implemented; real-weight two-passage CPU smoke",
     "full_dense_index_built": false,
     "full_neural_benchmark_completed": false,
-    "graph_router": "provisional; injectable policy owned by B",
-    "controlled_legal_query_expansion_status": "pending member B"
+    "graph_router": "member B legal-router-v1; flat evidence OFF/AUTO/ON with boolean adapter for A",
+    "controlled_legal_query_expansion_status": "implemented by B legal-query-v1; finite aliases, deterministic, references preserved"
   },
   "decoder_bakeoff": [
     "Qwen/Qwen3-8B",
@@ -84,17 +84,15 @@
   },
   "next_action": {
     "member_a": "On the target RTX 4090 run python tools/check_cuda.py, then follow docs/MEMBER_A_RUNBOOK.md to build/benchmark dense, hybrid and reranker; resolve acquisition/ambiguity backlog before freeze.",
-    "member_b": "Build the pre-GPU generation/evaluation harness with query normalizer, graph router, schema validator and citation guard.",
-    "shared": "Integrate A retrieve() with B answer(), router and citation guard on sample_50; then compare neural retrieval with the same corpus snapshot."
+    "member_b": "Reproduce Gate 1B: .venv/Scripts/python.exe tools/member_b.py smoke; review traces and independent audit before a separate real-decoder task. CUDA and bakeoff remain pending.",
+    "shared": "A retrieve() and B dummy harness are integrated on sample_50. Review the recorded baseline, then plan real-decoder/GPU integration using the same corpus snapshot."
   },
   "next_actions": [
-    "Local reproduction: .venv/Scripts/python.exe tools/member_a.py reproduce",
-    "Independent verification: .venv/Scripts/python.exe tools/verify_member_a_second.py",
-    "Target GPU diagnostic: python tools/check_cuda.py",
-    "After verified CUDA/configuration: .venv/Scripts/python.exe tools/member_a.py dense",
-    "Benchmark dense, hybrid and hybrid --rerank as described in docs/MEMBER_A_RUNBOOK.md",
+    "Reproduce Gate 1B: .venv/Scripts/python.exe tools/member_b.py smoke",
+    "Independent Gate 1B verification: .venv/Scripts/python.exe tools/verify_member_b_second.py",
+    "Review docs/MEMBER_B_RUNBOOK.md and reports/MEMBER_B_DELIVERY.md",
     "Resolve 28 acquisition failures and ambiguous article groups; review legal currency before freeze",
-    "Integrate member B and measure end-to-end score without changing official labels",
+    "Future separate phase: diagnose the target RTX 4090, benchmark neural retrieval, then integrate an open decoder; not executed in Gate 1B",
     "Choose processing license and delivery packaging/publication with the team"
   ],
   "do_not_forget": [
@@ -113,15 +111,14 @@
       "baseline_complete_and_verified",
       "full_neural_index_and_benchmark_pending_target_gpu",
       "source_ambiguity_and_acquisition_backlog",
-      "integration_with_member_b"
+      "public_retrieve_integrated_with_member_b_dummy"
     ],
     "member_b": [
-      "build_pre_gpu_harness",
-      "implement_query_normalizer",
-      "implement_graph_router_v0",
-      "implement_schema_validator_and_citation_guard",
-      "prepare_evaluator_and_experiment_registry",
-      "parameterize_decoder_bakeoff"
+      "gate_1b_complete_and_independently_verified",
+      "query_normalizer_and_graph_router_v1_implemented",
+      "schema_and_citation_guards_implemented",
+      "official_evaluator_and_experiment_registry_integrated",
+      "real_decoder_cuda_bakeoff_ragas_and_delivery_pending"
     ]
   },
   "corpus": {
@@ -166,7 +163,11 @@
     "second": "reports/member_a_second_verification.json",
     "unit_tests": "reports/member_a_tests.json",
     "neural_smoke": "reports/neural_smoke.json",
-    "preflight": "artifacts/preflight_report.json"
+    "preflight": "artifacts/preflight_report.json",
+    "member_b_smoke": "reports/member_b/20260928T035443616407Z-9a776fef5883/experiment.json",
+    "member_b_second": "reports/member_b_second_verification.json",
+    "member_b_tests": "reports/member_b_tests_second.txt",
+    "member_b_delivery": "reports/MEMBER_B_DELIVERY.md"
   },
   "verification_status": {
     "first_pass": true,
@@ -175,6 +176,72 @@
     "rankings_repeated": 150,
     "official_hashes_unchanged": 19,
     "neural_smoke_with_real_weights": true,
-    "full_neural_benchmark": false
+    "full_neural_benchmark": false,
+    "scope": "member_a; Gate 1B status is under member_b.verification"
+  },
+  "member_b": {
+    "gate": "1B",
+    "status": "complete",
+    "version": "gate1b-v1",
+    "config": "config/reasoning.json",
+    "runbook": "docs/MEMBER_B_RUNBOOK.md",
+    "backend": "dummy_abstain",
+    "real_decoder_loaded": false,
+    "target_cuda_completed": false,
+    "decoder_bakeoff_completed": false,
+    "ragas_completed": false,
+    "implementation": "kingscode/reasoning/",
+    "verification": {
+      "first_pass": true,
+      "second_independent_pass": true,
+      "verified_at_utc": "2026-09-28T03:55:28.100055+00:00",
+      "tests_passed": 60,
+      "new_tests": 44,
+      "existing_tests_passed": 16,
+      "official_hashes_unchanged": 19,
+      "member_a_files_unchanged": 15,
+      "rows_validated": 50,
+      "evidence_records_checked": 400,
+      "byte_identical_replay": true,
+      "deterministic_traces_equal": true,
+      "neural_modules_loaded": []
+    },
+    "smoke": {
+      "run": "reports/member_b/20260928T035443616407Z-9a776fef5883",
+      "fingerprint": "9a776fef5883eb012f875170e6942ac2ed1aeb7621fabc322f3fb24201c849e9",
+      "submission_sha256": "09d9ac32ac981162105d91fc127dedd770023e6b5ca122d8cedfca5190f4767a",
+      "metrics": {
+        "questions": 50,
+        "attempted": 50,
+        "completed": 50,
+        "valid_json_rate": 1.0,
+        "schema_rejections": 0,
+        "citation_rejections": 0,
+        "citation_count": 0,
+        "unsupported_citation_count": 0,
+        "unsupported_citation_rate": 0.0,
+        "citation_rate_note": "Zero with zero citations is vacuous, not evidence of citation quality.",
+        "abstentions": 50,
+        "abstention_reasons": {
+          "dummy_backend_no_legal_reasoning": 44,
+          "missing_explicit_reference": 6
+        },
+        "graph_decisions": {
+          "off": 40,
+          "auto": 6,
+          "on": 4
+        },
+        "latency_p50_ms": 44.48965001211036,
+        "latency_p95_ms": 139.1738999809604,
+        "total_seconds": 6.956745799980126
+      },
+      "official_total": {
+        "obtenidos": 5.0,
+        "posibles": 50.0,
+        "de_100_del_ranking": 80.0,
+        "nota": "los 20 pts restantes son interfaz grafica, bitacora de corpus, video y reproducibilidad"
+      },
+      "limitation": "50 deliberate dummy abstentions; 5/50 without RAGAS is an integration baseline, not evidence of legal reasoning quality. Zero citations cannot certify citation quality."
+    }
   }
 }

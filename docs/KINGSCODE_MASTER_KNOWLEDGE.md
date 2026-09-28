@@ -3,7 +3,7 @@
 **Fuente canónica del proyecto.**  
 **Última actualización:** 2026-09-27  
 **Equipo activo:** 2 integrantes  
-**Estado:** v0.5; Corpus v0.1 y retrieval baseline de A implementados y medidos. Integración B y benchmark neuronal completo pendientes. Máquina local CPU; 4090 objetivo aún por diagnosticar.
+**Estado:** v0.5; Corpus v0.1/retrieval de A y Gate 1B integrados con backend dummy pre-GPU. El decoder real, CUDA objetivo y benchmark neuronal completo siguen pendientes.
 
 > En un chat nuevo, leer primero este archivo y luego `KINGSCODE_STATE.json`. No reconstruir decisiones desde memoria si existe una versión más reciente de estos archivos.
 
@@ -401,6 +401,8 @@ No asumir versión de CUDA/PyTorch antes de diagnosticar la máquina.
 - API pública `from kingscode import retrieve, Retriever`, BM25 persistido, expansión acotada, RRF y adaptadores Qwen de embeddings/reranker con commits fijos.
 - Benchmark BM25 OFF/AUTO/ON, auditoría de etiquetas y reportes por área/formato. Resultados vigentes: `../CORPUS.md` y `../reports/retrieval_bm25.json`; no equivalen a score oficial de respuestas.
 - Diagnóstico local CPU; modelos abiertos probados con pesos reales sobre dos pasajes oficiales. Esto no equivale al benchmark de todo el corpus.
+- Gate 1B: normalización/expansión controlada, router OFF/AUTO/ON inyectable, interfaz answer con dummy, abstención, guardas de citas/schema, wrapper del evaluador oficial y registro reproducible. Implementación independiente en `kingscode/reasoning/`; A permanece sin cambios.
+- Smoke sobre las 50 preguntas con 100 % de JSON válido, 50 abstenciones deliberadas y evaluador oficial sin RAGAS. El resultado de 5/50 es propio del dummy y no mide razonamiento jurídico. Segunda verificación y tests en `../reports/member_b_second_verification.json` y `../reports/member_b_tests_second.txt`.
 
 ### Trabajo inmediato en paralelo
 
@@ -412,16 +414,16 @@ No asumir versión de CUDA/PyTorch antes de diagnosticar la máquina.
 5. acordar licencia, empaquetado y publicación del corpus para entrega final.
 
 #### Integrante B
-1. crear harness pre-GPU desacoplado del retrieval interno;
-2. implementar normalizador jurídico y `graph_router` determinista;
-3. implementar schema validator y `citation_guard`;
-4. preparar evaluator runner + experiment registry;
-5. parametrizar bakeoff de decoders para la 4090.
+1. reproducir Gate 1B con `.venv/Scripts/python.exe tools/member_b.py smoke` y revisar trazas por área;
+2. mantener tests de citas/abstención y ampliar formas de citación cuando haya casos verificados;
+3. planificar una tarea posterior de integración del decoder abierto real, sin presentar el dummy como sistema competitivo;
+4. dejar CUDA, bakeoff, calibración de abstención y RAGAS pendientes hasta esa fase;
+5. continuar UI/delivery y freeze cuando exista ejecución competitiva validada.
 
 ### Integración siguiente
-Conectar retrieval real de A al harness de B y producir el primer end-to-end sobre las 50 preguntas. Luego validar CUDA/4090 para dense/reranker/decoder cuando corresponda.
+El retrieval real de A ya está conectado al harness de B sobre las 50 preguntas con dummy y verificación independiente. La próxima fase separada será integrar razonamiento real y comparar modelos/retrieval bajo el mismo snapshot. El smoke no inicia CUDA ni bakeoff.
 
-Comando local exacto para reconstruir y comprobar A desde el snapshot conservado: `.venv/Scripts/python.exe tools/member_a.py reproduce`. Segundo pase: `.venv/Scripts/python.exe tools/verify_member_a_second.py`. Evidencia y límites en `MEMBER_A_RUNBOOK.md`, `VERIFICATION.md` y reportes asociados al hash del corpus. Los archivos oficiales permanecen sin cambios; no se han generado submissions.
+Comando local exacto para repetir el gate actual: `.venv/Scripts/python.exe tools/member_b.py smoke`. Segundo pase: `.venv/Scripts/python.exe tools/verify_member_b_second.py`. Ver `MEMBER_B_RUNBOOK.md`. Para reconstruir A se mantienen sus comandos en `MEMBER_A_RUNBOOK.md`; B no necesita rehacerlo. Los archivos oficiales permanecen intactos; solo se han generado submissions de prueba con abstención, no una entrega competitiva.
 
 ---
 

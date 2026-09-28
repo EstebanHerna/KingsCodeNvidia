@@ -12,6 +12,6 @@
 
 ## Trabajo actual en paralelo
 - **A:** Corpus v0 + grafo + retrieval baseline implementados. Ver `CORPUS.md`, `docs/MEMBER_A_RUNBOOK.md` y reportes de verificación; pendiente benchmark neuronal completo y ampliar/desambiguar fuentes.
-- **B:** query normalizer + graph router + citation guard + evaluator harness; después CUDA/decoder bakeoff.
+- **B:** Gate 1B implementado: normalizador, router, dummy, abstención, guardas, evaluador y experimentos. Repetir con `.venv/Scripts/python.exe tools/member_b.py smoke`; ver `docs/MEMBER_B_RUNBOOK.md`. Decoder real/CUDA/bakeoff pendientes.
 
 No asumir que CUDA ya está configurado.

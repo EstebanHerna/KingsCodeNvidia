@@ -27,12 +27,12 @@
       "DESARROLLA",
       "EXCEPCIONA"
     ],
-    "graph_query_policy": "graph exists from corpus v0; member B routes OFF/AUTO/ON, member A executes expansion and retrieval",
+    "graph_query_policy": "B legal-router-v1 uses question and initial flat evidence to choose OFF/AUTO/ON; boolean adapter for A; A executes expansion unchanged",
     "active_backend": "bm25",
     "full_neural_benchmark_completed": false,
     "models_lock": "config/models.lock.json",
     "neural_config": "config/neural.json",
-    "controlled_legal_query_expansion_status": "pending member B",
+    "controlled_legal_query_expansion_status": "implemented by B legal-query-v1; finite aliases, deterministic, references preserved",
     "graph_relations_implemented": [
       "CONTIENE",
       "REMITE_A",
@@ -56,7 +56,11 @@
     "do_sample": false,
     "max_context_target_tokens": 8192,
     "citation_guard": true,
-    "preserve_document_structure_order": true
+    "preserve_document_structure_order": true,
+    "active_backend": "dummy_abstain",
+    "real_decoder_loaded": false,
+    "decoder_bakeoff_completed": false,
+    "seed": 0
   },
   "finetuning": {
     "decoder_initial": false,
@@ -66,11 +70,22 @@
   "version": "0.5",
   "next_action": {
     "member_a": "target_gpu_diagnostic_then_dense_hybrid_reranker_benchmark_and_corpus_qa",
-    "member_b": "pre_gpu_harness_router_citation_guard_evaluator",
-    "shared": "integrate_retrieve_with_B_harness_then_compare_on_same_snapshot"
+    "member_b": "reproduce_and_review_gate_1b_before_separate_real_decoder_task",
+    "shared": "dummy_integration_complete; plan_future_open_decoder_and_target_gpu_comparison_on_same_snapshot"
   },
   "interfaces": {
     "retrieve": "retrieve(question, k, graph_mode=\"auto\") -> passages",
     "answer": "answer(question, passages, format) -> submission_row"
+  },
+  "reasoning": {
+    "gate": "1B",
+    "status": "complete_and_independently_verified",
+    "config": "config/reasoning.json",
+    "query_version": "legal-query-v1",
+    "router_version": "legal-router-v1",
+    "guard_version": "source-article-guard-v1",
+    "abstention_policy_version": "evidence-policy-v1",
+    "ragas": false,
+    "next_command": ".venv/Scripts/python.exe tools/member_b.py smoke"
   }
 }

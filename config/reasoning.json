@@ -1,0 +1,8 @@
+{
+  "version": "gate1b-v1",
+  "retrieval": {"mode": "bm25", "rerank": false, "candidate_k": 30, "graph_budget": 10, "k": 8},
+  "graph_policy": "router",
+  "decoder_backend": "dummy_abstain",
+  "generation": {"temperature": 0.0, "do_sample": false, "seed": 0},
+  "evaluation": {"split": "sample", "ragas": false}
+}

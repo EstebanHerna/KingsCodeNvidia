@@ -1,0 +1,64 @@
+{
+  "ok": true,
+  "timestamp": "2026-09-28T03:55:28.100055+00:00",
+  "first_run": "C:\\Users\\Acer\\OneDrive - Universidad de los andes\\KingsCode\\KingsCode_v0.5_agent_ready\\reports\\member_b\\20260928T035443616407Z-9a776fef5883",
+  "replay_run": "C:\\Users\\Acer\\OneDrive - Universidad de los andes\\KingsCode\\KingsCode_v0.5_agent_ready\\tmp\\member_b_second\\20260928T035521579907Z-9a776fef5883",
+  "official_hashes_unchanged": 19,
+  "member_a_files_unchanged": {
+    "kingscode/__init__.py": "93b47c0f9cde19acfe81e770642dd357d67e743d7cffaad710368ce0cdbde32f",
+    "kingscode/acquisition.py": "8d8b7f41762d0375d17327415b388de70c0c4c0d98f95bf05edf6ffc92afa0b5",
+    "kingscode/common.py": "3fb32d114637fab4f8070033e54feef5675e2bceebcc4de3e49e3a9fdb8e4614",
+    "kingscode/corpus.py": "a2960f9b4cb1477ba2b66b66de35cbaeef3dcdd614b51fa75afd84a7d1d63dc3",
+    "kingscode/evaluation.py": "8197203ca96f579dad1a36545a091443bd6edd9fac831542da3d87f6645b9f2d",
+    "kingscode/neural.py": "6c90d17f7fd3dd7f1f36563e4ce2fb37ea7a1412a58715250098e043cbc862f0",
+    "kingscode/retrieval.py": "e3b20fc0fdffabf8eab17fd7a754617984a7f33b5a730f63951713bef04cacd7",
+    "kingscode/validation.py": "b0a8f4e2a48304befacc5bba179d093b6c14ea5637af758ce3b2dab091fce4f2",
+    "config/corpus_passage.schema.json": "650d3851045e7f5dfcb9ff27ad331c1f295fd6f2aa794fa866f4e3966976e7bd",
+    "config/legal_graph.schema.json": "0ecb4df05f104c6f718b402955c4a137d6a84431b164b160e5611f340f6739da",
+    "config/sources.json": "82a27590dfb1095868ba0fb3ed130fc00d2973563cae60db5634f39f42f7bac7",
+    "config/neural.json": "f5f4ad09456c3013541f6e56bc6924f480a307efbb964cc28e717e0f301b15ee",
+    "config/models.lock.json": "7c2a89bd8a6ddbf95aab93e3ffc47e44bf52a443e961b1f68114fd6346f45571",
+    "tools/member_a.py": "ddc4c9717a24bb12126d8045ab1f2079a0d0f93d156b56833e88af572ee17ca9",
+    "tests/test_knowledge.py": "ce64b8735d39221f8cc558ecc2abffb8d421cdcfa8a4ae53d089fed9c37226ec"
+  },
+  "rows_validated_independently": 50,
+  "evidence_records_verified_against_corpus": 400,
+  "byte_identical_submissions": true,
+  "deterministic_traces_equal": true,
+  "official_evaluation_equal": true,
+  "no_neural_modules_loaded": true,
+  "full_test_suite_passed": true,
+  "submission_sha256": "09d9ac32ac981162105d91fc127dedd770023e6b5ca122d8cedfca5190f4767a",
+  "fingerprint": "9a776fef5883eb012f875170e6942ac2ed1aeb7621fabc322f3fb24201c849e9",
+  "metrics": {
+    "questions": 50,
+    "attempted": 50,
+    "completed": 50,
+    "valid_json_rate": 1.0,
+    "schema_rejections": 0,
+    "citation_rejections": 0,
+    "citation_count": 0,
+    "unsupported_citation_count": 0,
+    "unsupported_citation_rate": 0.0,
+    "citation_rate_note": "Zero with zero citations is vacuous, not evidence of citation quality.",
+    "abstentions": 50,
+    "abstention_reasons": {
+      "dummy_backend_no_legal_reasoning": 44,
+      "missing_explicit_reference": 6
+    },
+    "graph_decisions": {
+      "off": 40,
+      "auto": 6,
+      "on": 4
+    },
+    "latency_p50_ms": 44.48965001211036,
+    "latency_p95_ms": 139.1738999809604,
+    "total_seconds": 6.956745799980126
+  },
+  "official_total": {
+    "obtenidos": 5.0,
+    "posibles": 50.0,
+    "de_100_del_ranking": 80.0,
+    "nota": "los 20 pts restantes son interfaz grafica, bitacora de corpus, video y reproducibilidad"
+  }
+}

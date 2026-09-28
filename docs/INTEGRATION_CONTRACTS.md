@@ -31,3 +31,16 @@ Cada corrida debe fijar:
 - schema inválido: fallo bloqueante;
 - cita sin respaldo: fallo bloqueante/corrección automática determinista;
 - retrieval vacío: registrar y no inventar evidencia.
+
+## Gate 1B disponible
+
+Importar B desde `kingscode.reasoning`: `Question`, `normalize_query`, `route_graph`, `answer`, `citation_guard`, `validate_submission`, `run_eval`, `Pipeline`, `RetrieverGraphRouter`. El namespace original de A sigue intacto.
+
+- `normalize_query(str)` devuelve un objeto con original/normalizado/texto de búsqueda, referencias, señales y expansiones. Solo `retrieval_text` se entrega a A.
+- `route_graph(question, flat_passages)` devuelve un string. **No pasarlo directamente como callback de A**: `"off"` sería truthy. `RetrieverGraphRouter` enlaza la decisión al texto de consulta y devuelve un booleano; `Pipeline` coordina ambos pases.
+- `answer(Question, passages, format)` conserva el ID real. Para consultas ad hoc, acepta texto y `question_id` (0 por defecto). No acepta registros del banco con etiquetas.
+- El backend dummy siempre se abstiene. El enum oficial de opción múltiple exige un marcador A/B/C/D incluso con abstención: se usa A y se declara explícitamente que no es una respuesta elegida.
+- `pasajes_recuperados` contiene el texto exacto y metadata de procedencia de A. Se omiten offsets oficiales opcionales para no atribuir `text_prefix` al intervalo clean. La guarda solo admite evidencia que coincida con los pasajes realmente suministrados.
+- Las salidas/decisiones son deterministas. Los tiempos se guardan en la traza/registro para no alterar el JSONL final entre repeticiones.
+
+Detalles y ejemplo completo: `MEMBER_B_RUNBOOK.md`.

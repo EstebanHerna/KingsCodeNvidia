@@ -1,0 +1,261 @@
+[
+  {
+    "areas": [
+      "Derecho administrativo",
+      "Derecho comercial y sociedades",
+      "Derecho constitucional",
+      "Derecho de familia",
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]",
+      "Derecho laboral",
+      "Derecho penal",
+      "Derecho procesal",
+      "Derecho tributario"
+    ],
+    "article": "1",
+    "canonical_body": [
+      "constitucion",
+      null,
+      null
+    ],
+    "clause": null,
+    "clean_end": 1100,
+    "clean_start": 752,
+    "court": null,
+    "decision_id": null,
+    "doc_id": "constitucion",
+    "duplicate_article_heading": false,
+    "graph_node_ids": [
+      "doc:constitucion",
+      "doc:constitucion:article:1:v1"
+    ],
+    "hierarchy_path": [
+      "Constitución Política de Colombia de 1991",
+      "ARTÍCULO 1. Colombia es un Estado social de derecho, organizado en forma de República unitaria, descentralizada, con autonomía de sus entidades territoriales, democrática, particip"
+    ],
+    "index_exclusion_reasons": [],
+    "is_current_text": null,
+    "norm_name": "Constitución Política de Colombia de 1991",
+    "norm_number": null,
+    "notes": "Vigencia no certificada; conservar notas de la fuente.",
+    "offset_basis": "unicode_codepoints_in_clean_text",
+    "order_index": 0,
+    "paragraph": null,
+    "passage_id": "constitucion:00000:2621a83a23cc",
+    "retrieval_eligible": true,
+    "retrieved_at": "2026-09-28T01:57:51.326936+00:00",
+    "section": null,
+    "source_domain": "www.funcionpublica.gov.co",
+    "source_sha256": "7929e3e95f6d5a4533ce8f239b12d6dc89425917735f57431acf3446d3f146b0",
+    "source_type": "constitution",
+    "source_url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=4125",
+    "tags": [],
+    "text": "Constitución Política de Colombia de 1991.\nARTÍCULO 1. Colombia es un Estado social de derecho, organizado en forma de República unitaria, descentralizada, con autonomía de sus entidades territoriales, democrática, participativa y pluralista, fundada en el respeto de la dignidad humana, en el trabajo y la solidaridad de las personas que la integran y en la prevalencia del interés general.",
+    "text_prefix": "Constitución Política de Colombia de 1991.\n",
+    "title": "Constitución Política de Colombia de 1991",
+    "year": 1991
+  },
+  {
+    "areas": [
+      "Derecho laboral"
+    ],
+    "article": "1",
+    "canonical_body": [
+      "ley",
+      "1010",
+      "2006"
+    ],
+    "clause": null,
+    "clean_end": 1375,
+    "clean_start": 225,
+    "court": null,
+    "decision_id": null,
+    "doc_id": "ley_1010_de_2006",
+    "duplicate_article_heading": false,
+    "graph_node_ids": [
+      "doc:ley_1010_de_2006",
+      "doc:ley_1010_de_2006:article:1:v1",
+      "doc:ley_1010_de_2006:article:1:v1:paragraph:7"
+    ],
+    "hierarchy_path": [
+      "Ley 1010 de 2006",
+      "ARTÍCULO 1. Objeto de la ley y bienes protegidos por ella. La presente ley tiene por objeto definir, prevenir, corregir y sancionar las diversas formas de agresión, maltrato, vejám"
+    ],
+    "index_exclusion_reasons": [],
+    "is_current_text": null,
+    "norm_name": "Ley 1010 de 2006",
+    "norm_number": "1010",
+    "notes": "Vigencia no certificada; conservar notas de la fuente.",
+    "offset_basis": "unicode_codepoints_in_clean_text",
+    "order_index": 0,
+    "paragraph": null,
+    "passage_id": "ley_1010_de_2006:00000:3a5f84542db4",
+    "retrieval_eligible": true,
+    "retrieved_at": "2026-09-28T01:58:02.193470+00:00",
+    "section": null,
+    "source_domain": "www.funcionpublica.gov.co",
+    "source_sha256": "9865c0e9b8b0d93aa3d3d9dbd14d91a2b3379cfb75674e0141260b24638429d3",
+    "source_type": "law",
+    "source_url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=18843",
+    "tags": [],
+    "text": "Ley 1010 de 2006.\nARTÍCULO 1. Objeto de la ley y bienes protegidos por ella. La presente ley tiene por objeto definir, prevenir, corregir y sancionar las diversas formas de agresión, maltrato, vejámenes, trato desconsiderado y ofensivo y en general todo ultraje a la dignidad humana que se ejercen sobre quienes realizan sus actividades económicas en el contexto de una relación laboral privada o pública.\n\nSon bienes jurídicos protegidos por la presente ley: el trabajo en condiciones dignas y justas, la libertad, la intimidad, la honra y la salud mental de los trabajadores, empleados, la armonía entre quienes comparten un mismo ambiente laboral y el buen ambiente en la empresa.\n\nPARÁGRAFO : La presente ley no se aplicará en el ámbito de las relaciones civiles y/o comerciales derivadas de los contratos de prestación de servicios en los cuales no se presenta una relación de jerarquía o subordinación. Tampoco se aplica a la contratación administrativa.\n\nNota: (Texto subrayado declarado EXEQUIBLE por la Corte Constitucional, mediante Sentencia C-960 de 2007, en el entendido de que si en realidad existe una relación laboral, se aplicará la Ley 1010 de 2006.)",
+    "text_prefix": "Ley 1010 de 2006.\n",
+    "title": "Ley 1010 de 2006",
+    "year": 2006
+  },
+  {
+    "areas": [
+      "Derecho civil",
+      "Derecho comercial y sociedades",
+      "Derecho de familia",
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]",
+      "Derecho penal",
+      "Derecho procesal",
+      "Derecho tributario"
+    ],
+    "article": "1",
+    "canonical_body": [
+      "codigo_general_proceso",
+      null,
+      null
+    ],
+    "clause": null,
+    "clean_end": 655,
+    "clean_start": 285,
+    "court": null,
+    "decision_id": null,
+    "doc_id": "codigo_general_proceso",
+    "duplicate_article_heading": false,
+    "graph_node_ids": [
+      "doc:codigo_general_proceso",
+      "doc:codigo_general_proceso:article:1:v1"
+    ],
+    "hierarchy_path": [
+      "Código General del Proceso (Ley 1564 de 2012)",
+      "TÍTULO PRELIMINAR",
+      "Artículo 1°. Objeto . Este código regula la actividad procesal en los asuntos civiles, comerciales, de familia y agrarios. Se aplica, además, a todos los asuntos de cualquier juris"
+    ],
+    "index_exclusion_reasons": [],
+    "is_current_text": null,
+    "norm_name": "Código General del Proceso (Ley 1564 de 2012)",
+    "norm_number": "1564",
+    "notes": "Vigencia no certificada; conservar notas de la fuente.",
+    "offset_basis": "unicode_codepoints_in_clean_text",
+    "order_index": 0,
+    "paragraph": null,
+    "passage_id": "codigo_general_proceso:00000:7e5b524b91ca",
+    "retrieval_eligible": true,
+    "retrieved_at": "2026-09-28T01:57:50.906443+00:00",
+    "section": "TÍTULO PRELIMINAR",
+    "source_domain": "www.funcionpublica.gov.co",
+    "source_sha256": "c1846d456c50ec0d54aa0c1d75e971553d3fe88ab90f2298460bb040fdb43cf6",
+    "source_type": "code",
+    "source_url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=48425",
+    "tags": [],
+    "text": "Código General del Proceso (Ley 1564 de 2012).\nTÍTULO PRELIMINAR\nArtículo 1°. Objeto . Este código regula la actividad procesal en los asuntos civiles, comerciales, de familia y agrarios. Se aplica, además, a todos los asuntos de cualquier jurisdicción o especialidad y a las actuaciones de particulares y autoridades administrativas, cuando ejerzan funciones jurisdiccionales, en cuanto no estén regulados expresamente en otras leyes.",
+    "text_prefix": "Código General del Proceso (Ley 1564 de 2012).\nTÍTULO PRELIMINAR\n",
+    "title": "Código General del Proceso (Ley 1564 de 2012)",
+    "year": 2012
+  },
+  {
+    "areas": [
+      "Derecho civil",
+      "Derecho de familia"
+    ],
+    "article": "1",
+    "canonical_body": [
+      "codigo_civil",
+      null,
+      null
+    ],
+    "clause": null,
+    "clean_end": 2216,
+    "clean_start": 1950,
+    "court": null,
+    "decision_id": null,
+    "doc_id": "codigo_civil",
+    "duplicate_article_heading": false,
+    "graph_node_ids": [
+      "doc:codigo_civil",
+      "doc:codigo_civil:article:1:v1"
+    ],
+    "hierarchy_path": [
+      "Código Civil (Ley 84 de 1873; Ley 57 de 1887)",
+      "TÍTULO PRELIMINAR .",
+      "CAPÍTULO I.",
+      "ARTÍCULO 1o. <DISPOSICIONES COMPRENDIDAS>. El Código Civil comprende las disposiciones legales sustantivas que determinan especialmente los derechos de los particulares, por razón "
+    ],
+    "index_exclusion_reasons": [],
+    "is_current_text": null,
+    "norm_name": "Código Civil (Ley 84 de 1873; Ley 57 de 1887)",
+    "norm_number": "84",
+    "notes": "Vigencia no certificada; conservar notas de la fuente.",
+    "offset_basis": "unicode_codepoints_in_clean_text",
+    "order_index": 0,
+    "paragraph": null,
+    "passage_id": "codigo_civil:00000:a58cefb5d74b",
+    "retrieval_eligible": true,
+    "retrieved_at": "2026-09-28T02:08:40.831034+00:00",
+    "section": "CAPÍTULO I.",
+    "source_domain": "normograma.sena.edu.co",
+    "source_sha256": "781e4a10db594665b823205f1e0b61b6b666b697b7141cb7718fb40ac9707dbf",
+    "source_type": "code",
+    "source_url": "https://normograma.sena.edu.co/compilacion/docs/codigo_civil.htm",
+    "tags": [],
+    "text": "Código Civil (Ley 84 de 1873; Ley 57 de 1887).\nTÍTULO PRELIMINAR .\nCAPÍTULO I.\nARTÍCULO 1o. <DISPOSICIONES COMPRENDIDAS>. El Código Civil comprende las disposiciones legales sustantivas que determinan especialmente los derechos de los particulares, por razón del estado de las personas, de sus bienes, obligaciones, contratos y acciones civiles.",
+    "text_prefix": "Código Civil (Ley 84 de 1873; Ley 57 de 1887).\nTÍTULO PRELIMINAR .\nCAPÍTULO I.\n",
+    "title": "Código Civil (Ley 84 de 1873; Ley 57 de 1887)",
+    "year": 1873
+  },
+  {
+    "areas": [
+      "Derecho comercial y sociedades",
+      "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]"
+    ],
+    "article": "1",
+    "canonical_body": [
+      "decision_andina_486",
+      null,
+      null
+    ],
+    "clause": null,
+    "clean_end": 1114,
+    "clean_start": 328,
+    "court": null,
+    "decision_id": null,
+    "doc_id": "decision_andina_486",
+    "duplicate_article_heading": false,
+    "graph_node_ids": [
+      "doc:decision_andina_486",
+      "doc:decision_andina_486:article:1:v1"
+    ],
+    "hierarchy_path": [
+      "Decisión Andina 486 de 2000",
+      "TITULO I DISPOSICIONES GENERALES Del Trato Nacional",
+      "Artículo 1.- Con respecto a la protección de la propiedad industrial, cada País Miembro concederá a los nacionales de los demás miembros de la Comunidad Andina, de la Organización "
+    ],
+    "index_exclusion_reasons": [],
+    "is_current_text": null,
+    "norm_name": "Decisión Andina 486 de 2000",
+    "norm_number": "486",
+    "notes": "Vigencia no certificada; conservar notas de la fuente.",
+    "offset_basis": "unicode_codepoints_in_clean_text",
+    "order_index": 0,
+    "paragraph": null,
+    "passage_id": "decision_andina_486:00000:61189b0a6ef9",
+    "retrieval_eligible": true,
+    "retrieved_at": "2026-09-28T02:17:59.569754+00:00",
+    "section": "TITULO I DISPOSICIONES GENERALES Del Trato Nacional",
+    "source_domain": "www.comunidadandina.org",
+    "source_pages": [
+      2
+    ],
+    "source_sha256": "3a5f24e3c3e24ab9cb0a9f8d825b8fd190315b2d821f3507e68f78fdab25a9bc",
+    "source_type": "other",
+    "source_url": "https://www.comunidadandina.org/StaticFiles/DocOf/DEC486.pdf",
+    "tags": [],
+    "text": "Decisión Andina 486 de 2000.\nTITULO I DISPOSICIONES GENERALES Del Trato Nacional\nArtículo 1.- Con respecto a la protección de la propiedad industrial, cada País Miembro concederá a los nacionales de los demás miembros de la Comunidad Andina, de la Organización Mundial del Comercio y del Convenio de París para la Protección de la Propiedad Industrial, un trato no menos favorable que el que otorgue a sus propios nacionales, a reserva de lo previsto en los artículos 3 y 5 del Acuerdo sobre los Aspectos de los Derechos de Propiedad Intelectual relacionados con el Comercio (ADPIC), y en el artículo 2 del Convenio de París para la Protección de la Propiedad Industrial. Asimismo, podrán conceder dicho trato a los nacionales de un tercer país, bajo las condiciones que prevea la legislación interna del respectivo País Miembro. Del Trato de la Nación más Favorecida",
+    "text_prefix": "Decisión Andina 486 de 2000.\nTITULO I DISPOSICIONES GENERALES Del Trato Nacional\n",
+    "title": "Decisión Andina 486 de 2000",
+    "year": 2000
+  }
+]

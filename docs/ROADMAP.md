@@ -11,7 +11,7 @@ Starter pack verificado y hashes oficiales conservados.
 
 163 fuentes adquiridas; baseline y verificaciones en `../CORPUS.md` y `VERIFICATION.md`. La ampliación, vigencia y resolución de ambigüedades siguen antes del freeze.
 
-## Gate 1B — Harness pre-GPU [B]
+## Gate 1B — Harness pre-GPU [B, completado con dummy]
 - normalizador de consulta;
 - graph router v0;
 - schema validator;
@@ -20,6 +20,8 @@ Starter pack verificado y hashes oficiales conservados.
 - experiment registry.
 
 A y B ocurren en paralelo.
+
+Implementación y reproducción en `MEMBER_B_RUNBOOK.md`. El smoke usa A real y un dummy con abstención total; no cuenta como decoder/bakeoff ni ejecución competitiva.
 
 ## Gate 2A — Retrieval baseline [A]
 BM25 -> dense -> RRF -> reranker -> Graph OFF/AUTO.
@@ -31,6 +33,8 @@ Diagnosticar máquina, instalar según hardware real, smoke test e inferencia m�
 
 ## Gate 3 — Integración A+B
 Conectar retrieval real al harness de B y producir primeras 50 respuestas end-to-end.
+
+Integración técnica de las 50 filas comprobada con dummy. Las respuestas jurídicas con decoder real siguen pendientes.
 
 ## Gate 4 — Bakeoff
 - retrievers/chunking/grafo;

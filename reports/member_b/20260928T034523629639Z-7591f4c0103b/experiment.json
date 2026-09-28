@@ -1,0 +1,171 @@
+{
+  "fingerprint": "7591f4c0103bea4a04824a51af5329f8d8c300c1c99c23e310c7167acc094e91",
+  "identity": {
+    "version": "gate1b-v1",
+    "public_questions_sha256": "e386ca0b80312ce05f196c907c73ef70a62426c574f3a71503a968a2e021e736",
+    "corpus": {
+      "version": "corpus-v0.1",
+      "passages_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+      "manifest_sha256": "b6c9b022812c7fabb05731a6f36e379ce5e40ad84a12b047781f3c412be23feb"
+    },
+    "graph": {
+      "version": "legal-blocks-1.2",
+      "nodes_sha256": "7c8af359cb1ac8de13872e01d2d0faf18218d24e1e2af326529f4a11c0a39aaa",
+      "edges_sha256": "6002fdcdbb4fb673761cb2dbe949db2502306809f2179e4133d8f40c286ff634"
+    },
+    "retrieval_config": {
+      "mode": "bm25",
+      "rerank": false,
+      "candidate_k": 30,
+      "graph_budget": 10,
+      "k": 8
+    },
+    "graph_policy": "router",
+    "router_version": "legal-router-v1",
+    "query_version": "legal-query-v1",
+    "guard_version": "source-article-guard-v1",
+    "abstention_policy_version": "evidence-policy-v1",
+    "decoder_backend": {
+      "name": "dummy_abstain",
+      "version": "1"
+    },
+    "prompt_version": "grounded-formats-v1",
+    "generation_config": {
+      "temperature": 0.0,
+      "do_sample": false,
+      "seed": 0
+    },
+    "evaluation_config": {
+      "split": "sample",
+      "ragas": false
+    },
+    "official_hashes": {
+      "Ejemplo de entrega/CORPUS.md": "ea372c8df9ab6818868f0be993035349c4cab90a38a2bec292ce949188ceb4b4",
+      "Ejemplo de entrega/README.md": "804fa1fc6ea011f75d6523f10789fae8d849e3a61624dd025794087995d9db74",
+      "Ejemplo de entrega/corpus_manifest.json": "f9aab3b8d9b0c428c1a2e6acf684e45c584dc2cb9cfc0668992231c86ee68f72",
+      "Ejemplo de entrega/submissions.jsonl": "84c770956e7fc5adf2aeebcc7916fdb0ba9e0fbeb39ae5ab3191f004e90aac6b",
+      "data/sample_50.jsonl": "ab8feef09f4a74f00a4b73fd77b7e0a8f019ae6710eb7cfa543cabf6ec0c1589",
+      "data/seed_targets.json": "4a05f3e3b6c0c7475cae262593e6c8cee7f9f51cadbb075445f89c39e1553193",
+      "entregables/README.md": "8827fbcac38a684e458d6db2afa1ce56bc12ee81c7924bf5913b6bacd28445bd",
+      "entregables/sabado/CORPUS.md": "9300fcd6d5fb49d04cbe363a63e38fdfebc887127220ff9318f83053bd17bcf1",
+      "entregables/sabado/INFORME_TECNICO.md": "8ae359dd4d6026301963db20cba25c49804b00b322853d9be33612f03131632d",
+      "entregables/sabado/README.md": "46aeab127b0aea174a29e8f585b8825f99885cf3f9b3a4f79ec70ab30b121751",
+      "entregables/sabado/README_EQUIPO.md": "b2ec3d5a33ac4d5af2fae414bdcf8fb1c3030dd286eacbc4747c50c4232f31d5",
+      "entregables/sabado/corpus_manifest.ejemplo.json": "a5da89d7c4a03151bfe830ebc6690db754420113a84c5d2e42db22b4cc5408cc",
+      "entregables/viernes/README.md": "1b7421771077e50730afc95191eadd7d77e8d3e9b8be9be5338f5bdc3bebffe6",
+      "entregables/viernes/REPORTE_AVANCE.md": "2d865647728a6e2d0d8207433e565338efa75a6fb61b9006f4aa5ff14eaa8b9f",
+      "schema/submission.schema.json": "84068e6793b7e8a9a58f974cc238524ab631ed6dffc0310475e493dc30060c72",
+      "scripts/citations.py": "87993aba7d21611d1f3730233ac58e4af9334fe86de3f8e86bce46c7cef0bf9f",
+      "scripts/common.py": "52545d1ec2d62c1936150426be9455449d6e5b9157e91beba281852b7783ff34",
+      "scripts/evaluate.py": "6fc8e98abf0675dd2a6bd9a052676f7f52f585f329435bb48fa29c7af711fdbf",
+      "scripts/requirements-evaluador.txt": "13582d3c0350ad2481bccd2a0f1d4d8d3701fad9b5c74f15e9b6de9874c8f21d"
+    },
+    "implementation_sha256": {
+      "kingscode/reasoning/__init__.py": "77d8af4c830ea11be3ad6567e673af9ced3189eb9125a87387e51ccbdde539dc",
+      "kingscode/reasoning/contracts.py": "21785b0aaaff01c9711dec031a7741f89514f6d904fea5559f73e1257393df8c",
+      "kingscode/reasoning/decoder.py": "2c83bc43571de83772b452eec3f0a8c1887b7e7b208907345d6966dc10dccb21",
+      "kingscode/reasoning/evaluation.py": "097b97d2c78ce3659f56d7076ac7a927b79c084e62f99a367c3c41acc3683a7a",
+      "kingscode/reasoning/experiments.py": "abc60410c495f759ac31996e6eb4f8a0b71a63493c892b9efac421bb1b87fa7d",
+      "kingscode/reasoning/guards.py": "4b10253bc37bfaeb0d75580d414a895a0b0319b680e7aec403df3aa4483b8d25",
+      "kingscode/reasoning/legal.py": "ae13b11eb8bb0c83c2c740a27b78b2b6a9e2fa715a121b55e177dd77a61cf302",
+      "kingscode/reasoning/pipeline.py": "b3a4144e8e813e0d75ebf18e7d8a8fe13653ca7f612d02e807e9ad06ef4e022c",
+      "kingscode/reasoning/policy.py": "fa04257d4db5cc87c67a546d27c8c960392416cdf0ace2120741400b42986222",
+      "kingscode/reasoning/query.py": "2c59d2c5a5110ae5444c5eec8a49d066025382d41a95d64bb071659dd6cfe229",
+      "kingscode/reasoning/routing.py": "4af5e9053ee85453d6b0b869a80fdabe60b9f512745756d85d21dbe41e0c4b01"
+    }
+  },
+  "timestamp": "20260928T034523629639Z",
+  "status": "passed",
+  "paths": {
+    "run": "C:\\Users\\Acer\\OneDrive - Universidad de los andes\\KingsCode\\KingsCode_v0.5_agent_ready\\reports\\member_b\\20260928T034523629639Z-7591f4c0103b",
+    "submission": "C:\\Users\\Acer\\OneDrive - Universidad de los andes\\KingsCode\\KingsCode_v0.5_agent_ready\\reports\\member_b\\20260928T034523629639Z-7591f4c0103b\\submissions.jsonl",
+    "trace": "C:\\Users\\Acer\\OneDrive - Universidad de los andes\\KingsCode\\KingsCode_v0.5_agent_ready\\reports\\member_b\\20260928T034523629639Z-7591f4c0103b\\trace.jsonl",
+    "evaluation": "C:\\Users\\Acer\\OneDrive - Universidad de los andes\\KingsCode\\KingsCode_v0.5_agent_ready\\reports\\member_b\\20260928T034523629639Z-7591f4c0103b\\evaluation.json"
+  },
+  "runtime": {
+    "python": "3.12.5 (tags/v3.12.5:ff3bc82, Aug  6 2024, 20:45:27) [MSC v.1940 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "settings": {
+    "config_path": "C:\\Users\\Acer\\OneDrive - Universidad de los andes\\KingsCode\\KingsCode_v0.5_agent_ready\\config\\reasoning.json",
+    "corpus_dir": "C:\\Users\\Acer\\OneDrive - Universidad de los andes\\KingsCode\\KingsCode_v0.5_agent_ready\\corpus",
+    "questions_path": "C:\\Users\\Acer\\OneDrive - Universidad de los andes\\KingsCode\\KingsCode_v0.5_agent_ready\\data\\sample_50.jsonl"
+  },
+  "official_evaluation": {
+    "equipo": "submissions",
+    "split": "sample",
+    "validacion": {
+      "errores": 0,
+      "detalle": []
+    },
+    "cerradas": {
+      "n": 15,
+      "aciertos": 0,
+      "accuracy": 0.0,
+      "referencia": 0.905,
+      "puntos": 0.0
+    },
+    "citas": {
+      "items_evaluados": 41,
+      "n_ref": 49,
+      "n_citadas": 0,
+      "aciertos": 0,
+      "aciertos_respaldados": 0,
+      "aciertos_sin_respaldo": 0,
+      "incorrectas": 0,
+      "citas_sin_respaldo": 0,
+      "recall_citas_ponderado": 0.0,
+      "tasa_sin_respaldo": 0.0,
+      "indice": 0.0,
+      "puntos": 0.0
+    },
+    "abstencion": {
+      "items_evaluados": 43,
+      "abstuvo_bien": 38,
+      "abstuvo_de_mas": 5,
+      "respondio_bien": 0,
+      "respondio_mal": 0,
+      "calibracion": 0.5,
+      "puntos": 5.0
+    },
+    "correccion_ragas": {
+      "estado": "pendiente (correr con --ragas)",
+      "puntos": null
+    },
+    "total_automatico": {
+      "obtenidos": 5.0,
+      "posibles": 50.0,
+      "de_100_del_ranking": 80.0,
+      "nota": "los 20 pts restantes son interfaz grafica, bitacora de corpus, video y reproducibilidad"
+    }
+  },
+  "limitation": "Dummy abstains on every item. No legal reasoning quality, real decoder, GPU or RAGAS claim.",
+  "submission_sha256": "09d9ac32ac981162105d91fc127dedd770023e6b5ca122d8cedfca5190f4767a",
+  "initialization_ms": 3642.0957000227645,
+  "metrics": {
+    "questions": 50,
+    "attempted": 50,
+    "completed": 50,
+    "valid_json_rate": 1.0,
+    "schema_rejections": 0,
+    "citation_rejections": 0,
+    "citation_count": 0,
+    "unsupported_citation_count": 0,
+    "unsupported_citation_rate": 0.0,
+    "citation_rate_note": "Zero with zero citations is vacuous, not evidence of citation quality.",
+    "abstentions": 50,
+    "abstention_reasons": {
+      "dummy_backend_no_legal_reasoning": 44,
+      "missing_explicit_reference": 6
+    },
+    "graph_decisions": {
+      "off": 40,
+      "auto": 6,
+      "on": 4
+    },
+    "latency_p50_ms": 28.45225000055507,
+    "latency_p95_ms": 119.4907000171952,
+    "total_seconds": 5.871308100002352
+  },
+  "neural_modules_loaded": []
+}

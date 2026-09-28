@@ -1,6 +1,6 @@
-# Verificación de KingsCode / Integrante A
+# Verificación de KingsCode / Integrantes A y B
 
-Las primeras secciones conservan la verificación previa del starter pack. La última sección registra la implementación actual del Integrante A.
+Las primeras secciones conservan la verificación previa del starter pack y de A. La última sección registra Gate 1B y su segunda verificación independiente.
 
 ## Pase 1 — preflight del proyecto
 - Archivos mínimos presentes.
@@ -43,6 +43,30 @@ Evidencia: `reports/member_a_second_verification.json`. Hash de pasajes comproba
 
 ## Límites y siguiente ejecución
 
-El benchmark neuronal completo no se ejecutó: no hay CUDA local y el smoke de dos pasajes no permite afirmar métricas para todo el corpus. Tampoco se generaron submissions ni score end-to-end. Hay 28 objetivos de adquisición pendientes, ambigüedades de numeración conservadas para revisión y vigencia sin certificar. El corpus es baseline local, no freeze competitivo.
+En la entrega de A no se ejecutó el benchmark neuronal completo: no hay CUDA local y el smoke de dos pasajes no permite afirmar métricas para todo el corpus. En ese momento tampoco se generaron submissions ni score end-to-end; Gate 1B añade el smoke con dummy descrito abajo. Hay 28 objetivos de adquisición pendientes, ambigüedades de numeración conservadas para revisión y vigencia sin certificar. El corpus es baseline local, no freeze competitivo.
 
 Comando local exacto: `.venv/Scripts/python.exe tools/member_a.py reproduce`. Segundo pase: `.venv/Scripts/python.exe tools/verify_member_a_second.py`. Próximo paso en la 4090: `python tools/check_cuda.py`; seguir luego `MEMBER_A_RUNBOOK.md` para dense/hybrid/reranker e integrar la interfaz con B.
+
+## Gate 1B — primer pase y smoke
+
+- Suite completa: 60 tests aprobados, sin fallos ni saltos; 44 nuevos de B y los 16 existentes de A. Primera ejecución final: 18,173 s.
+- Normalizador, referencias exactas, alias con año, routing OFF/AUTO/ON y adaptador booleano probados; incluye integración con el Retriever real de A.
+- Cita válida y citas rechazadas por artículo/año incorrecto, fuente secundaria mencionada, evidencia no emitida, texto/URL/metadata alterados. Las fixtures positivas son pasajes oficiales literales; las mutaciones negativas solo son probes unitarios, nunca corpus ni datos de entrenamiento.
+- Schema válido en los tres formatos y fallos bloqueantes por output inválido; abstención ante evidencia vacía, débil, conflictiva o no vigente. Las etiquetas envenenadas no cambian entradas públicas, fingerprint ni salidas.
+- Smoke completo sobre `sample_50`: 50 filas, 100 % JSON válido, 50 abstenciones deliberadas, cero citas. Routing: OFF 40, AUTO 6, ON 4. No se cargaron módulos neuronales.
+- Evaluador oficial intacto, sin RAGAS: 0 errores, 5/50 puntos. Este valor no demuestra calidad jurídica ni calidad de citas; el backend dummy no responde sustantivamente.
+- Registro final: `reports/member_b/20260928T035443616407Z-9a776fef5883/experiment.json`. Total 6,957 s; inicialización 3,845 s; latencia por pregunta p50 44,49 ms / p95 139,17 ms. Son mediciones locales, no un benchmark GPU.
+
+## Gate 1B — segunda verificación independiente
+
+Herramienta: `tools/verify_member_b_second.py`; informe: `reports/member_b_second_verification.json`. Finalizó el 2026-09-28 03:55:28 UTC (2026-09-27 en Bogotá).
+
+- Se recalcularon los 19 hashes oficiales y se compararon 15 archivos de implementación/configuración/pruebas de A contra el commit original `382c5eb`: todos intactos.
+- Se recalcularon hashes del corpus, grafo e índice BM25; mismo snapshot de A. Los módulos de B coinciden con los hashes registrados en la corrida.
+- Validación independiente del schema oficial para 50 IDs/formats y autenticación de 400 registros de evidencia contra el corpus de A, sin reutilizar el helper de proyección de B.
+- Suite completa repetida en otro proceso: 60/60 aprobados en 17,217 s; log en `reports/member_b_tests_second.txt`.
+- Nueva ejecución del smoke en otro proceso: JSONL idéntico byte a byte, trazas idénticas excluyendo tiempos, mismo fingerprint y resultado oficial. Ningún módulo neuronal cargado en ambas ejecuciones.
+- SHA-256 del JSONL: `09d9ac32ac981162105d91fc127dedd770023e6b5ca122d8cedfca5190f4767a`.
+- Fingerprint: `9a776fef5883eb012f875170e6942ac2ed1aeb7621fabc322f3fb24201c849e9`.
+
+Para repetir el gate: `.venv/Scripts/python.exe tools/member_b.py smoke`. Para auditarlo otra vez: `.venv/Scripts/python.exe tools/verify_member_b_second.py`. Detalles, contradicción del schema MC, archivos cambiados y pendientes en `docs/MEMBER_B_RUNBOOK.md` y `reports/MEMBER_B_DELIVERY.md`. CUDA objetivo, decoder real, bakeoff y RAGAS siguen pendientes; no se iniciaron en esta tarea.

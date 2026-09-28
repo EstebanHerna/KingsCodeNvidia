@@ -21,7 +21,7 @@ Leer `START_HERE.md`.
 - Corpus v0: 163 documentos oficiales; corpus, grafo y BM25 construidos;
 - retrieval: interfaz estable, benchmark OFF/AUTO/ON y verificación independiente;
 - Qwen embedding/reranker: implementación y smoke con pesos abiertos reales; benchmark completo pendiente de GPU;
-- harness de B: por construir.
+- harness de B: Gate 1B implementado y conectado a A con dummy; decoder real y bakeoff pendientes.
 
 ## Entrega del Integrante A
 Consultar [CORPUS.md](CORPUS.md), [manifest](corpus_manifest.json) y [runbook](docs/MEMBER_A_RUNBOOK.md). Los resultados medidos, limitaciones y fuentes pendientes están documentados; el corpus aún no es el freeze competitivo.
@@ -30,3 +30,6 @@ Consultar [CORPUS.md](CORPUS.md), [manifest](corpus_manifest.json) y [runbook](d
 .venv/Scripts/python.exe tools/member_a.py query --question "¿Qué regula el Código General del Proceso?" --k 8
 .venv/Scripts/python.exe tools/member_a.py reproduce
 ```
+
+## Gate 1B pre-GPU
+Con el corpus local de A disponible: `.venv/Scripts/python.exe tools/member_b.py smoke`. Ejecuta las 50 preguntas con un dummy que siempre se abstiene, valida schema/citas y registra evaluación y trazas sin cargar modelos. Ver [runbook B](docs/MEMBER_B_RUNBOOK.md).
