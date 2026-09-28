@@ -1,4 +1,5 @@
-1319d24 (HEAD -> feat/member-a-gpu-results-4090-20260928) feat: preserve RTX 4090 retrieval search and validation evidence
+4b2b6bf (HEAD -> feat/member-a-gpu-results-4090-20260928, origin/feat/member-a-gpu-results-4090-20260928) feat: preserve RTX 4090 retrieval search and validation evidence
+1319d24 feat: preserve RTX 4090 retrieval search and validation evidence
 1aa95ca (run/member-a-gpu-4090) chore: configure retrieval for RTX 4090 benchmark
 bbf8a16 (origin/feat/member-a-gpu-benchmark-execution-v1) WIP: implement Member A GPU retrieval benchmark harness
 a3548a1 (origin/main, origin/HEAD) Merge pull request #3 from IngSeb0/feat/member-a-retrieval-benchmark-v1
@@ -12,4 +13,3 @@ c5fb95c Merge pull request #1 from IngSeb0/EstebanBranch
 35e071e checkpoint 3: add benchmark comparison and error analysis tooling
 928b11f checkpoint 2: expand source-derived retrieval benchmark to 200 cases
 bf1692b checkpoint 1a: allow immutable benchmark reports across split runs
-7a13f66 checkpoint 1: add leakage-safe retrieval benchmark and evaluator
