@@ -1,0 +1,15 @@
+1aa95ca (HEAD -> run/member-a-gpu-4090) chore: configure retrieval for RTX 4090 benchmark
+bbf8a16 (origin/feat/member-a-gpu-benchmark-execution-v1) WIP: implement Member A GPU retrieval benchmark harness
+a3548a1 (origin/main, origin/HEAD) Merge pull request #3 from IngSeb0/feat/member-a-retrieval-benchmark-v1
+04d1aa4 Merge pull request #2 from IngSeb0/EstebanBranch
+6b3be29 (origin/feat/member-a-retrieval-benchmark-v1) Merge branch 'main' into feat/member-a-retrieval-benchmark-v1
+6328348 checkpoint 6: accept audited diagnostic provenance fixes
+fdc2e28 checkpoint 5: harden holdout ledger and diagnostic provenance
+89cb59d checkpoint 4: record final benchmark baselines and blocked neural matrix
+8efbfef (origin/EstebanBranch) B: pol+﹀ica de abstenci+好 m+》ima, retrieval por opciones en cerradas, comando +好ico de reproducci+好
+c5fb95c Merge pull request #1 from IngSeb0/EstebanBranch
+35e071e checkpoint 3: add benchmark comparison and error analysis tooling
+928b11f checkpoint 2: expand source-derived retrieval benchmark to 200 cases
+bf1692b checkpoint 1a: allow immutable benchmark reports across split runs
+7a13f66 checkpoint 1: add leakage-safe retrieval benchmark and evaluator
+3bcd795 updatess docs y sol crit error de citaci+好

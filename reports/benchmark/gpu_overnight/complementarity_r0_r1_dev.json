@@ -1,0 +1,269 @@
+{
+  "status": "analyzed",
+  "split": "dev",
+  "benchmark_manifest_sha256": "326a405748dd20f641d5cf4103ceaafb6a19f07b43db54d95f472a2b439e3071",
+  "reports": {
+    "baseline": "4c63a6b9acaa159c98f35c62bb743b198d2ba7cd8372da3d72d19f22c7c22a0b",
+    "candidate": "3759ad3f3dbeed9aae30bbcc662601c00ee9f3e1fe253776e800b1c7e3faac88"
+  },
+  "by_k": {
+    "1": {
+      "k": 1,
+      "counts": {
+        "both_hit": 1,
+        "bm25_only": 19,
+        "dense_only": 0,
+        "both_miss": 100
+      },
+      "intersection": 0.008333333333333333,
+      "union": 0.16666666666666666,
+      "qwen_only": 0,
+      "oracle_union_recall": 0.1625,
+      "examples": {
+        "both_hit": [
+          "KC-COM-010"
+        ],
+        "bm25_only": [
+          "KC-ADM-007",
+          "KC-ADM-009",
+          "KC-ADM-010",
+          "KC-CIV-008",
+          "KC-COM-005",
+          "KC-COM-006",
+          "KC-FAM-007",
+          "KC-FAM-011",
+          "KC-LAB-011",
+          "KC-MER-006"
+        ],
+        "dense_only": [],
+        "both_miss": [
+          "KC-ADM-001",
+          "KC-ADM-002",
+          "KC-ADM-003",
+          "KC-ADM-004",
+          "KC-ADM-005",
+          "KC-ADM-006",
+          "KC-ADM-008",
+          "KC-ADM-011",
+          "KC-ADM-012",
+          "KC-CIV-001"
+        ]
+      }
+    },
+    "3": {
+      "k": 3,
+      "counts": {
+        "both_hit": 2,
+        "bm25_only": 38,
+        "dense_only": 2,
+        "both_miss": 78
+      },
+      "intersection": 0.016666666666666666,
+      "union": 0.35,
+      "qwen_only": 2,
+      "oracle_union_recall": 0.3125,
+      "examples": {
+        "both_hit": [
+          "KC-ADM-005",
+          "KC-COM-010"
+        ],
+        "bm25_only": [
+          "KC-ADM-003",
+          "KC-ADM-006",
+          "KC-ADM-007",
+          "KC-ADM-009",
+          "KC-ADM-010",
+          "KC-ADM-012",
+          "KC-CIV-008",
+          "KC-CIV-012",
+          "KC-COM-005",
+          "KC-COM-006"
+        ],
+        "dense_only": [
+          "KC-CON-001",
+          "KC-CON-011"
+        ],
+        "both_miss": [
+          "KC-ADM-001",
+          "KC-ADM-002",
+          "KC-ADM-004",
+          "KC-ADM-008",
+          "KC-ADM-011",
+          "KC-CIV-001",
+          "KC-CIV-002",
+          "KC-CIV-003",
+          "KC-CIV-004",
+          "KC-CIV-005"
+        ]
+      }
+    },
+    "5": {
+      "k": 5,
+      "counts": {
+        "both_hit": 6,
+        "bm25_only": 54,
+        "dense_only": 2,
+        "both_miss": 58
+      },
+      "intersection": 0.05,
+      "union": 0.5166666666666667,
+      "qwen_only": 2,
+      "oracle_union_recall": 0.4583333333333333,
+      "examples": {
+        "both_hit": [
+          "KC-ADM-005",
+          "KC-COM-009",
+          "KC-COM-010",
+          "KC-LAB-004",
+          "KC-PEN-008",
+          "KC-TRI-007"
+        ],
+        "bm25_only": [
+          "KC-ADM-002",
+          "KC-ADM-003",
+          "KC-ADM-004",
+          "KC-ADM-006",
+          "KC-ADM-007",
+          "KC-ADM-009",
+          "KC-ADM-010",
+          "KC-ADM-012",
+          "KC-CIV-008",
+          "KC-CIV-012"
+        ],
+        "dense_only": [
+          "KC-CON-001",
+          "KC-CON-011"
+        ],
+        "both_miss": [
+          "KC-ADM-001",
+          "KC-ADM-008",
+          "KC-ADM-011",
+          "KC-CIV-001",
+          "KC-CIV-002",
+          "KC-CIV-003",
+          "KC-CIV-004",
+          "KC-CIV-005",
+          "KC-CIV-006",
+          "KC-CIV-007"
+        ]
+      }
+    },
+    "8": {
+      "k": 8,
+      "counts": {
+        "both_hit": 11,
+        "bm25_only": 70,
+        "dense_only": 4,
+        "both_miss": 35
+      },
+      "intersection": 0.09166666666666666,
+      "union": 0.7083333333333334,
+      "qwen_only": 4,
+      "oracle_union_recall": 0.6416666666666667,
+      "examples": {
+        "both_hit": [
+          "KC-ADM-005",
+          "KC-ADM-012",
+          "KC-COM-002",
+          "KC-COM-003",
+          "KC-COM-004",
+          "KC-COM-009",
+          "KC-COM-010",
+          "KC-LAB-004",
+          "KC-MER-006",
+          "KC-PEN-008"
+        ],
+        "bm25_only": [
+          "KC-ADM-001",
+          "KC-ADM-002",
+          "KC-ADM-003",
+          "KC-ADM-004",
+          "KC-ADM-006",
+          "KC-ADM-007",
+          "KC-ADM-009",
+          "KC-ADM-010",
+          "KC-CIV-008",
+          "KC-CIV-011"
+        ],
+        "dense_only": [
+          "KC-CON-001",
+          "KC-CON-007",
+          "KC-CON-011",
+          "KC-LAB-006"
+        ],
+        "both_miss": [
+          "KC-ADM-008",
+          "KC-ADM-011",
+          "KC-CIV-001",
+          "KC-CIV-002",
+          "KC-CIV-003",
+          "KC-CIV-004",
+          "KC-CIV-005",
+          "KC-CIV-006",
+          "KC-CIV-007",
+          "KC-CIV-009"
+        ]
+      }
+    },
+    "10": {
+      "k": 10,
+      "counts": {
+        "both_hit": 14,
+        "bm25_only": 71,
+        "dense_only": 7,
+        "both_miss": 28
+      },
+      "intersection": 0.11666666666666667,
+      "union": 0.7666666666666667,
+      "qwen_only": 7,
+      "oracle_union_recall": 0.7083333333333334,
+      "examples": {
+        "both_hit": [
+          "KC-ADM-005",
+          "KC-ADM-012",
+          "KC-COM-002",
+          "KC-COM-003",
+          "KC-COM-004",
+          "KC-COM-009",
+          "KC-COM-010",
+          "KC-CON-001",
+          "KC-LAB-004",
+          "KC-LAB-009"
+        ],
+        "bm25_only": [
+          "KC-ADM-001",
+          "KC-ADM-002",
+          "KC-ADM-003",
+          "KC-ADM-004",
+          "KC-ADM-006",
+          "KC-ADM-007",
+          "KC-ADM-009",
+          "KC-ADM-010",
+          "KC-CIV-008",
+          "KC-CIV-010"
+        ],
+        "dense_only": [
+          "KC-ADM-008",
+          "KC-CIV-001",
+          "KC-CON-003",
+          "KC-CON-007",
+          "KC-CON-009",
+          "KC-CON-011",
+          "KC-LAB-006"
+        ],
+        "both_miss": [
+          "KC-ADM-011",
+          "KC-CIV-002",
+          "KC-CIV-003",
+          "KC-CIV-004",
+          "KC-CIV-005",
+          "KC-CIV-006",
+          "KC-CIV-007",
+          "KC-CIV-009",
+          "KC-COM-001",
+          "KC-CON-004"
+        ]
+      }
+    }
+  }
+}

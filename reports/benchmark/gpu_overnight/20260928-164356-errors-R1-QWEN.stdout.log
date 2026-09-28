@@ -1,0 +1,1622 @@
+{
+  "version": "benchmark-error-analysis-v1",
+  "benchmark": {
+    "manifest_sha256": "326a405748dd20f641d5cf4103ceaafb6a19f07b43db54d95f472a2b439e3071",
+    "manifest": {
+      "version": "kingscode-ir-v1",
+      "generated_at": "2026-09-28T18:23:36.775832+00:00",
+      "generation": {
+        "kind": "deterministic_template_over_verified_corpus_metadata",
+        "closed_model_used": false,
+        "cases_per_area": 20,
+        "target_total": 200
+      },
+      "corpus": {
+        "version": "corpus-v0.1",
+        "passages.jsonl": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+        "graph/nodes.jsonl": "7c8af359cb1ac8de13872e01d2d0faf18218d24e1e2af326529f4a11c0a39aaa",
+        "graph/edges.jsonl": "6002fdcdbb4fb673761cb2dbe949db2502306809f2179e4133d8f40c286ff634",
+        "bm25_sha256": "aa6b40c5e70f88513a7cde7e9ca96a15d1d40088c538668087700b9b46de005b"
+      },
+      "schema_sha256": "01a2d1ff1f23453d3104e620c5a919d39d4dc65f9e77939510734d3ec92bea9e",
+      "splits": {
+        "dev": {
+          "questions": 120,
+          "question_sha256": "a207bc0c72c4aac92534f61f7162db7e94708a766133d791fce4a32905e7fa22",
+          "gold_sha256": "98747f955fed138160246d2066e5a84852f54f8e73868d05cfa4e6256674b0af"
+        },
+        "validation": {
+          "questions": 40,
+          "question_sha256": "a196b4b409acf2105afdbdb5ef71bf3e6154f2f9ac0eb269c039ea8d077ef1df",
+          "gold_sha256": "e42f9d17f442975351f14d62b698f12819eafe470e438d3c6fbf9c7bbda69f75"
+        },
+        "holdout": {
+          "questions": 40,
+          "question_sha256": "102b0ad813360083b891bb590a5af3485549cd6e167d12f2208f444780a8d9c9",
+          "gold_sha256": "6f1bbae3c68d2233a6eecd63c3b3e9dc45e8016312507402cdea40cce8a314d6"
+        }
+      },
+      "coverage": {
+        "cases_by_area": {
+          "Derecho administrativo": 20,
+          "Derecho civil": 20,
+          "Derecho comercial y sociedades": 20,
+          "Derecho constitucional": 20,
+          "Derecho de familia": 20,
+          "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]": 20,
+          "Derecho laboral": 20,
+          "Derecho penal": 20,
+          "Derecho procesal": 20,
+          "Derecho tributario": 20
+        },
+        "cases_by_tag": {
+          "EXPLICIT": 200,
+          "DISTRACTOR": 200,
+          "MULTI_EVIDENCE": 40,
+          "GRAPH": 6
+        },
+        "human_review_queue": 20
+      },
+      "holdout_policy": {
+        "protected": true,
+        "allowed_purposes": [
+          "predeclared_baseline",
+          "post_selection_confirmation"
+        ],
+        "official_50": "separate external milestone; never benchmark development data"
+      },
+      "gold_input_separation": "questions contain no gold/evaluation fields; gold is scored only after rankings are captured"
+    }
+  },
+  "run": {
+    "variant": "R1-QWEN",
+    "split": "dev",
+    "directory": "C:\\Users\\ls.contreras\\KingsCodeGPU\\KingsCodeNvidia\\reports\\benchmark\\r1_qwen\\20260928T213008725765Z-dev"
+  },
+  "counts": {
+    "correct_document_wrong_passage": 83,
+    "ranking_failure": 23
+  },
+  "by_area": {
+    "Derecho administrativo": {
+      "correct_document_wrong_passage": 4,
+      "ranking_failure": 5
+    },
+    "Derecho civil": {
+      "correct_document_wrong_passage": 11,
+      "ranking_failure": 1
+    },
+    "Derecho comercial y sociedades": {
+      "correct_document_wrong_passage": 4,
+      "ranking_failure": 6
+    },
+    "Derecho constitucional": {
+      "correct_document_wrong_passage": 5,
+      "ranking_failure": 3
+    },
+    "Derecho de familia": {
+      "correct_document_wrong_passage": 12
+    },
+    "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]": {
+      "correct_document_wrong_passage": 10,
+      "ranking_failure": 1
+    },
+    "Derecho laboral": {
+      "correct_document_wrong_passage": 4,
+      "ranking_failure": 6
+    },
+    "Derecho penal": {
+      "correct_document_wrong_passage": 11
+    },
+    "Derecho procesal": {
+      "correct_document_wrong_passage": 11,
+      "ranking_failure": 1
+    },
+    "Derecho tributario": {
+      "correct_document_wrong_passage": 11
+    }
+  },
+  "by_tag": {
+    "DISTRACTOR": {
+      "correct_document_wrong_passage": 83,
+      "ranking_failure": 23
+    },
+    "EXPLICIT": {
+      "correct_document_wrong_passage": 83,
+      "ranking_failure": 23
+    },
+    "GRAPH": {
+      "correct_document_wrong_passage": 3
+    },
+    "MULTI_EVIDENCE": {
+      "correct_document_wrong_passage": 25,
+      "ranking_failure": 14
+    }
+  },
+  "representative_cases": {
+    "ranking_failure": [
+      {
+        "id": "KC-ADM-001",
+        "question": "Ubique los textos oficiales del artículo 1 y del artículo 2 de Código General Disciplinario (Ley 1952 de 2019).",
+        "area": "Derecho administrativo",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR",
+          "MULTI_EVIDENCE"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:9",
+            "characters": 283,
+            "clean_end": 5914,
+            "clean_start": 5711,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00008:a78a9ebebfdd",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.7496300935745239,
+            "tokens": 32
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:26",
+            "characters": 660,
+            "clean_end": 13593,
+            "clean_start": 13050,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00025:6aaa324516ee",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.7477952241897583,
+            "tokens": 58
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:85",
+            "characters": 182,
+            "clean_end": 88228,
+            "clean_start": 88141,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00087:238c70b9612a",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.745576798915863,
+            "tokens": 20
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect dense/hybrid/reranker once GPU prerequisites exist"
+        }
+      },
+      {
+        "id": "KC-ADM-002",
+        "question": "Ubique los textos oficiales del artículo 3 y del artículo 4 de Código General Disciplinario (Ley 1952 de 2019).",
+        "area": "Derecho administrativo",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR",
+          "MULTI_EVIDENCE"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:9",
+            "characters": 283,
+            "clean_end": 5914,
+            "clean_start": 5711,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00008:a78a9ebebfdd",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.7486945390701294,
+            "tokens": 32
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:26",
+            "characters": 660,
+            "clean_end": 13593,
+            "clean_start": 13050,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00025:6aaa324516ee",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.7380785942077637,
+            "tokens": 58
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:231",
+            "characters": 724,
+            "clean_end": 199824,
+            "clean_start": 199207,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00240:168567dee97d",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.7374087572097778,
+            "tokens": 60
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect dense/hybrid/reranker once GPU prerequisites exist"
+        }
+      },
+      {
+        "id": "KC-ADM-003",
+        "question": "Ubique los textos oficiales del artículo 5 y del artículo 6 de Código General Disciplinario (Ley 1952 de 2019).",
+        "area": "Derecho administrativo",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR",
+          "MULTI_EVIDENCE"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:26",
+            "characters": 660,
+            "clean_end": 13593,
+            "clean_start": 13050,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00025:6aaa324516ee",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.7451185584068298,
+            "tokens": 58
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:9",
+            "characters": 283,
+            "clean_end": 5914,
+            "clean_start": 5711,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00008:a78a9ebebfdd",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.7362039089202881,
+            "tokens": 32
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:85",
+            "characters": 182,
+            "clean_end": 88228,
+            "clean_start": 88141,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00087:238c70b9612a",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.7337651252746582,
+            "tokens": 20
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect dense/hybrid/reranker once GPU prerequisites exist"
+        }
+      },
+      {
+        "id": "KC-ADM-009",
+        "question": "Ubique el texto oficial del artículo 13 de Código General Disciplinario (Ley 1952 de 2019).",
+        "area": "Derecho administrativo",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:9",
+            "characters": 283,
+            "clean_end": 5914,
+            "clean_start": 5711,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00008:a78a9ebebfdd",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.7307555675506592,
+            "tokens": 32
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:26",
+            "characters": 660,
+            "clean_end": 13593,
+            "clean_start": 13050,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00025:6aaa324516ee",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.7248106002807617,
+            "tokens": 58
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:231",
+            "characters": 724,
+            "clean_end": 199824,
+            "clean_start": 199207,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00240:168567dee97d",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.7145475149154663,
+            "tokens": 60
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect dense/hybrid/reranker once GPU prerequisites exist"
+        }
+      },
+      {
+        "id": "KC-ADM-010",
+        "question": "Ubique el texto oficial del artículo 14 de Código General Disciplinario (Ley 1952 de 2019).",
+        "area": "Derecho administrativo",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:9",
+            "characters": 283,
+            "clean_end": 5914,
+            "clean_start": 5711,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00008:a78a9ebebfdd",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.7340726852416992,
+            "tokens": 32
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:26",
+            "characters": 660,
+            "clean_end": 13593,
+            "clean_start": 13050,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00025:6aaa324516ee",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.7298192977905273,
+            "tokens": 58
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:24",
+            "characters": 345,
+            "clean_end": 12400,
+            "clean_start": 12172,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00023:fe170ca52102",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.7232052087783813,
+            "tokens": 37
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect dense/hybrid/reranker once GPU prerequisites exist"
+        }
+      },
+      {
+        "id": "KC-CIV-001",
+        "question": "Ubique los textos oficiales del artículo 1 y del artículo 2 de Código Civil (Ley 84 de 1873; Ley 57 de 1887).",
+        "area": "Derecho civil",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR",
+          "MULTI_EVIDENCE"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:175",
+            "characters": 281,
+            "clean_end": 78045,
+            "clean_start": 77839,
+            "experiment": null,
+            "passage_id": "codigo_civil:00174:f84800f589b5",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.7143971920013428,
+            "tokens": 34
+          },
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:850",
+            "characters": 405,
+            "clean_end": 278645,
+            "clean_start": 278313,
+            "experiment": null,
+            "passage_id": "codigo_civil:00848:2154992309cd",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.71186363697052,
+            "tokens": 36
+          },
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:173",
+            "characters": 216,
+            "clean_end": 77705,
+            "clean_start": 77564,
+            "experiment": null,
+            "passage_id": "codigo_civil:00172:449660600e02",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.706258237361908,
+            "tokens": 25
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect dense/hybrid/reranker once GPU prerequisites exist"
+        }
+      },
+      {
+        "id": "KC-COM-001",
+        "question": "Ubique los textos oficiales del artículo 1 y del artículo 2 de Código General del Proceso (Ley 1564 de 2012).",
+        "area": "Derecho comercial y sociedades",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR",
+          "MULTI_EVIDENCE"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_general_proceso",
+            "canonical_fragment_id": "codigo_general_proceso:articulo:14",
+            "characters": 405,
+            "clean_end": 5336,
+            "clean_start": 4996,
+            "experiment": null,
+            "passage_id": "codigo_general_proceso:00013:c2ac5c7449c8",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.7791427969932556,
+            "tokens": 43
+          },
+          {
+            "canonical_document_id": "codigo_general_proceso",
+            "canonical_fragment_id": "codigo_general_proceso:articulo:579",
+            "characters": 741,
+            "clean_end": 653173,
+            "clean_start": 652517,
+            "experiment": null,
+            "passage_id": "codigo_general_proceso:00601:09e219f91997",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.7600287199020386,
+            "tokens": 70
+          },
+          {
+            "canonical_document_id": "codigo_general_proceso",
+            "canonical_fragment_id": "codigo_general_proceso:articulo:525",
+            "characters": 208,
+            "clean_end": 587426,
+            "clean_start": 587290,
+            "experiment": null,
+            "passage_id": "codigo_general_proceso:00545:8745c15f72c7",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.7515535950660706,
+            "tokens": 23
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect dense/hybrid/reranker once GPU prerequisites exist"
+        }
+      },
+      {
+        "id": "KC-COM-002",
+        "question": "Ubique los textos oficiales del artículo 3 y del artículo 4 de Código General del Proceso (Ley 1564 de 2012).",
+        "area": "Derecho comercial y sociedades",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR",
+          "MULTI_EVIDENCE"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_general_proceso",
+            "canonical_fragment_id": "codigo_general_proceso:articulo:14",
+            "characters": 405,
+            "clean_end": 5336,
+            "clean_start": 4996,
+            "experiment": null,
+            "passage_id": "codigo_general_proceso:00013:c2ac5c7449c8",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.769100546836853,
+            "tokens": 43
+          },
+          {
+            "canonical_document_id": "codigo_general_proceso",
+            "canonical_fragment_id": "codigo_general_proceso:articulo:579",
+            "characters": 741,
+            "clean_end": 653173,
+            "clean_start": 652517,
+            "experiment": null,
+            "passage_id": "codigo_general_proceso:00601:09e219f91997",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.7596197128295898,
+            "tokens": 70
+          },
+          {
+            "canonical_document_id": "codigo_general_proceso",
+            "canonical_fragment_id": "codigo_general_proceso:articulo:525",
+            "characters": 208,
+            "clean_end": 587426,
+            "clean_start": 587290,
+            "experiment": null,
+            "passage_id": "codigo_general_proceso:00545:8745c15f72c7",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.7484793066978455,
+            "tokens": 23
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect dense/hybrid/reranker once GPU prerequisites exist"
+        }
+      },
+      {
+        "id": "KC-COM-003",
+        "question": "Ubique los textos oficiales del artículo 5 y del artículo 6 de Código General del Proceso (Ley 1564 de 2012).",
+        "area": "Derecho comercial y sociedades",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR",
+          "MULTI_EVIDENCE"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_general_proceso",
+            "canonical_fragment_id": "codigo_general_proceso:articulo:14",
+            "characters": 405,
+            "clean_end": 5336,
+            "clean_start": 4996,
+            "experiment": null,
+            "passage_id": "codigo_general_proceso:00013:c2ac5c7449c8",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.7657154202461243,
+            "tokens": 43
+          },
+          {
+            "canonical_document_id": "codigo_general_proceso",
+            "canonical_fragment_id": "codigo_general_proceso:articulo:579",
+            "characters": 741,
+            "clean_end": 653173,
+            "clean_start": 652517,
+            "experiment": null,
+            "passage_id": "codigo_general_proceso:00601:09e219f91997",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.7560546398162842,
+            "tokens": 70
+          },
+          {
+            "canonical_document_id": "codigo_general_proceso",
+            "canonical_fragment_id": "codigo_general_proceso:articulo:525",
+            "characters": 208,
+            "clean_end": 587426,
+            "clean_start": 587290,
+            "experiment": null,
+            "passage_id": "codigo_general_proceso:00545:8745c15f72c7",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.74153071641922,
+            "tokens": 23
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect dense/hybrid/reranker once GPU prerequisites exist"
+        }
+      },
+      {
+        "id": "KC-COM-004",
+        "question": "Ubique los textos oficiales del artículo 7 y del artículo 8 de Código General del Proceso (Ley 1564 de 2012).",
+        "area": "Derecho comercial y sociedades",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR",
+          "MULTI_EVIDENCE"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_general_proceso",
+            "canonical_fragment_id": "codigo_general_proceso:articulo:579",
+            "characters": 741,
+            "clean_end": 653173,
+            "clean_start": 652517,
+            "experiment": null,
+            "passage_id": "codigo_general_proceso:00601:09e219f91997",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.749884843826294,
+            "tokens": 70
+          },
+          {
+            "canonical_document_id": "codigo_general_proceso",
+            "canonical_fragment_id": "codigo_general_proceso:articulo:14",
+            "characters": 405,
+            "clean_end": 5336,
+            "clean_start": 4996,
+            "experiment": null,
+            "passage_id": "codigo_general_proceso:00013:c2ac5c7449c8",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.7475944757461548,
+            "tokens": 43
+          },
+          {
+            "canonical_document_id": "codigo_general_proceso",
+            "canonical_fragment_id": "codigo_general_proceso:articulo:525",
+            "characters": 208,
+            "clean_end": 587426,
+            "clean_start": 587290,
+            "experiment": null,
+            "passage_id": "codigo_general_proceso:00545:8745c15f72c7",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.7124789953231812,
+            "tokens": 23
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect dense/hybrid/reranker once GPU prerequisites exist"
+        }
+      }
+    ],
+    "correct_document_wrong_passage": [
+      {
+        "id": "KC-ADM-004",
+        "question": "Ubique los textos oficiales del artículo 7 y del artículo 8 de Código General Disciplinario (Ley 1952 de 2019).",
+        "area": "Derecho administrativo",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR",
+          "MULTI_EVIDENCE"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:9",
+            "characters": 283,
+            "clean_end": 5914,
+            "clean_start": 5711,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00008:a78a9ebebfdd",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.7308666706085205,
+            "tokens": 32
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:85",
+            "characters": 182,
+            "clean_end": 88228,
+            "clean_start": 88141,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00087:238c70b9612a",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.7176768183708191,
+            "tokens": 20
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:26",
+            "characters": 660,
+            "clean_end": 13593,
+            "clean_start": 13050,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00025:6aaa324516ee",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.7167127728462219,
+            "tokens": 58
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect locator matching, chunk boundaries, and near-top ranking"
+        }
+      },
+      {
+        "id": "KC-ADM-006",
+        "question": "Ubique el texto oficial del artículo 10 de Código General Disciplinario (Ley 1952 de 2019).",
+        "area": "Derecho administrativo",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:9",
+            "characters": 283,
+            "clean_end": 5914,
+            "clean_start": 5711,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00008:a78a9ebebfdd",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.727006733417511,
+            "tokens": 32
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:26",
+            "characters": 660,
+            "clean_end": 13593,
+            "clean_start": 13050,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00025:6aaa324516ee",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.7245168685913086,
+            "tokens": 58
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:85",
+            "characters": 182,
+            "clean_end": 88228,
+            "clean_start": 88141,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00087:238c70b9612a",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.7203561663627625,
+            "tokens": 20
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect locator matching, chunk boundaries, and near-top ranking"
+        }
+      },
+      {
+        "id": "KC-ADM-007",
+        "question": "Ubique el texto oficial del artículo 11 de Código General Disciplinario (Ley 1952 de 2019).",
+        "area": "Derecho administrativo",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:9",
+            "characters": 283,
+            "clean_end": 5914,
+            "clean_start": 5711,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00008:a78a9ebebfdd",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.7353100776672363,
+            "tokens": 32
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:26",
+            "characters": 660,
+            "clean_end": 13593,
+            "clean_start": 13050,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00025:6aaa324516ee",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.7248417735099792,
+            "tokens": 58
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:231",
+            "characters": 724,
+            "clean_end": 199824,
+            "clean_start": 199207,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00240:168567dee97d",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.7111432552337646,
+            "tokens": 60
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect locator matching, chunk boundaries, and near-top ranking"
+        }
+      },
+      {
+        "id": "KC-ADM-011",
+        "question": "Ubique el texto oficial del artículo 15 de Código General Disciplinario (Ley 1952 de 2019).",
+        "area": "Derecho administrativo",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:9",
+            "characters": 283,
+            "clean_end": 5914,
+            "clean_start": 5711,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00008:a78a9ebebfdd",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.7390249967575073,
+            "tokens": 32
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:26",
+            "characters": 660,
+            "clean_end": 13593,
+            "clean_start": 13050,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00025:6aaa324516ee",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.7316890358924866,
+            "tokens": 58
+          },
+          {
+            "canonical_document_id": "codigo_disciplinario",
+            "canonical_fragment_id": "codigo_disciplinario:articulo:85",
+            "characters": 182,
+            "clean_end": 88228,
+            "clean_start": 88141,
+            "experiment": null,
+            "passage_id": "codigo_disciplinario:00087:238c70b9612a",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.7232829332351685,
+            "tokens": 20
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect locator matching, chunk boundaries, and near-top ranking"
+        }
+      },
+      {
+        "id": "KC-CIV-002",
+        "question": "Ubique los textos oficiales del artículo 3 y del artículo 4 de Código Civil (Ley 84 de 1873; Ley 57 de 1887).",
+        "area": "Derecho civil",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR",
+          "MULTI_EVIDENCE"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:48",
+            "characters": 212,
+            "clean_end": 18200,
+            "clean_start": 18067,
+            "experiment": null,
+            "passage_id": "codigo_civil:00047:1cfed4753a61",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.7096552848815918,
+            "tokens": 25
+          },
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:175",
+            "characters": 281,
+            "clean_end": 78045,
+            "clean_start": 77839,
+            "experiment": null,
+            "passage_id": "codigo_civil:00174:f84800f589b5",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.7026227712631226,
+            "tokens": 34
+          },
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:1566",
+            "characters": 365,
+            "clean_end": 573712,
+            "clean_start": 573420,
+            "experiment": null,
+            "passage_id": "codigo_civil:01564:b7b8417ff182",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.7025795578956604,
+            "tokens": 38
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect locator matching, chunk boundaries, and near-top ranking"
+        }
+      },
+      {
+        "id": "KC-CIV-003",
+        "question": "Ubique los textos oficiales del artículo 5 y del artículo 6 de Código Civil (Ley 84 de 1873; Ley 57 de 1887).",
+        "area": "Derecho civil",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR",
+          "MULTI_EVIDENCE"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:1770",
+            "characters": 310,
+            "clean_end": 654274,
+            "clean_start": 654036,
+            "experiment": null,
+            "passage_id": "codigo_civil:01768:6df414a77c8a",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.6930304169654846,
+            "tokens": 35
+          },
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:850",
+            "characters": 405,
+            "clean_end": 278645,
+            "clean_start": 278313,
+            "experiment": null,
+            "passage_id": "codigo_civil:00848:2154992309cd",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.6920400857925415,
+            "tokens": 36
+          },
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:1566",
+            "characters": 365,
+            "clean_end": 573712,
+            "clean_start": 573420,
+            "experiment": null,
+            "passage_id": "codigo_civil:01564:b7b8417ff182",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.6916906833648682,
+            "tokens": 38
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect locator matching, chunk boundaries, and near-top ranking"
+        }
+      },
+      {
+        "id": "KC-CIV-004",
+        "question": "Ubique los textos oficiales del artículo 7 y del artículo 8 de Código Civil (Ley 84 de 1873; Ley 57 de 1887).",
+        "area": "Derecho civil",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR",
+          "MULTI_EVIDENCE"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:175",
+            "characters": 281,
+            "clean_end": 78045,
+            "clean_start": 77839,
+            "experiment": null,
+            "passage_id": "codigo_civil:00174:f84800f589b5",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.7128241062164307,
+            "tokens": 34
+          },
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:850",
+            "characters": 405,
+            "clean_end": 278645,
+            "clean_start": 278313,
+            "experiment": null,
+            "passage_id": "codigo_civil:00848:2154992309cd",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.7076587677001953,
+            "tokens": 36
+          },
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:173",
+            "characters": 216,
+            "clean_end": 77705,
+            "clean_start": 77564,
+            "experiment": null,
+            "passage_id": "codigo_civil:00172:449660600e02",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.7065211534500122,
+            "tokens": 25
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect locator matching, chunk boundaries, and near-top ranking"
+        }
+      },
+      {
+        "id": "KC-CIV-005",
+        "question": "Ubique el texto oficial del artículo 9 de Código Civil (Ley 84 de 1873; Ley 57 de 1887).",
+        "area": "Derecho civil",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:1391",
+            "characters": 279,
+            "clean_end": 503783,
+            "clean_start": 503575,
+            "experiment": null,
+            "passage_id": "codigo_civil:01389:aef3b5c89f84",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.6812084913253784,
+            "tokens": 30
+          },
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:850",
+            "characters": 405,
+            "clean_end": 278645,
+            "clean_start": 278313,
+            "experiment": null,
+            "passage_id": "codigo_civil:00848:2154992309cd",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.6732092499732971,
+            "tokens": 36
+          },
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:1566",
+            "characters": 365,
+            "clean_end": 573712,
+            "clean_start": 573420,
+            "experiment": null,
+            "passage_id": "codigo_civil:01564:b7b8417ff182",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.6728708744049072,
+            "tokens": 38
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect locator matching, chunk boundaries, and near-top ranking"
+        }
+      },
+      {
+        "id": "KC-CIV-006",
+        "question": "En Código Civil (Ley 84 de 1873; Ley 57 de 1887), ubique el texto oficial del artículo 10 que evidencia explícitamente la relación jurídica DEROGA.",
+        "area": "Derecho civil",
+        "tags": [
+          "EXPLICIT",
+          "GRAPH",
+          "DISTRACTOR"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:101",
+            "characters": 215,
+            "clean_end": 40093,
+            "clean_start": 39965,
+            "experiment": null,
+            "passage_id": "codigo_civil:00100:9500afbf1fe4",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.7176080942153931,
+            "tokens": 27
+          },
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:104",
+            "characters": 215,
+            "clean_end": 40483,
+            "clean_start": 40355,
+            "experiment": null,
+            "passage_id": "codigo_civil:00103:f80c40185c56",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.7143127918243408,
+            "tokens": 27
+          },
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:105",
+            "characters": 215,
+            "clean_end": 40613,
+            "clean_start": 40485,
+            "experiment": null,
+            "passage_id": "codigo_civil:00104:db72ada5095f",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.713225245475769,
+            "tokens": 27
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect locator matching, chunk boundaries, and near-top ranking"
+        }
+      },
+      {
+        "id": "KC-CIV-007",
+        "question": "Ubique el texto oficial del artículo 11 de Código Civil (Ley 84 de 1873; Ley 57 de 1887).",
+        "area": "Derecho civil",
+        "tags": [
+          "EXPLICIT",
+          "DISTRACTOR"
+        ],
+        "retrieved": [
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:1210",
+            "characters": 299,
+            "clean_end": 435279,
+            "clean_start": 435067,
+            "experiment": null,
+            "passage_id": "codigo_civil:01208:35bd7c446f44",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 1
+            },
+            "score": 0.6553571820259094,
+            "tokens": 32
+          },
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:850",
+            "characters": 405,
+            "clean_end": 278645,
+            "clean_start": 278313,
+            "experiment": null,
+            "passage_id": "codigo_civil:00848:2154992309cd",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 2
+            },
+            "score": 0.6540036201477051,
+            "tokens": 36
+          },
+          {
+            "canonical_document_id": "codigo_civil",
+            "canonical_fragment_id": "codigo_civil:articulo:48",
+            "characters": 212,
+            "clean_end": 18200,
+            "clean_start": 18067,
+            "experiment": null,
+            "passage_id": "codigo_civil:00047:1cfed4753a61",
+            "retrieval": {
+              "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+              "graph_active": false,
+              "graph_evidence": [],
+              "graph_mode": "off",
+              "mode": "dense",
+              "rank": 3
+            },
+            "score": 0.6517887115478516,
+            "tokens": 25
+          }
+        ],
+        "recommendation": {
+          "owner": "RETRIEVAL EXPERIMENTER",
+          "action": "inspect locator matching, chunk boundaries, and near-top ranking"
+        }
+      }
+    ]
+  },
+  "owner_action": {
+    "corpus_missing": {
+      "owner": "BENCHMARK CURATOR",
+      "action": "verify gold/source coverage; investigate acquisition only with evidence"
+    },
+    "wrong_document": {
+      "owner": "RETRIEVAL EXPERIMENTER",
+      "action": "inspect canonical identity, document-level metadata, and document-first retrieval"
+    },
+    "correct_document_wrong_passage": {
+      "owner": "RETRIEVAL EXPERIMENTER",
+      "action": "inspect locator matching, chunk boundaries, and near-top ranking"
+    },
+    "ranking_failure": {
+      "owner": "RETRIEVAL EXPERIMENTER",
+      "action": "inspect dense/hybrid/reranker once GPU prerequisites exist"
+    },
+    "graph_failure": {
+      "owner": "RETRIEVAL EXPERIMENTER",
+      "action": "inspect graph seeding/router/traversal using evidenced relations"
+    },
+    "ambiguous_gold": {
+      "owner": "BENCHMARK CURATOR",
+      "action": "fix annotation; do not change retrieval"
+    }
+  },
+  "policy": "Failures drive targeted investigation; no blind corpus expansion."
+}
