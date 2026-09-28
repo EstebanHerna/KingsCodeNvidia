@@ -71,3 +71,24 @@ def assess_evidence(question: str | NormalizedQuery, passages: list[dict]) -> Ev
     if passages and not exact and overlap < 2:
         reasons.append("weak_lexical_evidence")
     return EvidenceAssessment(not reasons, tuple(reasons), tuple(conflict), overlap)
+
+
+# Reasons serious enough to abstain *before* even asking the decoder: no
+# evidence at all, evidence that literally contradicts itself, or evidence
+# tagged as not currently valid. Everything else (missing exact reference,
+# ambiguous query, uncertified currency, weak lexical overlap...) is a soft
+# signal: let the decoder try and rely on citation_guard's post-hoc check.
+HARD_REASONS = frozenset({"empty_question", "retrieval_empty", "conflicting_evidence", "ineligible_evidence"})
+
+
+def blocking_reasons(assessment: EvidenceAssessment, format: str) -> tuple[str, ...]:
+    """Reasons that must abstain pre-decoder, given the official scoring rule.
+
+    `multiple_choice` never blocks: per enunciado 6.1, guessing among the
+    supplied options beats abstention even at random accuracy, so evidence
+    quality alone is never a reason to withhold an attempt. Free-text formats
+    still block on the reasons in HARD_REASONS.
+    """
+    if format == "multiple_choice":
+        return ()
+    return tuple(r for r in assessment.reasons if r in HARD_REASONS)

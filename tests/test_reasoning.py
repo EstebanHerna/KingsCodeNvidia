@@ -18,6 +18,7 @@ from kingscode.reasoning.evaluation import run_eval
 from kingscode.reasoning.experiments import fingerprint, run_experiment, validate_config
 from kingscode.reasoning.guards import CitationGuardError, SubmissionValidationError, evidence_record
 from kingscode.reasoning.legal import references
+from kingscode.reasoning.pipeline import query_variants, rrf_merge
 from kingscode.reasoning.policy import assess_evidence
 
 FIXTURES = read_json(ROOT / "tests/fixtures/member_b_official_passages.json")
@@ -257,6 +258,58 @@ class PipelineTests(unittest.TestCase):
         self.assertGreaterEqual(trace["citation_guard_fallback"]["unsupported_count"], 1)
         self.assertTrue(trace["citation_guard"]["ok"])
         validate_submission(row)
+
+    def test_multiple_choice_never_pre_blocks_on_soft_evidence_reasons(self):
+        # Enunciado 6.1: guessing among the given options beats abstention even
+        # at random accuracy, so a soft reason (missing_explicit_reference) must
+        # never withhold the attempt for multiple_choice, only for free text.
+        class ChoosingBackend:
+            name, version = "unit_probe_mc", "1"
+            def generate(self, question, passages, prompt, generation):
+                return {"id": question.id, "formato": "multiple_choice", "abstencion": False,
+                        "respuesta_correcta": "A", "justificacion": "Ley 1010 de 2006.",
+                        "descarte_opciones": {"B": "no aplica la evidencia"},
+                        "pasajes_recuperados": [evidence_record(p) for p in passages]}
+        retrieve = Mock(side_effect=lambda *args: [evidence()])
+        q = Question(79, "Artículo 999 de la Ley 1010 de 2006", "multiple_choice", {"A": "x", "B": "y"})
+        row, trace = Pipeline(retrieve, decoder=ChoosingBackend()).run(q)
+        self.assertFalse(row["abstencion"])
+        self.assertEqual(row["respuesta_correcta"], "A")
+        self.assertIn("missing_explicit_reference", trace["warnings"])
+
+    def test_free_text_still_hard_blocks_on_empty_retrieval(self):
+        retrieve = Mock(side_effect=lambda *args: [])
+        row, trace = Pipeline(retrieve).run(Question(79, "pregunta sin pasajes disponibles", "semi_open"))
+        self.assertTrue(row["abstencion"])
+        self.assertIn("retrieval_empty", trace["abstention_reason"])
+
+    def test_query_variants_one_per_option_sorted_else_base_only(self):
+        q = normalize_query("Constitución Política")
+        self.assertEqual(query_variants(Question(1, "x", "semi_open"), q), (q.retrieval_text,))
+        mc = Question(1, "x", "multiple_choice", {"B": "segunda", "A": "primera"})
+        self.assertEqual(query_variants(mc, q), (q.retrieval_text, f"{q.retrieval_text} primera", f"{q.retrieval_text} segunda"))
+
+    def test_rrf_merge_boosts_passages_ranked_in_more_lists(self):
+        p0, p1, p2 = FIXTURES[0], FIXTURES[1], FIXTURES[2]
+        merged = rrf_merge([[p0, p1], [p1, p2]], k=8)
+        self.assertEqual([p["passage_id"] for p in merged][0], p1["passage_id"])  # ranked in both lists
+        self.assertEqual({p["passage_id"] for p in merged}, {p0["passage_id"], p1["passage_id"], p2["passage_id"]})
+
+    def test_multiple_choice_fans_out_one_retrieve_per_option_and_fuses_rrf(self):
+        p0, p1 = FIXTURES[0], FIXTURES[1]
+
+        def fake_retrieve(query_text, k, mode):
+            return [deepcopy(p1), deepcopy(p0)] if "opcion_b" in query_text else [deepcopy(p0)]
+
+        retrieve = Mock(side_effect=fake_retrieve)
+        q = Question(79, "Constitución Política", "multiple_choice", {"A": "opcion_a", "B": "opcion_b"})
+        row, trace = Pipeline(retrieve, decoder=DummyDecoder(), graph_policy="off").run(q)
+        self.assertEqual(retrieve.call_count, 3)  # base + opción A + opción B, no graph expansion
+        queries = [c.args[0] for c in retrieve.call_args_list]
+        self.assertTrue(queries[1].endswith("opcion_a"))
+        self.assertTrue(queries[2].endswith("opcion_b"))
+        ids = {p["passage_id"] for p in row["pasajes_recuperados"]}
+        self.assertEqual(ids, {p0["passage_id"], p1["passage_id"]})
 
     def test_only_question_text_reaches_retrieval(self):
         q = public_question({"id": 79, "formato": "semi_open", "pregunta": "Artículo 1 de la Ley 1010 de 2006", "legal_basis": "DO_NOT_LEAK", "expected_answer": "DO_NOT_LEAK"})
