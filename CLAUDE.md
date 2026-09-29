@@ -101,3 +101,12 @@ Linux/WSL: igual con `python`. RAGAS (`--ragas`) solo con autorización explíci
 2. Probar `interfaz/app.py` end-to-end en cuanto haya `corpus/` local o en la máquina con GPU.
 3. Día de GPU: seguir `docs/GPU_DAY_RUNBOOK.md` tal cual (B posee el entorno CUDA/PyTorch/model cache; A toma la máquina después con `GPU_READY`).
 4. `run.sh`/Dockerfile de un solo comando y sección `## Corpus e índice` en el README siguen pendientes (rúbrica 6.2, reproducibilidad 2 pts + corpus publicado 5 pts).
+
+## 9. Corpus v0.2 y locator (desde 2026-09-28 noche)
+
+Plan revisado con evidencia: `docs/CORPUS_V02_PLAN.md`. Comando: `/corpus-tarea C1` (y C0–C8).
+Puntos que no se discuten sin nuevos datos:
+- Los 37 fallos de R6 en dev son de parser y ranking: `diversify.parse_reference` no reconoce códigos, la Constitución, abreviaturas ni listas, y R6 solo reordena el pool de BM25. Arreglar esto es anterior a añadir documentos.
+- El benchmark v1 es 100 % explícito; la muestra oficial tiene solo 4/50 preguntas con artículo en el enunciado. No elegir pesos BM25/denso con v1.
+- El banco no cubre derecho internacional (§4.2 del enunciado).
+- v0.1 es inmutable hasta que el equipo apruebe el freeze de v0.2 en `DECISION_LOG.md`.
