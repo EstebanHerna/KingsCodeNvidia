@@ -39,10 +39,20 @@ Hay **dos** carpetas de corpus y no son lo mismo:
 
 | Carpeta | Qué es | Tamaño | ¿En git? |
 |---|---|---|---|
-| `corpus/` | **Corpus v0.1, el corpus principal.** 163 documentos oficiales, 26.558 pasajes, grafo de 59k nodos / 75k aristas, índice BM25 y (en la PC de la 4090) `dense.npy`. Es sobre el que se midieron todos los resultados de la 4090. | cientos de MB | **No** (está en `.gitignore`). Existe en la PC de Luis; se reconstruye con `tools/member_a.py acquire` + `reproduce` o se copia su snapshot. |
+| `corpus/` | **Corpus v0.1, el corpus principal.** 163 documentos oficiales, 26.558 pasajes, grafo de 59k nodos / 75k aristas, índice BM25 y (en la PC de la 4090) `dense.npy`. Es sobre el que se midieron todos los resultados de la 4090. | cientos de MB | **No** (está en `.gitignore`). Existe en la PC de Luis. Se transfiere empaquetado con `tools/package_corpus_snapshot.py` (ver §2.1); no re-adquirir. |
 | `corpora/corpus-v0.2/` | **Agregado provisional de v0.2.** Solo 4 documentos nuevos con 72 pasajes (Decreto 046 de 2024; sentencias SL-648-2018, SP-1167-2022, SP-1680-2022) + 1 bloqueado (SP-1945-2019). Su manifest dice `status: provisional_not_competitive_freeze` y `v01_included: False`. | ~8,8 MB | **Sí** |
 
 Conclusión: **`corpora/corpus-v0.2` no reemplaza a `corpus/`**; es lo que se sumará a v0.1 cuando A congele la v0.2. Responder las 992 solo con la v0.2 (72 pasajes) no sirve. Verificado el 29-sep: los 18 hashes de su manifest coinciden, el `Retriever` de A la carga (72 pasajes) y el pipeline de B corre sobre ella de punta a punta (50/50 filas, 0 errores del validador oficial; puntaje del dummy, no competitivo).
+
+### 2.1 Cómo mover el corpus v0.1 entre PCs
+
+El corpus v0.1 **no está en ninguna rama de GitHub** (tampoco en `feat/member-a-gpu-results-4090-20260928`: esa rama solo guarda sus rutas y hashes en `reports/gpu_freeze_4090/CRITICAL_ARTIFACT_HASHES.*`; su archivo más grande pesa 1,3 MB, mientras `passages.jsonl` pesa 84 MB y `bm25.json` 131 MB). Se mueve así:
+
+1. En la PC que tiene `corpus/`: `python tools/package_corpus_snapshot.py pack` → `dist/corpus_snapshot/` con `kingscode-corpus-v0.1.tar.gz`, `snapshot-files.sha256.json`, `SHA256SUMS.txt` y `LEEME.txt` (fuera de git).
+2. Subir esos archivos a Drive/OneDrive (también es el entregable 5, junto con `dense.npy` y un `LICENSE`).
+3. En la PC que lo recibe: `python tools/package_corpus_snapshot.py verify <ruta>/kingscode-corpus-v0.1.tar.gz`, luego `tar -xzf … -C .` y `python tools/verify_member_a_v02.py`. O pasar el `.tar.gz` a `tools/lab_gpu_session.ps1 -CorpusSnapshot`, que verifica antes de extraer.
+
+El paquete no incluye `dense.npy` (106.741.888 bytes, SHA-256 `0c156c5e9…`): para los modos denso/híbrido hay que traerlo aparte o reconstruirlo en GPU con `tools/member_a.py dense`. Hash de un paquete ya generado reportado por el equipo: `fef7300ccfe731c0b4edb07e9199f7db830a38071f9549fd5b6f0f3120b2d851` (el hash del `.tar.gz` puede variar entre builds de zlib; la verificación autoritativa es por archivo).
 
 ### Dentro de `corpora/corpus-v0.2/`
 
@@ -57,6 +67,31 @@ Conclusión: **`corpora/corpus-v0.2` no reemplaza a `corpus/`**; es lo que se su
 | `index/bm25.json` | Índice léxico BM25 de esos 72 pasajes. No hay índice denso (`dense_built: false`). |
 
 ---
+
+## 2.2 Ramas de Luis y la corrida en la RTX 4090
+
+Todas las ramas de Luis tienen **0 commits fuera de `main`**: su trabajo ya está integrado. Qué fue cada una:
+
+| Rama | Qué hizo |
+|---|---|
+| `feat/member-a-metadata-retrieval-v06` | Metadatos canónicos, deduplicación, taxonomía de fallos, experimentos R6–R8. |
+| `feat/member-a-retrieval-benchmark-v1` | Benchmark interno v1 (200 casos) y su evaluador sin fuga de etiquetas. |
+| `feat/member-a-gpu-benchmark-execution-v1` | *Harness* para correr el benchmark en GPU (commit WIP); quedó contenido en la rama siguiente. |
+| `feat/member-a-gpu-results-4090-20260928` | **La primera ejecución CUDA en la 4090** y su freeze de evidencia (`reports/gpu_freeze_4090/`, `reports/benchmark/search_v2*`, `r1_qwen`, `r2_qwen`, `gpu_overnight/`). |
+| `feat/member-a-corpus-quality-audit-v07` | Auditoría preregistrada de calidad del corpus (`reports/corpus_quality_v07/`). |
+| `docs/state-reconciliation-20260928` | Reconciliación de documentos de estado. |
+| `feat/member-a-corpus-v02-locator` | Corpus v0.2 provisional, locator productivo, benchmark independiente KC-COL-IR (JEP/Externado). |
+
+**Qué salió de la 4090** (Search V2, benchmark interno v1, 39 variantes; métrica EC@8 = evidencia completa en los 8 primeros pasajes):
+
+| Variante | Dev (120) | Validation (40) |
+|---|---:|---:|
+| BM25 profundidad 30 | 0,733 | 0,650 |
+| BM25 profundidad 120 | 0,800 | 0,825 |
+| Híbrido BM25 + denso Qwen, profundidad 120 | 0,833 | 0,800 |
+| **Con locator exacto** (mejor: `HYB120_LOC_META_1p25`) | **0,992** | **1,000** |
+
+Lectura: el salto viene del **locator exacto** (inyecta el artículo citado en la pregunta). El benchmark v1 tiene solo referencias explícitas, así que esto no prueba calidad en preguntas semánticas; por eso existe KC-COL-IR (hoy con 0 respuestas de referencia aceptadas). No hubo decoder: en la 4090 solo se corrió recuperación.
 
 ## 3. Raíz del repositorio
 
@@ -228,7 +263,7 @@ Regla común: los rankings se escriben **antes** de leer el gold; el holdout no 
 | 2. README con dependencias, arquitectura y comando único | Hay README y `run.sh`; falta completar arquitectura final y el enlace del corpus. |
 | 3. `submissions.jsonl` de 992 | Pendiente: requiere decoder real (GPU) y el freeze de retrieval de A. `tools/member_b.py batch` está listo. |
 | 4. `CORPUS.md` y `corpus_manifest.json` | Existen para v0.1; actualizar si se adopta v0.2. |
-| 5. Corpus e índice en la nube con `LICENSE` | Pendiente: subir el snapshot de `corpus/` + `dense.npy` y declarar el enlace. |
+| 5. Corpus e índice en la nube con `LICENSE` | Pendiente: `tools/package_corpus_snapshot.py pack` en la PC de Luis, subir el paquete + `dense.npy` + `LICENSE` y declarar el enlace. |
 | 6. Informe técnico (≤ 3 páginas) | Pendiente. Plantilla en `entregables/sabado/INFORME_TECNICO.md`. |
 | 7. Video (≤ 5 min) | Pendiente. |
 | 8. Interfaz | Implementada; falta probarla con el corpus real y un decoder real. |

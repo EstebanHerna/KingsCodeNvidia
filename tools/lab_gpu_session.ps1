@@ -89,6 +89,12 @@ $GateOpen = ($Gate | ConvertFrom-Json).gate_open
 Step "[4] Corpus v0.1 (snapshot de Luis; nunca re-adquirir aquí)"
 if (-not (Test-Path "corpus\manifest.json") -and $CorpusSnapshot) {
     if ($CorpusSnapshot -like "*.tar.gz" -or $CorpusSnapshot -like "*.tgz") {
+        $Files = Join-Path (Split-Path $CorpusSnapshot) "snapshot-files.sha256.json"
+        if (Test-Path $Files) {
+            & $Py tools\package_corpus_snapshot.py verify $CorpusSnapshot --files $Files; Check "verificación del snapshot antes de extraer"
+        } else {
+            Write-Host "AVISO: falta snapshot-files.sha256.json junto al .tar.gz; se extrae y se verifica después con verify_member_a_v02." -ForegroundColor Yellow
+        }
         tar -xzf $CorpusSnapshot -C .; Check "tar -xzf snapshot"
     } else {
         Copy-Item -Recurse -LiteralPath $CorpusSnapshot -Destination ".\corpus"
