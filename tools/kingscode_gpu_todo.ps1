@@ -5,6 +5,7 @@
 #   [0] Ubica el repo que tiene corpus\ (el de Luis); NO lo modifica.
 #   [1] Copia limpia de main en %USERPROFILE%\KingsCodeRun (o -Work).
 #   [2] Copia corpus\ (v0.1, 26.558 pasajes) y enlaza models\ del repo fuente.
+#       En una PC nueva sin corpus\, lo descarga del release publico, lo verifica y lo extrae.
 #   [3] Entorno Python + dependencias CPU; valida el corpus contra los hashes de A.
 #   [4] Valida el indice denso con las mismas reglas que DenseIndex de A.
 #   [5] Publica corpus + indice + LICENSE como release del repo publico (entregable 5).
@@ -55,8 +56,8 @@ Step "[0] Repo fuente con corpus\ (solo lectura)"
 $Candidates = @($Source, "$HOME\KingsCodeGPU\KingsCodeNvidia", "$HOME\KingsCodeNvidia", "$HOME\Downloads\KingsCodeNvidia",
                 "$HOME\Desktop\KingsCodeNvidia", (Get-Location).Path)
 $Source = $Candidates | Where-Object { $_ -and (Test-Path (Join-Path $_ "corpus\manifest.json")) -and ($_ -ne $Work) } | Select-Object -First 1
-if (-not $Source) { throw "STOP: no encontre un repo con corpus\manifest.json. Usa -Source 'C:\ruta\KingsCodeNvidia'." }
-Write-Host "Fuente: $Source"
+if ($Source) { Write-Host "Fuente local: $Source" }
+else { Warn "no hay corpus local: se descargara del release publico $Tag (PC nueva)."; $Source = $null }
 if (-not (Get-Command git -ErrorAction SilentlyContinue)) { throw "STOP: falta Git." }
 
 $PyExe = $null
@@ -76,18 +77,38 @@ $Sha = (git rev-parse HEAD).Trim()
 Write-Host "main @ $Sha"
 $Out = "$Work\reports\lab_session\$Stamp"
 New-Item -ItemType Directory -Force $Out | Out-Null
-Done "git" @{ work = $Work; source = $Source; main_sha = $Sha }
+Done "git" @{ work = $Work; source = $(if ($Source) { $Source } else { "release $Tag" }); main_sha = $Sha }
 
 # ---------------------------------------------------------------------
 Step "[2] Corpus v0.1 y cache de modelos"
 if (-not (Test-Path "$Work\corpus\manifest.json")) {
-    robocopy "$Source\corpus" "$Work\corpus" /E /NFL /NDL /NJH /NJS /NP | Out-Null
-    if ($LASTEXITCODE -ge 8) { throw "STOP: robocopy fallo copiando corpus\ ($LASTEXITCODE)" }
-    $global:LASTEXITCODE = 0
+    if ($Source) {
+        robocopy "$Source\corpus" "$Work\corpus" /E /NFL /NDL /NJH /NJS /NP | Out-Null
+        if ($LASTEXITCODE -ge 8) { throw "STOP: robocopy fallo copiando corpus\ ($LASTEXITCODE)" }
+        $global:LASTEXITCODE = 0
+    } else {
+        if (-not (Test-Path "$Work\tools\package_corpus_snapshot.py")) { throw "STOP: main aun no tiene tools\package_corpus_snapshot.py (falta mergear el PR #6)." }
+        $Dl = "$HOME\kingscode_descargas"
+        New-Item -ItemType Directory -Force $Dl | Out-Null
+        $Url = "https://github.com/$GitHubRepo/releases/download/$Tag"
+        foreach ($f in @("kingscode-corpus-v0.1.tar.gz", "snapshot-files.sha256.json", "dense.npy", "dense.meta.json")) {
+            if (-not (Test-Path "$Dl\$f")) {
+                Write-Host "Descargando $f ..."
+                try { Invoke-WebRequest -UseBasicParsing -Uri "$Url/$f" -OutFile "$Dl\$f" }
+                catch { if ($f -like "dense*") { Warn "el release no trae $f (quedara solo BM25)" } else { throw "STOP: no pude descargar $f; existe el release $Tag? Publicalo primero desde la PC que tiene corpus\." } }
+            }
+        }
+        & $PyExe @PyArgs tools\package_corpus_snapshot.py verify "$Dl\kingscode-corpus-v0.1.tar.gz" --files "$Dl\snapshot-files.sha256.json"; Check "verificacion del snapshot antes de extraer"
+        tar -xzf "$Dl\kingscode-corpus-v0.1.tar.gz" -C $Work; Check "tar -xzf"
+        if ((Test-Path "$Dl\dense.npy") -and (Test-Path "$Dl\dense.meta.json")) { Copy-Item "$Dl\dense.npy", "$Dl\dense.meta.json" "$Work\corpus\index\" }
+        $SkipPublish = $true  # lo descargado ya esta publicado
+    }
 }
 if (-not (Test-Path "$Work\models")) {
-    if (-not (Test-Path "$Source\models")) { New-Item -ItemType Directory -Force "$Source\models" | Out-Null }
-    cmd /c "mklink /J `"$Work\models`" `"$Source\models`"" | Out-Null; Check "enlace de models\"
+    if ($Source) {
+        if (-not (Test-Path "$Source\models")) { New-Item -ItemType Directory -Force "$Source\models" | Out-Null }
+        cmd /c "mklink /J `"$Work\models`" `"$Source\models`"" | Out-Null; Check "enlace de models\"
+    } else { New-Item -ItemType Directory -Force "$Work\models" | Out-Null }
 }
 
 # ---------------------------------------------------------------------
