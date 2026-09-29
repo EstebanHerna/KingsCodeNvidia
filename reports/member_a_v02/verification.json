@@ -28,7 +28,15 @@
     "hashes": 10,
     "holdout_parsed": false,
     "selectable": false,
-    "manifest_sha256": "88a9a6e8eeffe96e075cfd157b58ce4b369bf361edecd7b9bd93b0ca11ec2352"
+    "manifest_sha256": "ef7e0e709c9441870cfd00d78dd49396bf1685309f59e4dd6f6037cb787d8cde"
+  },
+  "source_relation_and_identity_review": {
+    "g01_wrong_container_targets_rejected": 7,
+    "g01_replacement_relations_unresolved_inactive": 7,
+    "g01_active_semantic_edges": 0,
+    "d01_content_hash_groups": 7,
+    "d01_group_document_occurrences": 22,
+    "d01_cross_document_content_collapses": 0
   },
   "gpu_executed": false,
   "holdout_executed": false,

@@ -24,7 +24,10 @@ ALLOWED_SOURCE_IDS = {
     "ICFES-GESTION-CONFLICTO-2026",
     "ICFES-COMUNICACION-JURIDICA-2021",
     "ICFES-COMUNICACION-JURIDICA-2026",
+    "ICFES-GESTION-CONFLICTO-2018-EXTERNADO",
 }
+MIRROR_SOURCE_ID = "ICFES-GESTION-CONFLICTO-2018-EXTERNADO"
+ICFES_HOSTS = {"www.icfes.gov.co", "icfes.gov.co"}
 
 
 def verify_pdf(source_id: str, file_path: Path, expected_sha256: str, *, root: Path = ROOT) -> dict:
@@ -47,9 +50,22 @@ def verify_pdf(source_id: str, file_path: Path, expected_sha256: str, *, root: P
     source = next((row for row in rows if row.get("source_id") == source_id), None)
     if source is None:
         raise ValueError(f"Source is not recorded in the benchmark manifest: {source_id}")
-    official_url = source.get("official_url") or source.get("candidate_item_url") or source.get("url")
-    if urlparse(official_url or "").hostname not in {"www.icfes.gov.co", "icfes.gov.co"}:
-        raise ValueError("Manifest source is not on the official ICFES domain")
+    official_url = source.get("official_listing_url") or source.get("official_url") or source.get("candidate_item_url") or source.get("url")
+    if source_id == MIRROR_SOURCE_ID:
+        retrieval_url = source.get("retrieval_url")
+        allowed_hostname = source.get("retrieval_allowed_hostname")
+        if urlparse(official_url or "").hostname not in ICFES_HOSTS:
+            raise ValueError("Mirror identity listing is not on the official ICFES domain")
+        if source.get("canonical_source_status") != "OFFICIAL_ICFES_LISTING_VERIFIED":
+            raise ValueError("Mirror requires a verified official ICFES listing")
+        if source.get("retrieval_status", "").startswith("INSTITUTIONAL_MIRROR") is False:
+            raise ValueError("Mirror source must retain its institutional-mirror status")
+        if not allowed_hostname or urlparse(retrieval_url or "").hostname != allowed_hostname:
+            raise ValueError("Mirror retrieval URL does not match its manifest allowlist")
+    else:
+        retrieval_url = source.get("official_url") or source.get("candidate_item_url") or source.get("url")
+        if urlparse(retrieval_url or "").hostname not in ICFES_HOSTS:
+            raise ValueError("Manifest source is not on the official ICFES domain")
 
     digest = hashlib.sha256()
     with resolved.open("rb") as stream:
@@ -66,7 +82,14 @@ def verify_pdf(source_id: str, file_path: Path, expected_sha256: str, *, root: P
     return {
         "status": "HASH_VERIFIED_READY_FOR_LOCAL_EXTRACTION",
         "source_id": source_id,
+        "issuer": source.get("issuer") or source.get("institution", "ICFES"),
+        "canonical_year": source.get("canonical_year") or source.get("year"),
+        "canonical_source_status": source.get("canonical_source_status"),
         "official_url": official_url,
+        "retrieval_host": source.get("retrieval_host") or urlparse(retrieval_url).hostname,
+        "retrieval_url": retrieval_url,
+        "retrieval_status": source.get("retrieval_status"),
+        "identity_verification": source.get("identity_verification"),
         "local_path": resolved.relative_to(root.resolve()).as_posix(),
         "bytes": resolved.stat().st_size,
         "sha256": actual,

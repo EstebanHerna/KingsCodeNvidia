@@ -1,0 +1,16 @@
+{
+  "version": "d01-v02-content-dedup-review-1",
+  "finding_id": "D01",
+  "source_report": "reports/member_a_v02/corpus_audit_findings_v07.jsonl",
+  "source_report_sha256": "978d2436d94665c822d026d1582c39e3d3b9484bc058abdaba4916a94dd49f1e",
+  "content_hash_groups_reviewed": 7,
+  "document_occurrences_reviewed": 22,
+  "identity_method": "Round-trip every canonical decision identity from each source-observed D01 group; repeat each group using its exact shared body and verify content-level collapse does not remove different canonical legal works.",
+  "regression_status": "PASS",
+  "cross_document_content_collapses": 0,
+  "provenance": "Every retained passage keeps its own canonical_document_id and duplicate_group member record; equal boilerplate is not labeled as a mirror across distinct legal works.",
+  "v01_modified": false,
+  "semantic_graph_edges_activated": 0,
+  "status": "PARTIAL_REGRESSION_PASS_BROADER_PROVENANCE_AUDIT_OPEN",
+  "broader_audit_complete": false
+}

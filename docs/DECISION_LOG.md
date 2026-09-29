@@ -152,3 +152,11 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
 - Validación de esta continuación (segunda pasada final): 226 tests PASS; `python tools/benchmark_v2.py check` PASS con 10 hashes y holdout sin parsear; `python tools/verify_member_a_v02.py` PASS con 19 archivos oficiales, 326 archivos raw/clean v0.1 y 18 hashes v0.2. Sin GPU ni baseline.
 - Precisión de adquisición: el PDF ICFES Gestión del Conflicto 2026-2 de mayo es una guía de orientación listada en el catálogo oficial, no un cuadernillo de preguntas. Se excluye de la intake de ítems; la fuente de preguntas original de febrero permanece confirmada por indexación oficial pero bloqueada por 404.
 - Validación tras separar el PDF de orientación: tercera suite completa de esta continuación, 226 tests PASS; `benchmark_v2.py check` PASS (10 hashes, no holdout); verificador de snapshot PASS.
+
+
+## 2026-09-29 — KC-COL-IR-v0.1 institution-family isolation
+
+- Create a separate cross-institution benchmark: Externado DEV; Universidad Libre validation-only; ICFES/SIRNA sealed/future. Never use institution family to fill another split. Topic guides count for coverage only.
+- Mechanical acquisition of the official 2011 Externado Civil Procedure bank yields 270 numbered candidates, but extraction glyph damage means exact wording remains unverified. Do not accept or run retrieval on them until human transcription/option QA and independent primary-law/temporal review.
+- Hash-sample 30 before retrieval. Freeze the >=10 accepted DEV retrieval-gold gate. First comparison uses C0 BM25/C1 Qwen dense/C2 RRF/C3 hybrid+Qwen reranker, same candidate depth, graph OFF. No GPU execution in this acquisition session.
+- Historical Universidad Libre sources are `VALIDATION_CANDIDATE`; URLs currently return HTML, not verified PDF bytes. Do not parse/score until DEV architecture selection.

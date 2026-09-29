@@ -498,3 +498,8 @@ El piloto de benchmark v2 proviene del corpus y solo sirve de smoke técnico. Se
 Corpus-v0.2 tiene cuatro documentos provisionales (72 pasajes), uno bloqueado por PDF escaneado, y cero relaciones semánticas verificadas. Las seis familias auditadas G01/G02/C01/P02/P01/D01 aún necesitan arreglo con fixtures/fuentes. Corpus-v0.1 permanece inmutable. Revisar docs/MEMBER_A_V02_PROGRESS.md y docs/BENCHMARK_V2_METHODOLOGY.md antes de continuar.
 
 En el siguiente checkpoint de la misma rama se añadieron primitivas y pruebas para Oracle Multi-View Recall, Fusion Loss y Graph Recovery Rate sobre conjuntos mínimos alternativos. Son soporte de métrica, no evidencia de rendimiento: el conjunto independiente DEV sigue en cero y no existe baseline/failure distribution. Los seis defectos permanecen pendientes o bloqueados por fuente, sin cambios al corpus-v0.1. El piloto corpus-derivado conserva sus 12 filas como no independiente/no seleccionable; no se amplió el diagnóstico mientras las estructuras v0.2 no tengan revisión humana.
+
+
+### KC-COL-IR-v0.1 independent benchmark (2026-09-29)
+
+Cross-institution source roles are fixed: Externado preparatorios DEV, Universidad Libre VALIDATION_CANDIDATE, ICFES/SIRNA SEALED_FUTURE. The new inventory is isolated at `benchmarks/kc_col_ir_v0.1/`; its first hash-ranked Externado batch has 30 metadata-only review records from a 270-item 2011 Civil Procedure pool. Extraction QA and legal/temporal review remain pending; accepted retrieval gold is zero, so baseline and CUDA handoff are gated. No Universidad Libre question text or retrieval results were inspected. See `docs/MEMBER_A_V02_PROGRESS.md` and `benchmarks/kc_col_ir_v0.1/CUDA_HANDOFF.md`.

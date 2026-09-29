@@ -1,7 +1,10 @@
+import json
+import re
 import unittest
 from pathlib import Path
 
 from kingscode.corpus import blocks_from_html
+from kingscode.diversify import collapse_duplicates
 from kingscode.corpus_v02 import (
     join_split_article_headings, parse_document_v02, remove_decision_table_of_contents,
 )
@@ -22,16 +25,53 @@ def meta(doc_id, source_type, norm_name, number, year, canonical_body, url):
 
 
 class CorpusV02SourceRepairTests(unittest.TestCase):
-    def test_d01_equal_content_hash_does_not_merge_distinct_documents(self):
-        body = ["jurisprudencia", "C-1189", 2000]
-        first = {"doc_id": "sentencia_c_1189_de_2000", "source_type": "decision",
-                 "canonical_body": body, "source_url": "https://official.example/a",
-                 "content_hash": "same-boilerplate-hash"}
-        second = {"doc_id": "sentencia_c_127_de_2011", "source_type": "decision",
-                  "canonical_body": ["jurisprudencia", "C-127", 2011],
-                  "source_url": "https://official.example/b", "content_hash": "same-boilerplate-hash"}
-        self.assertEqual(first["content_hash"], second["content_hash"])
-        self.assertNotEqual(canonical_document_id(first), canonical_document_id(second))
+    def test_d01_content_collapse_preserves_all_seven_distinct_decision_groups(self):
+        findings = [json.loads(line) for line in
+                    (ROOT / ".." / "reports" / "member_a_v02" / "corpus_audit_findings_v07.jsonl")
+                    .read_text(encoding="utf-8-sig").splitlines()]
+        d01 = next(row for row in findings if row["finding_id"] == "D01")
+        groups = d01["evidence"]
+        self.assertEqual(len(groups), 7)
+        observed_documents = 0
+        for group in groups:
+            expected = group["canonical_documents"]
+            self.assertGreater(len(expected), 1)
+            self.assertEqual(len(set(expected)), len(expected))
+            rows = []
+            for index, document_id in enumerate(expected):
+                court, compact_docket, year = document_id.split(":")
+                match = re.fullmatch(r"([a-z]+)(\d+)", compact_docket)
+                self.assertEqual(court, "corte_constitucional")
+                self.assertIsNotNone(match, document_id)
+                docket = f"{match.group(1).upper()}-{match.group(2)}"
+                rows.append({
+                    "passage_id": f"{document_id}:d01:{index}",
+                    "doc_id": f"sentencia_{match.group(1)}_{match.group(2)}_de_{year}",
+                    "source_type": "decision",
+                    "canonical_body": ["jurisprudencia", docket, year],
+                    "text": group["body"],
+                    "source_url": f"https://official.example/{document_id}",
+                })
+            self.assertEqual({canonical_document_id(row) for row in rows}, set(expected))
+            collapsed = collapse_duplicates(rows, level="content")
+            self.assertEqual({canonical_document_id(row) for row in collapsed}, set(expected))
+            self.assertTrue(all(len(row["duplicate_group"]["members"]) == 1 for row in collapsed))
+            observed_documents += len(expected)
+        self.assertEqual(observed_documents, 22)
+
+    def test_g01_rejected_container_targets_never_activate_uncertain_relations(self):
+        review = json.loads((ROOT / ".." / "reports" / "member_a_v02" /
+                             "g01_relation_review_v02.json").read_text(encoding="utf-8-sig"))
+        self.assertEqual(review["source_candidate_count"], 7)
+        self.assertEqual(review["rejected_wrong_container_target"], 7)
+        self.assertEqual(review["replacement_relations_unresolved"], 7)
+        self.assertEqual(review["accepted_semantic_relations"], 0)
+        self.assertEqual(review["active_semantic_edges"], 0)
+        for relation in review["relations"]:
+            self.assertEqual(relation["candidate_disposition"], "REJECTED_WRONG_CONTAINER_TARGET")
+            self.assertFalse(relation["replacement_relation_active"])
+            self.assertEqual(relation["replacement_relation_status"],
+                             "UNRESOLVED_REFERENCED_PRIMARY_BYTES_NOT_ACQUIRED")
 
     def test_fixtures_match_preserved_official_source_blocks(self):
         spans = __import__("json").loads((FIXTURES / "source_spans.json").read_text(encoding="utf-8-sig"))
