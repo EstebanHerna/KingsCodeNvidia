@@ -1,0 +1,133 @@
+{
+  "version": "kingscode-ir-run-v2",
+  "status": "failed",
+  "variant": "R2-QWEN",
+  "split": "dev",
+  "holdout_purpose": null,
+  "git": {
+    "commit": "1aa95cad9c3d0b1cfbb23b6013af348d740d2143",
+    "branch": "run/member-a-gpu-4090"
+  },
+  "corpus": {
+    "version": "corpus-v0.1",
+    "hashes": {
+      "passages.jsonl": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+      "graph/nodes.jsonl": "7c8af359cb1ac8de13872e01d2d0faf18218d24e1e2af326529f4a11c0a39aaa",
+      "graph/edges.jsonl": "6002fdcdbb4fb673761cb2dbe949db2502306809f2179e4133d8f40c286ff634"
+    },
+    "bm25_sha256": "aa6b40c5e70f88513a7cde7e9ca96a15d1d40088c538668087700b9b46de005b"
+  },
+  "benchmark": {
+    "manifest_sha256": "326a405748dd20f641d5cf4103ceaafb6a19f07b43db54d95f472a2b439e3071",
+    "manifest": {
+      "version": "kingscode-ir-v1",
+      "generated_at": "2026-09-28T18:23:36.775832+00:00",
+      "generation": {
+        "kind": "deterministic_template_over_verified_corpus_metadata",
+        "closed_model_used": false,
+        "cases_per_area": 20,
+        "target_total": 200
+      },
+      "corpus": {
+        "version": "corpus-v0.1",
+        "passages.jsonl": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+        "graph/nodes.jsonl": "7c8af359cb1ac8de13872e01d2d0faf18218d24e1e2af326529f4a11c0a39aaa",
+        "graph/edges.jsonl": "6002fdcdbb4fb673761cb2dbe949db2502306809f2179e4133d8f40c286ff634",
+        "bm25_sha256": "aa6b40c5e70f88513a7cde7e9ca96a15d1d40088c538668087700b9b46de005b"
+      },
+      "schema_sha256": "01a2d1ff1f23453d3104e620c5a919d39d4dc65f9e77939510734d3ec92bea9e",
+      "splits": {
+        "dev": {
+          "questions": 120,
+          "question_sha256": "a207bc0c72c4aac92534f61f7162db7e94708a766133d791fce4a32905e7fa22",
+          "gold_sha256": "98747f955fed138160246d2066e5a84852f54f8e73868d05cfa4e6256674b0af"
+        },
+        "validation": {
+          "questions": 40,
+          "question_sha256": "a196b4b409acf2105afdbdb5ef71bf3e6154f2f9ac0eb269c039ea8d077ef1df",
+          "gold_sha256": "e42f9d17f442975351f14d62b698f12819eafe470e438d3c6fbf9c7bbda69f75"
+        },
+        "holdout": {
+          "questions": 40,
+          "question_sha256": "102b0ad813360083b891bb590a5af3485549cd6e167d12f2208f444780a8d9c9",
+          "gold_sha256": "6f1bbae3c68d2233a6eecd63c3b3e9dc45e8016312507402cdea40cce8a314d6"
+        }
+      },
+      "coverage": {
+        "cases_by_area": {
+          "Derecho administrativo": 20,
+          "Derecho civil": 20,
+          "Derecho comercial y sociedades": 20,
+          "Derecho constitucional": 20,
+          "Derecho de familia": 20,
+          "Derecho de los mercados [competencia, consumidor, datos personales y propiedad intelectual]": 20,
+          "Derecho laboral": 20,
+          "Derecho penal": 20,
+          "Derecho procesal": 20,
+          "Derecho tributario": 20
+        },
+        "cases_by_tag": {
+          "EXPLICIT": 200,
+          "DISTRACTOR": 200,
+          "MULTI_EVIDENCE": 40,
+          "GRAPH": 6
+        },
+        "human_review_queue": 20
+      },
+      "holdout_policy": {
+        "protected": true,
+        "allowed_purposes": [
+          "predeclared_baseline",
+          "post_selection_confirmation"
+        ],
+        "official_50": "separate external milestone; never benchmark development data"
+      },
+      "gold_input_separation": "questions contain no gold/evaluation fields; gold is scored only after rankings are captured"
+    }
+  },
+  "source_identity": {
+    "kingscode/benchmark_builder.py": "dd08c379db27b37e3abe68da6df8fbd0b47b1303b8eecad1ce65037f63539136",
+    "kingscode/retrieval_benchmark.py": "cda9beb75dd5fe8f987158fff9a0b6394f111c5e2f6eadcb91458b32556a23b3",
+    "kingscode/benchmark_runtime.py": "386253284b278fdd2e89fba73cbd720fe6933f668684efeb4e0b4e2dd06d5ccf",
+    "kingscode/benchmark_analysis.py": "b49a64dc1433af64201b85787f97bf7e2e56fe332e9e9aa92ede483feec730c5",
+    "kingscode/neural.py": "6c90d17f7fd3dd7f1f36563e4ce2fb37ea7a1412a58715250098e043cbc862f0",
+    "kingscode/model_assets.py": "8ad54a28f3382070e773ee3e58c75665c4c8d5163487c175171e77ca766c3429",
+    "kingscode/retrieval.py": "e3b20fc0fdffabf8eab17fd7a754617984a7f33b5a730f63951713bef04cacd7",
+    "kingscode/metadata.py": "0dd3b4c1168f121f8e16f33ab801809e73b45ebf11dd08796a67505a55f50d5b",
+    "kingscode/metadata_experiments.py": "4c4282aaf2136c02e35d09ced62d6703a884bc12908086091b696fa8d7352502",
+    "kingscode/diversify.py": "8f9fe5848e0247d230579c8a0e137e587bebda94e0573766b5f54d14d32ea53d",
+    "kingscode/reasoning/routing.py": "4af5e9053ee85453d6b0b869a80fdabe60b9f512745756d85d21dbe41e0c4b01",
+    "kingscode/reasoning/query.py": "2c59d2c5a5110ae5444c5eec8a49d066025382d41a95d64bb071659dd6cfe229",
+    "kingscode/reasoning/policy.py": "0bd10b0d14cb0766c50c1169da0c8da0f3e452523b55ef9768b7660b2003018b",
+    "kingscode/reasoning/legal.py": "6c5d0ba3d47d56d405d080b7dfbd7b6a92709e5d687b9c52be9b0dd277e9229f",
+    "tools/evaluate_retrieval_benchmark.py": "88ae538d627768dfc79b1449d0807a5c6f40ad85eea39c2e4b2a1d1064404715",
+    "config/experiment_matrix.json": "02c93d6d2e92ae5cdd4a853f1be537b0430b1dd59ca2fb545c959a8c81680582"
+  },
+  "config": {
+    "mode": "hybrid",
+    "rerank": false,
+    "encoder": "QWEN",
+    "graph_mode": "off",
+    "graph_budget": 10,
+    "candidate_k": 30,
+    "k_metrics": 10,
+    "evidence_k": 8,
+    "rrf_constant": 60,
+    "seed": 0,
+    "diagnostic": false,
+    "query_transform": "none; safe question text only"
+  },
+  "model": null,
+  "hardware": {
+    "platform": "Windows-11-10.0.22631-SP0",
+    "python": "3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)]",
+    "cuda": false
+  },
+  "directory": "C:\\Users\\ls.contreras\\KingsCodeGPU\\KingsCodeNvidia\\reports\\benchmark\\r2_qwen\\20260928T214350013287Z-dev",
+  "completed_rankings": 0,
+  "error": {
+    "type": "ModuleNotFoundError",
+    "message": "No module named 'torch'"
+  },
+  "total_seconds": 0.9515931999776512
+}

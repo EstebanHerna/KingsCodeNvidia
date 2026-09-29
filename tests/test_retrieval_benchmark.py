@@ -9,7 +9,7 @@ import unittest
 from pathlib import Path
 
 from kingscode.benchmark_builder import BENCHMARK_ROOT, verify as verify_benchmark
-from kingscode.common import read_jsonl
+from kingscode.common import ROOT, read_jsonl
 from kingscode.retrieval_benchmark import (
     GPU_VARIANT_PREREQUISITES,
     aggregate,
@@ -131,6 +131,7 @@ class BootstrapTests(unittest.TestCase):
 
 
 class ArtifactIntegrityTests(unittest.TestCase):
+    @unittest.skipUnless((ROOT / "corpus/passages.jsonl").exists(), "corpus snapshot required")
     def test_schema_split_and_canonical_gold_integrity(self):
         report = verify_benchmark()
         self.assertTrue(report["ok"])

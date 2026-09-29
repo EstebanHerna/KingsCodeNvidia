@@ -1,0 +1,71 @@
+{
+  "version": "official-source-fixtures-v02-1",
+  "corpus_version": "corpus-v0.2",
+  "fixtures": [
+    {
+      "id": "G02-SU214-TOC",
+      "source_url": "https://www.corteconstitucional.gov.co/relatoria/2016/su214-16.htm",
+      "source_sha256": "1644d3af32b02571b2f8ba0305170c3282b6849def6197df16c2c8ad38b1a85b",
+      "representation": "official HTML, blocks_from_html",
+      "source_block_indices": [
+        1925,
+        2107,
+        2108,
+        2187,
+        2201,
+        1256,
+        1257
+      ],
+      "purpose": "ÍNDICE run contains a RESUELVE table-of-contents row with page number 201, followed by the actual RESUELVE heading and operative clauses.",
+      "status": "source_bytes_verified"
+    },
+    {
+      "id": "C01-C355-REPEATED-HEADING",
+      "source_url": "https://www.corteconstitucional.gov.co/relatoria/2006/c-355-06.htm",
+      "source_sha256": "13254dea6a3c8e4ca7ff13a931f55179262c5746f47d533e16f126b57384eae6",
+      "representation": "official HTML, blocks_from_html",
+      "source_block_indices": [
+        2409,
+        2410,
+        2414,
+        2415,
+        2421,
+        2422
+      ],
+      "purpose": "Three distinct occurrences of the source heading Fundamentos lógicos have distinct following bodies but identical display labels.",
+      "status": "source_bytes_verified"
+    },
+    {
+      "id": "P02-LEY137-SPLIT-ARTICLE",
+      "source_url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=13966",
+      "source_sha256": "e9ae807b07f57cf20b7590e4823fc3d6d15cefa24961ad2217f3d4e355e15816",
+      "additional_official_pdf_url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma_pdf.php?i=13966",
+      "additional_official_pdf_sha256": "346625a054db7a38d3b22abc599b6d0e9ed0901b6b42c92a39fc50bd30119fa1",
+      "representation": "official HTML, blocks_from_html; PDF cross-check",
+      "source_block_indices": [
+        187,
+        188,
+        190,
+        191
+      ],
+      "purpose": "Article number appears in one HTML block while punctuation/title/body begins in the next; articles 40-46 must not remain in article 9.",
+      "status": "source_bytes_verified"
+    },
+    {
+      "id": "P01-LEY137-HEADING-BOUNDARY",
+      "source_url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=13966",
+      "source_sha256": "e9ae807b07f57cf20b7590e4823fc3d6d15cefa24961ad2217f3d4e355e15816",
+      "representation": "official HTML, blocks_from_html",
+      "source_block_indices": [
+        206,
+        207,
+        208,
+        209,
+        210,
+        211
+      ],
+      "purpose": "Chapter IV begins after Article 45 and before Article 46; chapter label must belong to the new hierarchy, not Article 45 body.",
+      "status": "source_bytes_verified"
+    }
+  ]
+}

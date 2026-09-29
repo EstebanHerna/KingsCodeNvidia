@@ -1,0 +1,10 @@
+{
+  "scope": "legacy technical pilot only; not independent benchmark duplicate certification",
+  "questions_checked": 12,
+  "normalized_exact_duplicate_groups": [],
+  "source_document_family_split_conflicts": [],
+  "document_families_checked": 12,
+  "near_duplicate_review": "not performed; requires source item families, unavailable in pilot",
+  "competitive_benchmark_certified": false,
+  "sealed_eval_count": 0
+}

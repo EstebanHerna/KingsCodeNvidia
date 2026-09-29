@@ -39,7 +39,7 @@ def validate_fallback(precision: str, previous: Path | None, comparison: dict):
 
 def run_generation(alias: str, *, mode="sample", config_path=ROOT / "config/decoder_bakeoff.json",
                    freeze_path: Path | None = None, output_root=ROOT / "reports/decoders", precision="bf16",
-                   oom_record: Path | None = None, allow_optional=False, backend=None) -> dict:
+                   oom_record: Path | None = None, allow_optional=False, backend=None, corpus: Path = ROOT / "corpus") -> dict:
     cfg = load_bakeoff(config_path)
     candidate = select_decoder(alias, cfg, allow_optional=allow_optional)
     if mode not in {"sample", "decoder-smoke"}:
@@ -59,10 +59,10 @@ def run_generation(alias: str, *, mode="sample", config_path=ROOT / "config/deco
     started = perf_counter()
     try:
         record["official_hashes"] = official_hashes()
-        record["corpus"] = corpus_identity()
+        record["corpus"] = corpus_identity(corpus)
         if mode == "sample":
             path = freeze_path or ROOT / cfg["retrieval_freeze"]
-            frozen = load_freeze(path)
+            frozen = load_freeze(path, corpus=corpus)
             inputs = [(public_question(r["question"]), r["passages"]) for r in frozen["records"]]
             evidence_identity = {"sha256": file_hash(path), "fingerprint": frozen["fingerprint"],
                                  "retrieval_config": frozen["retrieval_config"], "path": str(path.resolve())}

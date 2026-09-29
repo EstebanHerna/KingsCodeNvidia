@@ -29,7 +29,7 @@
     ],
     "graph_query_policy": "B legal-router-v1 uses question and initial flat evidence to choose OFF/AUTO/ON; boolean adapter for A; A executes expansion unchanged",
     "active_backend": "bm25",
-    "full_neural_benchmark_completed": false,
+    "full_neural_benchmark_completed": true,
     "models_lock": "config/models.lock.json",
     "neural_config": "config/neural.json",
     "controlled_legal_query_expansion_status": "implemented by B legal-query-v1; finite aliases, deterministic, references preserved",
@@ -42,7 +42,26 @@
     ],
     "graph_budget": 10,
     "rrf_constant": 60,
-    "exclude_ambiguous_articles": true
+    "exclude_ambiguous_articles": true,
+    "exact_locator": {
+      "version": "legal-locator-v1",
+      "policy": "candidate_union_before_reranker",
+      "public_cpu_profile": true,
+      "class_legacy_default": false,
+      "no_identifier_substitution": true,
+      "metadata_boost": false,
+      "graph_feature": false,
+      "graph_expansion_default": "AUTO is OFF in public CPU profile; explicit ON remains compatible with historical bounded graph behavior",
+      "source": "Search V2 validation tied locator configurations; no new v1 tuning"
+    },
+    "encoder_fallback_status": "BGE blocked: separate approved lock/loader/index required; no automatic fallback",
+    "query_views": {
+      "api": "retrieve(question,k,graph_mode,query_views=None)",
+      "fusion": "RRF over textual views",
+      "trusted_exact_locator_input": "original user question only",
+      "planner_generated_references_trusted": false
+    },
+    "benchmark_v1_tuning": "closed"
   },
   "decoder_candidates": [
     "Qwen/Qwen3-8B",
@@ -63,7 +82,7 @@
     "seed": 0,
     "bakeoff_config": "config/decoder_bakeoff.json",
     "prepared_backend": "transformers_local_lazy_unvalidated",
-    "prepared_prompt_version": "grounded-formats-v2",
+    "prepared_prompt_version": "grounded-formats-v3",
     "comparison_retrieval": "frozen_exact_evidence_same_for_all_decoders"
   },
   "finetuning": {
@@ -73,9 +92,9 @@
   },
   "version": "0.5",
   "next_action": {
-    "member_a": "target_gpu_runbook_then_retrieval_matrix_R0_R5",
+    "member_a": "benchmark_v2_review_and_corpus_v02_cpu_preparation",
     "member_b": "execute_deferred_verifications_on_target_then_gpu_smoke_and_decoder_sample",
-    "shared": "gate2_prep_prepared_not_tested; no_gpu_or_bakeoff_results"
+    "shared": "GPU retrieval historical results reconciled; decoder status remains separately owned by B"
   },
   "interfaces": {
     "retrieve": "retrieve(question, k, graph_mode=\"auto\") -> passages",
@@ -91,5 +110,22 @@
     "abstention_policy_version": "evidence-policy-v1",
     "ragas": false,
     "next_command": ".venv/Scripts/python.exe tools/member_b.py smoke"
+  },
+  "member_a_v02": {
+    "status": "partial",
+    "independent_benchmark_items": 0,
+    "retrieval_gold": 0,
+    "sealed_eval": 0,
+    "legacy_pilot_selectable": false,
+    "corpus_v02_provisional_documents": 4,
+    "audit_fixes_pending": [
+      "G01",
+      "G02",
+      "C01",
+      "P02",
+      "P01",
+      "D01"
+    ],
+    "international_candidates_report": "reports/international_sources_v02.json"
   }
 }

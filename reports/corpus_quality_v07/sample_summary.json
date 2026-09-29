@@ -1,0 +1,50 @@
+{
+  "protocol_sha256": "78de5b341fb35c3f9bed0c4b953ca990b84910f71c95d4725bf1827c1eb172f2",
+  "sample_sha256": "5b510f2a0ef6a46e260437ab67d4f6df2e796151ec70a29460f355193c1ead35",
+  "slots": 200,
+  "unique_passages": 200,
+  "unique_documents": 118,
+  "strata": {
+    "legislation": {
+      "requested": 50,
+      "pool": 3714,
+      "sampled": 50
+    },
+    "codes_decrees": {
+      "requested": 40,
+      "pool": 14595,
+      "sampled": 40
+    },
+    "jurisprudence": {
+      "requested": 50,
+      "pool": 7471,
+      "sampled": 50
+    },
+    "historical": {
+      "requested": 20,
+      "pool": 307,
+      "sampled": 20
+    },
+    "ambiguous_excluded": {
+      "requested": 20,
+      "pool": 191,
+      "sampled": 20
+    },
+    "benchmark_risk": {
+      "requested": 20,
+      "pool": 275,
+      "sampled": 20
+    }
+  },
+  "overlaps": {},
+  "graph_units": 100,
+  "graph_population": {
+    "CONTIENE": 56589,
+    "CITA": 17639,
+    "REMITE_A": 290,
+    "DEROGA": 440,
+    "MODIFICA": 422
+  },
+  "r0_dev_report": "reports\\benchmark\\r0\\20260928T182449210095Z-dev",
+  "r0_dev_rows_sha256": "d4ce51b39a2f5a801be30c43d2580d2d88eff0931984314d1f5c2d020d2261b8"
+}

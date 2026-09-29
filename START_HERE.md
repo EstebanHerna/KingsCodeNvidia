@@ -3,6 +3,9 @@
 ## Para Claude Code
 `CLAUDE.md` (importa `AGENTS.md` y fija el orden de lectura), luego `docs/B_EXTENSION_PLAN.md` y `docs/DECISION_LOG.md` para lo más reciente. Comandos: `/b-contexto`, `/b-medir`, `/b-tarea T1`.
 
+## Estado vigente (2026-09-29, prevalece sobre las secciones históricas de abajo)
+Todo A+B está mergeado en `main`: resultados 4090, corpus v0.2/locator y auditoría v0.7 (A); planner con replay, ejecución robusta de 992 y reparación/construcción de citas (B). Sesión en PC con GPU sin admin: `tools/lab_gpu_session.ps1`. Planes vigentes: `docs/CORPUS_V02_PLAN.md` (A) y `docs/B_PLAN_POST_GPU.md` (B). Última entrada: `docs/DECISION_LOG.md`.
+
 ## Para cualquier humano o agente
 1. `AGENTS.md`
 2. `docs/KINGSCODE_MASTER_KNOWLEDGE.md`
@@ -22,3 +25,7 @@ No asumir que CUDA ya está configurado.
 ## Próxima sesión en la 4090
 
 Gate 2-Prep está preparado pero sin pruebas ejecutadas, por instrucción del usuario. Leer `docs/GPU_DAY_RUNBOOK.md` y `docs/MODEL_LOCKS_GATE2.md`. Primer comando en la GPU: `git pull --ff-only origin main`. Después verificar commit/snapshot y ejecutar las dos verificaciones pendientes. No confundir los 60 tests históricos de Gate 1B con validación del backend nuevo.
+
+## Actualización que prevalece sobre los próximos pasos históricos de arriba
+
+A ya tiene resultados RTX4090/Search V2 preservados en 60ebf7e. La fase vigente es locator productivo + benchmark v2 + corpus v0.2 en `feat/member-a-corpus-v02-locator`. Validation v1 cerrada; no reejecutar las variantes ni consumir holdout. Leer `reports/MEMBER_A_V02_PROGRESS.md` y `docs/A_TO_B_V02_CONTRACT.md`. B/decoder mantiene su estado independiente.

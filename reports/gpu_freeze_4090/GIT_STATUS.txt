@@ -1,0 +1,5 @@
+## feat/member-a-gpu-results-4090-20260928...origin/feat/member-a-gpu-results-4090-20260928
+ M reports/gpu_freeze_4090/NVIDIA_SMI.txt
+ M reports/gpu_freeze_4090/NVIDIA_SMI_FULL.txt
+?? reports/gpu_freeze_4090/GIT_BRANCH.txt
+?? reports/gpu_freeze_4090/GIT_COMMIT.txt

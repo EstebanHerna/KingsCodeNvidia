@@ -63,10 +63,10 @@ A: toma la máquina solo después de "GPU_READY" y ejecuta retrieval
 | Etapa | Quién | Qué hace | Resultado para el siguiente |
 |---|---|---|---|
 | GPU 0 | B | `git pull`, verificaciones Gate 2, GPU diagnose, PyTorch correcto, requirements GPU, model verify, GPU smoke | `GPU_READY` |
-| GPU 1 | A | build dense index, R0 BM25 → R1 dense → R2 hybrid → R3 hybrid+reranker → R4 +Graph AUTO → R5 +Graph ON | Recall@1/3/5/10, MRR, coverage, latencia, efecto del grafo |
-| Sync #1 | A + B | eligen juntos el mejor retrieval con evidencia (no automático); `freeze retrieval` | 8 pasajes fijos para todos los decoders siguientes |
-| GPU 2 | B | decoder-smoke, luego D1 Qwen3-8B, D2 ALIA Legal 7B, D3 Salamandra 7B — mismas 50 preguntas, mismos 8 pasajes, misma temperatura, mismo contrato de salida | score oficial, RAGAS, valid JSON, citas, abstenciones, latencia, tokens, VRAM |
-| GPU 3 | A + B | error analysis conjunto (ver tabla de categorías) | decoder final elegido, freeze de versiones |
+| GPU 1 | A | benchmark v1 same-ID R1 dense/complementarity → R2 → R3–R8 sobre validation; R0 ya es baseline medido | métricas EC@8/Recall/nDCG/MRR, contexto, latencia, error analysis |
+| Sync #1 | A + B | registran selección de retrieval sobre validation; una confirmación holdout posterior + oficial-50 sin retuning | solo entonces, 8 pasajes fijos para todos los decoders |
+| GPU 2 | B | decoder-smoke, luego D1 Qwen3-8B, D2 ALIA Legal 7B, D3 Salamandra 7B — mismas evidencias congeladas | score oficial, RAGAS autorizado, JSON, citas, abstenciones, latencia, tokens, VRAM |
+| GPU 3 | A + B | error analysis conjunto y medición de throughput real | decoder final elegido, freeze de versiones, plan 992 |
 
 Durante GPU 1, B puede analizar tablas/reportes pero **no cambia el pipeline** hasta el punto de sincronización.
 
@@ -125,3 +125,14 @@ fallos. B no recibe estos golds ni depende de sus internals. La selección
 requiere validation + confirmación posterior; hasta entonces B no recibe un
 nuevo freeze. El auditor revisa fuga, integridad de splits/golds, metodología y
 provenance antes de aceptar cada checkpoint.
+
+## Handoff vigente tras GPU — A v0.2
+
+A: `feat/member-a-corpus-v02-locator` desde 60ebf7e. Responsable de locator productivo, snapshot histórico v0.1, benchmark v2, adquisición v0.2 y riesgos de parser/grafo. Las ramas de harness y auditoría anteriores se conservan como checkpoints; no se reejecutan R1–R8.
+
+B: conservar referencias explícitas al normalizar la consulta, consumir `retrieve(question, k, graph_mode="auto")`, respetar provenance y estados temporales desconocidos. Seguir `docs/A_TO_B_V02_CONTRACT.md`. B decide y ejecuta su decoder con evidencia congelada de un perfil explícito; no inferir calidad del decoder a partir del 1.0 de retrieval v1. Revisión cruzada pendiente con Luis antes de aceptar arquitectura o freeze competitivo.
+
+
+### Estado A actualizado — 2026-09-29
+
+La rama A continúa parcial y separada. El benchmark-v2 independiente aún tiene cero ítems/golds/sealed eval; no ajustar retrieval contra el piloto corpus-derived. A expone query_views textual por RRF, con exact locator limitado a la pregunta original. No implementar Qwen ni reglas question→norm. Remediaciones corpus-v0.2 pendientes según docs/MEMBER_A_V02_PROGRESS.md.

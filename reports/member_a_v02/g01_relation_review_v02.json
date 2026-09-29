@@ -1,0 +1,164 @@
+{
+  "version": "g01-v02-source-review-1",
+  "finding_id": "G01",
+  "source_candidate_count": 7,
+  "rejected_wrong_container_target": 7,
+  "replacement_relations_unresolved": 7,
+  "accepted_semantic_relations": 0,
+  "active_semantic_edges": 0,
+  "v01_modified": false,
+  "review_method": "Exact statements retained in hash-verified official containing-source bytes; the named grammatical target is distinguished from the containing passage. Rejected target associations are complete. Positive legal-effect claims remain unresolved pending the cited instrument bytes. Candidate wrong-container targets are rejected; each replacement-effect claim remains unresolved pending the cited primary instrument bytes.",
+  "relations": [
+    {
+      "review_id": "G01-01",
+      "candidate_disposition": "REJECTED_WRONG_CONTAINER_TARGET",
+      "candidate_edge": {
+        "relation": "DEROGA",
+        "source": "external:ley:1563:2012",
+        "target": "doc:ley_80_de_1993:article:69:v1"
+      },
+      "grammatical_target": "Decreto 1818 de 1998, artículo 227",
+      "modifier_or_repealing_instrument": "Ley 1563 de 2012, artículo 118",
+      "evidence_text": "derogado por el artículo 118 de la Ley 1563 de 2012",
+      "evidence_passage_id": "ley_80_de_1993:00085:65ce6da6824e",
+      "primary_evidence_source": {
+        "official_url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=304",
+        "raw_path": "corpus/raw/ley_80_de_1993.html",
+        "sha256": "ca0038200e37a36a39df3c3ec93d3dac9d8b519bfa43760df86ee7d511f5cd66"
+      },
+      "replacement_relation_status": "UNRESOLVED_REFERENCED_PRIMARY_BYTES_NOT_ACQUIRED",
+      "replacement_relation_active": false,
+      "rationale": "The official containing text identifies a different legal provision from the current candidate target. Rejecting this wrong container target does not certify legal effect or replacement edge; acquire and review the cited instruments before acceptance."
+    },
+    {
+      "review_id": "G01-02",
+      "candidate_disposition": "REJECTED_WRONG_CONTAINER_TARGET",
+      "candidate_edge": {
+        "relation": "MODIFICA",
+        "source": "external:ley:1955:2019",
+        "target": "doc:decreto_780_de_2016:article:2.4.2.4:v1"
+      },
+      "grammatical_target": "Ley 715 de 2001, artículo 52, numeral 52.1",
+      "modifier_or_repealing_instrument": "Ley 1955 de 2019, artículo 235",
+      "evidence_text": "modificado por el artículo 235 de la Ley 1955 de 2019",
+      "evidence_passage_id": "decreto_780_de_2016:00425:eb3041c6700e",
+      "primary_evidence_source": {
+        "official_url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=77813",
+        "raw_path": "corpus/raw/decreto_780_de_2016.html",
+        "sha256": "33d02f9cddf7f91f5c672fe42b0129dc41188a43f32355f492c03da2be769823"
+      },
+      "replacement_relation_status": "UNRESOLVED_REFERENCED_PRIMARY_BYTES_NOT_ACQUIRED",
+      "replacement_relation_active": false,
+      "rationale": "The official containing text identifies a different legal provision from the current candidate target. Rejecting this wrong container target does not certify legal effect or replacement edge; acquire and review the cited instruments before acceptance."
+    },
+    {
+      "review_id": "G01-03",
+      "candidate_disposition": "REJECTED_WRONG_CONTAINER_TARGET",
+      "candidate_edge": {
+        "relation": "MODIFICA",
+        "source": "external:ley:1296:2009",
+        "target": "doc:sentencia_c_106_de_2018:section:2"
+      },
+      "grammatical_target": "Ley 617 de 2000, artículo 49, inciso tercero",
+      "modifier_or_repealing_instrument": "Ley 1296 de 2009, artículo 1",
+      "evidence_text": "modificado por el artículo 1 de la Ley 1296 de 2009",
+      "evidence_passage_id": "sentencia_c_106_de_2018:00035:be01e1c3f488",
+      "primary_evidence_source": {
+        "official_url": "https://www.corteconstitucional.gov.co/relatoria/2018/C-106-18.htm",
+        "raw_path": "corpus/raw/sentencia_c_106_de_2018.html",
+        "sha256": "124bee261f05366abea9d0fd6ba8a6513ae2a56077f0b84cfc92b14c8677f425"
+      },
+      "replacement_relation_status": "UNRESOLVED_REFERENCED_PRIMARY_BYTES_NOT_ACQUIRED",
+      "replacement_relation_active": false,
+      "rationale": "The official containing text identifies a different legal provision from the current candidate target. Rejecting this wrong container target does not certify legal effect or replacement edge; acquire and review the cited instruments before acceptance."
+    },
+    {
+      "review_id": "G01-04",
+      "candidate_disposition": "REJECTED_WRONG_CONTAINER_TARGET",
+      "candidate_edge": {
+        "relation": "MODIFICA",
+        "source": "external:decreto:2820:1974",
+        "target": "doc:sentencia_c_507_de_2004:section:7"
+      },
+      "grammatical_target": "Código Civil, artículo 1504",
+      "modifier_or_repealing_instrument": "Decreto 2820 de 1974",
+      "evidence_text": "Modificado por el Decreto 2820 de 1974",
+      "evidence_passage_id": "sentencia_c_507_de_2004:00095:47fbc692f55a",
+      "primary_evidence_source": {
+        "official_url": "https://www.corteconstitucional.gov.co/relatoria/2004/C-507-04.htm",
+        "raw_path": "corpus/raw/sentencia_c_507_de_2004.html",
+        "sha256": "57f8136d8b6ee6e030d352bfbd59678779025ab6f8c226b605101dad409b2f51"
+      },
+      "replacement_relation_status": "UNRESOLVED_REFERENCED_PRIMARY_BYTES_NOT_ACQUIRED",
+      "replacement_relation_active": false,
+      "rationale": "The official containing text identifies a different legal provision from the current candidate target. Rejecting this wrong container target does not certify legal effect or replacement edge; acquire and review the cited instruments before acceptance."
+    },
+    {
+      "review_id": "G01-05",
+      "candidate_disposition": "REJECTED_WRONG_CONTAINER_TARGET",
+      "candidate_edge": {
+        "relation": "MODIFICA",
+        "source": "external:ley:584:2000",
+        "target": "doc:sentencia_t_1059_de_2001:section:3"
+      },
+      "grammatical_target": "Código Sustantivo del Trabajo, artículo 379, literal e",
+      "modifier_or_repealing_instrument": "Ley 584 de 2000, artículo 7",
+      "evidence_text": "modificado por la ley 584 de 2000",
+      "evidence_passage_id": "sentencia_t_1059_de_2001:00010:6f56cbf0485f",
+      "primary_evidence_source": {
+        "official_url": "https://www.corteconstitucional.gov.co/relatoria/2001/T-1059-01.htm",
+        "raw_path": "corpus/raw/sentencia_t_1059_de_2001.html",
+        "sha256": "4432b43fedf3152cebfe9a8488a58577309bd656fb7bb4534dc9b42e128e818a"
+      },
+      "replacement_relation_status": "UNRESOLVED_REFERENCED_PRIMARY_BYTES_NOT_ACQUIRED",
+      "replacement_relation_active": false,
+      "rationale": "The official containing text identifies a different legal provision from the current candidate target. Rejecting this wrong container target does not certify legal effect or replacement edge; acquire and review the cited instruments before acceptance."
+    },
+    {
+      "review_id": "G01-06",
+      "candidate_disposition": "REJECTED_WRONG_CONTAINER_TARGET",
+      "candidate_edge": {
+        "relation": "MODIFICA",
+        "source": "external:ley:2277:2022",
+        "target": "doc:sentencia_c_389_de_2023:section:3"
+      },
+      "grammatical_target": "Decreto Ley 624 de 1989, artículo 240, parágrafo 4",
+      "modifier_or_repealing_instrument": "Ley 2277 de 2022, artículo 10",
+      "evidence_text": "modificado por el artículo 10 de la Ley 2277 de 2022",
+      "evidence_passage_id": "sentencia_c_389_de_2023:00031:3266ef790fca",
+      "primary_evidence_source": {
+        "official_url": "https://www.corteconstitucional.gov.co/relatoria/2023/C-389-23.htm",
+        "raw_path": "corpus/raw/sentencia_c_389_de_2023.html",
+        "sha256": "ae91a42204d9a118f76b1b30c3164dfa9b8083e8aa3d35ce3e5bd9cd015d8def"
+      },
+      "replacement_relation_status": "UNRESOLVED_REFERENCED_PRIMARY_BYTES_NOT_ACQUIRED",
+      "replacement_relation_active": false,
+      "rationale": "The official containing text identifies a different legal provision from the current candidate target. Rejecting this wrong container target does not certify legal effect or replacement edge; acquire and review the cited instruments before acceptance."
+    },
+    {
+      "review_id": "G01-07",
+      "candidate_disposition": "REJECTED_WRONG_CONTAINER_TARGET",
+      "candidate_edge": {
+        "relation": "MODIFICA",
+        "source": "external:ley:890:2004",
+        "target": "doc:sentencia_c_355_de_2006:section:1"
+      },
+      "grammatical_target": "Ley 599 de 2000, artículo 122",
+      "modifier_or_repealing_instrument": "Ley 890 de 2004, artículo 14",
+      "evidence_text": "modificado por el artículo 14 de la Ley 890 de 2004",
+      "evidence_passage_id": "sentencia_c_355_de_2006:00032:f17146cc64cd",
+      "primary_evidence_source": {
+        "official_url": "https://www.corteconstitucional.gov.co/relatoria/2006/C-355-06.htm",
+        "raw_path": "corpus/raw/sentencia_c_355_de_2006.html",
+        "sha256": "13254dea6a3c8e4ca7ff13a931f55179262c5746f47d533e16f126b57384eae6"
+      },
+      "replacement_relation_status": "UNRESOLVED_REFERENCED_PRIMARY_BYTES_NOT_ACQUIRED",
+      "replacement_relation_active": false,
+      "rationale": "The official containing text identifies a different legal provision from the current candidate target. Rejecting this wrong container target does not certify legal effect or replacement edge; acquire and review the cited instruments before acceptance."
+    }
+  ],
+  "status": "SOURCE_BACKED_CANDIDATE_REVIEW_COMPLETE_REPLACEMENT_EFFECTS_UNRESOLVED",
+  "candidate_review_complete": true,
+  "remaining_uncertainty": "The exact grammatical subjects in seven official corpus passages were reviewed and all seven wrong containing-passage targets rejected. Whether each separate cited instrument legally modified/repealed the subject provision remains unverified until those instrument sources are independently acquired and reviewed; no replacement semantic edge is active.",
+  "review_status": "CANDIDATE_TARGET_REVIEW_COMPLETE_LEGAL_EFFECT_REVIEW_OPEN"
+}

@@ -1,0 +1,17 @@
+{
+  "version": "member-a-v02-diagnostic-status-1",
+  "status": "PARTIAL_EXISTING_PILOT_ONLY",
+  "independent_questions": 0,
+  "independent_retrieval_gold_accepted": 0,
+  "end_to_end_only": 0,
+  "needs_human_review": 0,
+  "sealed_eval": 0,
+  "existing_technical_pilot_questions": 12,
+  "pilot_source": "benchmarks/kingscode_ir_v2 corpus-derived pilot on corpus-v0.1",
+  "pilot_is_independent": false,
+  "pilot_is_selectable": false,
+  "new_technical_diagnostic_questions": 0,
+  "target_range": [20, 30],
+  "why_not_expanded": "The available corpus-v0.2 snapshot has only four provisional documents (72 passages), pending structural/layout review. Creating questions from unresolved structure would encode parser defects as expected behavior. The existing 12-row pilot is retained and explicitly not counted as independent or selection-eligible.",
+  "next_action": "After source-backed parser remediation and human structural review, author diagnostic questions only against verified passage spans; keep them in a separate non-selectable file and validate all source hashes."
+}

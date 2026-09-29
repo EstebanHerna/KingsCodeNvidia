@@ -1,0 +1,47 @@
+{
+  "policy": "Future corpus-v0.2 only; no hardening or rebuild in this audit branch.",
+  "items": [
+    {
+      "priority": "P0",
+      "finding_id": "G01",
+      "owner": "Member A",
+      "action": "In v0.2 resolve grammatical subject and exact target. Reject or retain as unresolved if only a cited provision was modified. Add negative quoted-subject fixtures.",
+      "acceptance": "Regression fixture reproduces source evidence; new snapshot/version and benchmark-v2 review; retain historical GPU/v1 results."
+    },
+    {
+      "priority": "P0",
+      "finding_id": "G02",
+      "owner": "Member A",
+      "action": "Recognize TOC/page numbers and separate annexes, operative text and opinions in the v0.2 parser.",
+      "acceptance": "Regression fixture reproduces source evidence; new snapshot/version and benchmark-v2 review; retain historical GPU/v1 results."
+    },
+    {
+      "priority": "P0",
+      "finding_id": "C01",
+      "owner": "Member A",
+      "action": "Use a stable occurrence/ancestry disambiguator after source-aware segmentation in v0.2. Preserve v0.1 IDs and do not rewrite benchmark-v1 gold.",
+      "acceptance": "Regression fixture reproduces source evidence; new snapshot/version and benchmark-v2 review; retain historical GPU/v1 results."
+    },
+    {
+      "priority": "P1",
+      "finding_id": "P01",
+      "owner": "Member A",
+      "action": "End legal units before the next structural heading in v0.2; preserve heading as its own node and add neighboring-unit tests.",
+      "acceptance": "Regression fixture reproduces source evidence; new snapshot/version and benchmark-v2 review; retain historical GPU/v1 results."
+    },
+    {
+      "priority": "P0",
+      "finding_id": "P02",
+      "owner": "Member A",
+      "action": "Handle article numbers separated from punctuation/body across DOM blocks. Review full Ley 137 segmentation in v0.2 before exact locator relies on it; do not alter v1 snapshot.",
+      "acceptance": "Regression fixture reproduces source evidence; new snapshot/version and benchmark-v2 review; retain historical GPU/v1 results."
+    },
+    {
+      "priority": "P1",
+      "finding_id": "D01",
+      "owner": "Member A",
+      "action": "Do not equate shared normalized content with document identity. Keep all provenance when testing content collapse; distinguish document/fragment/content dedup in v2.",
+      "acceptance": "Regression fixture reproduces source evidence; new snapshot/version and benchmark-v2 review; retain historical GPU/v1 results."
+    }
+  ]
+}

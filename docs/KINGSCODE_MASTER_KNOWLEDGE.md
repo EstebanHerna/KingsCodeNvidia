@@ -477,3 +477,29 @@ la 4090, y BGE-M3 no tiene lock/loader/reporte reproducible. Los diagnósticos
 CPU de grafo/R6/R7/R8 no sustituyen sus variantes R3-based. Revisar
 `docs/BENCHMARK_METHODOLOGY.md`, `docs/RETRIEVAL_BENCHMARK_TASK_BOARD.json` y
 `reports/benchmark/selection/selected_config.json` antes de continuar.
+
+## 2026-09-28 — reconciliación GPU y siguiente fase A v0.2
+
+Los resultados de `origin/feat/member-a-gpu-results-4090-20260928` (60ebf7e) son evidencia medida; las menciones anteriores a GPU_BLOCKED describen estados históricos. Main sigue en a3548a1 al comenzar esta fase. `reports/member_a_v02/gpu_reconciliation.json` contrasta los artefactos: R1-QWEN/R2-QWEN/R3–R8 DEV, R2 validation, Search V2 DEV (39 configuraciones) y dos ejecuciones Search V2 validation (39 cada una).
+
+DEV HYB120_LOC_META_1p25: EC@8=0.9916666666666667, Recall@10=0.9958333333333333, MRR@10=1.0. En validation empatan configuraciones con locator, incluyendo HYB120_LOC_META_0p0 y BM25120_LOC_META_0p0, con 1.0 en esas tres métricas. Esto respalda candidate injection, no superioridad de metadata_scale=1.25 ni rendimiento jurídico general. La latencia de Search V2 es costo compartido de exploración. Se conservan resultados negativos.
+
+Validation v1 queda CERRADA para tuning. El holdout de arquitectura no se utiliza aquí; R0 sí tiene un baseline holdout histórico ya consumido. No confundir ambos. Corpus-v0.1 es el snapshot histórico inmutable; la nueva adquisición y los cambios de parsing van exclusivamente a corpus-v0.2. El dense GPU está documentado por su hash, pero no disponible localmente para volver a verificar sus bytes.
+
+La fase A actual productiviza `legal_locator.py` y prepara benchmark v2 diverso y una adquisición acotada. R0–R8 son ablaciones: las composiciones futuras requieren evidencia de validation v2 y medición de interacciones. Graph expansion y graph features son ejes distintos. Ninguna composición, decoder ni freeze de top 8 competitivo queda seleccionado por esta reconciliación.
+
+
+## 2026-09-29 — estado Member A v0.2 y benchmark independiente
+
+La rama feat/member-a-corpus-v02-locator incorpora locator exacto aditivo, fusión RRF de varias vistas textuales y gold con minimal evidence sets. El locator usa la pregunta original; vistas/planner no reciben privilegios de identidad. El contrato de tres argumentos continúa compatible.
+
+El piloto de benchmark v2 proviene del corpus y solo sirve de smoke técnico. Se evaluaron seis filas DEV una vez; el split llamado holdout está visible en checkout y no es SEALED_EVAL. La búsqueda verificó cero ítems independientes: los PDFs ICFES encontrados devolvieron 404 y SIRNA no expuso un banco público descargable. No hay baseline ni distribución de fallos válidos para tuning. Benchmark v1 y Search V2 quedan cerrados.
+
+Corpus-v0.2 tiene cuatro documentos provisionales (72 pasajes), uno bloqueado por PDF escaneado, y cero relaciones semánticas verificadas. Las seis familias auditadas G01/G02/C01/P02/P01/D01 aún necesitan arreglo con fixtures/fuentes. Corpus-v0.1 permanece inmutable. Revisar docs/MEMBER_A_V02_PROGRESS.md y docs/BENCHMARK_V2_METHODOLOGY.md antes de continuar.
+
+En el siguiente checkpoint de la misma rama se añadieron primitivas y pruebas para Oracle Multi-View Recall, Fusion Loss y Graph Recovery Rate sobre conjuntos mínimos alternativos. Son soporte de métrica, no evidencia de rendimiento: el conjunto independiente DEV sigue en cero y no existe baseline/failure distribution. Los seis defectos permanecen pendientes o bloqueados por fuente, sin cambios al corpus-v0.1. El piloto corpus-derivado conserva sus 12 filas como no independiente/no seleccionable; no se amplió el diagnóstico mientras las estructuras v0.2 no tengan revisión humana.
+
+
+### KC-COL-IR-v0.1 independent benchmark (2026-09-29)
+
+KC-COL-IR-v0.1 now prioritizes 30 deterministic DEV candidates from the 62 official JEP clarification questions on the third-edition (2025) page; the current JEP 2026 announcement is not the year of those questions. JEP 2026 remains discovery-only pending its own question page. The Externado 2011 pool and 30-item sample are preserved as reproducibility-only. Javeriana Moot Seguros 2026 is a validation candidate; one official response PDF is hash-verified but unparsed/unscored. JEP items still need human screening for factual-only vs legal/implicit retrieval, primary evidence and temporal status. Gold remains 0; baseline/CUDA remain gated. See `docs/MEMBER_A_V02_PROGRESS.md` and `benchmarks/kc_col_ir_v0.1/CUDA_HANDOFF.md`.

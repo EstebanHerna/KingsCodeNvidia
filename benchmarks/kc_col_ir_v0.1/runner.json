@@ -1,0 +1,19 @@
+{
+  "benchmark": "KC-COL-IR-v0.1",
+  "corpus": "corpus",
+  "split": "dev",
+  "graph_mode": "off",
+  "candidate_k": 30,
+  "metrics_k": 10,
+  "evidence_k": 8,
+  "components": {
+    "C0": {"mode": "bm25", "encoder": null, "reranker": null},
+    "C1": {"mode": "dense", "encoder": "Qwen/Qwen3-Embedding-0.6B", "reranker": null},
+    "C2": {"mode": "hybrid", "encoder": "Qwen/Qwen3-Embedding-0.6B", "fusion": "RRF", "reranker": null},
+    "C3": {"mode": "hybrid", "encoder": "Qwen/Qwen3-Embedding-0.6B", "fusion": "RRF", "reranker": "Qwen/Qwen3-Reranker-0.6B"}
+  },
+  "seed": 0,
+  "question_source": "benchmarks/kc_col_ir_v0.1/questions/dev.jsonl",
+  "gold_source": "benchmarks/kc_col_ir_v0.1/gold/dev.jsonl",
+  "output_dir": "reports/kc_col_ir_v0.1"
+}

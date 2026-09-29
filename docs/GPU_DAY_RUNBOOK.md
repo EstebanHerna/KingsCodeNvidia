@@ -1,8 +1,10 @@
 # Gate 2A + 2B — día de la RTX 4090
 
-Estado de esta entrega: **infraestructura preparada, sin pruebas ejecutadas por instrucción expresa del usuario**. No se instaló CUDA/PyTorch GPU, no se descargaron decoders y no hay resultados de la 4090. Los 60 tests y el score dummy de Gate 1B son resultados históricos, no validación del código nuevo. Hay 28 tests nuevos preparados para CPU con mocks.
+**Estado reconciliado en `main` (`a3548a1`):** Gate 2-Prep, B y el Benchmark interno v1 están mergeados, pero no existe evidencia GPU versionada. A v0.6 y el benchmark fueron auditados en CPU; el benchmark tiene 200 casos (120/40/40), R0 medido, `Evidence Completeness@8` como métrica primaria, sin selección final y sin freeze para B. No hay R1-Qwen/R1-BGE/R2/R3–R8 reales, decoder real, bakeoff, RAGAS ni throughput medidos en la 4090.
 
-El router sigue siendo determinista; no tiene prompt ni LLM. Los prompts nuevos son para la respuesta final. Gate 1B conserva su backend y configuración; `smoke` sigue siendo dummy.
+Los 60 tests/score dummy de Gate 1B y los resultados CPU de A son históricos o diagnósticos; no validan CUDA, decoder real ni la matriz neuronal. CPU graph/R6/R7/R8 son diagnósticos, no ablations R3-based. El router sigue determinista; no tiene prompt ni LLM. Gate 1B conserva su backend dummy.
+
+No cambiar `target_cuda_checked` ni declarar GPU_READY sin un reporte versionado del destino. Este runbook usa BF16 primero y conserva los fallbacks de cuantización como experimentos condicionados, no automáticos.
 
 ## 1. Sincronizar main y registrar el commit
 
@@ -18,8 +20,8 @@ No sobreescribir cambios locales. Verificar la rama, el commit recibido y la asc
 git status --short --branch
 git rev-parse HEAD
 git rev-parse origin/main
-git merge-base --is-ancestor 254fa3a1ecd528137943007ef8946d9662d5bab7 HEAD
-if ($LASTEXITCODE -ne 0) { throw 'El checkout no parte del estado aprobado.' }
+git merge-base --is-ancestor a3548a16003dcc0a5165cba0829aa68c7921d9c2 HEAD
+if ($LASTEXITCODE -ne 0) { throw 'El checkout no parte del main reconciliado con Benchmark v1.' }
 if ((git rev-parse HEAD) -ne (git rev-parse origin/main)) { throw 'HEAD difiere de origin/main.' }
 ```
 
@@ -137,54 +139,56 @@ python tools/gpu_smoke.py --model qwen3-8b --precision int8 --oom-record $OomRec
 
 El registro requerido está en la subcarpeta `decoder` del GPU smoke. Para un fallback de `sample`, usar un OOM de `sample` con el mismo freeze/contexto/configuración; un OOM de smoke no lo sustituye. El hardware/runtime de bitsandbytes también debe verificarse; no hay descarga de pesos cuantizados alternativos ni sustitución de revisión.
 
-## 7. Gate 2A — índice y matriz de retrieval
+## 7. Gate 2A — benchmark de retrieval antes de selección
 
-Configurar explícitamente A después de validar el stack. Esta acción futura cambia solo sus parámetros de ejecución; no reconstruye el corpus:
+La matriz R0–R5 siguiente se conserva como **referencia histórica del protocolo
+Gate 2-Prep**, no como autorización para seleccionar sobre el sample oficial.
+La selección actual se rige por `benchmarks/kingscode_ir/` y
+`docs/BENCHMARK_METHODOLOGY.md`:
+
+1. verificar el snapshot y la integridad del benchmark 200 (`120/40/40`);
+2. preparar el índice Qwen y, solo con lock/loader/index aprobados, BGE-M3;
+3. ejecutar R1/Qwen y R1/BGE con los mismos IDs → complementariedad;
+4. ejecutar R2, elegir sobre **validation**; después R3–R8 aislados;
+5. usar una vez holdout para confirmar la configuración elegida;
+6. usar el oficial 50 solo como confirmación externa, sin retuning;
+7. recién entonces crear el freeze de ocho evidencias para B.
+
+`Evidence Completeness@8` es primaria; Recall@10, nDCG@10, MRR@10,
+mismatch documental, contexto y latencia acompañan la decisión. No existe una
+selección/freeze ahora. R0 ya está medido como baseline del benchmark; los
+resultados CPU graph/R6/R7/R8 son diagnósticos y no sustituyen R3-based.
+
+Después de validar CUDA/BF16 y construir el índice Qwen, el estado real de cada
+variante se debe registrar con corpus/model/configuración/fingerprint. BGE-M3
+permanece bloqueado hasta que exista un lock inmutable y loader/index aprobados;
+no usar una revisión no fijada. No ejecutar bakeoff de decoder en paralelo con
+retrieval sin un freeze seleccionado.
+
+Los siguientes comandos de `retrieval_matrix.py` son el flujo histórico del
+sample de 50 y pueden servir de referencia de implementación, pero **no
+reemplazan** el protocolo de selección del benchmark 200 ni prueban una mejora
+por sí solos:
 
 ```powershell
 python tools/prepare_gpu_environment.py --configure-retrieval
 python tools/member_a.py dense
-if ($LASTEXITCODE -ne 0) { throw 'No continuar sin índice denso válido.' }
 python tools/retrieval_matrix.py list
-python tools/retrieval_matrix.py run --candidate R0
-python tools/retrieval_matrix.py run --candidate R1
-python tools/retrieval_matrix.py run --candidate R2
-python tools/retrieval_matrix.py run --candidate R3
-python tools/retrieval_matrix.py run --candidate R4
-python tools/retrieval_matrix.py run --candidate R5
 ```
 
-| Experimento | Retrieval | Grafo |
-|---|---|---|
-| R0 | BM25 | OFF |
-| R1 | Dense | OFF |
-| R2 | BM25 + Dense + RRF | OFF |
-| R3 | R2 + reranker | OFF |
-| R4 | R3 + router determinista de B | AUTO |
-| R5 | R3 + expansión forzada | ON, ablation |
+## 8. Freeze de evidencia y decoders — bloqueado hasta selección
 
-Las seis corridas usan la misma normalización de B y snapshot. Los labels solo se leen al calcular métricas después de recuperar. Los reportes incluyen Recall@1/3/5/10, MRR@10, cobertura, latencia y modo/decisión de grafo. R1 vs R2 cambia fusión; R2 vs R3 cambia reranker; R3/R4/R5 aíslan el grafo. R0 vs R1 compara el tipo de recuperador. No hay decoder en estas métricas.
+No crear `artifacts/retrieval_freeze.json` ni ejecutar `decoder-smoke`, `sample`
+o `bakeoff` real hasta que exista una configuración seleccionada por el protocolo
+anterior. El estado actual es `blocked_no_selected_retrieval_configuration`.
 
-Elegir según los resultados reales, no por una preferencia preasignada. Cada comando guarda una carpeta nueva y no pisa el baseline. Un fallo se registra y devuelve código no cero; revisar antes de continuar.
-
-## 8. Congelar evidencia y ejecutar decoders
-
-```powershell
-$RetrievalRun = Read-Host 'Carpeta de la corrida R0-R5 seleccionada tras revisar las métricas'
-python tools/retrieval_matrix.py freeze --run $RetrievalRun --output artifacts/retrieval_freeze.json
-if ($LASTEXITCODE -ne 0) { throw 'Freeze inválido o ya existente; no sobrescribir.' }
-python tools/member_b.py decoder-smoke --model qwen3-8b
-if ($LASTEXITCODE -ne 0) { throw 'Decoder smoke falló.' }
-python tools/member_b.py sample --model qwen3-8b
-python tools/member_b.py sample --model alia-legal-7b
-python tools/member_b.py sample --model salamandra-7b
-```
-
-Alternativa a los tres comandos `sample`: `python tools/member_b.py bakeoff`. Usa procesos separados, BF16 y el mismo archivo de evidencia; no ejecutar ambas variantes salvo que se quiera una repetición explícita. Llama opcional: `python tools/member_b.py sample --model llama31-8b --allow-optional`.
-
-El freeze toma los primeros ocho pasajes de los rankings medidos en diez y conserva sus IDs, orden, texto, scores y procedencia. Todos los decoders reciben las mismas 50 preguntas públicas y esos mismos pasajes. Esto evita mantener encoder/reranker/decoder simultáneamente en VRAM. Las latencias de decoder no incluyen retrieval: la latencia de recuperación queda en el experimento R elegido. No presentar esa cifra como latencia end-to-end en vivo.
-
-Los prompts tienen la misma versión lógica, con el template nativo de cada tokenizer. Qwen usa `enable_thinking=false`; generación greedy, temperatura 0, semilla 0 y límites comunes por formato. El modelo solo produce campos de respuesta/abstención; el sistema adjunta evidencia literal y pasa por las guardas existentes. JSON, formato o citas inválidos abortan esa corrida; no se reparan manualmente.
+Cuando A entregue una corrida seleccionada y confirmada, el freeze conserva los
+ocho primeros pasajes medidos, con ID, orden, texto, scores y procedencia. Todos
+los decoders reciben exactamente esa evidencia. B ejecuta después BF16 primero,
+temperatura 0, batch 1 y el mismo contrato; las latencias de decoder se reportan
+separadas de retrieval. `CitationGuardError` dentro de `Pipeline.run` se
+convierte en abstención del ítem; JSON/schema/identidad inválidos siguen
+abortando la corrida para no publicar una entrega parcial.
 
 ## 9. Evaluación, métricas y juez separado
 

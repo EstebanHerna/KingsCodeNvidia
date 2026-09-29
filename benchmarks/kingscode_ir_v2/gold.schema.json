@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "record_type",
+    "annotation"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^KC2-[A-Z0-9-]+$"
+    },
+    "record_type": {
+      "enum": [
+        "RETRIEVAL_GOLD",
+        "END_TO_END_ONLY",
+        "TECHNICAL_PILOT_ONLY"
+      ]
+    },
+    "gold_document_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "gold_fragment_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "canonical_fragment_id",
+          "relevance"
+        ],
+        "properties": {
+          "canonical_fragment_id": {
+            "type": "string"
+          },
+          "relevance": {
+            "enum": [
+              "direct",
+              "supporting"
+            ]
+          }
+        }
+      }
+    },
+    "minimal_evidence_sets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "canonical_fragment_id",
+            "relevance"
+          ],
+          "properties": {
+            "canonical_fragment_id": {
+              "type": "string"
+            },
+            "relevance": {
+              "enum": [
+                "direct",
+                "supporting"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "gold_spans": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "canonical_fragment_id",
+          "passage_id",
+          "clean_start",
+          "clean_end"
+        ],
+        "properties": {
+          "canonical_fragment_id": {
+            "type": "string"
+          },
+          "passage_id": {
+            "type": "string"
+          },
+          "clean_start": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "clean_end": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "answer_source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "annotation": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "RETRIEVAL_GOLD"
+          }
+        },
+        "required": [
+          "record_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "gold_document_ids",
+          "gold_fragment_ids",
+          "evidence",
+          "minimal_evidence_sets",
+          "gold_spans"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "END_TO_END_ONLY"
+          }
+        },
+        "required": [
+          "record_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "answer_source"
+        ],
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "gold_document_ids"
+              ]
+            },
+            {
+              "required": [
+                "gold_fragment_ids"
+              ]
+            },
+            {
+              "required": [
+                "evidence"
+              ]
+            },
+            {
+              "required": [
+                "minimal_evidence_sets"
+              ]
+            },
+            {
+              "required": [
+                "gold_spans"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "record_type": {
+            "const": "TECHNICAL_PILOT_ONLY"
+          }
+        },
+        "required": [
+          "record_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "gold_document_ids",
+          "gold_fragment_ids",
+          "evidence",
+          "minimal_evidence_sets",
+          "gold_spans"
+        ]
+      }
+    }
+  ]
+}

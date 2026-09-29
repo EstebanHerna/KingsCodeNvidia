@@ -1,0 +1,611 @@
+{
+  "scope": "Existing R0 DEV only; no benchmark run and no validation/holdout tuning.",
+  "failure_counts": {
+    "ranking_failure": 27,
+    "correct_document_wrong_passage": 22
+  },
+  "requested_absent_classes": [
+    "graph_failure",
+    "ambiguous_gold"
+  ],
+  "cases": [
+    {
+      "id": "KC-ADM-001",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:192"
+      ],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-ADM-004",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-ADM-008",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-ADM-011",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:185"
+      ],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-CIV-001",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:189"
+      ],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-CIV-002",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-CIV-003",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:187",
+        "benchmark_risk:195"
+      ],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-CIV-004",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-CIV-005",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-CIV-006",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:188"
+      ],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-CIV-007",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-CIV-009",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-COM-001",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:198"
+      ],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-CON-001",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:184"
+      ],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-CON-002",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-CON-003",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:197"
+      ],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-CON-004",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:183",
+        "benchmark_risk:199"
+      ],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-CON-007",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:197"
+      ],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-CON-008",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:181"
+      ],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-CON-009",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-CON-010",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-CON-011",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-FAM-002",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-FAM-005",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-FAM-006",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-LAB-001",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-LAB-002",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-LAB-006",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:194"
+      ],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-LAB-012",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:182"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:182"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-MER-001",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:191"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-MER-002",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:196"
+      ],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-MER-003",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:191"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-MER-007",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [],
+      "classification": "RETRIEVAL DEFECT at the benchmark ranking boundary; semantic cause INCONCLUSIVE",
+      "confirmed_parser_units": [],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-MER-008",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:191"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-MER-009",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:191",
+        "benchmark_risk:193"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-MER-012",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:191"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-PEN-002",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:191"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-PEN-003",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:191"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-PEN-006",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:191"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-PEN-012",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:191"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-PRO-001",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:191",
+        "benchmark_risk:200"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-PRO-002",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:191"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-PRO-004",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:191"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-PRO-006",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:191"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-PRO-011",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:191"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-TRI-001",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:191"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-TRI-002",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:186",
+        "benchmark_risk:191"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-TRI-004",
+      "r0_failure": "ranking_failure",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:190",
+        "benchmark_risk:191"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    },
+    {
+      "id": "KC-TRI-005",
+      "r0_failure": "correct_document_wrong_passage",
+      "gold_spans_present": true,
+      "sample_units": [
+        "benchmark_risk:191"
+      ],
+      "classification": "PARSER/LOCATOR DEFECT + RETRIEVAL DEFECT; causality unmeasured",
+      "confirmed_parser_units": [
+        "benchmark_risk:191"
+      ],
+      "corpus_missing_claim": false,
+      "gold_annotation_issue": "UNKNOWN; no relabelling in this audit"
+    }
+  ]
+}

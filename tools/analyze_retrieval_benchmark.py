@@ -7,22 +7,33 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from kingscode.benchmark_analysis import write_comparison, write_complementarity_status, write_error_analysis
+from kingscode.benchmark_analysis import (write_comparison, write_complementarity_status,
+                                        write_error_analysis, write_complementarity, record_selection)
 from kingscode.common import ROOT
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["compare", "errors", "complementarity-status"])
+    parser.add_argument("command", choices=["compare", "errors", "complementarity-status", "complementarity", "select"])
     parser.add_argument("--baseline", type=Path)
     parser.add_argument("--candidate", type=Path)
     parser.add_argument("--run", type=Path)
-    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--runs", type=Path, nargs="+")
+    parser.add_argument("--variant", help="Exact validated variant; omit for no_selection")
+    parser.add_argument("--rationale")
     args = parser.parse_args()
-    if args.command == "compare":
+    if args.command == "select":
+        if args.output or not args.runs or not args.rationale:
+            parser.error("select requires --runs and --rationale; output is repository-controlled")
+        result = record_selection(args.runs, variant=args.variant, rationale=args.rationale)
+    elif not args.output:
+        parser.error("--output required")
+    elif args.command in {"compare", "complementarity"}:
         if not args.baseline or not args.candidate:
             parser.error("compare requires --baseline and --candidate")
-        result = write_comparison(args.baseline, args.candidate, args.output)
+        action = write_comparison if args.command == "compare" else write_complementarity
+        result = action(args.baseline, args.candidate, args.output)
     elif args.command == "errors":
         if not args.run:
             parser.error("errors requires --run")

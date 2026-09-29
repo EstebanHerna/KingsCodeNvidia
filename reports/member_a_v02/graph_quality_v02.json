@@ -1,0 +1,23 @@
+{
+  "version": "member-a-graph-quality-v02-status-1",
+  "status": "PROVISIONAL_STRUCTURAL_ONLY",
+  "corpus_manifest": "corpora/corpus-v0.2/manifest.json",
+  "documents": 4,
+  "nodes": 33,
+  "active_edges": 29,
+  "active_edge_types": {
+    "CONTIENE": 29
+  },
+  "semantic_edges_active": 0,
+  "review_queue_rows": 7,
+  "reviewed_relations": 7,
+  "rejected_relations": 7,
+  "unresolved_relations": 7,
+  "audit_followup": {
+    "G01": "Seven false targets rejected; seven corrected relations remain unresolved pending referenced primary bytes. No semantic edges active."
+  },
+  "policy": "Structural edges are provisional pending document review. No semantic relation is retrieval-active until exact source text, subject, target and direction are reviewed.",
+  "selection_permitted": false,
+  "candidate_target_rejections": 7,
+  "replacement_claims_unresolved": 7
+}

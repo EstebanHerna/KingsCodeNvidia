@@ -9,6 +9,8 @@
 # desde el snapshot publicado en la nube (sección "## Corpus e índice" del
 # README), o pase ACQUIRE=1 para que el contenedor intente construirlo desde
 # las fuentes oficiales (requiere red saliente desde el contenedor).
+# Sin corpus, FIXTURE=1 verifica la mecánica con pasajes de fixtures:
+#   docker run --rm -e FIXTURE=1 kingscode
 FROM python:3.12-slim
 
 WORKDIR /app
@@ -21,6 +23,7 @@ RUN chmod +x run.sh
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    ACQUIRE=0
+    ACQUIRE=0 \
+    FIXTURE=0
 
-ENTRYPOINT ["sh", "-c", "if [ \"$ACQUIRE\" = \"1\" ]; then ./run.sh --skip-install --acquire; else ./run.sh --skip-install; fi"]
+ENTRYPOINT ["sh", "-c", "if [ \"$FIXTURE\" = \"1\" ]; then ./run.sh --skip-install --fixture; elif [ \"$ACQUIRE\" = \"1\" ]; then ./run.sh --skip-install --acquire; else ./run.sh --skip-install; fi"]

@@ -1,0 +1,104 @@
+{
+  "version": "corpus-v0.2-initial-sources-v1",
+  "status": "bounded_initial_batch_not_competitive_freeze",
+  "sources": [
+    {
+      "doc_id": "decreto_046_de_2024",
+      "norm_name": "Decreto 046 de 2024",
+      "canonical_body": [
+        "decreto",
+        "046",
+        "2024"
+      ],
+      "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=228530",
+      "source_type": "decree",
+      "reason": "P0 existing unresolved target; official exact full document found; bounded first acquisition batch",
+      "status_source": null,
+      "effective_from": null,
+      "effective_to": null,
+      "historical_version": null,
+      "publication_date": null,
+      "modified_by": [],
+      "repealed_by": []
+    },
+    {
+      "doc_id": "sentencia_sl_648_de_2018",
+      "norm_name": "Sentencia SL-648 de 2018",
+      "canonical_body": [
+        "jurisprudencia",
+        "SL-648",
+        "2018"
+      ],
+      "url": "https://www.cortesuprema.gov.co/corte/wp-content/uploads/relatorias/la/bmar2018/SL648-2018.pdf",
+      "source_type": "decision",
+      "reason": "P0 existing unresolved target; official exact full document found; bounded first acquisition batch",
+      "status_source": null,
+      "effective_from": null,
+      "effective_to": null,
+      "historical_version": null,
+      "publication_date": null,
+      "modified_by": [],
+      "repealed_by": []
+    },
+    {
+      "doc_id": "sentencia_sp_1167_de_2022",
+      "norm_name": "Sentencia SP-1167 de 2022",
+      "canonical_body": [
+        "jurisprudencia",
+        "SP-1167",
+        "2022"
+      ],
+      "url": "https://cortesuprema.gov.co/corte/wp-content/uploads/relatorias/pe/b1may2022/SP1167-2022%2857957%29.pdf",
+      "source_type": "decision",
+      "reason": "P0 existing unresolved target; official exact full document found; bounded first acquisition batch",
+      "status_source": null,
+      "effective_from": null,
+      "effective_to": null,
+      "historical_version": null,
+      "publication_date": null,
+      "modified_by": [],
+      "repealed_by": []
+    },
+    {
+      "doc_id": "sentencia_sp_1680_de_2022",
+      "norm_name": "Sentencia SP-1680 de 2022",
+      "canonical_body": [
+        "jurisprudencia",
+        "SP-1680",
+        "2022"
+      ],
+      "url": "https://cortesuprema.gov.co/corte/wp-content/uploads/relatorias/pe/b1may2022/SP1680-2022%2860875%29.pdf",
+      "source_type": "decision",
+      "reason": "P0 existing unresolved target; official exact full document found; bounded first acquisition batch",
+      "status_source": null,
+      "effective_from": null,
+      "effective_to": null,
+      "historical_version": null,
+      "publication_date": null,
+      "modified_by": [],
+      "repealed_by": []
+    },
+    {
+      "doc_id": "sentencia_sp_1945_de_2019",
+      "norm_name": "Sentencia SP-1945 de 2019",
+      "canonical_body": [
+        "jurisprudencia",
+        "SP-1945",
+        "2019"
+      ],
+      "url": "https://www.cortesuprema.gov.co/corte/wp-content/uploads/relatorias/pe/b1ago2019/SP1945-2019%2850523%29.PDF",
+      "source_type": "decision",
+      "reason": "P0 existing unresolved target; official exact full document found; bounded first acquisition batch",
+      "status_source": null,
+      "effective_from": null,
+      "effective_to": null,
+      "historical_version": null,
+      "publication_date": null,
+      "modified_by": [],
+      "repealed_by": []
+    }
+  ],
+  "temporal_default": "unknown; no current-law inference",
+  "audit_source_commit": "cf23161",
+  "preserved_v01": true
+}

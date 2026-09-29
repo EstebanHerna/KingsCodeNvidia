@@ -62,3 +62,9 @@ La adquisición requiere red y `curl` con verificación TLS. Una descarga nueva 
 Los archivos oficiales se conservan byte a byte. Gate 1B está implementado con dummy y se ejecuta con `.venv/Scripts/python.exe tools/member_b.py smoke` después de disponer del corpus. Decoder real, benchmark neuronal completo, resolución de fuentes pendientes y freeze competitivo siguen pendientes.
 
 Gate 2-Prep añade la infraestructura de ejecución real y comparación de modelos, **sin ejecutar pruebas ni smokes por instrucción del usuario**. No hay resultados nuevos de GPU. Para llegar a la 4090 con el mismo corpus, seguir el runbook GPU y transferir el snapshot conservado, en lugar de volver a adquirir fuentes.
+
+## Estado de A tras RTX 4090 — siguiente fase v0.2
+
+Los resultados GPU están preservados en la rama `feat/member-a-gpu-results-4090-20260928` (60ebf7e). Search V2 saturó las referencias explícitas del benchmark v1 con locator injection; esto no acredita 99–100% en preguntas jurídicas generales. Validation v1 está cerrada y el holdout de arquitectura queda sin usar aquí.
+
+Trabajo actual: `feat/member-a-corpus-v02-locator`. Leer `docs/A_TO_B_V02_CONTRACT.md`, `docs/BENCHMARK_V2_METHODOLOGY.md` y `reports/MEMBER_A_V02_PROGRESS.md`. Corpus-v0.1 inmutable; nuevas fuentes en v0.2. No volver a ejecutar GPU para esta fase CPU.

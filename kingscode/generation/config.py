@@ -8,7 +8,7 @@ from ..common import ROOT, read_json
 from ..model_assets import resolve_model
 from ..reasoning.decoder import GENERATION_CONFIG
 
-PROMPT_VERSION = "grounded-formats-v2"
+PROMPT_VERSION = "grounded-formats-v3"
 
 
 def load_bakeoff(path: Path = ROOT / "config/decoder_bakeoff.json", *, lock_path=ROOT / "config/models.lock.json") -> dict:
@@ -17,6 +17,9 @@ def load_bakeoff(path: Path = ROOT / "config/decoder_bakeoff.json", *, lock_path
         raise ValueError("Generation must be greedy/seeded with the versioned prompt")
     if cfg["device"] != "cuda:0" or cfg["precision"]["primary"] != "bf16" or cfg["precision"]["automatic_fallback"] is not False:
         raise ValueError("GPU BF16 first; automatic fallback is forbidden")
+    used = cfg.get("max_used_passages", 5)
+    if type(used) is not int or not 1 <= used <= 10:
+        raise ValueError("max_used_passages must be an integer in 1..10")
     if set(cfg["max_new_tokens"]) != {"multiple_choice", "semi_open", "open_ended"}:
         raise ValueError("Missing format token budgets")
     if any(type(n) is not int or n <= 0 for n in cfg["max_new_tokens"].values()):

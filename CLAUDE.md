@@ -44,7 +44,9 @@ Consecuencias que deben guiar el diseño:
 - Alias del extractor oficial que causan citas fantasma: `C.P.`/`CP` = Constitución (no Código Penal), `CC`/`C.C.` = Código Civil, `ET`/`E.T.` = Estatuto Tributario. Los prompts deben prohibir abreviaturas (ya lo hace `kingscode/generation/prompts.py`).
 - La verificación en vivo (sábado 15:00–17:00) regenera 2–3 preguntas: normas citadas y pasajes deben coincidir con lo entregado. Determinismo real, no solo `temperature=0` — revisar que `torch.use_deterministic_algorithms(True)` se mantenga.
 
-## 5. Estado real (actualizado 2026-09-28, commit `a179af7` + fix local de `Pipeline.run`)
+## 5. Estado real
+
+- **2026-09-29, prevalece:** A+B integrados en `main` (ver la última entrada de `docs/DECISION_LOG.md` y `member_b_v2` en `docs/KINGSCODE_STATE.json`). B ya no hace fan-out propio en modo PLAN: usa `retrieve(..., query_views=...)` de A, cuyo locator solo resuelve Q0. Sesión GPU: `tools/lab_gpu_session.ps1`. Lo que sigue abajo es el historial del 28-sep.
 
 - **A (corpus + retrieval):** 163 documentos, 26.558 pasajes, grafo 59k nodos/75k aristas, BM25 activo, Recall@10 a nivel artículo 0,525. Dense/reranker Qwen3-0.6B implementados, sin benchmark neuronal completo (pendiente GPU). `corpus/` está en `.gitignore`: se construye localmente con `tools/member_a.py acquire` + `reproduce` (ver `docs/MEMBER_A_RUNBOOK.md`) o se copia el snapshot conservado.
 - **B (razonamiento):** Gate 1B histórico (`DummyDecoder`, siempre se abstiene) = 5/50 sin RAGAS; sigue como piso de referencia. Gate 2-Prep (`a179af7`) ya agregó `kingscode/generation/hf_decoder.py` (backend real Transformers, lazy, con locks/hashes de modelo, prompts `grounded-formats-v2`) y `config/decoder_bakeoff.json`/`config/models.lock.json` (Qwen3-8B, ALIA Legal 7B, Salamandra 7B, Llama 3.1 8B opcional). **Nada de esto se ha ejecutado en GPU real todavía** (`gate2_prep.decoder_weights_downloaded: false`).
@@ -101,3 +103,20 @@ Linux/WSL: igual con `python`. RAGAS (`--ragas`) solo con autorización explíci
 2. Probar `interfaz/app.py` end-to-end en cuanto haya `corpus/` local o en la máquina con GPU.
 3. Día de GPU: seguir `docs/GPU_DAY_RUNBOOK.md` tal cual (B posee el entorno CUDA/PyTorch/model cache; A toma la máquina después con `GPU_READY`).
 4. `run.sh`/Dockerfile de un solo comando y sección `## Corpus e índice` en el README siguen pendientes (rúbrica 6.2, reproducibilidad 2 pts + corpus publicado 5 pts).
+
+## 9. Corpus v0.2 y locator (desde 2026-09-28 noche)
+
+Plan revisado con evidencia: `docs/CORPUS_V02_PLAN.md`. Comando: `/corpus-tarea C1` (y C0–C8).
+Puntos que no se discuten sin nuevos datos:
+- Los 37 fallos de R6 en dev son de parser y ranking: `diversify.parse_reference` no reconoce códigos, la Constitución, abreviaturas ni listas, y R6 solo reordena el pool de BM25. Arreglar esto es anterior a añadir documentos.
+- El benchmark v1 es 100 % explícito; la muestra oficial tiene solo 4/50 preguntas con artículo en el enunciado. No elegir pesos BM25/denso con v1.
+- El banco no cubre derecho internacional (§4.2 del enunciado).
+- v0.1 es inmutable hasta que el equipo apruebe el freeze de v0.2 en `DECISION_LOG.md`.
+
+## 10. B después de la RTX 4090 (desde 2026-09-28 noche)
+
+Plan vigente de B: `docs/B_PLAN_POST_GPU.md` (tareas B0–B8, comando `/b2-tarea`). Sustituye el orden de `docs/B_EXTENSION_PLAN.md` donde se contradigan.
+- El locator exacto es de A; B solo llama `retrieve()`.
+- Guarda: reparar antes de verificar (aceptar / reescribir a cuerpo / suprimir). No abstenerse por una cita.
+- Qwen3-8B sigue en el bakeoff: el enunciado §3.1 lo sugiere expresamente; la confirmación por correo está pendiente.
+- Prioridad sin GPU: B7 (checkpoint, resume, escritura atómica, 992/992).

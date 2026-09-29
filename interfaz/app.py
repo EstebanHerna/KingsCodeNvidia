@@ -14,6 +14,7 @@ el sistema no produjo.
 """
 from __future__ import annotations
 
+import html
 import sys
 from pathlib import Path
 
@@ -27,6 +28,7 @@ from kingscode.reasoning.contracts import FORMATS, Question  # noqa: E402
 from kingscode.reasoning.decoder import DummyDecoder  # noqa: E402
 from kingscode.reasoning.pipeline import Pipeline  # noqa: E402
 from kingscode.reasoning.routing import RetrieverGraphRouter  # noqa: E402
+from kingscode.reasoning.presentation import debug_trace, view_model  # noqa: E402
 
 st.set_page_config(page_title="KingsCode · Derecho colombiano", page_icon="⚖️", layout="wide")
 
@@ -110,6 +112,7 @@ with st.sidebar:
     precision = st.selectbox("Precisión", ["bf16", "int8", "int4"], disabled=decoder_alias == "dummy_abstain")
     k = st.slider("Pasajes recuperados (k)", 1, 10, 8)
     graph_policy = st.selectbox("Política de grafo", ["router", "off", "auto", "on"], index=0)
+    debug_mode = st.checkbox("Modo depuración (traza técnica)", value=False)
 
 try:
     retriever, adapter = load_retriever(corpus_dir)
@@ -150,14 +153,13 @@ if st.button("Responder") and pregunta.strip():
     pipeline = Pipeline(retriever.retrieve, adapter=adapter, decoder=decoder, k=k, graph_policy=graph_policy)
     with st.spinner("Recuperando evidencia y generando..."):
         row, trace = pipeline.run(question)
-
-    import citations as official_citations  # scripts/citations.py, solo para mostrar
+    view = view_model(row, trace)
 
     izq, der = st.columns([3, 2])
     with izq:
-        if row["abstencion"]:
-            reason = trace.get("abstention_reason") or "sin especificar"
-            st.warning(f"El sistema se abstiene (razón: {reason}). Evidencia insuficiente o citación sin respaldo.")
+        if view["abstained"]:
+            st.warning(f"El sistema se abstiene. Motivo: {view['abstention_reason'] or 'sin especificar'} "
+                       f"(origen: {view['abstention_source'] or 'n/d'}).")
         elif formato == "multiple_choice":
             st.subheader(f"Respuesta: {row['respuesta_correcta']}")
             st.write(row["justificacion"])
@@ -172,38 +174,37 @@ if st.button("Responder") and pregunta.strip():
                 st.markdown(f"**{titulo}**")
                 st.write(row[campo])
 
-        st.caption(f"{trace['latency_ms']:.0f} ms · grafo: {trace['graph_decision']}→{trace['graph_execution']} "
-                   f"· citation_guard: {'ok' if trace['citation_guard']['ok'] else 'rechazado'}")
-
         st.markdown("**Normas citadas**")
-        answer_text = " ".join(str(row.get(c) or "") for c in
-                               ("justificacion", "respuesta", "referencia_legal", "marco_normativo",
-                                "analisis", "jurisprudencia", "conclusion"))
-        cited = official_citations.bodies(official_citations.extract(answer_text))
-        respaldadas = set()
-        for p in row["pasajes_recuperados"][:10]:
-            respaldadas |= official_citations.bodies(official_citations.extract(p["texto"]))
-        if not cited:
-            st.caption("El sistema no citó ninguna norma en el texto de la respuesta.")
-        for body in sorted(cited, key=str):
-            ok = body in respaldadas
-            css = "kc-norma" if ok else "kc-norma kc-norma-sin-respaldo"
-            etiqueta = " · sin respaldo en evidencia" if not ok else ""
-            st.markdown(f'<span class="{css}">{" ".join(str(x) for x in body if x)}{etiqueta}</span>',
+        if not view["cited_norms"]:
+            st.caption("La respuesta no cita ninguna norma.")
+        for norm in view["cited_norms"]:
+            css = "kc-norma" if norm["supported"] else "kc-norma kc-norma-sin-respaldo"
+            label = html.escape(" ".join(str(x) for x in norm["body"] if x))
+            st.markdown(f'<span class="{css}">{label}{"" if norm["supported"] else " · sin respaldo en evidencia"}</span>',
                         unsafe_allow_html=True)
+
+    def card(c):
+        badge = " · <b>citado</b>" if c["cited"] else ""
+        badge += " · usado por el decoder" if c["declared_used"] else ""
+        art = f" · art. {html.escape(str(c['article']))}" if c.get("article") else ""
+        text = c["texto"]
+        st.markdown(f'<div class="kc-pasaje"><b>[P{c["rank"]}] {html.escape(c["norm_name"] or "")}</b>{art}{badge}'
+                    f' · <a href="{html.escape(c["source_url"] or "", quote=True)}" target="_blank">fuente</a><br>'
+                    f'{html.escape(text[:600])}{"…" if len(text) > 600 else ""}</div>', unsafe_allow_html=True)
 
     with der:
-        st.subheader(f"Evidencia ({len(row['pasajes_recuperados'])} pasajes)")
-        for i, p in enumerate(row["pasajes_recuperados"], 1):
-            st.markdown(f'<div class="kc-pasaje"><b>[P{i}] {p["norm_name"]}</b>'
-                        f'{" · art. " + str(p["article"]) if p.get("article") else ""}'
-                        f' · <a href="{p["source_url"]}" target="_blank">fuente</a><br>'
-                        f'{p["texto"][:500]}{"…" if len(p["texto"]) > 500 else ""}</div>',
-                        unsafe_allow_html=True)
+        st.subheader(f"Pasajes citados ({len(view['cited_passages'])})")
+        for c in view["cited_passages"]:
+            card(c)
+        st.subheader(f"Otros pasajes recuperados ({len(view['other_passages'])})")
+        for c in view["other_passages"]:
+            card(c)
+        st.caption(f"Estos {len(row['pasajes_recuperados'])} pasajes son exactamente los de pasajes_recuperados de la entrega.")
 
     with st.expander("JSON de la entrega (schema oficial)"):
-        st.json({k: v for k, v in row.items()})
-    with st.expander("Traza de razonamiento (debug)"):
-        st.json(trace)
+        st.json(view["submission"])
+    if debug_mode:
+        with st.expander("Traza técnica (solo operador)"):
+            st.json(debug_trace(trace))
 elif pregunta.strip() == "":
     st.caption("Escriba una pregunta y presione Responder.")
