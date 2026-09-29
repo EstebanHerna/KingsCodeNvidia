@@ -1,0 +1,128 @@
+{
+  "as_of": "2026-09-29",
+  "policy": "selective, Colombia-linked; unknown applicability remains unknown; no general treaty ingestion",
+  "candidates": [
+    {
+      "candidate": "Decision 486 (2000), Common Regime on Industrial Property",
+      "system": "CAN",
+      "areas": [
+        "intellectual_property"
+      ],
+      "colombia_applicability": "candidate; applicability and current scope need legal review",
+      "official_source": "https://www.comunidadandina.org/StaticFiles/DocOf/DEC486.pdf",
+      "referenced_by_colombian_documents": null,
+      "incoming_reference_count": null,
+      "status": "needs_review",
+      "reason": "Official CAN primary text located; Colombian reference edges and item-level relevance have not yet been independently verified. Do not infer legal applicability from retrieval frequency.",
+      "jurisdiction": "international",
+      "issuing_body": "Comisión de la Comunidad Andina",
+      "instrument_type": "decision",
+      "international_system": "CAN",
+      "adoption_date": null,
+      "entry_into_force": null,
+      "colombia_ratification_status": "unknown",
+      "colombia_ratification_date": null,
+      "colombia_status_source_url": null,
+      "applicability_basis": null,
+      "official_source_sha256": null
+    },
+    {
+      "candidate": "C087 Freedom of Association and Protection of the Right to Organise Convention (1948)",
+      "system": "OIT",
+      "areas": [
+        "labor"
+      ],
+      "colombia_applicability": "Colombia ratification and in-force status shown by ILO NORMLEX; instrument-level applicability context still needs legal review",
+      "official_source": "https://normlex.ilo.org/dyn/nrmlx_es/f?p=NORMLEXPUB:11200:0::NO::P11200_COUNTRY_ID:102595",
+      "referenced_by_colombian_documents": null,
+      "incoming_reference_count": null,
+      "status": "backlog",
+      "reason": "Official NORMLEX lists ratification 16 Nov 1976, in force. Need verify Colombian corpus citations and source document before acquisition/indexing.",
+      "jurisdiction": "international",
+      "issuing_body": "Organización Internacional del Trabajo",
+      "instrument_type": "convention",
+      "international_system": "OIT",
+      "adoption_date": null,
+      "entry_into_force": null,
+      "colombia_ratification_status": "ratified_in_force",
+      "colombia_ratification_date": "1976-11-16",
+      "colombia_status_source_url": "https://normlex.ilo.org/dyn/nrmlx_es/f?p=NORMLEXPUB:11200:0::NO::P11200_COUNTRY_ID:102595",
+      "applicability_basis": "NORMLEX country ratification page lists this convention ratified and in force",
+      "official_source_sha256": null
+    },
+    {
+      "candidate": "C098 Right to Organise and Collective Bargaining Convention (1949)",
+      "system": "OIT",
+      "areas": [
+        "labor"
+      ],
+      "colombia_applicability": "Colombia ratification and in-force status shown by ILO NORMLEX; instrument-level applicability context still needs legal review",
+      "official_source": "https://normlex.ilo.org/dyn/nrmlx_es/f?p=NORMLEXPUB:11200:0::NO::P11200_COUNTRY_ID:102595",
+      "referenced_by_colombian_documents": null,
+      "incoming_reference_count": null,
+      "status": "backlog",
+      "reason": "Official NORMLEX lists ratification 16 Nov 1976, in force. Need verify Colombian corpus citations and source document before acquisition/indexing.",
+      "jurisdiction": "international",
+      "issuing_body": "Organización Internacional del Trabajo",
+      "instrument_type": "convention",
+      "international_system": "OIT",
+      "adoption_date": null,
+      "entry_into_force": null,
+      "colombia_ratification_status": "ratified_in_force",
+      "colombia_ratification_date": "1976-11-16",
+      "colombia_status_source_url": "https://normlex.ilo.org/dyn/nrmlx_es/f?p=NORMLEXPUB:11200:0::NO::P11200_COUNTRY_ID:102595",
+      "applicability_basis": "NORMLEX country ratification page lists this convention ratified and in force",
+      "official_source_sha256": null
+    },
+    {
+      "candidate": "C169 Indigenous and Tribal Peoples Convention (1989)",
+      "system": "OIT",
+      "areas": [
+        "labor",
+        "indigenous_rights"
+      ],
+      "colombia_applicability": "unknown_pending_instrument_level_verification",
+      "official_source": "https://normlex.ilo.org/dyn/nrmlx_es/f?p=NORMLEXPUB:11200:0::NO::P11200_COUNTRY_ID:102595",
+      "referenced_by_colombian_documents": null,
+      "incoming_reference_count": null,
+      "status": "needs_review",
+      "reason": "Potential relevance only; verify instrument-specific ratification/status and Colombian source references before any inclusion.",
+      "jurisdiction": "international",
+      "issuing_body": "Organización Internacional del Trabajo",
+      "instrument_type": "convention",
+      "international_system": "OIT",
+      "adoption_date": null,
+      "entry_into_force": null,
+      "colombia_ratification_status": "unknown",
+      "colombia_ratification_date": null,
+      "colombia_status_source_url": "https://normlex.ilo.org/dyn/nrmlx_es/f?p=NORMLEXPUB:11200:0::NO::P11200_COUNTRY_ID:102595",
+      "applicability_basis": null,
+      "official_source_sha256": null
+    },
+    {
+      "candidate": "American Convention on Human Rights",
+      "system": "Inter-American",
+      "areas": [
+        "human_rights"
+      ],
+      "colombia_applicability": "candidate; treaty status and Colombian jurisprudential use require instrument-level review",
+      "official_source": "https://www.oas.org/es/cidh/mandato/basicos/todasrat.pdf",
+      "referenced_by_colombian_documents": null,
+      "incoming_reference_count": null,
+      "status": "needs_review",
+      "reason": "Official OAS ratification table located. Need resolve exact column/status and retrieve Colombian decisions that cite/apply it before acquisition.",
+      "jurisdiction": "international",
+      "issuing_body": "Organización de los Estados Americanos",
+      "instrument_type": "treaty",
+      "international_system": "Inter-American",
+      "adoption_date": null,
+      "entry_into_force": null,
+      "colombia_ratification_status": "unknown",
+      "colombia_ratification_date": null,
+      "colombia_status_source_url": null,
+      "applicability_basis": null,
+      "official_source_sha256": null
+    }
+  ],
+  "benchmark_v2_international_items_verified": 0
+}

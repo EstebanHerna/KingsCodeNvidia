@@ -1,0 +1,57 @@
+{
+  "version": "member-a-corpus-v02-remediation-status-1",
+  "corpus_v01_modified": false,
+  "v02_documents": 4,
+  "v02_passages": 72,
+  "accepted_documents": 0,
+  "provisional_documents": 4,
+  "blocked_acquisitions": 1,
+  "defects": {
+    "G01": {
+      "status": "CANDIDATE_EDGES_REJECTED_REPLACEMENTS_UNRESOLVED",
+      "fixed": false,
+      "reason": "Seven wrong containing-passage targets rejected from exact official text review. Replacement legal-effect claims remain unverified pending cited primary bytes; no semantic edge is activated.",
+      "review_report": "reports/member_a_v02/g01_relation_review_v02.json",
+      "rejected_candidates": 7,
+      "unresolved_replacements": 7,
+      "active_semantic_edges": 0
+    },
+    "G02": {
+      "status": "FIXED_V02_REGRESSION_VERIFIED",
+      "fixed": true,
+      "source": "SU-214/2016 official HTML preserved in v0.2 manifest",
+      "test": "tests.test_corpus_v02.CorpusV02SourceRepairTests.test_g02_removes_only_paginated_toc_rows",
+      "scope": "bounded verified TOC removal; full decision remains provisional"
+    },
+    "C01": {
+      "status": "FIXED_V02_REGRESSION_VERIFIED",
+      "fixed": true,
+      "source": "C-355/2006 official HTML preserved in v0.2 manifest",
+      "test": "tests.test_corpus_v02.CorpusV02SourceRepairTests.test_c01_same_heading_occurrences_keep_distinct_fragment_ids",
+      "scope": "repeated source-unit headings receive distinct v0.2 canonical fragment ids"
+    },
+    "P02": {
+      "status": "FIXED_V02_REGRESSION_VERIFIED",
+      "fixed": true,
+      "source": "Ley 137/1994 official HTML and PDF preserved in v0.2 manifest",
+      "test": "tests.test_corpus_v02.CorpusV02SourceRepairTests.test_p02_joins_split_article_number_and_body",
+      "scope": "split article-number/body boundaries covered by source-backed fixture"
+    },
+    "P01": {
+      "status": "FIXED_V02_REGRESSION_VERIFIED",
+      "fixed": true,
+      "source": "Ley 137/1994 official HTML preserved in v0.2 manifest",
+      "test": "tests.test_corpus_v02.CorpusV02SourceRepairTests.test_p01_major_heading_closes_prior_article",
+      "scope": "chapter heading no longer remains inside preceding article passage"
+    },
+    "D01": {
+      "status": "IDENTITY_INVARIANT_REGRESSION_COVERED_REVIEW_OPEN",
+      "fixed": false,
+      "reason": "Regression confirms equal normalized content hash does not merge distinct canonical legal documents. Broader provenance and repeated-boilerplate audit remains open.",
+      "test": "tests.test_corpus_v02.CorpusV02SourceRepairTests.test_d01_equal_content_hash_does_not_merge_distinct_documents"
+    }
+  },
+  "source_evidence": "Four official raw sources and SHA-256 values are preserved in corpora/corpus-v0.2/manifest.json. Regression fixtures use exact publisher blocks; v0.1 is unchanged.",
+  "next_action": "Acquire verified official benchmark bytes in ignored tmp/official-source-intake, extract permitted items locally, and acquire cited primary instruments before semantic-edge acceptance. Baseline only after >=10 accepted independent RETRIEVAL_GOLD.",
+  "audit_source_count": 4
+}

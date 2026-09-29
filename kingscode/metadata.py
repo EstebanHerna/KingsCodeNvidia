@@ -117,6 +117,11 @@ def canonical_fragment_id(passage: dict) -> str:
     """
     doc = canonical_document_id(passage)
     base = f"{doc}:{_locator_slug(passage)}"
+    # The same judicial heading may occur at multiple source positions. v0.2
+    # carries a source-unit identity from its repaired segmentation; include it
+    # so repeated labels remain distinct while segments of one unit stay linked.
+    if str(passage.get("corpus_version", "")).startswith("corpus-v0.2") and passage.get("source_unit_id"):
+        base += ":occurrence:" + digest(str(passage["source_unit_id"]).encode())[:12]
     variant = []
     if passage.get("is_current_text") is False:
         variant.append("historico")

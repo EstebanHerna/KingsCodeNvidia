@@ -23,6 +23,7 @@ def main():
     parser.add_argument("--graph-mode", choices=["off", "auto", "on"], default="auto")
     parser.add_argument("--mode", choices=["bm25", "dense", "hybrid"], default="bm25")
     parser.add_argument("--rerank", action="store_true")
+    parser.add_argument("--exact-locator", action="store_true", help="Add exact legal candidates before reranking")
     args = parser.parse_args()
     if args.command == "acquire":
         from kingscode.acquisition import acquire
@@ -42,7 +43,7 @@ def main():
         from kingscode.retrieval import Retriever
         if not args.question:
             parser.error("--question required")
-        print(json.dumps(Retriever(args.corpus, mode=args.mode, rerank=args.rerank).retrieve(
+        print(json.dumps(Retriever(args.corpus, mode=args.mode, rerank=args.rerank, exact_locator=args.exact_locator).retrieve(
             args.question, args.k, args.graph_mode), ensure_ascii=False, indent=2))
     elif args.command == "benchmark":
         from kingscode.evaluation import benchmark

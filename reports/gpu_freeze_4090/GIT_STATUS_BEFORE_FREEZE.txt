@@ -1,0 +1,11 @@
+## feat/member-a-gpu-results-4090-20260928
+ M reports/benchmark/search_v2_validation/LATEST.txt
+ M reports/benchmark/search_v2_validation/VALIDATION.stderr.log
+ M reports/benchmark/search_v2_validation/VALIDATION.stdout.log
+ M reports/gpu_freeze_4090/GIT_BRANCH_BEFORE_FREEZE.txt
+ M reports/gpu_freeze_4090/GIT_COMMIT_BEFORE_FREEZE.txt
+?? reports/benchmark/search_v2_validation/20260928T233507616139Z/
+?? reports/benchmark/search_v2_validation/20260928T233551866848Z/
+?? reports/gpu_freeze_4090/SEARCH_V2_VALIDATION_BEST.txt
+?? reports/gpu_freeze_4090/SEARCH_V2_VALIDATION_SUMMARY.csv
+?? reports/gpu_freeze_4090/SEARCH_V2_VALIDATION_SUMMARY.json

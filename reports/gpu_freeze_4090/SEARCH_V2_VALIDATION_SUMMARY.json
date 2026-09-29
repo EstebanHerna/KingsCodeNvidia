@@ -1,0 +1,761 @@
+{
+  "run": "C:\\Users\\ls.contreras\\KingsCodeGPU\\KingsCodeNvidia\\reports\\benchmark\\search_v2_validation\\20260928T233551866848Z",
+  "ranking_seconds_shared": 287.37610019999556,
+  "variants": 39,
+  "summary": [
+    {
+      "variant": "HYB120_LOC_META_0p0",
+      "EC8": 1.0,
+      "Recall10": 1.0,
+      "MRR10": 1.0,
+      "nDCG10": 1.0,
+      "correct_doc_wrong_passage": 0,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.0,
+        "locator_injection": true
+      }
+    },
+    {
+      "variant": "BM25120_LOC_META_0p0",
+      "EC8": 1.0,
+      "Recall10": 1.0,
+      "MRR10": 1.0,
+      "nDCG10": 1.0,
+      "correct_doc_wrong_passage": 0,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "bm25",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.0,
+        "locator_injection": true
+      }
+    },
+    {
+      "variant": "HYB120_LOC_META_0p5",
+      "EC8": 1.0,
+      "Recall10": 1.0,
+      "MRR10": 1.0,
+      "nDCG10": 1.0,
+      "correct_doc_wrong_passage": 0,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.5,
+        "locator_injection": true
+      }
+    },
+    {
+      "variant": "BM25120_LOC_META_0p5",
+      "EC8": 1.0,
+      "Recall10": 1.0,
+      "MRR10": 1.0,
+      "nDCG10": 1.0,
+      "correct_doc_wrong_passage": 0,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "bm25",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.5,
+        "locator_injection": true
+      }
+    },
+    {
+      "variant": "HYB120_LOC_META_1p0",
+      "EC8": 1.0,
+      "Recall10": 1.0,
+      "MRR10": 1.0,
+      "nDCG10": 1.0,
+      "correct_doc_wrong_passage": 0,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.0,
+        "locator_injection": true
+      }
+    },
+    {
+      "variant": "BM25120_LOC_META_1p0",
+      "EC8": 1.0,
+      "Recall10": 1.0,
+      "MRR10": 1.0,
+      "nDCG10": 1.0,
+      "correct_doc_wrong_passage": 0,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "bm25",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.0,
+        "locator_injection": true
+      }
+    },
+    {
+      "variant": "HYB120_LOC_META_1p25",
+      "EC8": 1.0,
+      "Recall10": 1.0,
+      "MRR10": 1.0,
+      "nDCG10": 1.0,
+      "correct_doc_wrong_passage": 0,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.25,
+        "locator_injection": true
+      }
+    },
+    {
+      "variant": "BM25120_LOC_META_1p25",
+      "EC8": 1.0,
+      "Recall10": 1.0,
+      "MRR10": 1.0,
+      "nDCG10": 1.0,
+      "correct_doc_wrong_passage": 0,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "bm25",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.25,
+        "locator_injection": true
+      }
+    },
+    {
+      "variant": "HYB120_B2D1_LOC_META1",
+      "EC8": 1.0,
+      "Recall10": 1.0,
+      "MRR10": 1.0,
+      "nDCG10": 1.0,
+      "correct_doc_wrong_passage": 0,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 2.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.0,
+        "locator_injection": true
+      }
+    },
+    {
+      "variant": "HYB120_B4D1_LOC_META1",
+      "EC8": 1.0,
+      "Recall10": 1.0,
+      "MRR10": 1.0,
+      "nDCG10": 1.0,
+      "correct_doc_wrong_passage": 0,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 4.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.0,
+        "locator_injection": true
+      }
+    },
+    {
+      "variant": "HYB120_B8D1_LOC_META1",
+      "EC8": 1.0,
+      "Recall10": 1.0,
+      "MRR10": 1.0,
+      "nDCG10": 1.0,
+      "correct_doc_wrong_passage": 0,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 8.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.0,
+        "locator_injection": true
+      }
+    },
+    {
+      "variant": "HYB180_LOC_META1",
+      "EC8": 1.0,
+      "Recall10": 1.0,
+      "MRR10": 1.0,
+      "nDCG10": 1.0,
+      "correct_doc_wrong_passage": 0,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 180,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.0,
+        "locator_injection": true
+      }
+    },
+    {
+      "variant": "BM25180_LOC_META1",
+      "EC8": 1.0,
+      "Recall10": 1.0,
+      "MRR10": 1.0,
+      "nDCG10": 1.0,
+      "correct_doc_wrong_passage": 0,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "bm25",
+        "depth": 180,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.0,
+        "locator_injection": true
+      }
+    },
+    {
+      "variant": "HYB_180",
+      "EC8": 0.9,
+      "Recall10": 0.9,
+      "MRR10": 0.9,
+      "nDCG10": 0.9,
+      "correct_doc_wrong_passage": 4,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 180,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.0,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "HYB180_META1",
+      "EC8": 0.9,
+      "Recall10": 0.9,
+      "MRR10": 0.9,
+      "nDCG10": 0.9,
+      "correct_doc_wrong_passage": 4,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 180,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.0,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "BM25_180",
+      "EC8": 0.85,
+      "Recall10": 0.85,
+      "MRR10": 0.85,
+      "nDCG10": 0.85,
+      "correct_doc_wrong_passage": 6,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "bm25",
+        "depth": 180,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.0,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "HYB120_B2D1",
+      "EC8": 0.85,
+      "Recall10": 0.85,
+      "MRR10": 0.85,
+      "nDCG10": 0.85,
+      "correct_doc_wrong_passage": 6,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 2.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.0,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "HYB120_B2D1_META1",
+      "EC8": 0.85,
+      "Recall10": 0.85,
+      "MRR10": 0.85,
+      "nDCG10": 0.85,
+      "correct_doc_wrong_passage": 6,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 2.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.0,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "BM25180_META1",
+      "EC8": 0.85,
+      "Recall10": 0.85,
+      "MRR10": 0.85,
+      "nDCG10": 0.85,
+      "correct_doc_wrong_passage": 6,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "bm25",
+        "depth": 180,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.0,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "BM25_120",
+      "EC8": 0.825,
+      "Recall10": 0.825,
+      "MRR10": 0.825,
+      "nDCG10": 0.825,
+      "correct_doc_wrong_passage": 7,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "bm25",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.0,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "HYB120_B4D1",
+      "EC8": 0.825,
+      "Recall10": 0.825,
+      "MRR10": 0.825,
+      "nDCG10": 0.825,
+      "correct_doc_wrong_passage": 7,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 4.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.0,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "HYB120_B8D1",
+      "EC8": 0.825,
+      "Recall10": 0.825,
+      "MRR10": 0.825,
+      "nDCG10": 0.825,
+      "correct_doc_wrong_passage": 7,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 8.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.0,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "BM25120_META_0p25",
+      "EC8": 0.825,
+      "Recall10": 0.825,
+      "MRR10": 0.825,
+      "nDCG10": 0.825,
+      "correct_doc_wrong_passage": 7,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "bm25",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.25,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "BM25120_META_0p5",
+      "EC8": 0.825,
+      "Recall10": 0.825,
+      "MRR10": 0.825,
+      "nDCG10": 0.825,
+      "correct_doc_wrong_passage": 7,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "bm25",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.5,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "BM25120_META_0p75",
+      "EC8": 0.825,
+      "Recall10": 0.825,
+      "MRR10": 0.825,
+      "nDCG10": 0.825,
+      "correct_doc_wrong_passage": 7,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "bm25",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.75,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "BM25120_META_1p0",
+      "EC8": 0.825,
+      "Recall10": 0.825,
+      "MRR10": 0.825,
+      "nDCG10": 0.825,
+      "correct_doc_wrong_passage": 7,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "bm25",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.0,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "BM25120_META_1p25",
+      "EC8": 0.825,
+      "Recall10": 0.825,
+      "MRR10": 0.825,
+      "nDCG10": 0.825,
+      "correct_doc_wrong_passage": 7,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "bm25",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.25,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "HYB120_B4D1_META1",
+      "EC8": 0.825,
+      "Recall10": 0.825,
+      "MRR10": 0.825,
+      "nDCG10": 0.825,
+      "correct_doc_wrong_passage": 7,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 4.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.0,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "HYB120_B8D1_META1",
+      "EC8": 0.825,
+      "Recall10": 0.825,
+      "MRR10": 0.825,
+      "nDCG10": 0.825,
+      "correct_doc_wrong_passage": 7,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 8.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.0,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "HYB_120",
+      "EC8": 0.8,
+      "Recall10": 0.8,
+      "MRR10": 0.8,
+      "nDCG10": 0.8,
+      "correct_doc_wrong_passage": 8,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.0,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "HYB120_META_0p25",
+      "EC8": 0.8,
+      "Recall10": 0.8,
+      "MRR10": 0.8,
+      "nDCG10": 0.8,
+      "correct_doc_wrong_passage": 8,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.25,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "HYB120_META_0p5",
+      "EC8": 0.8,
+      "Recall10": 0.8,
+      "MRR10": 0.8,
+      "nDCG10": 0.8,
+      "correct_doc_wrong_passage": 8,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.5,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "HYB120_META_0p75",
+      "EC8": 0.8,
+      "Recall10": 0.8,
+      "MRR10": 0.8,
+      "nDCG10": 0.8,
+      "correct_doc_wrong_passage": 8,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.75,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "HYB120_META_1p0",
+      "EC8": 0.8,
+      "Recall10": 0.8,
+      "MRR10": 0.8,
+      "nDCG10": 0.8,
+      "correct_doc_wrong_passage": 8,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.0,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "HYB120_META_1p25",
+      "EC8": 0.8,
+      "Recall10": 0.8,
+      "MRR10": 0.8,
+      "nDCG10": 0.8,
+      "correct_doc_wrong_passage": 8,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 120,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 1.25,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "HYB_60",
+      "EC8": 0.725,
+      "Recall10": 0.725,
+      "MRR10": 0.725,
+      "nDCG10": 0.725,
+      "correct_doc_wrong_passage": 11,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 60,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.0,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "BM25_60",
+      "EC8": 0.725,
+      "Recall10": 0.725,
+      "MRR10": 0.725,
+      "nDCG10": 0.725,
+      "correct_doc_wrong_passage": 11,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "bm25",
+        "depth": 60,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.0,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "HYB_30",
+      "EC8": 0.675,
+      "Recall10": 0.675,
+      "MRR10": 0.675,
+      "nDCG10": 0.675,
+      "correct_doc_wrong_passage": 13,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "hybrid",
+        "depth": 30,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.0,
+        "locator_injection": false
+      }
+    },
+    {
+      "variant": "BM25_30",
+      "EC8": 0.65,
+      "Recall10": 0.65,
+      "MRR10": 0.65,
+      "nDCG10": 0.65,
+      "correct_doc_wrong_passage": 14,
+      "ranking_failure": 0,
+      "wrong_document": 0,
+      "config": {
+        "source": "bm25",
+        "depth": 30,
+        "bm25_weight": 1.0,
+        "dense_weight": 1.0,
+        "metadata_scale": 0.0,
+        "locator_injection": false
+      }
+    }
+  ],
+  "sanity": {
+    "HYB_30": {
+      "Recall@1": 0.675,
+      "Recall@3": 0.675,
+      "Recall@5": 0.675,
+      "Recall@8": 0.675,
+      "Recall@10": 0.675,
+      "MRR@10": 0.675,
+      "MAP@10": 0.675,
+      "nDCG@10": 0.675,
+      "Document Recall@10": 1.0,
+      "Document Mismatch Rate": 0.0,
+      "Passage Recall@10": 0.675,
+      "Evidence Completeness@8": 0.675,
+      "Evidence Completeness@10": 0.675,
+      "Span Recall": 0.675,
+      "Span Precision": 0.0675,
+      "retrieved_passages": 10.0,
+      "retrieved_characters": 7424.025,
+      "retrieved_tokens": 767.425,
+      "unique_documents": 1.55,
+      "duplicate_fragment_count": 0.0,
+      "questions": 40,
+      "latency_p50_ms": 7100.16914998414,
+      "latency_p95_ms": 10433.80470003467
+    },
+    "HYB120_META_1p0": {
+      "Recall@1": 0.8,
+      "Recall@3": 0.8,
+      "Recall@5": 0.8,
+      "Recall@8": 0.8,
+      "Recall@10": 0.8,
+      "MRR@10": 0.8,
+      "MAP@10": 0.8,
+      "nDCG@10": 0.8,
+      "Document Recall@10": 1.0,
+      "Document Mismatch Rate": 0.0,
+      "Passage Recall@10": 0.8,
+      "Evidence Completeness@8": 0.8,
+      "Evidence Completeness@10": 0.8,
+      "Span Recall": 0.8,
+      "Span Precision": 0.08,
+      "retrieved_passages": 10.0,
+      "retrieved_characters": 9003.425,
+      "retrieved_tokens": 894.05,
+      "unique_documents": 1.175,
+      "duplicate_fragment_count": 0.075,
+      "questions": 40,
+      "latency_p50_ms": 7100.16914998414,
+      "latency_p95_ms": 10433.80470003467
+    }
+  }
+}

@@ -135,9 +135,14 @@ def segments(text: str, start: int, end: int, target: int = 2400, maximum: int =
         yield start, end
 
 
-def parse_document(meta: dict, data: bytes) -> tuple[str, list[dict], list[dict], list[dict], dict]:
+def parse_document(meta: dict, data: bytes, *, source_blocks=None, source_title=None,
+                   source_is_pdf: bool | None = None, end_units_at_headings: bool = False) -> tuple[str, list[dict], list[dict], list[dict], dict]:
     decision = meta["source_type"] == "decision"
-    blocks, title = blocks_from_pdf(data, meta.get("pdf_skip_pages", [])) if data.startswith(b"%PDF-") else blocks_from_html(data, decision)
+    if source_blocks is None:
+        blocks, title = blocks_from_pdf(data, meta.get("pdf_skip_pages", [])) if data.startswith(b"%PDF-") else blocks_from_html(data, decision)
+    else:
+        blocks, title = source_blocks, source_title or ""
+    pdf_source = data.startswith(b"%PDF-") if source_is_pdf is None else source_is_pdf
     clean = "\n\n".join(blocks)
     offsets = block_offsets(blocks)
     doc_id = meta["doc_id"]
@@ -158,8 +163,13 @@ def parse_document(meta: dict, data: bytes) -> tuple[str, list[dict], list[dict]
             hierarchy = [h for h in hierarchy if h[0] < rank] + [(rank, b)]
             if "transitori" in normalize(b):
                 transitory = True
+            if end_units_at_headings and active:
+                # A major source heading ends the preceding article. The next
+                # article (if any) will inherit the updated hierarchy below.
+                active["end"] = offsets[i][0]
+                active = None
         am = None if decision else ARTICLE.match(b)
-        if am and data.startswith(b"%PDF-") and not re.match(r"^Art[ií]culo\s+\d+\s*[.]?\s*[-–]", b):
+        if am and pdf_source and not re.match(r"^Art[ií]culo\s+\d+\s*[.]?\s*[-–]", b):
             # The CAN PDF wraps lowercase in-sentence references at page/line
             # boundaries. Actual article headings use "Artículo N.-".
             am = None
@@ -195,7 +205,9 @@ def parse_document(meta: dict, data: bytes) -> tuple[str, list[dict], list[dict]
         # Section titles are only taken from source. Never infer a ratio/holding.
         boundaries = [0]
         for i, b in enumerate(blocks):
-            if i and len(b) < 160 and re.match(r"^(?:[IVX]+[. -]+)?(?:ANTECEDENTES|CONSIDERACIONES|FUNDAMENTOS|DECISI[ÓO]N|RESUELVE|PROBLEMA JUR[IÍ]DICO)", b, re.I):
+            if i and len(b) < 160 and re.fullmatch(
+                    r"(?:[IVX]+[. -]+)?(?:ANTECEDENTES|CONSIDERACIONES|FUNDAMENTOS(?:[ A-ZÁÉÍÓÚÑ-]+)?|DECISI[ÓO]N|RESUELVE|PROBLEMA JUR[IÍ]DICO)[.:]?",
+                    b.strip(), re.I):
                 boundaries.append(i)
         boundaries.append(len(blocks))
         for n, (a, z) in enumerate(zip(boundaries, boundaries[1:])):
@@ -243,8 +255,10 @@ def parse_document(meta: dict, data: bytes) -> tuple[str, list[dict], list[dict]
                      "is_current_text": current,
                      "notes": "Vigencia no certificada; conservar notas de la fuente.",
                      "duplicate_article_heading": u["duplicate"]}
+                if decision:
+                    p["source_unit_id"] = u["unit_id"]
                 passages.append(p)
-                if data.startswith(b"%PDF-"):
+                if pdf_source:
                     p["source_pages"] = sorted({b.page for b, (x, y) in zip(blocks, offsets) if x < z and y > a})
                     p["court"] = meta.get("court")
                 created.append(p)

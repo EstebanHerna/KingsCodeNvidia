@@ -1,0 +1,46 @@
+{
+  "version": "benchmark-v2-pilot-0.2",
+  "status": "technical_pilot_not_selectable_independent_source_benchmark_unpopulated",
+  "seed": 0,
+  "schema_sha256": "fb271c508396665d065bd0cea96ea5cac28967c5a36a5d495d54d96af46c39c9",
+  "corpus_sha256": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+  "corpus_version": "corpus-v0.1",
+  "splits": {
+    "dev": 6,
+    "validation": 3,
+    "holdout": 3
+  },
+  "document_families_disjoint": true,
+  "categories": [
+    "EXACT_REFERENCE",
+    "SEMANTIC_RULE",
+    "CONCEPT",
+    "SCENARIO_APPLICATION",
+    "MULTI_EVIDENCE",
+    "TEMPORAL",
+    "JURISPRUDENCE",
+    "NORM_VS_CASELAW",
+    "EXCEPTION",
+    "GRAPH_RELATION"
+  ],
+  "complex_cases_human_review_pending": 8,
+  "holdout_policy": "sealed; no evaluation command until separately authorized after reviewed benchmark release",
+  "hashes": {
+    "authoring/dev_provenance.jsonl": "889fe8e9c666e45219ee05a73b21db8014f748b1f86b589295f4efe1e9441d73",
+    "authoring/holdout_provenance.jsonl": "d7f7e760933913e707fab029e790400ee20a7b1ea1723026eaf32a0f7aaeb4bd",
+    "authoring/review_queue.jsonl": "20a69c1c2b7f5479588fcd1bbf575d7c3411550611a9c652e18cc2b9af52fa38",
+    "authoring/validation_provenance.jsonl": "1457410632c5fb2a16cfd1f95b712f8e5205ba63a80b26d918d62d886a11f2d0",
+    "gold/dev.jsonl": "71487e4d40d26f0de64bad71b39bb005bbdf8e47d8fc2812565f3dbd9e5199a1",
+    "gold/holdout.jsonl": "ac360d25e6329b47fbabc4f45d1e28ccdacf8cecc3aa441032f1353f4d5ffd70",
+    "gold/validation.jsonl": "bbbee6ae6610049d8e92d4abc2134e88defebcd07f0d704f12d32e0ff04d428d",
+    "questions/dev.jsonl": "a4cef41d15a88906597e442794c75fb5494d4717139de20d7519a7f71ad2227d",
+    "questions/holdout.jsonl": "0abede17a16049728583bef2819c0d9f392ca9eaf075089d182b03f3deeb2c34",
+    "questions/validation.jsonl": "4aa570a303f67dd96ba47132ec77f2a13085f2a0a12729e120595ae67fd34911"
+  },
+  "gold_schema_sha256": "ecc991d029bb6a6040f3bb11ab7b1a8f3294de1136cdaeb1fd4eaea24062096a",
+  "independent_source_items": 0,
+  "retrieval_gold_count": 0,
+  "end_to_end_only_count": 0,
+  "sealed_eval_count": 0,
+  "source_manifest_sha256": "0c1493a3d6ef76ce1f5a731d84c097a13c8a6b2e2a2fb840399fbe57337fe8fc"
+}

@@ -12,6 +12,7 @@ from functools import lru_cache
 import math
 from pathlib import Path
 import re
+from typing import Sequence
 
 from .common import ROOT, file_hash, indexable, normalize, read_json, read_jsonl, write_json
 
@@ -82,6 +83,29 @@ def reciprocal_rank_fusion(rankings: list[list[int]], constant: int = 60) -> dic
     return dict(scores)
 
 
+def normalize_query_views(question: str, query_views: Sequence[str] | None = None) -> list[str]:
+    """Keep the user's question first; deduplicate textual views deterministically."""
+    if not isinstance(question, str):
+        raise TypeError("question must be plain text")
+    if query_views is None:
+        supplied = []
+    elif isinstance(query_views, (list, tuple)):
+        supplied = list(query_views)
+    else:
+        raise TypeError("query_views must be a list or tuple of plain text")
+    views = []
+    seen = set()
+    for view in [question, *supplied]:
+        if not isinstance(view, str):
+            raise TypeError("every query view must be plain text")
+        key = normalize(view).strip()
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        views.append(view.strip())
+    return views
+
+
 def default_graph_route(question: str) -> bool:
     """Provisional deterministic fallback, replaceable by member B's router."""
     return bool(re.search(r"\b(remisi[oó]n|remite|remiten|modific\w*|derog\w*|reglament\w*|concordancia|par[aá]grafo|inciso)\b", question, re.I))
@@ -89,7 +113,7 @@ def default_graph_route(question: str) -> bool:
 
 class Retriever:
     def __init__(self, corpus_dir: str | Path | None = None, *, mode: str = "bm25", rerank: bool = False,
-                 graph_router=None, candidate_k: int = 30, graph_budget: int = 10):
+                 graph_router=None, candidate_k: int = 30, graph_budget: int = 10, exact_locator: bool = False):
         if mode not in {"bm25", "dense", "hybrid"}:
             raise ValueError("mode must be bm25, dense or hybrid")
         if candidate_k < 1 or graph_budget < 0:
@@ -99,6 +123,8 @@ class Retriever:
         self.passages = [p for p in read_jsonl(self.directory / "passages.jsonl") if indexable(p)]
         self.bm25 = BM25Index.load(self.directory / "index/bm25.json", self.passages, self.corpus_hash)
         self.mode, self.candidate_k, self.graph_budget = mode, candidate_k, graph_budget
+        from .legal_locator import LegalLocator
+        self.legal_locator = LegalLocator(self.passages) if exact_locator else None
         self.router = graph_router or default_graph_route
         self.node_passages = defaultdict(set)
         for i, p in enumerate(self.passages):
@@ -119,24 +145,50 @@ class Retriever:
             from .neural import QwenReranker
             self.reranker = QwenReranker()
 
-    def retrieve(self, question: str, k: int = 8, graph_mode: str = "auto") -> list[dict]:
+    def retrieve(self, question: str, k: int = 8, graph_mode: str = "auto",
+                 query_views: Sequence[str] | None = None) -> list[dict]:
         if not isinstance(question, str):
             raise TypeError("question must be plain text, never a sample/answer record")
+        views = normalize_query_views(question, query_views)
         if graph_mode not in {"off", "auto", "on"}:
             raise ValueError("graph_mode must be off, auto or on")
         if not isinstance(k, int) or isinstance(k, bool) or k < 0:
             raise ValueError("k must be a nonnegative integer")
-        if not question.strip() or k == 0:
+        if not views or k == 0:
             return []
         count = max(k, self.candidate_k)
-        sparse, bm_scores = self.bm25.ranking(question, count)
-        dense, dense_scores = ([], {}) if self.dense is None else self.dense.ranking(question, count)
-        ranks = [sparse] if self.mode == "bm25" else [dense] if self.mode == "dense" else [sparse, dense]
-        fused = reciprocal_rank_fusion(ranks)
-        scores = dict(bm_scores) if self.mode == "bm25" else dict(dense_scores) if self.mode == "dense" else fused.copy()
+        sparse_rankings, dense_rankings = [], []
+        bm_scores, dense_scores = {}, {}
+        for view_index, view in enumerate(views):
+            sparse, view_bm_scores = self.bm25.ranking(view, count)
+            sparse_rankings.append(sparse)
+            if view_index == 0:
+                bm_scores = view_bm_scores
+            if self.dense is not None:
+                dense, view_dense_scores = self.dense.ranking(view, count)
+                dense_rankings.append(dense)
+                if view_index == 0:
+                    dense_scores = view_dense_scores
+        if self.mode == "bm25":
+            ranks = sparse_rankings
+            fused = reciprocal_rank_fusion(ranks)
+            scores = fused if len(views) > 1 else dict(bm_scores)
+        elif self.mode == "dense":
+            ranks = dense_rankings
+            fused = reciprocal_rank_fusion(ranks)
+            scores = fused if len(views) > 1 else dict(dense_scores)
+        else:
+            ranks = [ranking for pair in zip(sparse_rankings, dense_rankings) for ranking in pair]
+            fused = reciprocal_rank_fusion(ranks)
+            scores = fused.copy()
         candidates = set(i for ranking in ranks for i in ranking)
         base = sorted(candidates, key=lambda i: (-scores.get(i, 0), self.passages[i]["passage_id"]))[:count]
         candidates = set(base)
+        locator_result = None
+        if getattr(self, "legal_locator", None) is not None:
+            from .legal_locator import candidate_union
+            locator_result = self.legal_locator.resolve(question)
+            candidates = set(candidate_union(base, locator_result["indices"]))
         graph_scores, graph_evidence = {}, defaultdict(list)
         active = graph_mode == "on" or graph_mode == "auto" and bool(self.router(question))
         if active and base and self.graph_budget:
@@ -184,15 +236,29 @@ class Retriever:
             p["score"] = rerank_scores.get(i, scores.get(i, 0))
             p["retrieval"] = {"rank": rank, "mode": self.mode, "graph_mode": graph_mode,
                               "graph_active": active, "corpus_sha256": self.corpus_hash,
+                              "query_view_count": len(views),
                               "graph_evidence": graph_evidence.get(i, [])}
+            if locator_result is not None:
+                p["locator"] = {"version": locator_result["version"], "hit": i in locator_result["hits"],
+                                "matches": locator_result["hits"].get(i, []),
+                                "unresolved": locator_result["unresolved"]}
+                p["retrieval"]["candidate_sources"] = (["general"] if i in base else []) + (
+                    ["exact_locator"] if i in locator_result["hits"] else []) + (["graph"] if i in graph_evidence else [])
+                p["retrieval"]["general_candidate_count"] = len(base)
+                p["retrieval"]["locator_candidate_count"] = len(locator_result["indices"])
+                p["retrieval"]["union_candidate_count"] = len(candidates)
             output.append(p)
         return output
 
 
 @lru_cache(maxsize=2)
 def _default_retriever(corpus_hash: str):
-    return Retriever()
+    # CPU-compatible public profile. Neural execution remains explicit. Class
+    # defaults preserve historical R0-R8; no graph/diversity enabled by default.
+    return Retriever(exact_locator=True, graph_router=lambda _question: False)
 
 
-def retrieve(question: str, k: int = 8, graph_mode: str = "auto") -> list[dict]:
-    return _default_retriever(file_hash(ROOT / "corpus/passages.jsonl")).retrieve(question, k, graph_mode)
+def retrieve(question: str, k: int = 8, graph_mode: str = "auto",
+             query_views: Sequence[str] | None = None) -> list[dict]:
+    return _default_retriever(file_hash(ROOT / "corpus/passages.jsonl")).retrieve(
+        question, k, graph_mode, query_views=query_views)

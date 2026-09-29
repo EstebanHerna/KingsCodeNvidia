@@ -106,3 +106,49 @@
 - **T7, entregables sin GPU:** `run.sh` (comando único: instala dependencias, exige o construye `corpus/`, corre tests, Gate 1B smoke y `scripts/evaluate.py --split sample`), `Dockerfile` + `.dockerignore` para la verificación de reproducibilidad en contenedor limpio, y secciones nuevas en el README (`## Comando único de reproducción`, `## Corpus e índice`). No se pudo ejecutar de punta a punta en esta máquina por falta de `corpus/` local — se verificó sintaxis de bash y del snippet Python embebido únicamente.
 - **T6, throughput/concurrencia, deliberadamente no implementado:** requiere medición real (GPU + corpus) para no introducir bugs silenciosos en la guarda/citas deterministas; se deja documentado como bloqueado en vez de escribir concurrencia sin poder correrla, siguiendo la regla propia de `CLAUDE.md` de medir antes/después de cualquier cambio de calidad.
 - Verificado con `python -m unittest discover -s tests -v`: 91 tests, OK (5 se saltan sin `corpus/` local). Nuevos tests: `test_multiple_choice_never_pre_blocks_on_soft_evidence_reasons`, `test_free_text_still_hard_blocks_on_empty_retrieval`, `test_query_variants_one_per_option_sorted_else_base_only`, `test_rrf_merge_boosts_passages_ranked_in_more_lists`, `test_multiple_choice_fans_out_one_retrieve_per_option_and_fuses_rrf`.
+
+## 2026-09-28 — A v0.2 después del freeze GPU (60ebf7e)
+
+Se reconoce el freeze RTX 4090 y se cierra validation v1 al tuning. Search V2 muestra empates con locator incluso sin boost de metadatos. Se productiviza parsing → identidad canónica → fragmentos → unión de candidatos antes del reranker; no se selecciona metadata_scale=1.25. La clase Retriever conserva defaults históricos para replay; la función pública añade locator y desactiva expansión AUTO en su perfil CPU; ON explícito conserva la expansión acotada del contrato. Los pesos neuronales siguen siendo explícitos.
+
+Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Benchmark v2 empieza con schema/piloto técnico determinista y una cola humana para escenarios/temporalidad/excepciones. Ningún modelo cerrado redacta preguntas competitivas. R0–R8 siguen siendo ablaciones, no un catálogo excluyente de arquitecturas finales. Composición, selección inmutable, confirmaciones autorizadas y freeze top 8 se decidirán con nueva evidencia v2. No se cambian B ni sus prompts.
+
+
+## 2026-09-29 — Benchmark v2 independent source gate and international layer
+
+- Se cierra benchmark v1 a tuning. El piloto v2 derivado de captions del corpus es solo smoke técnico: seis exposiciones DEV registradas, cero preguntas independientes, cero gold v2 independiente y cero SEALED_EVAL. Sus métricas no seleccionan arquitectura.
+- El schema v2 admite RETRIEVAL_GOLD con conjuntos mínimos alternativos y END_TO_END_ONLY sin etiquetas de retrieval; las filas actuales se identifican como TECHNICAL_PILOT_ONLY. La recuperación no recibe gold.
+- Las URLs oficiales de los PDFs ICFES localizados retornaron 404 en verificación directa; SIRNA confirma que existe una guía, sin banco público de ítems verificado. No se inventan preguntas para cumplir cuotas.
+- Se añade inventario internacional selectivo de candidatos CAN/OIT/interamericano. Ratificación o aplicabilidad permanece pendiente de verificación para cada instrumento; no se indexa automáticamente. Benchmark internacional: cero ítems.
+- Corpus-v0.1 queda inmutable. Corpus-v0.2 tiene cuatro documentos provisionales y las remediaciones G01/G02/C01/P02/P01/D01 aún no están completas; cada cambio requiere fuente primaria, fixture y prueba.
+- Sin gold independiente no existe baseline útil ni distribución de fallos para escoger experimento. La siguiente ejecución será un baseline no ajustado sobre DEV externo revisado.
+
+## 2026-09-29 — Diagnósticos de vistas y estado de remediación A v0.2
+
+- El checkout remoto de `feat/member-a-corpus-v02-locator` estaba limpio en 790bf85. La suite completa pasó con 210 tests después de proporcionar `jsonschema==4.26.0` desde un directorio temporal ignorado; la primera invocación sin esa dependencia falló al importar siete módulos/casos.
+- Se implementan métricas puras para Oracle Multi-View Recall, Fusion Loss y Graph Recovery Rate sobre `minimal_evidence_sets`, incluyendo alternativas. Las pruebas verifican alternativas, pérdida de fusión y recuperación condicionada a misses iniciales. No hay ranking/gold independiente; no se reportan valores empíricos ni baseline.
+- Los seis hallazgos G01/G02/C01/P02/P01/D01 siguen pendientes. Se registra explícitamente qué evidencias no están en el snapshot. No se cambia v0.1 ni se intenta arreglar el parser por heurística. El grafo v0.2 permanece provisional: 29 `CONTIENE`, cero aristas semánticas activas y cero relaciones revisadas.
+- El piloto existente contiene 12 casos corpus-derivados, no independientes ni seleccionables. No se amplía a 20–30 hasta revisar la estructura de las fuentes v0.2; esto evita convertir errores potenciales de parsing en diagnósticos supuestamente correctos.
+- No se autoriza un experimento de retrieval: todavía no hay preguntas independientes aceptadas en DEV ni distribución de fallos. Próximo paso recomendado: obtener fuentes oficiales faltantes para las correcciones estructurales y continuar intake de assessment externo accesible; luego revisar bytes/fixtures antes de parser y benchmark.
+
+
+## 2026-09-29 — Corpus v0.2 source-backed parser repairs and assessment intake update
+
+- Preserve four primary legal sources in `corpora/corpus-v0.2/raw/` with URL, TLS/HTTP metadata and SHA-256 recorded in the v0.2 manifest. These are audit sources; the existing four-document/72-passage v0.2 snapshot was not rebuilt. Corpus v0.1 remains unchanged.
+- Add v0.2-only corrections for publisher TOC rows (G02), repeated decision headings (C01), split statute headings (P02), and article termination at a major hierarchy heading (P01). Regression fixtures are checked against exact extracted blocks from the preserved bytes. The parser keeps PDF-specific safeguards when operating through the sanitized-block path.
+- Leave G01 semantic relationships and D01 document identity review open; no semantic edges or automatic content-based document merges are activated.
+- Official ICFES PDF origins remained unavailable; record indexed-only evidence without ingesting questions. The current SIRNA guide contains illustrative examples but its terms prohibit reproduction/transformation; no assessment examples are copied into benchmark assets. An ICFES 2021 source-rendering exposure is logged as validation candidate only.
+- No independent retrieval gold was admitted. The baseline gate remains closed until at least 10 reviewed independent items exist.
+
+
+## 2026-09-29 — Member A official-source runtime block and G01 candidate review
+
+- The original ICFES Gestión del Conflicto 2026 and Comunicación Jurídica 2021 PDFs, current official module candidates, and the official toolbox landing URL were retried using browser navigation and browser-compatible headers. HTTP 404 in this runtime is recorded as `RUNTIME_ACQUISITION_BLOCKED`, because official ICFES index entries confirm the resources exist; indexed content is not accepted as original bytes.
+- Added a hash-gated local intake helper targeting ignored `tmp/official-source-intake/`. It checks the recorded source ID, official ICFES host, input path, PDF signature and SHA-256 before indicating that local extraction may begin. Hash verification alone does not establish authenticity or usage rights.
+- Reviewed the seven G01 candidate edges against the exact official containing-source text and recorded source URLs/hashes. Rejected the seven wrong containing-passage targets. The corrected target/modifier claims remain unresolved until their referenced legal instrument bytes are acquired; zero semantic edges are active.
+- Added a D01 regression for equal content hashes across distinct canonical legal identities; broader provenance audit remains open.
+- Independent extracted questions and retrieval-gold remain zero; no baseline or retrieval experiment is justified. No v0.1 or Member B files changed.
+
+- Validación de esta continuación (segunda pasada final): 226 tests PASS; `python tools/benchmark_v2.py check` PASS con 10 hashes y holdout sin parsear; `python tools/verify_member_a_v02.py` PASS con 19 archivos oficiales, 326 archivos raw/clean v0.1 y 18 hashes v0.2. Sin GPU ni baseline.
+- Precisión de adquisición: el PDF ICFES Gestión del Conflicto 2026-2 de mayo es una guía de orientación listada en el catálogo oficial, no un cuadernillo de preguntas. Se excluye de la intake de ítems; la fuente de preguntas original de febrero permanece confirmada por indexación oficial pero bloqueada por 404.
+- Validación tras separar el PDF de orientación: tercera suite completa de esta continuación, 226 tests PASS; `benchmark_v2.py check` PASS (10 hashes, no holdout); verificador de snapshot PASS.

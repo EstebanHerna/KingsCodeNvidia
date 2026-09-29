@@ -1,0 +1,155 @@
+========================================================================
+KINGSCODE SEARCH V2
+DEV ONLY - NO VALIDATION - NO HOLDOUT
+RUN: C:\Users\ls.contreras\KingsCodeGPU\KingsCodeNvidia\reports\benchmark\search_v2\20260928T231817878338Z
+========================================================================
+SCRIPT SHA256: ffd63a88d10c78bd32bbd96afd4f291f01f2624f101f2d40abb4e8a2beaa1afa
+CORPUS: C:\Users\ls.contreras\KingsCodeGPU\KingsCodeNvidia\tmp\benchmark_corpus_v1
+PASSAGES: 26060
+GPU models loaded.
+VARIANTS: 39
+HYB_30 {'source': 'hybrid', 'depth': 30, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.0, 'locator_injection': False}
+BM25_30 {'source': 'bm25', 'depth': 30, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.0, 'locator_injection': False}
+HYB_60 {'source': 'hybrid', 'depth': 60, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.0, 'locator_injection': False}
+BM25_60 {'source': 'bm25', 'depth': 60, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.0, 'locator_injection': False}
+HYB_120 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.0, 'locator_injection': False}
+BM25_120 {'source': 'bm25', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.0, 'locator_injection': False}
+HYB_180 {'source': 'hybrid', 'depth': 180, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.0, 'locator_injection': False}
+BM25_180 {'source': 'bm25', 'depth': 180, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.0, 'locator_injection': False}
+HYB120_B2D1 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 2.0, 'dense_weight': 1.0, 'metadata_scale': 0.0, 'locator_injection': False}
+HYB120_B4D1 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 4.0, 'dense_weight': 1.0, 'metadata_scale': 0.0, 'locator_injection': False}
+HYB120_B8D1 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 8.0, 'dense_weight': 1.0, 'metadata_scale': 0.0, 'locator_injection': False}
+HYB120_META_0p25 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.25, 'locator_injection': False}
+BM25120_META_0p25 {'source': 'bm25', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.25, 'locator_injection': False}
+HYB120_META_0p5 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.5, 'locator_injection': False}
+BM25120_META_0p5 {'source': 'bm25', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.5, 'locator_injection': False}
+HYB120_META_0p75 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.75, 'locator_injection': False}
+BM25120_META_0p75 {'source': 'bm25', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.75, 'locator_injection': False}
+HYB120_META_1p0 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 1.0, 'locator_injection': False}
+BM25120_META_1p0 {'source': 'bm25', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 1.0, 'locator_injection': False}
+HYB120_META_1p25 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 1.25, 'locator_injection': False}
+BM25120_META_1p25 {'source': 'bm25', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 1.25, 'locator_injection': False}
+HYB120_B2D1_META1 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 2.0, 'dense_weight': 1.0, 'metadata_scale': 1.0, 'locator_injection': False}
+HYB120_B4D1_META1 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 4.0, 'dense_weight': 1.0, 'metadata_scale': 1.0, 'locator_injection': False}
+HYB120_B8D1_META1 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 8.0, 'dense_weight': 1.0, 'metadata_scale': 1.0, 'locator_injection': False}
+HYB120_LOC_META_0p0 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.0, 'locator_injection': True}
+BM25120_LOC_META_0p0 {'source': 'bm25', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.0, 'locator_injection': True}
+HYB120_LOC_META_0p5 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.5, 'locator_injection': True}
+BM25120_LOC_META_0p5 {'source': 'bm25', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 0.5, 'locator_injection': True}
+HYB120_LOC_META_1p0 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 1.0, 'locator_injection': True}
+BM25120_LOC_META_1p0 {'source': 'bm25', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 1.0, 'locator_injection': True}
+HYB120_LOC_META_1p25 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 1.25, 'locator_injection': True}
+BM25120_LOC_META_1p25 {'source': 'bm25', 'depth': 120, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 1.25, 'locator_injection': True}
+HYB120_B2D1_LOC_META1 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 2.0, 'dense_weight': 1.0, 'metadata_scale': 1.0, 'locator_injection': True}
+HYB120_B4D1_LOC_META1 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 4.0, 'dense_weight': 1.0, 'metadata_scale': 1.0, 'locator_injection': True}
+HYB120_B8D1_LOC_META1 {'source': 'hybrid', 'depth': 120, 'bm25_weight': 8.0, 'dense_weight': 1.0, 'metadata_scale': 1.0, 'locator_injection': True}
+HYB180_META1 {'source': 'hybrid', 'depth': 180, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 1.0, 'locator_injection': False}
+BM25180_META1 {'source': 'bm25', 'depth': 180, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 1.0, 'locator_injection': False}
+HYB180_LOC_META1 {'source': 'hybrid', 'depth': 180, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 1.0, 'locator_injection': True}
+BM25180_LOC_META1 {'source': 'bm25', 'depth': 180, 'bm25_weight': 1.0, 'dense_weight': 1.0, 'metadata_scale': 1.0, 'locator_injection': True}
+[005/120] elapsed=0.3 min union=211 locator=0
+[010/120] elapsed=0.7 min union=203 locator=0
+[015/120] elapsed=1.0 min union=254 locator=2
+[020/120] elapsed=1.4 min union=262 locator=1
+[025/120] elapsed=1.8 min union=225 locator=2
+[030/120] elapsed=2.7 min union=227 locator=1
+[035/120] elapsed=3.0 min union=229 locator=1
+[040/120] elapsed=3.5 min union=235 locator=2
+[045/120] elapsed=4.3 min union=238 locator=1
+[050/120] elapsed=4.7 min union=252 locator=2
+[055/120] elapsed=5.1 min union=263 locator=1
+[060/120] elapsed=5.7 min union=262 locator=1
+[065/120] elapsed=6.1 min union=223 locator=1
+[070/120] elapsed=6.4 min union=221 locator=1
+[075/120] elapsed=6.8 min union=226 locator=2
+[080/120] elapsed=7.3 min union=229 locator=1
+[085/120] elapsed=7.7 min union=225 locator=2
+[090/120] elapsed=8.2 min union=230 locator=1
+[095/120] elapsed=8.6 min union=229 locator=1
+[100/120] elapsed=8.9 min union=225 locator=2
+[105/120] elapsed=9.3 min union=230 locator=1
+[110/120] elapsed=9.7 min union=225 locator=2
+[115/120] elapsed=10.0 min union=231 locator=1
+[120/120] elapsed=10.4 min union=230 locator=1
+========================================================================
+ALL RANKINGS COMPLETE.
+NOW loading gold.
+========================================================================
+REFERENCE R6: C:\Users\ls.contreras\KingsCodeGPU\KingsCodeNvidia\reports\benchmark\r6\20260928T220035819554Z-dev
+
+====================================================================================================
+TOP 20
+====================================================================================================
+ # VARIANT                               EC8      R10      MRR     nDCG   CDWP   RF
+ 1 HYB120_LOC_META_1p25               0.9917   0.9958   1.0000   0.9939      0    1
+ 2 BM25120_LOC_META_1p25              0.9917   0.9958   1.0000   0.9939      0    1
+ 3 BM25120_LOC_META_1p0               0.9917   0.9958   1.0000   0.9928      0    1
+ 4 HYB120_B2D1_LOC_META1              0.9917   0.9958   1.0000   0.9928      0    1
+ 5 HYB120_B4D1_LOC_META1              0.9917   0.9958   1.0000   0.9928      0    1
+ 6 HYB120_B8D1_LOC_META1              0.9917   0.9958   1.0000   0.9928      0    1
+ 7 BM25180_LOC_META1                  0.9917   0.9958   1.0000   0.9928      0    1
+ 8 HYB120_LOC_META_1p0                0.9833   0.9958   1.0000   0.9921      0    1
+ 9 HYB180_LOC_META1                   0.9833   0.9917   1.0000   0.9905      0    2
+10 BM25120_LOC_META_0p5               0.9833   0.9917   1.0000   0.9875      0    2
+11 HYB120_LOC_META_0p5                0.9833   0.9917   1.0000   0.9852      0    2
+12 BM25120_LOC_META_0p0               0.9750   0.9917   0.9722   0.9647      0    2
+13 HYB120_LOC_META_0p0                0.9667   0.9875   0.9632   0.9524      0    3
+14 HYB180_META1                       0.8833   0.9125   0.9417   0.9161      7    7
+15 HYB_180                            0.8750   0.9083   0.9111   0.8847      7    8
+16 BM25180_META1                      0.8417   0.8875   0.9333   0.8955      8   11
+17 HYB120_META_1p25                   0.8417   0.8792   0.9167   0.8863     10    9
+18 HYB120_META_1p0                    0.8417   0.8792   0.9167   0.8846     10    9
+19 HYB120_META_0p75                   0.8417   0.8792   0.9167   0.8826     10    9
+20 HYB120_META_0p5                    0.8417   0.8792   0.9167   0.8820     10    9
+
+====================================================================================================
+SANITY
+====================================================================================================
+HYB_30 EC8: 0.7416666666666667
+HYB120_META_1p0 EC8: 0.8416666666666667
+OFFICIAL R6 EC8: 0.8416666666666667
+
+====================================================================================================
+TOP 8 BOOTSTRAP VS R6
+====================================================================================================
+ HYB120_LOC_META_1p25
+  Evidence Completeness@8: delta=0.150000 CI95=[0.09166666666666666, 0.21666666666666667]
+  Recall@10: delta=0.116667 CI95=[0.06666666666666667, 0.17083333333333334]
+  MRR@10: delta=0.083333 CI95=[0.041666666666666664, 0.13333333333333333]
+ BM25120_LOC_META_1p25
+  Evidence Completeness@8: delta=0.150000 CI95=[0.09166666666666666, 0.21666666666666667]
+  Recall@10: delta=0.116667 CI95=[0.06666666666666667, 0.17083333333333334]
+  MRR@10: delta=0.083333 CI95=[0.041666666666666664, 0.13333333333333333]
+ BM25120_LOC_META_1p0
+  Evidence Completeness@8: delta=0.150000 CI95=[0.09166666666666666, 0.21666666666666667]
+  Recall@10: delta=0.116667 CI95=[0.06666666666666667, 0.17083333333333334]
+  MRR@10: delta=0.083333 CI95=[0.041666666666666664, 0.13333333333333333]
+ HYB120_B2D1_LOC_META1
+  Evidence Completeness@8: delta=0.150000 CI95=[0.09166666666666666, 0.21666666666666667]
+  Recall@10: delta=0.116667 CI95=[0.06666666666666667, 0.17083333333333334]
+  MRR@10: delta=0.083333 CI95=[0.041666666666666664, 0.13333333333333333]
+ HYB120_B4D1_LOC_META1
+  Evidence Completeness@8: delta=0.150000 CI95=[0.09166666666666666, 0.21666666666666667]
+  Recall@10: delta=0.116667 CI95=[0.06666666666666667, 0.17083333333333334]
+  MRR@10: delta=0.083333 CI95=[0.041666666666666664, 0.13333333333333333]
+ HYB120_B8D1_LOC_META1
+  Evidence Completeness@8: delta=0.150000 CI95=[0.09166666666666666, 0.21666666666666667]
+  Recall@10: delta=0.116667 CI95=[0.06666666666666667, 0.17083333333333334]
+  MRR@10: delta=0.083333 CI95=[0.041666666666666664, 0.13333333333333333]
+ BM25180_LOC_META1
+  Evidence Completeness@8: delta=0.150000 CI95=[0.09166666666666666, 0.21666666666666667]
+  Recall@10: delta=0.116667 CI95=[0.06666666666666667, 0.17083333333333334]
+  MRR@10: delta=0.083333 CI95=[0.041666666666666664, 0.13333333333333333]
+ HYB120_LOC_META_1p0
+  Evidence Completeness@8: delta=0.141667 CI95=[0.08333333333333333, 0.20833333333333334]
+  Recall@10: delta=0.116667 CI95=[0.06666666666666667, 0.17083333333333334]
+  MRR@10: delta=0.083333 CI95=[0.041666666666666664, 0.13333333333333333]
+
+====================================================================================================
+SEARCH V2 FINISHED
+BEST POINT ESTIMATE: HYB120_LOC_META_1p25
+EC8: 0.9916666666666667
+Recall10: 0.9958333333333333
+MRR10: 1.0
+OUTPUT: C:\Users\ls.contreras\KingsCodeGPU\KingsCodeNvidia\reports\benchmark\search_v2\20260928T231817878338Z
+====================================================================================================

@@ -1,0 +1,57 @@
+﻿[
+    {
+        "file":  "C:\\Users\\ls.contreras\\KingsCodeGPU\\KingsCodeNvidia\\config\\neural.json",
+        "bytes":  377,
+        "sha256":  "a4dcfd86616baa88b806d0e634bce9aa1aaad4edfcc3a2d7d35624c8e9f76055"
+    },
+    {
+        "file":  "C:\\Users\\ls.contreras\\KingsCodeGPU\\KingsCodeNvidia\\config\\models.lock.json",
+        "bytes":  3956,
+        "sha256":  "ee061a56af47dd4af995b3f57b7fac452054ca15a3e88ee091ebf835ce3c4ec5"
+    },
+    {
+        "file":  "C:\\Users\\ls.contreras\\KingsCodeGPU\\KingsCodeNvidia\\tmp\\benchmark_corpus_v1\\manifest.json",
+        "bytes":  279204,
+        "sha256":  "b6c9b022812c7fabb05731a6f36e379ce5e40ad84a12b047781f3c412be23feb"
+    },
+    {
+        "file":  "C:\\Users\\ls.contreras\\KingsCodeGPU\\KingsCodeNvidia\\tmp\\benchmark_corpus_v1\\passages.jsonl",
+        "bytes":  84466741,
+        "sha256":  "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0"
+    },
+    {
+        "file":  "C:\\Users\\ls.contreras\\KingsCodeGPU\\KingsCodeNvidia\\tmp\\benchmark_corpus_v1\\graph\\nodes.jsonl",
+        "bytes":  17013034,
+        "sha256":  "7c8af359cb1ac8de13872e01d2d0faf18218d24e1e2af326529f4a11c0a39aaa"
+    },
+    {
+        "file":  "C:\\Users\\ls.contreras\\KingsCodeGPU\\KingsCodeNvidia\\tmp\\benchmark_corpus_v1\\graph\\edges.jsonl",
+        "bytes":  25427698,
+        "sha256":  "6002fdcdbb4fb673761cb2dbe949db2502306809f2179e4133d8f40c286ff634"
+    },
+    {
+        "file":  "C:\\Users\\ls.contreras\\KingsCodeGPU\\KingsCodeNvidia\\tmp\\benchmark_corpus_v1\\index\\bm25.json",
+        "bytes":  131507188,
+        "sha256":  "aa6b40c5e70f88513a7cde7e9ca96a15d1d40088c538668087700b9b46de005b"
+    },
+    {
+        "file":  "C:\\Users\\ls.contreras\\KingsCodeGPU\\KingsCodeNvidia\\tmp\\benchmark_corpus_v1\\index\\dense.npy",
+        "bytes":  106741888,
+        "sha256":  "0c156c5e95dce92d6abd6404a39242bd724228bfdf99f4e9e44ddf5dd16b8347"
+    },
+    {
+        "file":  "C:\\Users\\ls.contreras\\KingsCodeGPU\\KingsCodeNvidia\\tmp\\benchmark_corpus_v1\\index\\dense.meta.json",
+        "bytes":  1188589,
+        "sha256":  "c63c929cb85311c345b9e7cefa3245748a9f16bd3a12ce396563bc07cddb23cb"
+    },
+    {
+        "file":  "C:\\Users\\ls.contreras\\KingsCodeGPU\\KingsCodeNvidia\\tools\\gpu_search_v2_dev.py",
+        "bytes":  22212,
+        "sha256":  "ffd63a88d10c78bd32bbd96afd4f291f01f2624f101f2d40abb4e8a2beaa1afa"
+    },
+    {
+        "file":  "C:\\Users\\ls.contreras\\KingsCodeGPU\\KingsCodeNvidia\\tools\\gpu_search_v2_validation.py",
+        "bytes":  22212,
+        "sha256":  "fb7e507ad3b1d71a2a55d8c89faddf6006c77ec4f5848352206146cf0da2463d"
+    }
+]

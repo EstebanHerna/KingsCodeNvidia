@@ -22,3 +22,7 @@ No asumir que CUDA ya está configurado.
 ## Próxima sesión en la 4090
 
 Gate 2-Prep está preparado pero sin pruebas ejecutadas, por instrucción del usuario. Leer `docs/GPU_DAY_RUNBOOK.md` y `docs/MODEL_LOCKS_GATE2.md`. Primer comando en la GPU: `git pull --ff-only origin main`. Después verificar commit/snapshot y ejecutar las dos verificaciones pendientes. No confundir los 60 tests históricos de Gate 1B con validación del backend nuevo.
+
+## Actualización que prevalece sobre los próximos pasos históricos de arriba
+
+A ya tiene resultados RTX4090/Search V2 preservados en 60ebf7e. La fase vigente es locator productivo + benchmark v2 + corpus v0.2 en `feat/member-a-corpus-v02-locator`. Validation v1 cerrada; no reejecutar las variantes ni consumir holdout. Leer `reports/MEMBER_A_V02_PROGRESS.md` y `docs/A_TO_B_V02_CONTRACT.md`. B/decoder mantiene su estado independiente.
