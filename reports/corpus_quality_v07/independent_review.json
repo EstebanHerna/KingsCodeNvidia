@@ -1,0 +1,28 @@
+{
+  "verdict": "ACCEPT_AUDIT_WITH_EXPLICIT_UNCERTAINTY; CORPUS_NOT_CERTIFIED",
+  "review_method": "Four sequential roles by the same agent. Not an external independent reviewer. External review by Luis remains pending.",
+  "roles": {
+    "AUDITOR": "Preregistered seed0; all 200 sampled units checked mechanically; 100 graph contexts reviewed; source-specific defects recorded.",
+    "LEGAL_DATA_CURATOR": "Official sources only; 28 identifiers preserved; no legal currency inferred; catalog/ficha/edicto separated from primary text.",
+    "CRITIC": "Corrected audit regex false negatives (decision header case/leading zeros; article143 A). Rejected treating literal heading membership as hierarchy accuracy or substring fidelity as absence of truncation. UNKNOWN excluded from unsupported temporal assertion denominator. 990 physical multi-segment groups not automatically collisions.",
+    "INTEGRATOR": "Raw/clean/passages/graph/index all match before/after; no retrieval, B, benchmark-v1 or official modifications. Findings become future v0.2 work, not corpus edits."
+  },
+  "checks": {
+    "sample_unchanged": true,
+    "protocol_unchanged": true,
+    "snapshot_files_unchanged": 580,
+    "official_files_unchanged": 19,
+    "metrics_separate": 17,
+    "no_composite_quality_score": true,
+    "new_benchmark_execution": false,
+    "holdout_access": false
+  },
+  "limitations": [
+    "Risk-enriched sample is not a population estimate.",
+    "All truncation outcomes remain UNKNOWN; full-document omissions not certified.",
+    "Unflagged parser/contamination units remain UNKNOWN, not PASS.",
+    "Graph 89 supported,8 confirmed unsupported,3 UNKNOWN in sampled contexts.",
+    "No external independent legal reviewer in this session."
+  ],
+  "corrective_actions_in_this_branch": "Audit interpretation/reporting only; no hardening."
+}

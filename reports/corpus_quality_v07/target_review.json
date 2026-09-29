@@ -39,12 +39,27 @@
         "error": "Needs manually verified official URL for named code/instrument"
       },
       "official_sources_attempted": [
-        "https://www.suin-juriscol.gov.co/legislacion/?q=Acuerdo%2002%20de%202015"
+        "https://www.alcaldiabogota.gov.co/sisjur/normas/Norma1.jsp?i=154021"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "ambiguous",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://www.alcaldiabogota.gov.co/sisjur/normas/Norma1.jsp?i=154021",
+          "evidence_class": "ambiguous_issuer_preserved",
+          "note": "A Corte Constitucional Acuerdo02/2015 exists, but ANH and other issuers also use the identifier. Original incomplete issuer remains ambiguous.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        },
+        {
+          "url": "https://www.anh.gov.co/es/noticias/acuerdo-02-de-16-de-marzo-de-2015/",
+          "evidence_class": "different_issuer_same_number_year",
+          "note": "Confirms ambiguity; no silent issuer selection."
+        }
+      ],
+      "current_status": "ambiguous_issuer_preserved",
+      "verification": "A Corte Constitucional Acuerdo02/2015 exists, but ANH and other issuers also use the identifier. Original incomplete issuer remains ambiguous.",
+      "v06_classification": "ambiguous",
+      "search_query": "Acuerdo 02 de 2015 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -84,13 +99,14 @@
         "status": "failed",
         "error": "No exact document found in official catalogue"
       },
-      "official_sources_attempted": [
-        "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%2011500%20de%202007"
-      ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
+      "official_sources_attempted": [],
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
       "new_evidence": [],
       "current_status": "identifier_suspect",
-      "verification": "UNVERIFIED; identifier preserved"
+      "verification": "No exact official source found; Ley1150/2007 is a different identifier. Remains suspect.",
+      "v06_classification": "identifier_suspect",
+      "search_query": "Ley 11500 de 2007 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -130,13 +146,14 @@
         "status": "failed",
         "error": "Decision identity not found in downloaded document"
       },
-      "official_sources_attempted": [
-        "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-6%20de%201991"
-      ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
+      "official_sources_attempted": [],
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
       "new_evidence": [],
       "current_status": "identifier_suspect",
-      "verification": "UNVERIFIED; identifier preserved"
+      "verification": "No exact official primary found; remains identifier_suspect.",
+      "v06_classification": "identifier_suspect",
+      "search_query": "Sentencia SU-6 de 1991 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -177,12 +194,22 @@
         "error": "No exact document found in official catalogue"
       },
       "official_sources_attempted": [
-        "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%20046%20de%202024"
+        "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=228530"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "not_found",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=228530",
+          "evidence_class": "official_full_document_found",
+          "note": "Official heading DECRETO 0046 DE 2024; original identifier 046 retained; leading zero presentation only.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        }
+      ],
+      "current_status": "official_full_document_found",
+      "verification": "Official heading DECRETO 0046 DE 2024; original identifier 046 retained; leading zero presentation only.",
+      "v06_classification": "not_found",
+      "search_query": "Decreto 046 de 2024 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -222,13 +249,14 @@
         "status": "failed",
         "error": "No exact document found in official catalogue"
       },
-      "official_sources_attempted": [
-        "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%201563%20de%202012"
-      ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
+      "official_sources_attempted": [],
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
       "new_evidence": [],
       "current_status": "not_found",
-      "verification": "UNVERIFIED; identifier preserved"
+      "verification": "Search returns Ley1563/2012 and Decreto1563/2016; neither replaces requested Decreto1563/2012.",
+      "v06_classification": "not_found",
+      "search_query": "Decreto 1563 de 2012 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -269,12 +297,22 @@
         "error": "No exact document found in official catalogue"
       },
       "official_sources_attempted": [
-        "https://www.suin-juriscol.gov.co/legislacion/?q=Decreto%20875%20de%202008"
+        "https://www.suin-juriscol.gov.co/viewDocument.asp?id=1182420"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "not_found",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://www.suin-juriscol.gov.co/viewDocument.asp?id=1182420",
+          "evidence_class": "official_full_document_found",
+          "note": "Exact decree number/year in official SUIN document.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        }
+      ],
+      "current_status": "official_full_document_found",
+      "verification": "Exact decree number/year in official SUIN document.",
+      "v06_classification": "not_found",
+      "search_query": "Decreto 875 de 2008 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -314,13 +352,14 @@
         "status": "failed",
         "error": "No exact document found in official catalogue"
       },
-      "official_sources_attempted": [
-        "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201150%20de%202005"
-      ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
+      "official_sources_attempted": [],
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
       "new_evidence": [],
       "current_status": "not_found",
-      "verification": "UNVERIFIED; identifier preserved"
+      "verification": "Ley1150/2007 near match rejected; original year retained.",
+      "v06_classification": "not_found",
+      "search_query": "Ley 1150 de 2005 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -360,13 +399,14 @@
         "status": "failed",
         "error": "No exact document found in official catalogue"
       },
-      "official_sources_attempted": [
-        "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20116%20de%202006"
-      ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
+      "official_sources_attempted": [],
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
       "new_evidence": [],
       "current_status": "not_found",
-      "verification": "UNVERIFIED; identifier preserved"
+      "verification": "Proyecto de ley116/2006 is not proof of an enacted Ley116/2006.",
+      "v06_classification": "not_found",
+      "search_query": "Ley 116 de 2006 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -406,13 +446,14 @@
         "status": "failed",
         "error": "No exact document found in official catalogue"
       },
-      "official_sources_attempted": [
-        "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%201692%20de%202017"
-      ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
+      "official_sources_attempted": [],
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
       "new_evidence": [],
       "current_status": "not_found",
-      "verification": "UNVERIFIED; identifier preserved"
+      "verification": "No exact official source established in bounded search.",
+      "v06_classification": "not_found",
+      "search_query": "Ley 1692 de 2017 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -453,12 +494,22 @@
         "error": "No exact document found in official catalogue"
       },
       "official_sources_attempted": [
-        "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%2023%20de%201961"
+        "https://www.suin-juriscol.gov.co/archivo/depuracion.pdf"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "not_found",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://www.suin-juriscol.gov.co/archivo/depuracion.pdf",
+          "evidence_class": "official_catalog_identity_only",
+          "note": "Exact Ley 23 de 1961 entry in official catalog; not the full text and no currency assertion.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        }
+      ],
+      "current_status": "official_catalog_identity_only",
+      "verification": "Exact Ley 23 de 1961 entry in official catalog; not the full text and no currency assertion.",
+      "v06_classification": "not_found",
+      "search_query": "Ley 23 de 1961 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -498,13 +549,14 @@
         "status": "failed",
         "error": "No exact document found in official catalogue"
       },
-      "official_sources_attempted": [
-        "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%202737%20de%201989"
-      ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
+      "official_sources_attempted": [],
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
       "new_evidence": [],
       "current_status": "not_found",
-      "verification": "UNVERIFIED; identifier preserved"
+      "verification": "DecretoLey2737/1989 is not substituted for the original Ley2737/1989.",
+      "v06_classification": "not_found",
+      "search_query": "Ley 2737 de 1989 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -544,13 +596,14 @@
         "status": "failed",
         "error": "No exact document found in official catalogue"
       },
-      "official_sources_attempted": [
-        "https://www.suin-juriscol.gov.co/legislacion/?q=Ley%20964%20de%202006"
-      ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
+      "official_sources_attempted": [],
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
       "new_evidence": [],
       "current_status": "not_found",
-      "verification": "UNVERIFIED; identifier preserved"
+      "verification": "Ley964/2005 near match rejected; original year retained.",
+      "v06_classification": "not_found",
+      "search_query": "Ley 964 de 2006 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -591,12 +644,22 @@
         "error": "Decision identity not found in downloaded document"
       },
       "official_sources_attempted": [
-        "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SU-488%20de%202011"
+        "https://www.corteconstitucional.gov.co/relatoria/2014/t-686-14.htm"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "not_found",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://www.corteconstitucional.gov.co/relatoria/2014/t-686-14.htm",
+          "evidence_class": "official_citation_only_unverified_primary",
+          "note": "T-686/2014 footnote mentions SU-488/2011; citation does not verify exact primary document.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        }
+      ],
+      "current_status": "official_citation_only_unverified_primary",
+      "verification": "T-686/2014 footnote mentions SU-488/2011; citation does not verify exact primary document.",
+      "v06_classification": "not_found",
+      "search_query": "Sentencia SU-488 de 2011 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -636,13 +699,14 @@
         "status": "failed",
         "error": "Decision identity not found in downloaded document"
       },
-      "official_sources_attempted": [
-        "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20T-248%20de%202025"
-      ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
+      "official_sources_attempted": [],
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
       "new_evidence": [],
       "current_status": "not_found",
-      "verification": "UNVERIFIED; identifier preserved"
+      "verification": "T248/2024 and T248/2026 near matches rejected.",
+      "v06_classification": "not_found",
+      "search_query": "Sentencia T-248 de 2025 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -683,12 +747,22 @@
         "error": "Needs verified Corte Suprema/Consejo de Estado URL"
       },
       "official_sources_attempted": [
-        "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-1121%20de%202018"
+        "https://cortesuprema.gov.co/corte/index.php/2018/10/31/analisis-de-la-existencia-de-contrato-de-agencia-mercantil-sala-de-casacion-civil/"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "source_unavailable",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://cortesuprema.gov.co/corte/index.php/2018/10/31/analisis-de-la-existencia-de-contrato-de-agencia-mercantil-sala-de-casacion-civil/",
+          "evidence_class": "official_landing_identity",
+          "note": "Official court landing references exact SC1121-2018; obtain linked judgment separately.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        }
+      ],
+      "current_status": "official_landing_identity",
+      "verification": "Official court landing references exact SC1121-2018; obtain linked judgment separately.",
+      "v06_classification": "source_unavailable",
+      "search_query": "Sentencia SC-1121 de 2018 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -729,12 +803,22 @@
         "error": "Needs verified Corte Suprema/Consejo de Estado URL"
       },
       "official_sources_attempted": [
-        "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-18392%20de%202017"
+        "https://www.cortesuprema.gov.co/corte/index.php/doctrina-probable-comercial/"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "source_unavailable",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://www.cortesuprema.gov.co/corte/index.php/doctrina-probable-comercial/",
+          "evidence_class": "official_catalog_identity_only",
+          "note": "Exact identifier in official doctrine catalog. Separate PDF found for aclaracion de voto is not substituted for judgment.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        }
+      ],
+      "current_status": "official_catalog_identity_only",
+      "verification": "Exact identifier in official doctrine catalog. Separate PDF found for aclaracion de voto is not substituted for judgment.",
+      "v06_classification": "source_unavailable",
+      "search_query": "Sentencia SC-18392 de 2017 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -775,12 +859,22 @@
         "error": "Needs verified Corte Suprema/Consejo de Estado URL"
       },
       "official_sources_attempted": [
-        "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-3085%20de%202024"
+        "https://cortesuprema.gov.co/la-sociedad-conyugal-queda-disuelta-cuando-se-presenta-una-separacion-de-hecho-por-dos-o-mas-anos-corte-suprema-de-justicia/"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "source_unavailable",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://cortesuprema.gov.co/la-sociedad-conyugal-queda-disuelta-cuando-se-presenta-una-separacion-de-hecho-por-dos-o-mas-anos-corte-suprema-de-justicia/",
+          "evidence_class": "official_landing_identity",
+          "note": "Official court announcement of SC3085-2024; primary PDF still requires acquisition.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        }
+      ],
+      "current_status": "official_landing_identity",
+      "verification": "Official court announcement of SC3085-2024; primary PDF still requires acquisition.",
+      "v06_classification": "source_unavailable",
+      "search_query": "Sentencia SC-3085 de 2024 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -820,13 +914,14 @@
         "status": "failed",
         "error": "Needs verified Corte Suprema/Consejo de Estado URL"
       },
-      "official_sources_attempted": [
-        "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-3674%20de%202021"
-      ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
+      "official_sources_attempted": [],
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
       "new_evidence": [],
       "current_status": "source_unavailable",
-      "verification": "UNVERIFIED; identifier preserved"
+      "verification": "No exact official primary source established by bounded search.",
+      "v06_classification": "source_unavailable",
+      "search_query": "Sentencia SC-3674 de 2021 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -867,12 +962,22 @@
         "error": "Needs verified Corte Suprema/Consejo de Estado URL"
       },
       "official_sources_attempted": [
-        "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-425%20de%202024"
+        "https://archivodigitalapi.cortesuprema.gov.co/share/2026/1/Gacetas/GACETA04civil2024.pdf"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "source_unavailable",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://archivodigitalapi.cortesuprema.gov.co/share/2026/1/Gacetas/GACETA04civil2024.pdf",
+          "evidence_class": "official_catalog_identity_only",
+          "note": "Official gaceta identifies SC425-2024; catalog evidence, not acquired full judgment.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        }
+      ],
+      "current_status": "official_catalog_identity_only",
+      "verification": "Official gaceta identifies SC425-2024; catalog evidence, not acquired full judgment.",
+      "v06_classification": "source_unavailable",
+      "search_query": "Sentencia SC-425 de 2024 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -913,12 +1018,22 @@
         "error": "Needs verified Corte Suprema/Consejo de Estado URL"
       },
       "official_sources_attempted": [
-        "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SC-8453%20de%202016"
+        "https://www.cortesuprema.gov.co/corte/index.php/doctrina-2016/"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "source_unavailable",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://www.cortesuprema.gov.co/corte/index.php/doctrina-2016/",
+          "evidence_class": "official_catalog_identity_only",
+          "note": "Official doctrine entry identifies SC8453-2016.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        }
+      ],
+      "current_status": "official_catalog_identity_only",
+      "verification": "Official doctrine entry identifies SC8453-2016.",
+      "v06_classification": "source_unavailable",
+      "search_query": "Sentencia SC-8453 de 2016 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -959,12 +1074,22 @@
         "error": "Needs verified Corte Suprema/Consejo de Estado URL"
       },
       "official_sources_attempted": [
-        "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SL-1050%20de%202023"
+        "https://cortesuprema.gov.co/rl_dl_sl1050-2023/"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "source_unavailable",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://cortesuprema.gov.co/rl_dl_sl1050-2023/",
+          "evidence_class": "official_landing_identity",
+          "note": "Exact identifier on official court landing.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        }
+      ],
+      "current_status": "official_landing_identity",
+      "verification": "Exact identifier on official court landing.",
+      "v06_classification": "source_unavailable",
+      "search_query": "Sentencia SL-1050 de 2023 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -1005,12 +1130,22 @@
         "error": "Needs verified Corte Suprema/Consejo de Estado URL"
       },
       "official_sources_attempted": [
-        "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SL-1730%20de%202020"
+        "https://www.cortesuprema.gov.co/corte/wp-content/uploads/relatorias/la/bjul2020/Ficha%20SL1730-2020.pdf"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "source_unavailable",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://www.cortesuprema.gov.co/corte/wp-content/uploads/relatorias/la/bjul2020/Ficha%20SL1730-2020.pdf",
+          "evidence_class": "official_ficha_identity_only",
+          "note": "Official ficha identifies SL1730-2020, radicado 77327; not full judgment.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        }
+      ],
+      "current_status": "official_ficha_identity_only",
+      "verification": "Official ficha identifies SL1730-2020, radicado 77327; not full judgment.",
+      "v06_classification": "source_unavailable",
+      "search_query": "Sentencia SL-1730 de 2020 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -1051,12 +1186,22 @@
         "error": "Needs verified Corte Suprema/Consejo de Estado URL"
       },
       "official_sources_attempted": [
-        "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SL-1972%20de%202025"
+        "https://archivodigitalapi.cortesuprema.gov.co/share/2025/10/Edictos/11001220500020229408301Edicto.pdf"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "source_unavailable",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://archivodigitalapi.cortesuprema.gov.co/share/2025/10/Edictos/11001220500020229408301Edicto.pdf",
+          "evidence_class": "official_edicto_identity_only",
+          "note": "Official edicto identifies SL1972-2025, 13 August 2025. Not full judgment.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        }
+      ],
+      "current_status": "official_edicto_identity_only",
+      "verification": "Official edicto identifies SL1972-2025, 13 August 2025. Not full judgment.",
+      "v06_classification": "source_unavailable",
+      "search_query": "Sentencia SL-1972 de 2025 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -1097,12 +1242,22 @@
         "error": "Needs verified Corte Suprema/Consejo de Estado URL"
       },
       "official_sources_attempted": [
-        "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SL-648%20de%202018"
+        "https://www.cortesuprema.gov.co/corte/wp-content/uploads/relatorias/la/bmar2018/SL648-2018.pdf"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "source_unavailable",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://www.cortesuprema.gov.co/corte/wp-content/uploads/relatorias/la/bmar2018/SL648-2018.pdf",
+          "evidence_class": "official_full_document_found",
+          "note": "PDF heading SL648-2018, radicado 55122; no validity inference.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        }
+      ],
+      "current_status": "official_full_document_found",
+      "verification": "PDF heading SL648-2018, radicado 55122; no validity inference.",
+      "v06_classification": "source_unavailable",
+      "search_query": "Sentencia SL-648 de 2018 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -1143,12 +1298,22 @@
         "error": "Needs verified Corte Suprema/Consejo de Estado URL"
       },
       "official_sources_attempted": [
-        "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SP-1167%20de%202022"
+        "https://cortesuprema.gov.co/corte/wp-content/uploads/relatorias/pe/b1may2022/SP1167-2022%2857957%29.pdf"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "source_unavailable",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://cortesuprema.gov.co/corte/wp-content/uploads/relatorias/pe/b1may2022/SP1167-2022%2857957%29.pdf",
+          "evidence_class": "official_full_document_found",
+          "note": "PDF heading SP1167-2022, radicado 57957.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        }
+      ],
+      "current_status": "official_full_document_found",
+      "verification": "PDF heading SP1167-2022, radicado 57957.",
+      "v06_classification": "source_unavailable",
+      "search_query": "Sentencia SP-1167 de 2022 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -1189,12 +1354,22 @@
         "error": "Needs verified Corte Suprema/Consejo de Estado URL"
       },
       "official_sources_attempted": [
-        "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SP-1680%20de%202022"
+        "https://cortesuprema.gov.co/corte/wp-content/uploads/relatorias/pe/b1may2022/SP1680-2022%2860875%29.pdf"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "source_unavailable",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://cortesuprema.gov.co/corte/wp-content/uploads/relatorias/pe/b1may2022/SP1680-2022%2860875%29.pdf",
+          "evidence_class": "official_full_document_found",
+          "note": "PDF heading SP1680-2022, radicado 60875.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        }
+      ],
+      "current_status": "official_full_document_found",
+      "verification": "PDF heading SP1680-2022, radicado 60875.",
+      "v06_classification": "source_unavailable",
+      "search_query": "Sentencia SP-1680 de 2022 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -1235,12 +1410,22 @@
         "error": "Needs verified Corte Suprema/Consejo de Estado URL"
       },
       "official_sources_attempted": [
-        "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SP-1945%20de%202019"
+        "https://www.cortesuprema.gov.co/corte/wp-content/uploads/relatorias/pe/b1ago2019/SP1945-2019%2850523%29.PDF"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "source_unavailable",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://www.cortesuprema.gov.co/corte/wp-content/uploads/relatorias/pe/b1ago2019/SP1945-2019%2850523%29.PDF",
+          "evidence_class": "official_full_document_found",
+          "note": "PDF heading SP1945-2019, radicado 50523.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        }
+      ],
+      "current_status": "official_full_document_found",
+      "verification": "PDF heading SP1945-2019, radicado 50523.",
+      "v06_classification": "source_unavailable",
+      "search_query": "Sentencia SP-1945 de 2019 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     },
     {
       "original": {
@@ -1281,12 +1466,24 @@
         "error": "Needs verified Corte Suprema/Consejo de Estado URL"
       },
       "official_sources_attempted": [
-        "https://www.corteconstitucional.gov.co/relatoria/?q=Sentencia%20SP-3218%20de%202021"
+        "https://cortesuprema.gov.co/corte/index.php/2021/08/31/homicidio-con-dolo-eventual-en-actividades-religiosas-o-de-indole-espiritual/"
       ],
-      "source_attempt_note": "Seed search URL is recorded separately from actual resolved attempts; inspect acquisition error/discovery cache.",
-      "new_evidence": [],
-      "current_status": "source_unavailable",
-      "verification": "UNVERIFIED; identifier preserved"
+      "source_attempt_note": "Prior seed URL remains in original; not represented as a fetched legal document. New web discovery sources listed separately.",
+      "new_evidence": [
+        {
+          "url": "https://cortesuprema.gov.co/corte/index.php/2021/08/31/homicidio-con-dolo-eventual-en-actividades-religiosas-o-de-indole-espiritual/",
+          "evidence_class": "official_landing_identity",
+          "note": "Official landing identifies SP3218-2021, radicado 47063.",
+          "method": "official-domain web search/open; no corpus ingestion in this branch"
+        }
+      ],
+      "current_status": "official_landing_identity",
+      "verification": "Official landing identifies SP3218-2021, radicado 47063.",
+      "v06_classification": "source_unavailable",
+      "search_query": "Sentencia SP-3218 de 2021 official Colombian source (government/court domain)",
+      "searched_at": "2026-09-28 America/Bogota"
     }
-  ]
+  ],
+  "scope": "28 original targets; source discovery only. No identifiers, corpus or v0.6 statuses rewritten. Located catalog/landing/ficha/edicto is not full-text acquisition.",
+  "unmatched_evidence_keys": []
 }

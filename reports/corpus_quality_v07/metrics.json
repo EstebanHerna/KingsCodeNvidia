@@ -1,0 +1,201 @@
+{
+  "sample_slots": 200,
+  "unique_passages": 200,
+  "unique_documents": 118,
+  "graph_sample": 100,
+  "metrics": {
+    "source_identity_accuracy": {
+      "definition": "Declared document corroborated by exact identity in independently decoded official raw heading; not source completeness/legal currency.",
+      "numerator": 200,
+      "denominator": 200,
+      "unknown": 0,
+      "excluded": 0,
+      "rate": 1.0,
+      "uncertainty": "Descriptive risk-enriched sample, not a population estimate. No global confidence interval.",
+      "confirmed_fraction_of_eligible": 1.0
+    },
+    "text_fidelity_rate": {
+      "definition": "Sampled body is found in independently decoded raw with whitespace/case normalization and exact clean offsets. Does not certify omitted source text.",
+      "numerator": 200,
+      "denominator": 200,
+      "unknown": 0,
+      "excluded": 0,
+      "rate": 1.0,
+      "uncertainty": "Descriptive risk-enriched sample, not a population estimate. No global confidence interval.",
+      "confirmed_fraction_of_eligible": 1.0
+    },
+    "parser_error_rate": {
+      "definition": "Confirmed passage crosses a legal unit boundary; unflagged passages have not been certified error-free.",
+      "numerator": 12,
+      "denominator": 200,
+      "unknown": 188,
+      "excluded": 0,
+      "rate": null,
+      "uncertainty": "12 confirmed defects; 188 UNKNOWN. 0.06 is a lower bound in this sample, not a corpus-wide error rate.",
+      "confirmed_fraction_of_eligible": 0.06
+    },
+    "contamination_rate": {
+      "definition": "Confirmed passage crosses a legal unit boundary; unflagged passages have not been certified error-free.",
+      "numerator": 12,
+      "denominator": 200,
+      "unknown": 188,
+      "excluded": 0,
+      "rate": null,
+      "uncertainty": "12 confirmed defects; 188 UNKNOWN. 0.06 is a lower bound in this sample, not a corpus-wide error rate.",
+      "confirmed_fraction_of_eligible": 0.06
+    },
+    "truncation_rate": {
+      "definition": "Missing substantive source text, beyond intentional physical segmentation.",
+      "numerator": 0,
+      "denominator": 200,
+      "unknown": 200,
+      "excluded": 0,
+      "rate": null,
+      "uncertainty": "Not established by substring tests; all UNKNOWN. No zero-error claim.",
+      "confirmed_fraction_of_eligible": 0.0
+    },
+    "article_locator_accuracy": {
+      "definition": "Article identity corroborated by source unit heading and reviewed body contradictions.",
+      "numerator": 128,
+      "denominator": 150,
+      "unknown": 21,
+      "excluded": 50,
+      "rate": null,
+      "uncertainty": "128 supported, 1 confirmed false article locator (Ley137), 21 ambiguous/unverified; 50 decisions not applicable.",
+      "confirmed_fraction_of_eligible": 0.8533333333333334
+    },
+    "hierarchy_accuracy": {
+      "definition": "Semantic parent ancestry, beyond literal heading membership.",
+      "numerator": 0,
+      "denominator": 200,
+      "unknown": 199,
+      "excluded": 0,
+      "rate": null,
+      "uncertainty": "1 confirmed wrong ancestry from merged Ley137 units; 199 UNKNOWN. Mechanical membership was 197/200 but is not legal hierarchy accuracy.",
+      "confirmed_fraction_of_eligible": 0.0
+    },
+    "structural_metadata_accuracy": {
+      "definition": "Correct structural identity of passage body, not merely internally consistent node IDs/offsets.",
+      "numerator": 0,
+      "denominator": 200,
+      "unknown": 188,
+      "excluded": 0,
+      "rate": null,
+      "uncertainty": "12 confirmed structural-boundary defects; remaining 188 UNKNOWN. All 200 mechanical offsets/nodes are consistent, which is weaker.",
+      "confirmed_fraction_of_eligible": 0.0
+    },
+    "canonical_document_accuracy": {
+      "definition": "Canonical document identity corroborated by declared metadata and official raw heading.",
+      "numerator": 200,
+      "denominator": 200,
+      "unknown": 0,
+      "excluded": 0,
+      "rate": 1.0,
+      "uncertainty": "Descriptive risk-enriched sample, not a population estimate. No global confidence interval.",
+      "confirmed_fraction_of_eligible": 1.0
+    },
+    "canonical_fragment_accuracy": {
+      "definition": "Article-based fragment identity with corroborated locator; sections/ambiguous units remain unverified.",
+      "numerator": 128,
+      "denominator": 200,
+      "unknown": 71,
+      "excluded": 0,
+      "rate": null,
+      "uncertainty": "128 supported, Ley137 false fragment, 71 UNKNOWN. C355 collision found separately by census, outside passage sample.",
+      "confirmed_fraction_of_eligible": 0.64
+    },
+    "canonical_collision_rate": {
+      "definition": "Confirmed cross-structural-unit collision groups / all canonical fragment groups; 990 same-unit multi-segment groups are not automatically collisions.",
+      "numerator": 1,
+      "denominator": 18636,
+      "unknown": 0,
+      "excluded": 0,
+      "rate": 5.365958360163125e-05,
+      "uncertainty": "One confirmed collision under the cross-unit detector; not a proof that other semantic collisions cannot exist. 172 passages in three C355 sections.",
+      "confirmed_fraction_of_eligible": 5.365958360163125e-05
+    },
+    "provenance_complete_rate": {
+      "definition": "Matching raw/clean SHA256, official URL, HTTP200, TLS verified, acquisition timestamp and passage source hash.",
+      "numerator": 200,
+      "denominator": 200,
+      "unknown": 0,
+      "excluded": 0,
+      "rate": 1.0,
+      "uncertainty": "Descriptive risk-enriched sample, not a population estimate. No global confidence interval.",
+      "confirmed_fraction_of_eligible": 1.0
+    },
+    "verified_temporal_status_rate": {
+      "definition": "Source-supported non-unknown temporal assertions / all sample units.",
+      "numerator": 20,
+      "denominator": 200,
+      "unknown": 0,
+      "excluded": 0,
+      "rate": 0.1,
+      "uncertainty": "20 explicit historical blocks. 180 unknown are conservative valid outcomes, not errors. No current-law certification.",
+      "confirmed_fraction_of_eligible": 0.1
+    },
+    "incorrect_temporal_assertion_rate": {
+      "definition": "Unsupported temporal assertions / units asserting a non-unknown temporal state.",
+      "numerator": 0,
+      "denominator": 20,
+      "unknown": 0,
+      "excluded": 180,
+      "rate": 0,
+      "uncertainty": "All 20 historical assertions supported by publisher markers. Unknown assertions are excluded, not failures.",
+      "confirmed_fraction_of_eligible": 0.0
+    },
+    "unknown_with_no_evidence_rate": {
+      "definition": "Conservative unknown temporal assertions / all units.",
+      "numerator": 180,
+      "denominator": 200,
+      "unknown": 0,
+      "excluded": 0,
+      "rate": 0.9,
+      "uncertainty": "Valid conservative behavior; not an error metric.",
+      "confirmed_fraction_of_eligible": 0.9
+    },
+    "graph_grounding_precision": {
+      "definition": "Relation-specific endpoint, direction and subject support in the full evidence passage.",
+      "numerator": 89,
+      "denominator": 100,
+      "unknown": 3,
+      "excluded": 0,
+      "rate": null,
+      "uncertainty": "{'PASS': 89, 'UNKNOWN': 3, 'FAIL': 8}. Evaluated precision 0.917526; overall unknown remains explicit. Lexical co-occurrence alone is insufficient.",
+      "confirmed_fraction_of_eligible": 0.89
+    },
+    "relation_type_accuracy": {
+      "definition": "Relation-specific endpoint, direction and subject support in the full evidence passage.",
+      "numerator": 89,
+      "denominator": 100,
+      "unknown": 3,
+      "excluded": 0,
+      "rate": null,
+      "uncertainty": "{'PASS': 89, 'UNKNOWN': 3, 'FAIL': 8}. Evaluated precision 0.917526; overall unknown remains explicit. Lexical co-occurrence alone is insufficient.",
+      "confirmed_fraction_of_eligible": 0.89
+    }
+  },
+  "graph_by_relation": {
+    "CITA": {
+      "PASS": 20
+    },
+    "CONTIENE": {
+      "UNKNOWN": 2,
+      "PASS": 17,
+      "FAIL": 1
+    },
+    "DEROGA": {
+      "PASS": 19,
+      "FAIL": 1
+    },
+    "MODIFICA": {
+      "FAIL": 6,
+      "PASS": 13,
+      "UNKNOWN": 1
+    },
+    "REMITE_A": {
+      "PASS": 20
+    }
+  },
+  "aggregate_quality_score": null
+}
