@@ -88,16 +88,29 @@ def render_reference(passage: dict) -> str | None:
 NEUTRAL_DISCARD = "No concuerda con la evidencia recuperada."
 
 
-def attach_references(row: dict, evidence: list[dict], used_ids: list[str] | None = None, max_refs: int = 3) -> tuple[dict, list[str]]:
+def attribution_source(attribution: dict | None) -> str:
+    if attribution is None or attribution.get("status") == "legacy_fallback":
+        return "legacy_fallback"
+    return "explicit" if attribution.get("status") == "explicit" else "none"
+
+
+def attach_references(row: dict, evidence: list[dict], attribution: dict | None = None, max_refs: int = 3) -> tuple[dict, list[str]]:
     """Write builder citations into the format's citation slot (mutates and returns row).
 
+    attribution None/legacy_fallback (dummy, v1/v2 prompts): first passages, as before.
+    attribution explicit: only the passages the decoder declared it used.
+    attribution malformed/not_applicable: nothing is added (attribution is never invented).
     semi_open: referencia_legal is replaced (the juez RAGAS never reads it).
     multiple_choice: appended to justificacion unless its bodies are already cited.
     open_ended: appended to marco_normativo (max 3, it is read by RAGAS) only if
     marco_normativo has no supported citation left after repair.
     """
     fmt = row.get("formato")
-    refs = build_references(evidence, used_ids, 3 if fmt == "open_ended" else max_refs)
+    source = attribution_source(attribution)
+    if source == "none":
+        return row, []
+    used = attribution["ids"] if source == "explicit" else None
+    refs = build_references(evidence, used, 3 if fmt == "open_ended" else max_refs, allow_fallback=source == "legacy_fallback")
     if not refs:
         return row, refs
     if fmt == "semi_open":
@@ -116,10 +129,15 @@ def attach_references(row: dict, evidence: list[dict], used_ids: list[str] | Non
     return row, refs
 
 
-def build_references(passages: list[dict], used_ids: list[str] | None = None, max_refs: int = 3) -> list[str]:
-    """Citations for the passages the decoder declared it used (else the first max_refs)."""
+def build_references(passages: list[dict], used_ids: list[str] | None = None, max_refs: int = 3, *,
+                     allow_fallback: bool = True) -> list[str]:
+    """Citations for the passages the decoder declared it used; the first max_refs
+    only when fallback is allowed (legacy contracts without attribution)."""
     by_id = {p["passage_id"]: p for p in passages[:10]}
-    chosen = [by_id[i] for i in (used_ids or []) if i in by_id] or passages[:max_refs]
+    if used_ids:
+        chosen = [by_id[i] for i in used_ids if i in by_id]
+    else:
+        chosen = passages[:max_refs] if allow_fallback else []
     refs: list[str] = []
     for passage in chosen:
         ref = render_reference(passage)

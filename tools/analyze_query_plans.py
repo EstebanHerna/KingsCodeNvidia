@@ -122,6 +122,79 @@ def diagnose(ranked: list[dict], gold: dict) -> dict:
             "per_question": per}
 
 
+def _complete(ids: set, gold: dict) -> bool:
+    return any(set(s) <= ids for s in gold["minimal_evidence_sets"])
+
+
+def diagnose_kc(ranked: list[dict], gold: dict, corpus_docs: set, *, k: int = 8) -> dict:
+    """KC-COL-IR arms scored with A's own score(); planner diagnostics on top."""
+    import independent_ir_v2 as a
+    from kingscode.retrieval_benchmark import paired_bootstrap
+    metrics = ("Evidence Completeness@8", "Complete Evidence Set@8", "Recall@10", "MRR@10", "nDCG@10", "Document Recall")
+    rows, base_ec, plan_ec = [], [], []
+    cats = {"BASE_ONLY": 0, "PLAN_ONLY": 0, "BOTH": 0, "NEITHER": 0}
+    oracle = miss = loss = 0
+    population = a.metric_population([gold[r["id"]] for r in ranked])
+    for r in ranked:
+        g = gold[r["id"]]
+        if g.get("corpus_coverage") != "COMPLETE":
+            continue
+        b, p = a.score(r["base"], g, corpus_docs), a.score(r["plan"], g, corpus_docs)
+        u = _complete({x["passage_id"] for x in r["union"]}, g)
+        bs, ps = bool(b["Evidence Completeness@8"]), bool(p["Evidence Completeness@8"])
+        cats["BOTH" if bs and ps else "BASE_ONLY" if bs else "PLAN_ONLY" if ps else "NEITHER"] += 1
+        oracle += u; miss += not u; loss += u and not ps
+        base_ec.append(b["Evidence Completeness@8"]); plan_ec.append(p["Evidence Completeness@8"])
+        rows.append({"id": r["id"], "base": b, "plan": p, "union_complete": u})
+    n = len(rows)
+    if not n:
+        return {"questions_ranked": 0, "population": population, "note": "no COMPLETE-coverage items"}
+    mean = lambda arm, m: sum(row[arm][m] for row in rows) / n
+    return {"questions_ranked": n, "population": population, "categories": cats,
+            "metrics": {m: {"base": mean("base", m), "plan": mean("plan", m)} for m in metrics},
+            "bootstrap_ec8_plan_minus_base": paired_bootstrap(base_ec, plan_ec),
+            "oracle_multi_view_recall": oracle / n, "planner_miss_rate": miss / n, "fusion_loss": loss / n,
+            "per_question": rows}
+
+
+def a_backend(config_path: Path, component: str):
+    """Same backend construction as A's independent runner for the frozen component."""
+    import independent_ir_v2 as a  # noqa: F401  (gate/scorer live there)
+    from kingscode.common import read_json
+    cfg = read_json(config_path)
+    spec = cfg["components"][component]
+    if spec["mode"] == "bm25":
+        from kingscode import Retriever
+        r = Retriever(ROOT / cfg["corpus"], mode="bm25", rerank=False, candidate_k=cfg["candidate_k"], graph_budget=0,
+                      exact_locator=False, graph_router=lambda _: False)
+        return r.retrieve, cfg
+    from kingscode.benchmark_runtime import NeuralRuntime
+    runtime = NeuralRuntime(ROOT / cfg["corpus"], {"mode": spec["mode"], "rerank": bool(spec["reranker"]), "encoder": "QWEN",
+                                                   "graph_mode": "off", "graph_budget": 0, "candidate_k": cfg["candidate_k"],
+                                                   "k_metrics": cfg["metrics_k"], "evidence_k": cfg["evidence_k"],
+                                                   "rrf_constant": 60, "seed": 0, "diagnostic": False,
+                                                   "query_transform": "none; exact source wording only"})
+    return (lambda text, k, graph_mode="off": runtime.retrieve(text, k)), cfg
+
+
+def main_kc(args) -> int:
+    sys.path.insert(0, str(ROOT / "tools"))
+    import independent_ir_v2 as a
+    _, questions, gold = a.preflight()  # PermissionError while A's gate is locked
+    items = [(q["question_id"], q["question"]) for q in questions]
+    retrieve, cfg = a_backend(args.a_config, args.component)
+    ranked = rankings(items, PlanStore(args.plans), retrieve, k=args.k, depth=cfg["candidate_k"])
+    write_json(args.plans / "rankings_kc_col_ir_dev.json",
+               [{**r, "generated_references": [list(map(str, x)) for x in r["generated_references"]],
+                 **{k: [p["passage_id"] for p in r[k]] for k in ("base", "plan", "union")}} for r in ranked])
+    corpus_docs = {p.get("canonical_document_id") or p["doc_id"] for p in read_jsonl(ROOT / cfg["corpus"] / "passages.jsonl")}
+    report = diagnose_kc(ranked, gold, corpus_docs, k=args.k)
+    report["spec"] = "docs/experiments/B_BASE_VS_PLAN_v1.json"
+    write_json(args.plans / "diagnostics_kc_col_ir_dev.json", report)
+    print(json.dumps({k: v for k, v in report.items() if k != "per_question"}, ensure_ascii=False, indent=2))
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--plans", type=Path, required=True)
@@ -129,7 +202,15 @@ def main() -> int:
     ap.add_argument("--k", type=int, default=8)
     ap.add_argument("--depth", type=int, default=32)
     ap.add_argument("--corpus", type=Path, default=ROOT / "corpus")
+    ap.add_argument("--benchmark", choices=["kingscode_ir", "kc_col_ir"], default="kc_col_ir",
+                    help="kc_col_ir = A's independent DEV (predeclared experiment); kingscode_ir = internal v1 (technical only)")
+    ap.add_argument("--a-config", type=Path, help="kc_col_ir: A's frozen independent-runner config")
+    ap.add_argument("--component", choices=["C0", "C1", "C2", "C3"], help="kc_col_ir: A's frozen baseline component")
     args = ap.parse_args()
+    if args.benchmark == "kc_col_ir":
+        if not args.a_config or not args.component:
+            ap.error("kc_col_ir needs --a-config and --component from A's freeze handoff")
+        return main_kc(args)
     from kingscode import Retriever
     items = [(q["id"], q["question"]) for q in read_jsonl(BENCH / "questions" / f"{args.split}.jsonl")]
     store = PlanStore(args.plans)

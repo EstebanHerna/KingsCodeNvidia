@@ -82,7 +82,7 @@
     "seed": 0,
     "bakeoff_config": "config/decoder_bakeoff.json",
     "prepared_backend": "transformers_local_lazy_unvalidated",
-    "prepared_prompt_version": "grounded-formats-v2",
+    "prepared_prompt_version": "grounded-formats-v3",
     "comparison_retrieval": "frozen_exact_evidence_same_for_all_decoders"
   },
   "finetuning": {

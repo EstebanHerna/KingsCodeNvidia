@@ -6,7 +6,7 @@ import inspect
 from time import perf_counter
 
 from .citation_builder import attach_references
-from .citation_repair import repair_citations
+from .citation_repair import count_citations, repair_citations
 from .contracts import ANSWER_FIELDS, Question
 from .decoder import GENERATION_CONFIG, Decoder, DummyDecoder, PromptSpec, abstention_row
 from .guards import CitationGuardError, check_passages, citation_guard, validate_submission
@@ -92,30 +92,62 @@ def _answer(question: Question, passages: list[dict], decoder: Decoder, *, max_r
     # as malformed (a failure, not even the 0.5), so no evidence => abstain, any format.
     if not evidence and not blocking:
         blocking = ("no_usable_evidence",)
-    repair, refs = None, []
+    repair, refs, usage, before = None, [], {}, 0
     if blocking:
-        reason = ",".join(blocking)
+        reason, source = ",".join(blocking), "policy"
         row = abstention_row(question, evidence, reason)
     else:
         row = decoder.generate(question, deepcopy(evidence), PromptSpec(question.format), dict(GENERATION_CONFIG))
-        reason = "dummy_backend_no_legal_reasoning" if isinstance(decoder, DummyDecoder) else None
+        usage = _usage(decoder)
+        dummy = isinstance(decoder, DummyDecoder)
+        reason = "dummy_backend_no_legal_reasoning" if dummy else None
+        source = "dummy_backend" if dummy else "decoder"
         if isinstance(row, dict) and row.get("abstencion") is False and row.get("id") == question.id \
                 and row.get("formato") == question.format:
             # Decoder reasons; citations are repaired against the evidence, then
             # final citation strings come from the deterministic builder (B2/B3).
+            source, before = "none", count_citations(row)
             row, repair = repair_citations(row, evidence)
-            row, refs = attach_references(row, evidence, row.pop("pasajes_usados", None), max_refs)
+            row, refs = attach_references(row, evidence, usage.get("attribution"), max_refs)
             if question.format != "multiple_choice" and any(
                     row.get(k) in (None, "", [], {}) for k in ANSWER_FIELDS[question.format]):
-                reason = "citation_repair_emptied_required_field"
+                reason, source = "citation_repair_emptied_required_field", "citation_repair"
                 row = abstention_row(question, evidence, reason)
     if not isinstance(row, dict) or row.get("id") != question.id or row.get("formato") != question.format:
         raise ValueError("Decoder changed question identity/format or did not return an object")
     guard = citation_guard(row, evidence)
     validate_submission(row)
+    attribution = usage.get("attribution") or {"status": "legacy_fallback" if not blocking else "not_applicable", "ids": []}
     return row, {"assessment": assessment.record(), "warnings": [r for r in assessment.reasons if r not in blocking],
-                 "abstention_reason": reason if row["abstencion"] else None, "citation_guard": guard,
-                 "citation_repair": repair, "built_references": refs}
+                 "abstention_reason": reason if row["abstencion"] else None, "abstention_source": source if row["abstencion"] else "none",
+                 "citation_guard": guard, "citation_repair": repair, "built_references": refs,
+                 "diagnostics": generation_diagnostics(decoder, usage, attribution, before, guard, repair, evidence, row)}
+
+
+def _usage(decoder) -> dict:
+    """Decoder-reported usage (HFDecoder.last_usage); anything that is not a dict is ignored."""
+    usage = getattr(decoder, "last_usage", None)
+    return dict(usage) if isinstance(usage, dict) else {}
+
+
+def generation_diagnostics(decoder, usage, attribution, before, guard, repair, evidence, row) -> dict:
+    """Label-free per-question generation diagnostics (no gold, no thresholds)."""
+    actions = {}
+    for action in (repair or {}).get("actions", []):
+        actions[action["action"]] = actions.get(action["action"], 0) + 1
+    return {"decoder": getattr(decoder, "name", type(decoder).__name__), "decoder_version": getattr(decoder, "version", None),
+            "model": usage.get("model"), "revision": usage.get("revision"),
+            "prompt_version": usage.get("prompt_version", PromptSpec(row["formato"]).version), "prompt_sha256": usage.get("prompt_sha256"),
+            "input_tokens": usage.get("input_tokens"), "output_tokens": usage.get("output_tokens"),
+            "generation_ms": usage.get("generation_ms"), "peak_vram_bytes": usage.get("peak_vram_bytes"),
+            "peak_reserved_vram_bytes": usage.get("peak_reserved_vram_bytes"),
+            "normalization_action": usage.get("normalization_action"), "decoder_abstained": usage.get("decoder_abstained"),
+            "attribution_status": attribution.get("status"), "attribution_count": len(attribution.get("ids", [])),
+            "attribution_reason": attribution.get("reason"),
+            "citations_before_repair": before, "citations_after_repair": guard["citation_count"],
+            "repair_actions": actions, "evidence_passages": len(evidence),
+            "evidence_ids_delivered": [p.get("passage_id") for p in row["pasajes_recuperados"]],
+            "evidence_ids_used": list(attribution.get("ids", []))}
 
 
 def answer(question: Question | str, passages: list[dict], format: str, *, question_id: int = 0, decoder: Decoder | None = None) -> dict:
@@ -200,7 +232,10 @@ class Pipeline:
             evidence = deepcopy(passages[:10])
             row = abstention_row(question, evidence, "citation_guard_rejected")
             guard = citation_guard(row, evidence)
-            trace = {"assessment": None, "abstention_reason": "citation_guard_rejected",
+            usage = _usage(self.decoder)
+            trace = {"assessment": None, "abstention_reason": "citation_guard_rejected", "abstention_source": "citation_guard_fallback",
+                     "diagnostics": generation_diagnostics(self.decoder, usage, usage.get("attribution") or {"status": "legacy_fallback", "ids": []},
+                                                           0, guard, None, evidence, row),
                      "citation_guard": guard, "citation_guard_fallback": exc.report}
         trace.update(retrieval_mode=self.retrieval_mode,
                      views=[{"role": role, "trusted": trusted, "text": text} for text, trusted, role in variants],

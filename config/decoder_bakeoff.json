@@ -1,6 +1,6 @@
 {
-  "version": "gate2-prep-v1",
-  "prompt_version": "grounded-formats-v2",
+  "version": "gate2-prep-v2-attribution",
+  "prompt_version": "grounded-formats-v3",
   "sample": "data/sample_50.jsonl",
   "retrieval_freeze": "artifacts/retrieval_freeze.json",
   "cache_dir": "models",
@@ -86,5 +86,6 @@
         "Optional control; Llama 3.1 Community License and Acceptable Use Policy, not Apache-2.0. Parameter count 8,030,261,248; eligibility requires organizer confirmation."
       ]
     }
-  }
+  },
+  "max_used_passages": 5
 }

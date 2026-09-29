@@ -30,6 +30,8 @@ def main(argv=None):
     parser.add_argument("--retriever-mode", choices=["bm25", "dense", "hybrid"], default="bm25")
     parser.add_argument("--rerank", action="store_true")
     parser.add_argument("--corpus", type=Path)
+    parser.add_argument("--fixture-evidence", action="store_true",
+                        help="batch/verify: official fixture passages instead of a corpus (reproducibility smoke only, not a score)")
     parser.add_argument("--config", type=Path)
     parser.add_argument("--output-root", type=Path)
     parser.add_argument("--model")
@@ -114,19 +116,30 @@ def _read_items(path: Path) -> list[tuple]:
 
 
 def _pipeline(args):
-    from kingscode import Retriever
     from kingscode.reasoning import DummyDecoder, Pipeline, RetrieverGraphRouter
     from kingscode.reasoning.plan_store import PlanStore
     adapter = RetrieverGraphRouter()
-    retriever = Retriever(args.corpus, mode=args.retriever_mode, rerank=args.rerank, graph_router=adapter,
-                          exact_locator=args.exact_locator)
+    if args.fixture_evidence:
+        from copy import deepcopy
+        fixtures = json.loads((ROOT / "tests/fixtures/member_b_official_passages.json").read_text(encoding="utf-8"))
+
+        class _FixtureRetriever:
+            corpus_hash = "fixture:tests/fixtures/member_b_official_passages.json"
+
+            def retrieve(self, question, k=8, graph_mode="auto"):
+                return deepcopy(fixtures[:k])
+        retriever = _FixtureRetriever()
+    else:
+        from kingscode import Retriever
+        retriever = Retriever(args.corpus, mode=args.retriever_mode, rerank=args.rerank, graph_router=adapter,
+                              exact_locator=args.exact_locator)
     decoder = DummyDecoder()
     if args.model:
         from kingscode.generation.hf_decoder import HFDecoder
         decoder = HFDecoder(args.model, precision=args.precision, allow_optional=args.allow_optional)
     plans = PlanStore(args.plans) if args.plans else None
     identity = {"decoder": [decoder.name, decoder.version], "retrieval_mode": args.retrieval_mode, "k": args.k,
-                "retriever": {"mode": args.retriever_mode, "rerank": args.rerank, "exact_locator": args.exact_locator,
+                "retriever": {"mode": args.retriever_mode, "rerank": args.rerank, "exact_locator": args.exact_locator, "fixture_evidence": args.fixture_evidence,
                               "corpus_sha256": retriever.corpus_hash},
                 "graph_policy": args.graph_policy, "plans": plans.manifest["experiment_id"] if plans else None}
     return Pipeline(retriever.retrieve, adapter=adapter, decoder=decoder, k=args.k, graph_policy=args.graph_policy,

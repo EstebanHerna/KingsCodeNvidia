@@ -1,6 +1,7 @@
 """Evidence-only, versioned format prompts and strict intermediate JSON parsing."""
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 
@@ -33,15 +34,33 @@ Si falta evidencia necesaria para resolver la pregunta, abstente.""",
 }
 
 
-def build_messages(question: Question, passages: list[dict], prompt: PromptSpec) -> list[dict]:
+MAX_USED_PASSAGES = 5
+ATTRIBUTION_INSTRUCTION = """Si respondes, añade también el campo "pasajes_usados": lista con los passage_id (como máximo {max_used}) de los pasajes de la evidencia en que realmente te basaste. Usa solo passage_id que aparezcan en la evidencia; no inventes identificadores.
+Si te abstienes, devuelve únicamente {{"abstencion":true}}."""
+LEGACY_PROMPT_VERSIONS = {"grounded-formats-v1", "grounded-formats-v2"}
+
+
+def system_prompt(fmt: str, max_used: int = MAX_USED_PASSAGES) -> str:
+    return COMMON + "\n" + FORMAT_INSTRUCTIONS[fmt] + "\n" + ATTRIBUTION_INSTRUCTION.format(max_used=max_used)
+
+
+def prompt_sha256(max_used: int = MAX_USED_PASSAGES) -> str:
+    payload = json.dumps({"version": PROMPT_VERSION, "system": {f: system_prompt(f, max_used) for f in FORMAT_INSTRUCTIONS}},
+                         ensure_ascii=False, sort_keys=True)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def build_messages(question: Question, passages: list[dict], prompt: PromptSpec, *, max_used: int = MAX_USED_PASSAGES) -> list[dict]:
     if not isinstance(question, Question) or prompt.format != question.format:
         raise ValueError("Prompt/question format mismatch")
-    if prompt.version not in {"grounded-formats-v1", PROMPT_VERSION}:
+    if prompt.version not in LEGACY_PROMPT_VERSIONS | {PROMPT_VERSION}:
         raise ValueError("Unknown prompt version")
     evidence = [{k: p.get(k) for k in ("passage_id", "doc_id", "norm_name", "article", "source_url", "text")} for p in passages]
     # The existing Protocol provides the generic v1 descriptor. The real backend
     # explicitly materializes v2; the dummy's prompt/config remain untouched.
-    return [{"role": "system", "content": COMMON + "\n" + FORMAT_INSTRUCTIONS[question.format]},
+    # Question, options and evidence always travel as JSON data inside the user
+    # message; nothing from them is ever placed in the system message.
+    return [{"role": "system", "content": system_prompt(question.format, max_used)},
             {"role": "user", "content": json.dumps({"pregunta": question.text, "opciones": question.options,
                                                         "evidencia": evidence}, ensure_ascii=False, sort_keys=True)}]
 
@@ -53,18 +72,91 @@ def sentence_count(text: str) -> int:
     return len([s for s in re.split(r"[.!?]+(?:\s+|$)", text.strip()) if s.strip()])
 
 
-def parse_response(text: str, question: Question, passages: list[dict]) -> dict:
-    def bad_constant(value):
-        raise ValueError(f"Non-JSON constant: {value}")
-    value = json.loads(text, object_pairs_hook=_unique_pairs, parse_constant=bad_constant)
+def _bad_constant(value):
+    raise ValueError(f"Non-JSON constant: {value}")
+
+
+def _load_object(text: str) -> dict:
+    value = json.loads(text, object_pairs_hook=_unique_pairs, parse_constant=_bad_constant)
     if not isinstance(value, dict) or type(value.get("abstencion")) is not bool:
         raise ValueError("Expected one JSON object with boolean abstencion")
+    return value
+
+
+def parse_response(text: str, question: Question, passages: list[dict]) -> dict:
+    """Historical (v1/v2) contract: direct JSON only, never normalized or repaired."""
+    value = _load_object(text)
     if value["abstencion"]:
         if set(value) != {"abstencion"}:
             raise ValueError("Abstention must contain only abstencion=true")
         return abstention_row(question, passages, "decoder_declared_insufficient_evidence")
     if set(value) != {"abstencion", *ANSWER_FIELDS[question.format]}:
         raise ValueError("Unexpected/missing intermediate answer fields")
+    return _answer_row(value, question, passages)
+
+
+_FENCE = re.compile(r"```(?:json)?[ \t]*\r?\n(.*)\r?\n[ \t]*```", re.S)
+
+
+def normalize_envelope(raw: str) -> tuple[str, str]:
+    """Mechanical, byte-traceable envelope removal. Never touches content.
+
+    Allowed: surrounding whitespace; exactly one Markdown fence around exactly one
+    object. Anything else (prose around the object, two objects, nested fences)
+    is left for the strict JSON load to reject.
+    """
+    if not isinstance(raw, str):
+        raise ValueError("Model output is not text")
+    text, action = raw.strip(), "none" if raw == raw.strip() else "stripped_whitespace"
+    fence = _FENCE.fullmatch(text)
+    if fence:
+        text, action = fence.group(1).strip(), "removed_json_fence"
+        if "```" in text:
+            raise ValueError("Nested or multiple Markdown fences")
+    if not (text.startswith("{") and text.endswith("}")):
+        raise ValueError("Output must be exactly one JSON object, without prose around it")
+    return text, action
+
+
+def validate_attribution(value, passages: list[dict], max_used: int) -> dict:
+    """Model-declared evidence usage, deterministically validated. Never invented."""
+    known = [p["passage_id"] for p in passages]
+    if value is None:
+        return {"status": "malformed", "reason": "missing", "ids": []}
+    if not isinstance(value, list) or any(not isinstance(i, str) for i in value):
+        return {"status": "malformed", "reason": "not_a_list_of_passage_ids", "ids": []}
+    ids = list(dict.fromkeys(value))
+    if not ids:
+        return {"status": "malformed", "reason": "empty", "ids": []}
+    unknown = [i for i in ids if i not in known]
+    if unknown:
+        return {"status": "malformed", "reason": "unknown_passage_id", "unknown": unknown, "ids": []}
+    if len(ids) > max_used:
+        return {"status": "malformed", "reason": "too_many", "declared": len(ids), "max": max_used, "ids": []}
+    return {"status": "explicit", "ids": ids, "duplicates_removed": len(value) - len(ids)}
+
+
+def parse_response_v3(raw: str, question: Question, passages: list[dict], *, max_used: int = MAX_USED_PASSAGES) -> tuple[dict, dict]:
+    """v3 contract: envelope normalization + internal passage attribution.
+
+    Returns the official row (pasajes_usados never enters it) and internal meta.
+    """
+    normalized, action = normalize_envelope(raw)
+    value = _load_object(normalized)
+    meta = {"raw_response": raw, "normalized_response": normalized, "normalization_action": action}
+    if value["abstencion"]:
+        if set(value) != {"abstencion"}:
+            raise ValueError("Abstention must contain only abstencion=true")
+        return abstention_row(question, passages, "decoder_declared_insufficient_evidence"), {
+            **meta, "decoder_abstained": True, "attribution": {"status": "not_applicable", "ids": []}}
+    required = {"abstencion", *ANSWER_FIELDS[question.format]}
+    if not required <= set(value) <= required | {"pasajes_usados"}:
+        raise ValueError("Unexpected/missing intermediate answer fields")
+    attribution = validate_attribution(value.pop("pasajes_usados", None), passages, max_used)
+    return _answer_row(value, question, passages), {**meta, "decoder_abstained": False, "attribution": attribution}
+
+
+def _answer_row(value: dict, question: Question, passages: list[dict]) -> dict:
     row = {"id": question.id, "formato": question.format, **value,
            "pasajes_recuperados": [evidence_record(p) for p in passages]}
     validate_submission(row)

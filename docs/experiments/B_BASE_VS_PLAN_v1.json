@@ -1,0 +1,59 @@
+{
+  "experiment_id": "B-BASE-VS-PLAN-v1",
+  "status": "PREDECLARED_NOT_EXECUTED",
+  "declared_on": "2026-09-29",
+  "declared_before_any_dev_result": true,
+  "owner": "Member B",
+  "question": "Do frozen zero-shot Qwen planner views (Q1..Q3) improve retrieval of complete gold evidence over the original question alone (Q0), with everything else fixed?",
+  "benchmark": {
+    "name": "KC-COL-IR-v0.1",
+    "split": "dev",
+    "gate": "tools/independent_ir_v2.py preflight(): cuda_ready=true, baseline_gate.unlocked=true, >=10 ACCEPTED_RETRIEVAL_GOLD; otherwise the experiment does not run",
+    "validation_and_holdout": "not used by this experiment; no tuning on validation",
+    "self_created_questions": "forbidden"
+  },
+  "arms": {
+    "P0_BASE": "Q0 only (exact public question text)",
+    "P1_PLAN": "Q0 + frozen planner views Q1..Q3 replayed from reports/query_plans/<experiment_id>/ via the existing plan-mode implementation"
+  },
+  "held_constant": [
+    "same question ids and exact question text (sha256 checked against A's question_text_sha256)",
+    "same frozen corpus (hashes from A's handoff manifest)",
+    "same retrieval backend/component and config file as A's frozen baseline (recorded by sha256)",
+    "same candidate depth (candidate_k) and output k",
+    "graph_mode off, graph_budget 0",
+    "same exact-locator setting; locator resolves Q0 only in both arms",
+    "same gold (A's gold/dev.jsonl, read only after rankings are written)",
+    "same metric implementation: tools/independent_ir_v2.py score() (sha256 recorded at run time)"
+  ],
+  "fusion_rule": "P1 uses A's native retrieve(Q0, k, 'off', query_views=[Q1..Q3]) when the frozen backend exposes query_views; otherwise B's rrf_merge (constant 60) over per-view rankings of depth candidate_k, truncated to k. The rule is fixed by the backend recorded at freeze time, not chosen after results.",
+  "planner": {
+    "input": "public question text only (no options, passages, labels, gold ids)",
+    "model": "qwen3-8b from config/models.lock.json (revision b968826d9c46dd6066d109eabc6255188de91218)",
+    "prompt_version": "legal-query-planner-v1",
+    "prompt_sha256": "c146f9e0f01bb56db77b22b2aed59c6649b699078df3b191d395b5eadc117d8f",
+    "generation": {"temperature": 0.0, "do_sample": false, "seed": 0, "enable_thinking": false},
+    "max_views": 3,
+    "malformed_output": "fallback to Q0 only, counted in diagnostics",
+    "generated_references": "untrusted retrieval text; never receive exact-locator privileges",
+    "plans_frozen_once": "one freeze per question set; no re-planning after seeing DEV results"
+  },
+  "primary_metric": "Evidence Completeness@8",
+  "secondary_metrics": ["Complete Evidence Set@8", "Recall@10", "MRR@10", "nDCG@10", "Document Recall"],
+  "metric_population": "questions with corpus_coverage == COMPLETE (A's metric_population); MISSING/PARTIAL/AMBIGUOUS reported separately, never counted as ranking failures",
+  "planner_diagnostics": ["BASE_ONLY", "PLAN_ONLY", "BOTH", "NEITHER", "Oracle Multi-View Recall", "Planner Miss Rate", "Fusion Loss", "Unsupported generated-reference rate", "Preservation rate"],
+  "statistics": {"paired_bootstrap": "kingscode.retrieval_benchmark.paired_bootstrap", "seed": 0, "resamples": 10000, "ci": 0.95},
+  "selection_rule": {
+    "adopt_PLAN_if_all": [
+      "95% paired-bootstrap CI lower bound of delta Evidence Completeness@8 (P1 - P0) > 0",
+      "point estimate of delta Document Recall >= 0",
+      "PLAN_ONLY count > BASE_ONLY count"
+    ],
+    "otherwise": "keep BASE (Q0 only) as the production retrieval mode",
+    "ties_or_insufficient_n": "keep BASE; report as inconclusive (no claim)",
+    "no_post_hoc_changes": "planner prompt, fusion rule, depth and k may not be changed after seeing DEV results; any change requires a new experiment id declared before running"
+  },
+  "not_varied_here": ["decoder", "corpus version", "reranker", "graph", "option-aware multiple-choice retrieval (PLAN_OPTION stays disabled)"],
+  "outputs": "reports/query_plans/<plans_experiment_id>/diagnostics_kc_col_ir_dev.json and rankings_kc_col_ir_dev.json",
+  "claims_allowed_before_execution": "none"
+}

@@ -98,8 +98,8 @@ class BatchRunner:
                 row, trace = self.pipeline.run(question)
                 return row, trace, errors
             except Exception as exc:  # isolation is the point; KeyboardInterrupt/SystemExit still stop the run
-                errors.append({"attempt": attempt + 1, "type": type(exc).__name__, "message": str(exc),
-                               "traceback": traceback.format_exc()})
+                errors.append({"attempt": attempt + 1, "type": type(exc).__name__, "code": getattr(exc, "code", None),
+                               "message": str(exc), "traceback": traceback.format_exc()})
         return None, None, errors
 
     def run(self, questions: list[Question], *, resume: bool = True) -> dict:
@@ -120,7 +120,11 @@ class BatchRunner:
                 atomic_write_text(self.run_dir / "errors" / f"{question.id}.json",
                                   json.dumps({"id": question.id, "attempts": errors}, ensure_ascii=False, indent=2) + "\n")
             if row is None:
-                row, trace, status = abstention_row(question, [], FALLBACK_REASON), {"abstention_reason": FALLBACK_REASON}, "fallback"
+                # Formal abstention only: the schema's "A" placeholder is never scored
+                # because the official score_closed requires abstencion=false.
+                row, status = abstention_row(question, [], FALLBACK_REASON), "fallback"
+                trace = {"abstention_reason": FALLBACK_REASON, "abstention_source": "pipeline_error",
+                         "error_codes": [e["code"] or e["type"] for e in errors]}
                 counts["fallback"] += 1
             elif errors:
                 counts["retried_ok"] += 1
@@ -130,10 +134,45 @@ class BatchRunner:
             atomic_write_text(item_path, _dumps({"row": row, "status": status, "attempts": len(errors) + (status == "ok"),
                                                   "trace": trace}) + "\n")
         report = self.assemble(questions)
-        report.update(counts=counts, identity=identity, seconds=perf_counter() - started,
+        report.update(counts=counts, identity=identity, diagnostics=self.diagnostics(questions),
+                      seconds=perf_counter() - started,
                       finished_at=datetime.now(timezone.utc).isoformat())
         atomic_write_text(self.run_dir / "batch_report.json", json.dumps(report, ensure_ascii=False, indent=2, default=str) + "\n")
         return report
+
+    def diagnostics(self, questions: list[Question]) -> dict:
+        """Aggregate rates over per-item traces (kept intact in items/<id>.json)."""
+        from collections import Counter
+        n = len(questions)
+        sources, attribution, normalization, actions, codes = Counter(), Counter(), Counter(), Counter(), Counter()
+        before = after = fallbacks = tokens_in = tokens_out = 0
+        gen_ms = []
+        for q in questions:
+            item = json.loads((self.run_dir / "items" / f"{q.id}.json").read_text(encoding="utf-8"))
+            trace = item.get("trace") or {}
+            d = trace.get("diagnostics") or {}
+            sources[trace.get("abstention_source", "none")] += 1
+            attribution[d.get("attribution_status", "none")] += 1
+            if d.get("normalization_action"):
+                normalization[d["normalization_action"]] += 1
+            actions.update(d.get("repair_actions") or {})
+            codes.update(trace.get("error_codes") or [])
+            before += d.get("citations_before_repair") or 0
+            after += d.get("citations_after_repair") or 0
+            fallbacks += bool(trace.get("citation_guard_fallback"))
+            tokens_in += d.get("input_tokens") or 0
+            tokens_out += d.get("output_tokens") or 0
+            if d.get("generation_ms") is not None:
+                gen_ms.append(d["generation_ms"])
+        rate = lambda c: {k: {"n": v, "rate": v / n} for k, v in sorted(c.items())}
+        return {"questions": n, "abstention_source": rate(sources), "attribution_status": rate(attribution),
+                "normalization_action": rate(normalization), "repair_actions": dict(sorted(actions.items())),
+                "pipeline_error_codes": dict(sorted(codes.items())),
+                "citations_before_repair": before, "citations_after_repair": after,
+                "citation_guard_fallback_rate": fallbacks / n if n else 0.0,
+                "input_tokens": tokens_in, "output_tokens": tokens_out,
+                "generation_ms_p50": sorted(gen_ms)[len(gen_ms) // 2] if gen_ms else None,
+                "note": "Label-free diagnostics; no thresholds derived from the official 50."}
 
     def assemble(self, questions: list[Question]) -> dict:
         rows, missing, fallback_ids = [], [], []

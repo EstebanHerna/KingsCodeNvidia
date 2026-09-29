@@ -11,7 +11,7 @@ from ..common import ROOT
 from ..model_assets import resolve_model, verify_snapshot
 from ..reasoning.decoder import GENERATION_CONFIG
 from .config import PROMPT_VERSION, load_bakeoff, select_decoder
-from .prompts import build_messages, parse_response
+from .prompts import LEGACY_PROMPT_VERSIONS, build_messages, parse_response, parse_response_v3, prompt_sha256
 
 
 class DecoderFailure(RuntimeError):
@@ -105,12 +105,15 @@ class HFDecoder:
     def generate(self, question, passages, prompt, generation):
         if generation != GENERATION_CONFIG or self.config["generation"] != GENERATION_CONFIG:
             raise ValueError("Non-deterministic generation rejected")
-        self.last_usage = {"input_tokens": 0, "output_tokens": 0, "json_valid": False,
-                           "prompt_version": self.prompt_version, "max_new_tokens": self.config["max_new_tokens"][question.format]}
+        max_used = self.config.get("max_used_passages", 5)
+        self.last_usage = {"input_tokens": 0, "output_tokens": 0, "json_valid": False, "model": self.alias,
+                           "revision": self.version, "prompt_version": self.prompt_version,
+                           "prompt_sha256": prompt_sha256(max_used),
+                           "max_new_tokens": self.config["max_new_tokens"][question.format]}
         self.load()
         started = perf_counter()
         try:
-            messages = build_messages(question, passages, prompt)
+            messages = build_messages(question, passages, prompt, max_used=max_used)
             text = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True,
                                                       **self.candidate["chat_template_kwargs"])
             inputs = self.tokenizer([text], return_tensors="pt", truncation=False, add_special_tokens=False)
@@ -143,7 +146,11 @@ class HFDecoder:
             self.last_usage.update(output_tokens=len(tokens), raw_response=raw,
                                    generation_ms=(perf_counter() - started) * 1000, **self._peak())
             try:
-                row = parse_response(raw, question, passages)
+                if self.prompt_version in LEGACY_PROMPT_VERSIONS:
+                    row = parse_response(raw, question, passages)
+                else:
+                    row, meta = parse_response_v3(raw, question, passages, max_used=max_used)
+                    self.last_usage.update(meta)
             except (ValueError, TypeError) as exc:
                 raise DecoderFailure("INVALID_MODEL_OUTPUT", {"error_type": type(exc).__name__, "usage": dict(self.last_usage)}) from exc
             self.last_usage["json_valid"] = True

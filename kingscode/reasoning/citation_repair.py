@@ -132,6 +132,20 @@ def repair_text(text: str, emitted: list[dict], supported: set, actions: list, f
     return repaired
 
 
+def count_citations(row: dict) -> int:
+    """References in answer strings, counted like citation_guard counts claims."""
+    def strings(value):
+        if isinstance(value, str):
+            yield value
+        elif isinstance(value, dict):
+            for v in value.values():
+                yield from strings(v)
+        elif isinstance(value, list):
+            for v in value:
+                yield from strings(v)
+    return sum(len(references(s)) for k, v in row.items() if k not in SKIP_KEYS for s in strings(v))
+
+
 def repair_citations(row: dict, evidence: list[dict]) -> tuple[dict, dict]:
     """Return a repaired copy of row and a report. Touches only answer strings."""
     fixed = deepcopy(row)

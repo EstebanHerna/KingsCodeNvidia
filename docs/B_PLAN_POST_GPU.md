@@ -172,3 +172,20 @@ Leer `legal_basis` solo en el script de medición, nunca en el pipeline (mismo p
 | B7 | HECHO | `kingscode/reasoning/batch.py`, `tools/member_b.py batch|verify`; resume idéntico byte a byte; 992 fixtures en 41,6 s |
 | B8 | PARCIAL | interfaz y `run.sh` existen; probar con corpus real |
 | Planner | HECHO sin ejecución real | `planner.py`, `plan_store.py`, `planner_backend.py`, `tools/analyze_query_plans.py`; NO GENERALIZATION CLAIM hasta el DEV independiente de A |
+
+## 7. Estado al 2026-09-29, tarde (continuación de B)
+
+| Elemento | Estado |
+|---|---|
+| `pasajes_usados` (prompt v3, validación, builder) | IMPLEMENTED_AND_CPU_VERIFIED |
+| Normalizador de sobre JSON (solo v3) | IMPLEMENTED_AND_CPU_VERIFIED |
+| Diagnósticos por pregunta y agregados del batch | IMPLEMENTED_AND_CPU_VERIFIED |
+| Contrato del bakeoff con freeze de fixtures | IMPLEMENTED_AND_CPU_VERIFIED (fixture, no competitivo) |
+| Tests de inyección en pregunta/opciones/pasajes | IMPLEMENTED_AND_CPU_VERIFIED |
+| Respaldo del batch vs evaluador oficial ("A" formal no puntúa) | IMPLEMENTED_AND_CPU_VERIFIED |
+| Interfaz: evidencia escapada, citado vs recuperado, depuración separada | IMPLEMENTED_AND_CPU_VERIFIED (helpers); UI con corpus real PREPARED_NOT_EXECUTED |
+| `run.sh --fixture` | IMPLEMENTED_AND_CPU_VERIFIED |
+| `docker run -e FIXTURE=1` | PREPARED_NOT_EXECUTED (daemon apagado) |
+| Experimento BASE vs PLAN (`docs/experiments/B_BASE_VS_PLAN_v1.json`) | PREPARED_NOT_EXECUTED · BLOCKED_ON_A_FREEZE |
+| Freeze de retrieval real y bakeoff de decoders | BLOCKED_ON_A_FREEZE · BLOCKED_ON_GPU |
+| Planes Qwen congelados, primera generación real | BLOCKED_ON_GPU |
