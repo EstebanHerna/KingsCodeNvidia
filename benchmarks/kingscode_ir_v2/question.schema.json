@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "question",
+    "area",
+    "category",
+    "format"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^KC2-[A-Z0-9-]+$"
+    },
+    "question": {
+      "type": "string",
+      "minLength": 5
+    },
+    "area": {
+      "type": "string",
+      "minLength": 1
+    },
+    "format": {
+      "const": "retrieval"
+    },
+    "category": {
+      "enum": [
+        "EXACT_REFERENCE",
+        "SEMANTIC_RULE",
+        "CONCEPT",
+        "SCENARIO_APPLICATION",
+        "MULTI_EVIDENCE",
+        "TEMPORAL",
+        "JURISPRUDENCE",
+        "NORM_VS_CASELAW",
+        "EXCEPTION",
+        "GRAPH_RELATION",
+        "INTERNATIONAL_APPLICABILITY",
+        "SUPRANATIONAL_RULE",
+        "NATIONAL_PLUS_TREATY",
+        "NATIONAL_PLUS_CAN",
+        "LABOR_ILO"
+      ]
+    }
+  }
+}

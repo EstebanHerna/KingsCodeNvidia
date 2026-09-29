@@ -109,6 +109,16 @@
 
 ## 2026-09-28 — A v0.2 después del freeze GPU (60ebf7e)
 
-Se reconoce el freeze RTX 4090 y se cierra validation v1 al tuning. Search V2 muestra empates con locator incluso sin boost de metadatos. Se productiviza parsing → identidad canónica → fragmentos → unión de candidatos antes del reranker; no se selecciona metadata_scale=1.25. La clase Retriever conserva defaults históricos para replay; la función pública añade locator y mantiene graph_budget=0 en su perfil CPU. Los pesos neuronales siguen siendo explícitos.
+Se reconoce el freeze RTX 4090 y se cierra validation v1 al tuning. Search V2 muestra empates con locator incluso sin boost de metadatos. Se productiviza parsing → identidad canónica → fragmentos → unión de candidatos antes del reranker; no se selecciona metadata_scale=1.25. La clase Retriever conserva defaults históricos para replay; la función pública añade locator y desactiva expansión AUTO en su perfil CPU; ON explícito conserva la expansión acotada del contrato. Los pesos neuronales siguen siendo explícitos.
 
 Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Benchmark v2 empieza con schema/piloto técnico determinista y una cola humana para escenarios/temporalidad/excepciones. Ningún modelo cerrado redacta preguntas competitivas. R0–R8 siguen siendo ablaciones, no un catálogo excluyente de arquitecturas finales. Composición, selección inmutable, confirmaciones autorizadas y freeze top 8 se decidirán con nueva evidencia v2. No se cambian B ni sus prompts.
+
+
+## 2026-09-29 — Benchmark v2 independent source gate and international layer
+
+- Se cierra benchmark v1 a tuning. El piloto v2 derivado de captions del corpus es solo smoke técnico: seis exposiciones DEV registradas, cero preguntas independientes, cero gold v2 independiente y cero SEALED_EVAL. Sus métricas no seleccionan arquitectura.
+- El schema v2 admite RETRIEVAL_GOLD con conjuntos mínimos alternativos y END_TO_END_ONLY sin etiquetas de retrieval; las filas actuales se identifican como TECHNICAL_PILOT_ONLY. La recuperación no recibe gold.
+- Las URLs oficiales de los PDFs ICFES localizados retornaron 404 en verificación directa; SIRNA confirma que existe una guía, sin banco público de ítems verificado. No se inventan preguntas para cumplir cuotas.
+- Se añade inventario internacional selectivo de candidatos CAN/OIT/interamericano. Ratificación o aplicabilidad permanece pendiente de verificación para cada instrumento; no se indexa automáticamente. Benchmark internacional: cero ítems.
+- Corpus-v0.1 queda inmutable. Corpus-v0.2 tiene cuatro documentos provisionales y las remediaciones G01/G02/C01/P02/P01/D01 aún no están completas; cada cambio requiere fuente primaria, fixture y prueba.
+- Sin gold independiente no existe baseline útil ni distribución de fallos para escoger experimento. La siguiente ejecución será un baseline no ajustado sobre DEV externo revisado.

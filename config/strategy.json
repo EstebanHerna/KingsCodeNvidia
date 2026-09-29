@@ -51,10 +51,17 @@
       "no_identifier_substitution": true,
       "metadata_boost": false,
       "graph_feature": false,
-      "graph_expansion_default": "off (public profile graph_budget=0)",
+      "graph_expansion_default": "AUTO is OFF in public CPU profile; explicit ON remains compatible with historical bounded graph behavior",
       "source": "Search V2 validation tied locator configurations; no new v1 tuning"
     },
-    "encoder_fallback_status": "BGE blocked: separate approved lock/loader/index required; no automatic fallback"
+    "encoder_fallback_status": "BGE blocked: separate approved lock/loader/index required; no automatic fallback",
+    "query_views": {
+      "api": "retrieve(question,k,graph_mode,query_views=None)",
+      "fusion": "RRF over textual views",
+      "trusted_exact_locator_input": "original user question only",
+      "planner_generated_references_trusted": false
+    },
+    "benchmark_v1_tuning": "closed"
   },
   "decoder_candidates": [
     "Qwen/Qwen3-8B",
@@ -103,5 +110,22 @@
     "abstention_policy_version": "evidence-policy-v1",
     "ragas": false,
     "next_command": ".venv/Scripts/python.exe tools/member_b.py smoke"
+  },
+  "member_a_v02": {
+    "status": "partial",
+    "independent_benchmark_items": 0,
+    "retrieval_gold": 0,
+    "sealed_eval": 0,
+    "legacy_pilot_selectable": false,
+    "corpus_v02_provisional_documents": 4,
+    "audit_fixes_pending": [
+      "G01",
+      "G02",
+      "C01",
+      "P02",
+      "P01",
+      "D01"
+    ],
+    "international_candidates_report": "reports/international_sources_v02.json"
   }
 }

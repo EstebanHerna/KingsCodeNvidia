@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "scope": "CPU read-only snapshot/API verification; not GPU metric replay",
+  "official_files_unchanged": 19,
+  "v01_raw_clean_files_unchanged": 326,
+  "v01_core_hashes": {
+    "passages.jsonl": "3b2b7a7beae2abe0abd14480be887a86ad933902c9735a21e02719a12daac3c0",
+    "graph/nodes.jsonl": "7c8af359cb1ac8de13872e01d2d0faf18218d24e1e2af326529f4a11c0a39aaa",
+    "graph/edges.jsonl": "6002fdcdbb4fb673761cb2dbe949db2502306809f2179e4133d8f40c286ff634",
+    "index/bm25.json": "aa6b40c5e70f88513a7cde7e9ca96a15d1d40088c538668087700b9b46de005b"
+  },
+  "protected_git_diff_empty": true,
+  "legacy_compatible": true,
+  "public_retrieve_deterministic": true,
+  "public_passage_contract": [
+    "doc_id",
+    "graph_node_ids",
+    "hierarchy_path",
+    "norm_name",
+    "passage_id",
+    "scores",
+    "source_url",
+    "text"
+  ],
+  "v02_hashes_verified": 14,
+  "benchmark_v2": {
+    "status": "checked",
+    "hashes": 10,
+    "holdout_parsed": false,
+    "selectable": false,
+    "manifest_sha256": "cb0a4f095550b699043230d903becef5d372dad4e2b1cf7627a0a938ac2972ed"
+  },
+  "gpu_executed": false,
+  "holdout_executed": false,
+  "old_rebuild_verifier": "Not run: rebuild/official-50 replay are outside this phase."
+}

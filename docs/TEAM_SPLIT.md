@@ -131,3 +131,8 @@ provenance antes de aceptar cada checkpoint.
 A: `feat/member-a-corpus-v02-locator` desde 60ebf7e. Responsable de locator productivo, snapshot histórico v0.1, benchmark v2, adquisición v0.2 y riesgos de parser/grafo. Las ramas de harness y auditoría anteriores se conservan como checkpoints; no se reejecutan R1–R8.
 
 B: conservar referencias explícitas al normalizar la consulta, consumir `retrieve(question, k, graph_mode="auto")`, respetar provenance y estados temporales desconocidos. Seguir `docs/A_TO_B_V02_CONTRACT.md`. B decide y ejecuta su decoder con evidencia congelada de un perfil explícito; no inferir calidad del decoder a partir del 1.0 de retrieval v1. Revisión cruzada pendiente con Luis antes de aceptar arquitectura o freeze competitivo.
+
+
+### Estado A actualizado — 2026-09-29
+
+La rama A continúa parcial y separada. El benchmark-v2 independiente aún tiene cero ítems/golds/sealed eval; no ajustar retrieval contra el piloto corpus-derived. A expone query_views textual por RRF, con exact locator limitado a la pregunta original. No implementar Qwen ni reglas question→norm. Remediaciones corpus-v0.2 pendientes según docs/MEMBER_A_V02_PROGRESS.md.

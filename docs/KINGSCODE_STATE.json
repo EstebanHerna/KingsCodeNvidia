@@ -1,6 +1,6 @@
 {
   "project": "KingsCode - Hackathon AI Week 2026",
-  "last_updated": "2026-09-28",
+  "last_updated": "2026-09-29",
   "source_of_truth": "KINGSCODE_MASTER_KNOWLEDGE.md",
   "team": {
     "size": 2,
@@ -35,7 +35,7 @@
     "local_cuda_available": false,
     "target_evidence": "reports/gpu_freeze_4090; RTX 4090 retrieval executed externally and preserved at 60ebf7e; this session is CPU only"
   },
-  "phase": "member_a_v02_locator_and_benchmark_v2_cpu_preparation",
+  "phase": "member_a_v02_independent_benchmark_source_gate_and_corpus_remediation",
   "architecture_version": "0.5",
   "retrieval": {
     "chunking_primary": "legal_structure_aware",
@@ -95,16 +95,16 @@
     ]
   },
   "next_action": {
-    "member_a": "CPU locator productization, benchmark-v2 pilot/review queue and corpus-v0.2 prioritized acquisition. Historical corpus-v0.1 immutable.",
+    "member_a": "Preserve 4090 freeze and v0.1. Complete corpus-v0.2 audit fixes with source-backed fixtures. Populate benchmark-v2 only from accessible independently sourced items; current independent retrieval-gold and sealed-eval counts are zero. Run untuned baseline only after source-backed DEV gold exists.",
     "member_b": "On the target GPU run the two prepared verifications, prepare exact model snapshots, GPU smoke, freeze retrieval evidence and execute D1-D3. No new tests were run in Gate 2-Prep by user instruction.",
     "shared": "Use feat/member-a-corpus-v02-locator, based on 60ebf7e GPU freeze. No merge to main. B continues its own decoder work; do not infer decoder success from retrieval results."
   },
   "next_actions": [
-    "Read docs/A_TO_B_V02_CONTRACT.md and docs/BENCHMARK_V2_METHODOLOGY.md",
-    "python tools/verify_member_a_v02.py",
-    "python tools/benchmark_v2.py check",
-    "Review benchmark-v2 complex authoring queue and corpus-v0.2 source evidence; do not tune v1 validation",
-    "B consumes public retrieve() with provenance or an explicitly frozen chosen profile; GPU reranker replay remains separate"
+    "Resolve an accessible official ICFES or CSJ assessment item source and record stable URLs, source hashes, item IDs and use terms in benchmarks/kingscode_ir_v2/source_manifest.jsonl",
+    "Complete corpus-v0.2 fixes for G01/G02/C01/P02/P01/D01 using source evidence, regression fixtures and tests; never modify corpus-v0.1",
+    "Assign source and duplicate families to DEV/VALIDATION/SEALED_EVAL before tuning; keep sealed material outside production retrieval",
+    "After reviewer-verified RETRIEVAL_GOLD exists, run the current retrieval stack once without tuning and report required metrics and failure taxonomy",
+    "Run python -m unittest discover -s tests -v, tools/verify_member_a_v02.py and tools/benchmark_v2.py check; independently verify hashes before pushing"
   ],
   "do_not_forget": [
     "OpenRouter key is for evaluator, not the competitive system",
@@ -119,10 +119,11 @@
   "agents_protocol": "AGENTS.md",
   "current_work": {
     "member_a": [
-      "gpu_results_reconciled",
+      "gpu_4090_results_reconciled_and_preserved",
       "exact_locator_productization_in_progress",
-      "benchmark_v2_scaffold_in_progress",
-      "corpus_v02_targeted_acquisition_in_progress",
+      "benchmark_v2_independent_source_gate_open_zero_independent_items",
+      "corpus_v02_acquisition_partial_four_documents_provisional_one_blocked",
+      "corpus_v02_audit_remediation_pending_G01_G02_C01_P02_P01_D01",
       "corpus_v01_immutable"
     ],
     "member_b": [
@@ -390,5 +391,42 @@
     "b_modified": false,
     "corpus_v01_modified": false,
     "status": "in_progress"
+  },
+  "member_a_v02_status": {
+    "branch": "feat/member-a-corpus-v02-locator",
+    "base_commit": "60ebf7e",
+    "status": "partial_no_selection_no_merge",
+    "benchmark_v2": {
+      "independent_source_items": 0,
+      "retrieval_gold": 0,
+      "end_to_end_only": 0,
+      "sealed_eval": 0,
+      "legacy_pilot": "12-case corpus-derived technical smoke only; 6 DEV exposures recorded; not selectable"
+    },
+    "corpus_v02": {
+      "provisional_documents": 4,
+      "passages": 72,
+      "graph_nodes": 33,
+      "structural_edges": 29,
+      "semantic_edges_verified": 0,
+      "blocked_documents": 1,
+      "audit_fix_families_pending": [
+        "G01",
+        "G02",
+        "C01",
+        "P02",
+        "P01",
+        "D01"
+      ]
+    },
+    "international_inventory": "5 candidates; applicability and document links need review; benchmark items 0",
+    "current_baseline": "none on independent v2",
+    "next_experiment": "no retrieval experiment until independent DEV retrieval gold and untuned baseline failure distribution exist",
+    "verification": {
+      "unittest": "PASS: 210 tests",
+      "benchmark_integrity": "PASS: 10 hashes, holdout not parsed",
+      "snapshot_verification": "PASS twice: 19 official files, 326 raw/clean v0.1 files, 14 v0.2 hashes",
+      "independent_v2_baseline": "NOT RUN: zero independent retrieval-gold items"
+    }
   }
 }
