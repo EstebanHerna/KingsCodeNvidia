@@ -1,0 +1,273 @@
+# =====================================================================
+# KingsCode - TODO EN UNO para la PC que tiene corpus\ y GPU (la 4090)
+#
+# Un solo script, sin admin, PowerShell 5.1. Pasos (cada uno se salta si ya esta hecho):
+#   [0] Ubica el repo que tiene corpus\ (el de Luis); NO lo modifica.
+#   [1] Copia limpia de main en %USERPROFILE%\KingsCodeRun (o -Work).
+#   [2] Copia corpus\ (v0.1, 26.558 pasajes) y enlaza models\ del repo fuente.
+#   [3] Entorno Python + dependencias CPU; valida el corpus contra los hashes de A.
+#   [4] Valida el indice denso con las mismas reglas que DenseIndex de A.
+#   [5] Publica corpus + indice + LICENSE como release del repo publico (entregable 5).
+#   [6] Entorno GPU: PyTorch CUDA dentro del venv, BF16, VRAM.
+#   [7] Descarga el decoder (Qwen3-8B por defecto) fijado por lock.
+#   [8] Smoke del decoder real.
+#   [9] Congela los planes del planner Qwen para sample_50 (replay futuro BASE vs PLAN).
+#  [10] Corrida end-to-end de sample_50 con el decoder real + evaluador oficial (sin RAGAS).
+#  [11] Proyeccion de tiempo para 992 preguntas.
+#  [12] Guarda todo en reports\lab_session\<fecha> y lo sube a una rama lab/<fecha>.
+#
+# NO hace: tuning, benchmark v1/Search V2, holdout, RAGAS (gasta la llave), seleccion de decoder.
+# corpus v0.2 (corpora\corpus-v0.2, 72 pasajes) ya esta en git; no se sube aparte.
+#
+# Uso:
+#   cd $HOME
+#   powershell -ExecutionPolicy Bypass -File kingscode_gpu_todo.ps1
+#   ... -Source "C:\ruta\KingsCodeNvidia"   (repo que tiene corpus\; si no, lo busca)
+#   ... -Models "qwen3-8b,alia-legal-7b"    (corridas exploratorias extra; sin seleccion)
+#   ... -SkipPublish -SkipDecoder -RebuildDense -NoPush
+# =====================================================================
+param(
+    [string]$Source = "",
+    [string]$Work = "$HOME\KingsCodeRun",
+    [string]$GitHubRepo = "IngSeb0/KingsCodeNvidia",
+    [string]$Models = "qwen3-8b",
+    [string]$Tag = "corpus-v0.1-snapshot",
+    [string]$License = "CC BY 4.0",
+    [switch]$SkipPublish,
+    [switch]$SkipDecoder,
+    [switch]$RebuildDense,
+    [switch]$NoPush
+)
+$ErrorActionPreference = "Stop"
+$ProgressPreference = "SilentlyContinue"
+$env:PYTHONUTF8 = "1"
+$env:PYTHONIOENCODING = "utf-8"
+function Step($m) { Write-Host ""; Write-Host ">>> $m" -ForegroundColor Cyan }
+function Warn($m) { Write-Host "AVISO: $m" -ForegroundColor Yellow }
+function Check($w) { if ($LASTEXITCODE -ne 0) { throw "STOP: $w (exit $LASTEXITCODE)" } }
+function Quiet($cmd) { cmd /c "$cmd >nul 2>&1"; return ($LASTEXITCODE -eq 0) }
+$Stamp = Get-Date -Format "yyyyMMdd_HHmmss"
+$Summary = [ordered]@{ started = (Get-Date).ToString("s"); steps = [ordered]@{} }
+function Done($k, $v) { $Summary.steps[$k] = $v }
+
+# ---------------------------------------------------------------------
+Step "[0] Repo fuente con corpus\ (solo lectura)"
+$Candidates = @($Source, "$HOME\KingsCodeGPU\KingsCodeNvidia", "$HOME\KingsCodeNvidia", "$HOME\Downloads\KingsCodeNvidia",
+                "$HOME\Desktop\KingsCodeNvidia", (Get-Location).Path)
+$Source = $Candidates | Where-Object { $_ -and (Test-Path (Join-Path $_ "corpus\manifest.json")) -and ($_ -ne $Work) } | Select-Object -First 1
+if (-not $Source) { throw "STOP: no encontre un repo con corpus\manifest.json. Usa -Source 'C:\ruta\KingsCodeNvidia'." }
+Write-Host "Fuente: $Source"
+if (-not (Get-Command git -ErrorAction SilentlyContinue)) { throw "STOP: falta Git." }
+
+$PyExe = $null
+foreach ($c in @(@{Exe = "py"; Args = @("-3.12")}, @{Exe = "py"; Args = @("-3.11")}, @{Exe = "python"; Args = @()})) {
+    try { $v = & $c.Exe @($c.Args) -c "import sys; print(sys.version_info >= (3, 11))"; if ($v -eq "True") { $PyExe = $c.Exe; $PyArgs = $c.Args; break } } catch { }
+}
+if (-not $PyExe) { throw "STOP: se necesita Python 3.11+ (python.org, 'Install for me only')." }
+
+# ---------------------------------------------------------------------
+Step "[1] Copia limpia de main en $Work"
+if (-not (Test-Path "$Work\.git")) { git clone "https://github.com/$GitHubRepo.git" $Work; Check "git clone" }
+Set-Location $Work
+if (git status --porcelain --untracked-files=no) { git status --short; throw "STOP: $Work tiene cambios locales; revisalos o usa otro -Work." }
+git checkout main; Check "checkout main"
+git pull --ff-only origin main; Check "pull main"
+$Sha = (git rev-parse HEAD).Trim()
+Write-Host "main @ $Sha"
+$Out = "$Work\reports\lab_session\$Stamp"
+New-Item -ItemType Directory -Force $Out | Out-Null
+Done "git" @{ work = $Work; source = $Source; main_sha = $Sha }
+
+# ---------------------------------------------------------------------
+Step "[2] Corpus v0.1 y cache de modelos"
+if (-not (Test-Path "$Work\corpus\manifest.json")) {
+    robocopy "$Source\corpus" "$Work\corpus" /E /NFL /NDL /NJH /NJS /NP | Out-Null
+    if ($LASTEXITCODE -ge 8) { throw "STOP: robocopy fallo copiando corpus\ ($LASTEXITCODE)" }
+    $global:LASTEXITCODE = 0
+}
+if (-not (Test-Path "$Work\models")) {
+    if (-not (Test-Path "$Source\models")) { New-Item -ItemType Directory -Force "$Source\models" | Out-Null }
+    cmd /c "mklink /J `"$Work\models`" `"$Source\models`"" | Out-Null; Check "enlace de models\"
+}
+
+# ---------------------------------------------------------------------
+Step "[3] Entorno Python y validacion del corpus contra los hashes de A"
+if (-not (Test-Path ".venv\Scripts\python.exe")) { & $PyExe @PyArgs -m venv .venv; Check "crear .venv" }
+$Py = "$Work\.venv\Scripts\python.exe"
+& $Py -m pip install --upgrade pip; Check "pip"
+& $Py -m pip install -r requirements-knowledge.txt; Check "requirements-knowledge"
+& $Py tools\verify_member_a_v02.py | Out-File -Encoding utf8 "$Out\verify_member_a_v02.json"; Check "verify_member_a_v02"
+git checkout -- reports/member_a_v02/verification.json  # the verifier rewrites this tracked file
+Done "corpus" "v0.1 validado (verify_member_a_v02 PASS)"
+
+# ---------------------------------------------------------------------
+Step "[4] Indice denso: mismas reglas que DenseIndex de A"
+$DenseCheck = @'
+import hashlib, json, sys
+from pathlib import Path
+root = Path(sys.argv[1]); idx = root / "corpus/index"
+def h(p): return hashlib.sha256(p.read_bytes()).hexdigest()
+if not (idx / "dense.npy").exists() or not (idx / "dense.meta.json").exists():
+    print(json.dumps({"status": "missing"})); sys.exit(0)
+meta = json.loads((idx / "dense.meta.json").read_text(encoding="utf-8"))
+sys.path.insert(0, str(root))
+from kingscode.common import indexable, read_jsonl
+ids = [p["passage_id"] for p in read_jsonl(root / "corpus/passages.jsonl") if indexable(p)]
+cfg = json.loads((root / "config/neural.json").read_text(encoding="utf-8"))
+lock = json.loads((root / "config/models.lock.json").read_text(encoding="utf-8"))
+problems = []
+if meta.get("vectors_sha256") != h(idx / "dense.npy"): problems.append("vectors_sha256")
+if meta.get("corpus_sha256") != h(root / "corpus/passages.jsonl"): problems.append("corpus_sha256")
+if meta.get("passage_ids") != ids: problems.append("passage_ids")
+if meta.get("config") != cfg: problems.append("config (config/neural.json cambio desde que se construyo)")
+if meta.get("model_lock") != lock.get(cfg["embedding_model"]): problems.append("model_lock")
+print(json.dumps({"status": "valid" if not problems else "stale", "problems": problems,
+                  "dense_sha256": h(idx / "dense.npy"),
+                  "matches_4090_freeze": h(idx / "dense.npy") == "0c156c5e95dce92d6abd6404a39242bd724228bfdf99f4e9e44ddf5dd16b8347"}))
+'@
+$DenseCheck | Out-File -Encoding ascii "$env:TEMP\kc_dense_check.py"
+$Dense = (& $Py "$env:TEMP\kc_dense_check.py" $Work) | ConvertFrom-Json
+Write-Host ("Indice denso: {0} {1}" -f $Dense.status, ($Dense.problems -join ", "))
+Done "dense_before" $Dense
+
+# ---------------------------------------------------------------------
+Step "[6] Entorno GPU (antes de publicar, por si hay que reconstruir el denso)"
+$GpuOk = $false
+if (Get-Command nvidia-smi -ErrorAction SilentlyContinue) {
+    nvidia-smi | Out-File -Encoding utf8 "$Out\nvidia_smi.txt"
+    $DriverCuda = [double]((nvidia-smi | Select-String "CUDA Version:\s*([0-9.]+)").Matches[0].Groups[1].Value)
+    try { & $Py -c "import torch,sys; sys.exit(0 if torch.cuda.is_available() else 1)"; $HasTorch = ($LASTEXITCODE -eq 0) } catch { $HasTorch = $false }
+    if (-not $HasTorch) {
+        $Index = if ($DriverCuda -ge 12.6) { "cu126" } elseif ($DriverCuda -ge 12.4) { "cu124" } elseif ($DriverCuda -ge 12.1) { "cu121" } else { "" }
+        if (-not $Index) { throw "STOP: el driver solo admite CUDA $DriverCuda; se necesita >= 12.1." }
+        & $Py -m pip install torch --index-url "https://download.pytorch.org/whl/$Index"; Check "PyTorch $Index"
+    }
+    & $Py -m pip install -r requirements-gpu.txt; Check "requirements-gpu"
+    $Rt = (& $Py -c "import json,torch; p=torch.cuda.get_device_properties(0); print(json.dumps({'torch':torch.__version__,'cuda':torch.version.cuda,'gpu':p.name,'vram_gb':round(p.total_memory/2**30,1),'bf16':torch.cuda.is_bf16_supported()}))") | ConvertFrom-Json
+    $Rt | ConvertTo-Json | Out-File -Encoding utf8 "$Out\runtime.json"
+    Write-Host ("GPU {0}, {1} GB, BF16={2}, torch {3} / CUDA {4}" -f $Rt.gpu, $Rt.vram_gb, $Rt.bf16, $Rt.torch, $Rt.cuda)
+    $GpuOk = [bool]$Rt.bf16
+    if ($Rt.vram_gb -lt 20) { Warn "menos de 20 GB de VRAM: un 8B en BF16 puede dar OOM (queda registrado)." }
+    Done "gpu" $Rt
+} else { Warn "sin nvidia-smi: se omiten los pasos de GPU."; Done "gpu" "no_gpu" }
+
+if ($GpuOk -and ($Dense.status -ne "valid") -and $RebuildDense) {
+    Step "[6b] Reconstruyendo indice denso Qwen sobre corpus v0.1"
+    & $Py tools\prepare_models.py --download "Qwen/Qwen3-Embedding-0.6B"; Check "modelo de embeddings"
+    & $Py tools\member_a.py dense --corpus corpus; Check "dense"
+    $Dense = (& $Py "$env:TEMP\kc_dense_check.py" $Work) | ConvertFrom-Json
+    Done "dense_rebuilt" $Dense
+}
+
+# ---------------------------------------------------------------------
+if (-not $SkipPublish -and -not (Test-Path "$Work\tools\package_corpus_snapshot.py")) {
+    Warn "main aun no tiene tools\package_corpus_snapshot.py (falta mergear el PR #6): se salta la publicacion."
+    $SkipPublish = $true
+}
+if (-not $SkipPublish) {
+    Step "[5] Publicar corpus v0.1 + indice + LICENSE (entregable 5)"
+    $Gh = Get-Command gh -ErrorAction SilentlyContinue
+    $Exists = $Gh -and (Quiet "gh release view $Tag --repo $GitHubRepo")
+    if ($Exists) {
+        Write-Host "El release $Tag ya existe; no se reemplaza."
+        Done "publish" "ya_existia"
+    } else {
+        $Bundle = "$HOME\kingscode_upload\$Stamp\kingscode_corpus_e_indice_v0.1"
+        New-Item -ItemType Directory -Force "$Bundle\indice_denso" | Out-Null
+        & $Py tools\package_corpus_snapshot.py pack --root $Work --out "$Bundle\corpus_snapshot"; Check "empaquetado"
+        & $Py tools\package_corpus_snapshot.py verify "$Bundle\corpus_snapshot\kingscode-corpus-v0.1.tar.gz" --files "$Bundle\corpus_snapshot\snapshot-files.sha256.json"; Check "verificacion del paquete"
+        $WithDense = $Dense.status -eq "valid"
+        if ($WithDense) { Copy-Item "$Work\corpus\index\dense.npy", "$Work\corpus\index\dense.meta.json" "$Bundle\indice_denso\" }
+        else { Warn "el indice denso no es valido para la config actual ($($Dense.problems -join ', ')); se publica solo BM25. Usa -RebuildDense para reconstruirlo." }
+        @"
+KingsCode - corpus procesado e indices (corpus-v0.1)
+
+Licencia de la compilacion, el procesamiento y los indices: $License
+https://creativecommons.org/licenses/by/4.0/legalcode
+
+Los textos juridicos provienen de fuentes oficiales colombianas; URL, fecha de
+consulta y hash de cada documento estan en corpus/manifest.json.
+Equipo KingsCode - Hackathon 2026, Universidad de los Andes.
+"@ | Out-File -Encoding ascii "$Bundle\LICENSE.txt"
+        Copy-Item "$Bundle\corpus_snapshot\LEEME.txt" "$Bundle\LEEME.txt"
+        $Zip = "$HOME\kingscode_upload\$Stamp\kingscode_corpus_e_indice_v0.1.zip"
+        Compress-Archive -Path "$Bundle\*" -DestinationPath $Zip
+        $Assets = @($Zip, "$Bundle\corpus_snapshot\kingscode-corpus-v0.1.tar.gz", "$Bundle\corpus_snapshot\snapshot-files.sha256.json",
+                    "$Bundle\LEEME.txt", "$Bundle\LICENSE.txt")
+        if ($WithDense) { $Assets += @("$Bundle\indice_denso\dense.npy", "$Bundle\indice_denso\dense.meta.json") }
+        $Sums = "$HOME\kingscode_upload\$Stamp\SHA256SUMS.txt"
+        $Assets | ForEach-Object { "{0}  {1}" -f (Get-FileHash -Algorithm SHA256 $_).Hash.ToLower(), (Split-Path $_ -Leaf) } | Out-File -Encoding ascii $Sums
+        $Assets += $Sums
+        if ($Gh) {
+            if (-not (Quiet "gh auth status")) { gh auth login; Check "gh auth login" }
+            $Notes = "Snapshot historico corpus-v0.1 (163 documentos, 26.558 pasajes, grafo, BM25" + $(if ($WithDense) { " e indice denso Qwen" } else { "" }) + "). No es freeze competitivo. corpus-v0.2 esta en el repo (corpora/corpus-v0.2). Verificar con tools/package_corpus_snapshot.py verify."
+            gh release create $Tag @Assets --repo $GitHubRepo --title "Corpus e indice KingsCode v0.1" --notes $Notes; Check "gh release create"
+            Write-Host "Enlace para README (## Corpus e indice): https://github.com/$GitHubRepo/releases/download/$Tag/kingscode_corpus_e_indice_v0.1.zip" -ForegroundColor Green
+            Done "publish" @{ release = "https://github.com/$GitHubRepo/releases/tag/$Tag"; dense = $WithDense }
+        } else {
+            Warn "no hay GitHub CLI: sube $Zip a Drive ('Cualquier persona con el enlace') y pega el enlace en el README."
+            Done "publish" @{ manual_upload = $Zip; dense = $WithDense }
+        }
+    }
+}
+
+# ---------------------------------------------------------------------
+$ModelList = $Models.Split(",") | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+if ($GpuOk -and -not $SkipDecoder) {
+    Step "[7] Pesos del decoder fijados por lock ($($ModelList -join ', '))"
+    $FreeGb = [math]::Round((Get-PSDrive (Split-Path $Work -Qualifier).TrimEnd(":")).Free / 1GB, 1)
+    Write-Host "Espacio libre: $FreeGb GB (cada decoder ~16 GB)"
+    foreach ($m in $ModelList) { & $Py tools\prepare_models.py --download $m; Check "descarga $m" }
+
+    Step "[8] Smoke del decoder real ($($ModelList[0]), BF16, temperatura 0)"
+    & $Py tools\gpu_smoke.py --model $ModelList[0] --precision bf16 --output-root "$Out\decoder_smoke"
+    $SmokeOk = ($LASTEXITCODE -eq 0)
+    if (-not $SmokeOk) { Warn "el smoke fallo; revisa $Out\decoder_smoke (si es CUDA_OOM, ese registro habilita int8/int4)." }
+    Done "decoder_smoke" $SmokeOk
+
+    Step "[9] Congelar planes del planner Qwen para sample_50 (no se evalua aqui)"
+    & $Py tools\member_b.py plan --input data\sample_50.jsonl --model qwen3-8b | Out-File -Encoding utf8 "$Out\plans_freeze.json"
+    if ($LASTEXITCODE -ne 0) { Warn "no se pudieron congelar los planes" }
+    Done "plans" (Get-Content "$Out\plans_freeze.json" -Raw)
+
+    if ($SmokeOk) {
+        $Results = @()
+        foreach ($m in $ModelList) {
+            Step "[10] sample_50 end-to-end con $m (BM25 + locator exacto de A + reparacion de citas)"
+            $Run = "$Work\runs\${Stamp}_$m"
+            & $Py tools\member_b.py batch --input data\sample_50.jsonl --run-dir $Run --fresh --model $m --exact-locator --retrieval-mode option; Check "batch $m"
+            & $Py scripts\evaluate.py --submission "$Run\submissions.jsonl" --split sample --out "$Out\evaluation_$m.json"; Check "evaluate $m"
+            Copy-Item "$Run\batch_report.json" "$Out\batch_report_$m.json"
+            Copy-Item "$Run\submissions.jsonl" "$Out\submissions_sample_$m.jsonl"
+            $Ev = Get-Content "$Out\evaluation_$m.json" -Raw | ConvertFrom-Json
+            $Br = Get-Content "$Run\batch_report.json" -Raw | ConvertFrom-Json
+            $Spq = [math]::Round($Br.seconds / 50, 2)
+            Step "[11] Presupuesto de tiempo para 992 con $m"
+            & $Py tools\benchmark_budget.py --seconds-per-question $Spq --questions 992 --hours 6 | Out-File -Encoding utf8 "$Out\budget_$m.txt"
+            Get-Content "$Out\budget_$m.txt"
+            $Results += [ordered]@{ model = $m; total_sin_ragas = $Ev.total_automatico.obtenidos; cerradas = $Ev.cerradas.puntos;
+                                    citas = $Ev.citas.puntos; abstencion = $Ev.abstencion.puntos; errores_validacion = $Ev.validacion.errores;
+                                    seconds_per_question = $Spq; fallbacks = $Br.fallback_ids.Count }
+        }
+        $Results | ConvertTo-Json | Out-File -Encoding utf8 "$Out\sample_results.json"
+        $Results | ForEach-Object { Write-Host ("{0}: {1} / 50 sin RAGAS (cerradas {2}, citas {3}, abstencion {4}); {5} s/pregunta" -f $_.model, $_.total_sin_ragas, $_.cerradas, $_.citas, $_.abstencion, $_.seconds_per_question) -ForegroundColor Green }
+        Done "sample" $Results
+    }
+} elseif (-not $GpuOk) { Warn "sin GPU BF16: no se corre el decoder." }
+
+# ---------------------------------------------------------------------
+Step "[12] Guardar resultados"
+$Summary.finished = (Get-Date).ToString("s")
+$Summary | ConvertTo-Json -Depth 6 | Out-File -Encoding utf8 "$Out\summary.json"
+if (-not $NoPush) {
+    $Branch = "lab/$Stamp"
+    git checkout -b $Branch; Check "rama $Branch"
+    git add "reports/lab_session/$Stamp"; Check "git add"
+    if (Test-Path "reports/query_plans") { git add reports/query_plans; Check "git add planes" }
+    git -c user.name="KingsCode lab" -c user.email="lab@kingscode.local" commit -m "Lab GPU session $Stamp (main $Sha)"; Check "git commit"
+    git push -u origin $Branch
+    if ($LASTEXITCODE -ne 0) { Warn "no se pudo subir $Branch; los resultados quedan en $Out" } else { Write-Host "Resultados subidos a la rama $Branch" -ForegroundColor Green }
+    git checkout main | Out-Null
+}
+Write-Host ""
+Write-Host "LISTO. Resultados en $Out" -ForegroundColor Green

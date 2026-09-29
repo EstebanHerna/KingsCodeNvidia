@@ -46,7 +46,7 @@ Consecuencias que deben guiar el diseño:
 
 ## 5. Estado real
 
-- **2026-09-29, prevalece:** A+B integrados en `main` (ver la última entrada de `docs/DECISION_LOG.md` y `member_b_v2` en `docs/KINGSCODE_STATE.json`). B ya no hace fan-out propio en modo PLAN: usa `retrieve(..., query_views=...)` de A, cuyo locator solo resuelve Q0. Sesión GPU: `tools/lab_gpu_session.ps1`. Lo que sigue abajo es el historial del 28-sep.
+- **2026-09-29, prevalece:** A+B integrados en `main` (ver la última entrada de `docs/DECISION_LOG.md` y `member_b_v2` en `docs/KINGSCODE_STATE.json`). B ya no hace fan-out propio en modo PLAN: usa `retrieve(..., query_views=...)` de A, cuyo locator solo resuelve Q0. Sesión GPU: `tools/kingscode_gpu_todo.ps1`. Lo que sigue abajo es el historial del 28-sep.
 
 - **A (corpus + retrieval):** 163 documentos, 26.558 pasajes, grafo 59k nodos/75k aristas, BM25 activo, Recall@10 a nivel artículo 0,525. Dense/reranker Qwen3-0.6B implementados, sin benchmark neuronal completo (pendiente GPU). `corpus/` está en `.gitignore`: se construye localmente con `tools/member_a.py acquire` + `reproduce` (ver `docs/MEMBER_A_RUNBOOK.md`) o se copia el snapshot conservado.
 - **B (razonamiento):** Gate 1B histórico (`DummyDecoder`, siempre se abstiene) = 5/50 sin RAGAS; sigue como piso de referencia. Gate 2-Prep (`a179af7`) ya agregó `kingscode/generation/hf_decoder.py` (backend real Transformers, lazy, con locks/hashes de modelo, prompts `grounded-formats-v2`) y `config/decoder_bakeoff.json`/`config/models.lock.json` (Qwen3-8B, ALIA Legal 7B, Salamandra 7B, Llama 3.1 8B opcional). **Nada de esto se ha ejecutado en GPU real todavía** (`gate2_prep.decoder_weights_downloaded: false`).

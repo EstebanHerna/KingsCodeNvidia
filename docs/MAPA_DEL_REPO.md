@@ -50,9 +50,9 @@ El corpus v0.1 **no está en ninguna rama de GitHub** (tampoco en `feat/member-a
 
 1. En la PC que tiene `corpus/`: `python tools/package_corpus_snapshot.py pack` → `dist/corpus_snapshot/` con `kingscode-corpus-v0.1.tar.gz`, `snapshot-files.sha256.json`, `SHA256SUMS.txt` y `LEEME.txt` (fuera de git).
 2. Subir esos archivos a Drive/OneDrive (también es el entregable 5, junto con `dense.npy` y un `LICENSE`).
-3. En la PC que lo recibe: `python tools/package_corpus_snapshot.py verify <ruta>/kingscode-corpus-v0.1.tar.gz`, luego `tar -xzf … -C .` y `python tools/verify_member_a_v02.py`. O pasar el `.tar.gz` a `tools/lab_gpu_session.ps1 -CorpusSnapshot`, que verifica antes de extraer.
+3. En la PC que lo recibe: `python tools/package_corpus_snapshot.py verify <ruta>/kingscode-corpus-v0.1.tar.gz`, luego `tar -xzf … -C .` y `python tools/verify_member_a_v02.py`.
 
-**Atajo con scripts (PowerShell, sin admin):** en la PC que tiene `corpus\`, `powershell -ExecutionPolicy Bypass -File tools\subir_corpus_snapshot.ps1` (empaqueta, verifica, añade `dense.npy` si coincide con el freeze de la 4090, crea `LICENSE` y el `.zip` único, y publica el release `corpus-v0.1-snapshot` del repo público; con `-NoUpload` solo empaqueta para Drive). En una PC nueva, `powershell -ExecutionPolicy Bypass -File tools\preparar_maquina_nueva.ps1` clona, instala, descarga el release, verifica, extrae, valida y deja lista la sesión GPU.
+**Script único (PowerShell, sin admin):** en la PC que tiene `corpus\` y GPU, `powershell -ExecutionPolicy Bypass -File tools\kingscode_gpu_todo.ps1`. Trabaja en una copia limpia de `main` (`%USERPROFILE%\KingsCodeRun`, sin tocar el repo fuente), valida el corpus y el índice denso con las reglas de `DenseIndex`, publica corpus + índice + `LICENSE` como release `corpus-v0.1-snapshot`, instala CUDA en el venv, descarga el decoder, corre el smoke, congela planes, ejecuta `sample_50` con el evaluador oficial, proyecta el tiempo a 992 y sube los resultados a una rama `lab/<fecha>`.
 
 El paquete no incluye `dense.npy` (106.741.888 bytes, SHA-256 `0c156c5e9…`): para los modos denso/híbrido hay que traerlo aparte o reconstruirlo en GPU con `tools/member_a.py dense`. Hash de un paquete ya generado reportado por el equipo: `fef7300ccfe731c0b4edb07e9199f7db830a38071f9549fd5b6f0f3120b2d851` (el hash del `.tar.gz` puede variar entre builds de zlib; la verificación autoritativa es por archivo).
 
@@ -182,7 +182,7 @@ Lectura: el salto viene del **locator exacto** (inyecta el artículo citado en l
 | A: benchmarks | `build_retrieval_benchmark.py`, `evaluate_retrieval_benchmark.py`, `analyze_retrieval_benchmark.py`, `benchmark_v2.py`, `benchmark_source_intake.py`, `independent_ir_v2.py` (KC-COL-IR, con gate), `retrieval_matrix.py`, `gpu_search_v2_dev.py`, `gpu_search_v2_validation.py` |
 | A: verificación | `verify_member_a_v02.py`, `verify_member_a_second.py`, `verify_kc_col_ir_v01.py` |
 | B | `member_b.py` (smoke, decoder-smoke, sample, bakeoff, **batch**, **verify**, **plan**), `analyze_query_plans.py`, `analyze_citation_ceiling.py`, `verify_member_b_second.py` |
-| GPU / entorno | `lab_gpu_session.ps1` (sesión sin admin), `check_cuda.py`, `prepare_gpu_environment.py`, `prepare_models.py`, `prepare_neural.py`, `neural_smoke.py`, `gpu_smoke.py`, `verify_gate2_prep.py`, `benchmark_budget.py` |
+| GPU / entorno | `kingscode_gpu_todo.ps1` (script único de la PC con GPU), `check_cuda.py`, `prepare_gpu_environment.py`, `prepare_models.py`, `prepare_neural.py`, `neural_smoke.py`, `gpu_smoke.py`, `verify_gate2_prep.py`, `benchmark_budget.py` |
 | Material oficial | `preflight.py`, `inspect_challenge.py` |
 
 ---
@@ -223,7 +223,7 @@ Regla común: los rankings se escriben **antes** de leer el gold; el holdout no 
 | `member_a_v02/`, `corpus_quality_v07/` | Progreso de v0.2 y auditoría de calidad del corpus. |
 | `member_b/` | Corridas de Gate 1B (dummy). |
 | `retrieval_*`, `acquisition_backlog_v06.json`, `corpus_coverage_v06.json` | Métricas BM25 de v0.1, fallos por pregunta, backlog de adquisición, cobertura. |
-| `lab_session/<fecha>/` | (se crea en la sesión GPU) salida de `tools/lab_gpu_session.ps1`. |
+| `lab_session/<fecha>/` | (se crea en la sesión GPU) salida de `tools/kingscode_gpu_todo.ps1`. |
 | `query_plans/<id>/` | (se crea al congelar planes) planes del planner con su manifest. |
 
 ---

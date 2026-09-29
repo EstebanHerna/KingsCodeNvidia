@@ -44,8 +44,7 @@ En la PC que lo recibe (Windows PowerShell), desde la raiz del repositorio actua
 3. Extraer:  tar -xzf <ruta>\\{ARCHIVE_NAME} -C .
 4. Verificar contra el manifest de A:  .\\.venv\\Scripts\\python.exe tools\\verify_member_a_v02.py
 
-Tambien puede pasarse la ruta del .tar.gz a -CorpusSnapshot de tools\\lab_gpu_session.ps1
-(el paquete por si solo no instala Python, CUDA ni modelos).
+En la PC con GPU, tools\\kingscode_gpu_todo.ps1 hace todo el flujo (el paquete por si solo no instala Python, CUDA ni modelos).
 No ejecutar acquire/reproduce para transferir el corpus: cambiaria los hashes.
 """
 

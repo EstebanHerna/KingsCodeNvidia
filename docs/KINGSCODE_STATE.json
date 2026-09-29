@@ -587,6 +587,6 @@
     },
     "decoder_bakeoff": "not_run: needs GPU session and artifacts/retrieval_freeze.json",
     "base_vs_plan": "NO GENERALIZATION CLAIM. WAITING FOR A BENCHMARK HANDOFF (independent v2 retrieval_gold >= 10)",
-    "gpu_lab_script": "tools/lab_gpu_session.ps1"
+    "gpu_lab_script": "tools/kingscode_gpu_todo.ps1"
   }
 }
