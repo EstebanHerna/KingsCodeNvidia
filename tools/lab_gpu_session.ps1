@@ -9,8 +9,8 @@
 #
 # Qué NO hace (a propósito):
 #   - benchmark v1, Search V2, validation/holdout v1, tuning;
-#   - C0-C3 del benchmark independiente v2 mientras A no tenga >=10
-#     RETRIEVAL_GOLD aceptados y no exista tools/evaluate_independent_v2.py;
+#   - C0-C3 del benchmark independiente KC-COL-IR (tools/independent_ir_v2.py)
+#     mientras A no tenga >=10 retrieval gold aceptados (gate de su manifest);
 #   - volver a descargar el corpus desde las fuentes (cambiaría los hashes
 #     que verifica A): usa el snapshot conservado por Luis (-CorpusSnapshot);
 #   - --ragas (gasta los 20 USD de OpenRouter; solo con autorización).
@@ -70,17 +70,20 @@ if (-not $SkipTests) {
 }
 & $Py tools\benchmark_v2.py check | Out-File "$Out\benchmark_v2_check.json" -Encoding utf8; Check "benchmark_v2 check"
 
-Step "[3] Gate del benchmark independiente v2 (informativo, no corta la sesión)"
+Step "[3] Gate del benchmark independiente KC-COL-IR (informativo, no corta la sesión)"
 $Gate = & $Py -c @'
 import json
-x = json.load(open("benchmarks/kingscode_ir_v2/manifest.json", encoding="utf-8"))
-g = int(x.get("retrieval_gold_count") or 0)
-print(json.dumps({"status": x.get("status"), "independent_source_items": x.get("independent_source_items"),
-                  "retrieval_gold_count": g, "gate_open": g >= 10}))
+m = json.load(open("benchmarks/kc_col_ir_v0.1/manifest.json", encoding="utf-8"))
+c = m.get("counts", {})
+print(json.dumps({"benchmark": m.get("benchmark"), "cuda_ready": m.get("cuda_ready"),
+                  "accepted_retrieval_gold": c.get("accepted_retrieval_gold", 0),
+                  "needs_human_review": c.get("needs_human_review", 0),
+                  "gate_open": bool(m.get("cuda_ready")) and bool(m.get("baseline_gate", {}).get("unlocked"))}))
 '@
-$Gate | Out-File "$Out\independent_v2_gate.json" -Encoding utf8
+$Gate | Out-File "$Out\independent_ir_gate.json" -Encoding utf8
 Write-Host $Gate
 $GateOpen = ($Gate | ConvertFrom-Json).gate_open
+& $Py tools\independent_ir_v2.py check | Out-File "$Out\independent_ir_check.json" -Encoding utf8
 
 # ---------------------------------------------------------------------
 Step "[4] Corpus v0.1 (snapshot de Luis; nunca re-adquirir aquí)"
@@ -181,14 +184,16 @@ if ($BuildDense -and $HaveCorpus) {
 }
 
 # ---------------------------------------------------------------------
-Step "[12] Benchmark independiente v2 (C0-C3)"
+Step "[12] Benchmark independiente KC-COL-IR (C0 BM25 / C1 dense / C2 hybrid / C3 hybrid+reranker)"
 if (-not $GateOpen) {
-    Write-Host "Gate cerrado: A necesita >=10 RETRIEVAL_GOLD aceptados. No correr C0-C3 todavía."
-} elseif (-not (Test-Path "tools\evaluate_independent_v2.py")) {
-    Write-Host "Gate abierto pero falta tools\evaluate_independent_v2.py (lo entrega A). No usar benchmark_v2.py dev."
+    Write-Host "Gate cerrado: A necesita >=10 retrieval gold aceptados (hoy los candidatos esperan revisión humana). No correr C0-C3."
+} elseif (-not $HaveCorpus) {
+    Write-Host "Gate abierto pero falta el corpus: no se corre."
 } else {
-    & $Py tools\evaluate_independent_v2.py --help
-    Write-Host "Revisar el CLI real con A antes de lanzar C0 BM25 / C1 dense / C2 hybrid / C3 hybrid+reranker, sin tuning."
+    foreach ($C in "C0", "C1", "C2", "C3") {
+        & $Py tools\independent_ir_v2.py run --component $C; Check "independent_ir_v2 $C"
+    }
+    Write-Host "Una sola corrida por componente, sin tuning. Resultados en reports/ según el runner de A."
 }
 
 Step "Listo. Resultados en $Out"

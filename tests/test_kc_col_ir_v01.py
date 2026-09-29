@@ -11,6 +11,8 @@ from tools import independent_ir_v2
 
 
 class IndependentBenchmarkTests(unittest.TestCase):
+    @unittest.skipUnless((ROOT / "tmp/kc_col_ir_v0.1/pool/externado_procesal_full_pool.jsonl").exists(),
+                         "local frozen full-pool artifact (tmp/, not in git) required")
     def test_inventory_and_deterministic_sample_are_valid(self):
         result = verify_kc_col_ir_v01.verify()
         self.assertEqual(result["externado_pool"], 270)
