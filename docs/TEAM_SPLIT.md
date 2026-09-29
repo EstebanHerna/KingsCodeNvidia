@@ -63,10 +63,10 @@ A: toma la máquina solo después de "GPU_READY" y ejecuta retrieval
 | Etapa | Quién | Qué hace | Resultado para el siguiente |
 |---|---|---|---|
 | GPU 0 | B | `git pull`, verificaciones Gate 2, GPU diagnose, PyTorch correcto, requirements GPU, model verify, GPU smoke | `GPU_READY` |
-| GPU 1 | A | build dense index, R0 BM25 → R1 dense → R2 hybrid → R3 hybrid+reranker → R4 +Graph AUTO → R5 +Graph ON | Recall@1/3/5/10, MRR, coverage, latencia, efecto del grafo |
-| Sync #1 | A + B | eligen juntos el mejor retrieval con evidencia (no automático); `freeze retrieval` | 8 pasajes fijos para todos los decoders siguientes |
-| GPU 2 | B | decoder-smoke, luego D1 Qwen3-8B, D2 ALIA Legal 7B, D3 Salamandra 7B — mismas 50 preguntas, mismos 8 pasajes, misma temperatura, mismo contrato de salida | score oficial, RAGAS, valid JSON, citas, abstenciones, latencia, tokens, VRAM |
-| GPU 3 | A + B | error analysis conjunto (ver tabla de categorías) | decoder final elegido, freeze de versiones |
+| GPU 1 | A | benchmark v1 same-ID R1 dense/complementarity → R2 → R3–R8 sobre validation; R0 ya es baseline medido | métricas EC@8/Recall/nDCG/MRR, contexto, latencia, error analysis |
+| Sync #1 | A + B | registran selección de retrieval sobre validation; una confirmación holdout posterior + oficial-50 sin retuning | solo entonces, 8 pasajes fijos para todos los decoders |
+| GPU 2 | B | decoder-smoke, luego D1 Qwen3-8B, D2 ALIA Legal 7B, D3 Salamandra 7B — mismas evidencias congeladas | score oficial, RAGAS autorizado, JSON, citas, abstenciones, latencia, tokens, VRAM |
+| GPU 3 | A + B | error analysis conjunto y medición de throughput real | decoder final elegido, freeze de versiones, plan 992 |
 
 Durante GPU 1, B puede analizar tablas/reportes pero **no cambia el pipeline** hasta el punto de sincronización.
 
