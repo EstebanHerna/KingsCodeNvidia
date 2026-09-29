@@ -113,3 +113,8 @@
 - Benchmark v1: 200/200 casos EXPLICIT. Muestra oficial: 4/50 con artículo explícito, 14/50 con alguna norma. v1 no sirve para decidir pesos BM25/denso.
 - Se propone el orden C0–C8 de `docs/CORPUS_V02_PLAN.md`: locator con inyección (C1) y benchmark v2 con preguntas semánticas escritas por el equipo (C2) antes de ampliar el corpus; adquisición dirigida y acotada (C3/C4); internacional al backlog por §4.2 del enunciado.
 - Reverificado el 2026-09-29 sobre `main` (`a3548a1`): las cinco primeras filas de la tabla §2.1 del plan se reproducen exactas con `kingscode/diversify.py::parse_reference`, mientras `kingscode/reasoning/legal.py::references` y `scripts/citations.py::extract` resuelven las cinco correctamente.
+
+## 2026-09-28 — Plan de B tras resultados 4090 (propuesta)
+
+- Resultados de A en `feat/member-a-gpu-results-4090-20260928`: locator con inyección satura el benchmark v1 (dev EC@8 0,9917; validación 1,0). El benchmark v1 es 100 % explícito, así que no se infiere calidad semántica.
+- B se reordena en `docs/B_PLAN_POST_GPU.md`: robustez 992 (B7) y reparación de citas en tres niveles (B2, requiere revisión de Luis) antes del bakeoff; Qwen3-8B se mantiene en el bakeoff porque el enunciado §3.1 lo sugiere (8.190.735.360 parámetros), con confirmación por correo pendiente.

@@ -110,3 +110,11 @@ Puntos que no se discuten sin nuevos datos:
 - El benchmark v1 es 100 % explícito; la muestra oficial tiene solo 4/50 preguntas con artículo en el enunciado. No elegir pesos BM25/denso con v1.
 - El banco no cubre derecho internacional (§4.2 del enunciado).
 - v0.1 es inmutable hasta que el equipo apruebe el freeze de v0.2 en `DECISION_LOG.md`.
+
+## 10. B después de la RTX 4090 (desde 2026-09-28 noche)
+
+Plan vigente de B: `docs/B_PLAN_POST_GPU.md` (tareas B0–B8, comando `/b2-tarea`). Sustituye el orden de `docs/B_EXTENSION_PLAN.md` donde se contradigan.
+- El locator exacto es de A; B solo llama `retrieve()`.
+- Guarda: reparar antes de verificar (aceptar / reescribir a cuerpo / suprimir). No abstenerse por una cita.
+- Qwen3-8B sigue en el bakeoff: el enunciado §3.1 lo sugiere expresamente; la confirmación por correo está pendiente.
+- Prioridad sin GPU: B7 (checkpoint, resume, escritura atómica, 992/992).
