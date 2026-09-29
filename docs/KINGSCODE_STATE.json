@@ -470,5 +470,17 @@
       "independent_v2_baseline": "NOT RUN: zero accepted independent retrieval-gold items; minimum gate 10."
     }
   },
-  "runtime_blocked_official_sources": 3
+  "runtime_blocked_official_sources": 3,
+  "member_a_corpus_quality_audit_v07": {
+    "status": "audit_complete_with_explicit_unknowns_no_corpus_certification",
+    "branch": "feat/member-a-corpus-quality-audit-v07",
+    "base_commit": "a3548a16003dcc0a5165cba0829aa68c7921d9c2",
+    "sample_passages": 200,
+    "sample_documents": 118,
+    "sample_edges": 100,
+    "confirmed_findings": 6,
+    "corpus_modified": false,
+    "reports": "reports/corpus_quality_v07",
+    "next_action": "Review findings before v0.2 hardening; preserve v0.1 GPU snapshot. GPU evolution exists separately on feat/member-a-gpu-results-4090-20260928; this branch does not rewrite its results."
+  }
 }
