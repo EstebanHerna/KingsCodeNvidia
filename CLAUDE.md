@@ -101,3 +101,20 @@ Linux/WSL: igual con `python`. RAGAS (`--ragas`) solo con autorización explíci
 2. Probar `interfaz/app.py` end-to-end en cuanto haya `corpus/` local o en la máquina con GPU.
 3. Día de GPU: seguir `docs/GPU_DAY_RUNBOOK.md` tal cual (B posee el entorno CUDA/PyTorch/model cache; A toma la máquina después con `GPU_READY`).
 4. `run.sh`/Dockerfile de un solo comando y sección `## Corpus e índice` en el README siguen pendientes (rúbrica 6.2, reproducibilidad 2 pts + corpus publicado 5 pts).
+
+## 9. Corpus v0.2 y locator (desde 2026-09-28 noche)
+
+Plan revisado con evidencia: `docs/CORPUS_V02_PLAN.md`. Comando: `/corpus-tarea C1` (y C0–C8).
+Puntos que no se discuten sin nuevos datos:
+- Los 37 fallos de R6 en dev son de parser y ranking: `diversify.parse_reference` no reconoce códigos, la Constitución, abreviaturas ni listas, y R6 solo reordena el pool de BM25. Arreglar esto es anterior a añadir documentos.
+- El benchmark v1 es 100 % explícito; la muestra oficial tiene solo 4/50 preguntas con artículo en el enunciado. No elegir pesos BM25/denso con v1.
+- El banco no cubre derecho internacional (§4.2 del enunciado).
+- v0.1 es inmutable hasta que el equipo apruebe el freeze de v0.2 en `DECISION_LOG.md`.
+
+## 10. B después de la RTX 4090 (desde 2026-09-28 noche)
+
+Plan vigente de B: `docs/B_PLAN_POST_GPU.md` (tareas B0–B8, comando `/b2-tarea`). Sustituye el orden de `docs/B_EXTENSION_PLAN.md` donde se contradigan.
+- El locator exacto es de A; B solo llama `retrieve()`.
+- Guarda: reparar antes de verificar (aceptar / reescribir a cuerpo / suprimir). No abstenerse por una cita.
+- Qwen3-8B sigue en el bakeoff: el enunciado §3.1 lo sugiere expresamente; la confirmación por correo está pendiente.
+- Prioridad sin GPU: B7 (checkpoint, resume, escritura atómica, 992/992).

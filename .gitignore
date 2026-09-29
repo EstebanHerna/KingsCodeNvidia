@@ -10,3 +10,4 @@ models/
 *.npy
 *.npz
 *.faiss
+runs/

@@ -243,20 +243,33 @@ class PipelineTests(unittest.TestCase):
         _, trace = Pipeline(retrieve).run(Question(1, "Artículo 999 de la Ley 1010 de 2006", "semi_open"))
         self.assertEqual((trace["graph_decision"], trace["graph_execution"]), ("auto", "on"))
 
-    def test_unsupported_citation_falls_back_to_abstention_instead_of_aborting_batch(self):
-        # Enunciado B.5: an unsupported citation must be corrected/suppressed, not
-        # void the whole delivery. Pipeline.run must never raise CitationGuardError
-        # so run_experiment still publishes every other question in the batch.
+    def test_unsupported_citation_is_suppressed_not_abstained(self):
+        # Enunciado B.5 / plan B2: correct or suppress the citation; do not throw
+        # away the item (RAGAS and closed-question accuracy would be lost).
         class FabricatingBackend:
             name, version = "unit_probe_fabricator", "1"
             def generate(self, question, passages, prompt, generation):
-                return cited_row(passages, text="Ley 9999 de 2000, norma inexistente en la evidencia.")
+                return cited_row(passages, text="El acoso laboral tiene regulación propia. La Ley 9999 de 2000 lo amplía.")
         retrieve = Mock(side_effect=lambda *args: [evidence()])
         row, trace = Pipeline(retrieve, decoder=FabricatingBackend()).run(Question(79, "Artículo 1 de la Ley 1010 de 2006", "semi_open"))
+        self.assertFalse(row["abstencion"])
+        self.assertNotIn("9999", row["respuesta"])
+        self.assertEqual(trace["citation_guard"]["unsupported_count"], 0)
+        validate_submission(row)
+
+    def test_guard_failure_that_repair_cannot_fix_still_downgrades_only_that_item(self):
+        # Tampered evidence is not repairable: the batch safety net abstains on
+        # this item instead of aborting the other 991 (answer() still raises).
+        class TamperingBackend:
+            name, version = "unit_probe_tamper", "1"
+            def generate(self, question, passages, prompt, generation):
+                passages[0]["text"] += " Ley 9999 de 2000."
+                return cited_row(passages)
+        retrieve = Mock(side_effect=lambda *args: [evidence()])
+        row, trace = Pipeline(retrieve, decoder=TamperingBackend()).run(Question(79, "Artículo 1 de la Ley 1010 de 2006", "semi_open"))
         self.assertTrue(row["abstencion"])
         self.assertEqual(trace["abstention_reason"], "citation_guard_rejected")
-        self.assertGreaterEqual(trace["citation_guard_fallback"]["unsupported_count"], 1)
-        self.assertTrue(trace["citation_guard"]["ok"])
+        self.assertTrue(trace["citation_guard_fallback"]["evidence_issues"])
         validate_submission(row)
 
     def test_multiple_choice_never_pre_blocks_on_soft_evidence_reasons(self):
