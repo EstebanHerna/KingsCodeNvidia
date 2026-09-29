@@ -482,5 +482,59 @@
     "corpus_modified": false,
     "reports": "reports/corpus_quality_v07",
     "next_action": "Review findings before v0.2 hardening; preserve v0.1 GPU snapshot. GPU evolution exists separately on feat/member-a-gpu-results-4090-20260928; this branch does not rewrite its results."
+  },
+  "member_b_v2": {
+    "status": "merged_to_main_not_gpu_validated",
+    "updated": "2026-09-29",
+    "planner": {
+      "module": "kingscode/reasoning/planner.py",
+      "backend": "kingscode/generation/planner_backend.py (qwen3-8b lock, greedy, seed 0)",
+      "max_views": 3,
+      "q0_always": true,
+      "replay": "reports/query_plans/<experiment_id>/",
+      "prompt_version": "legal-query-planner-v1",
+      "a_integration": "retrieve(question=Q0, query_views=[Q1..Q3]); A's locator/router/reranker see Q0 only",
+      "real_plans_frozen": false
+    },
+    "retrieval_modes": {
+      "default": "option",
+      "available": [
+        "base",
+        "option",
+        "plan"
+      ],
+      "plan_option": "disabled until PLAN and OPTION measured separately"
+    },
+    "batch_992": {
+      "module": "kingscode/reasoning/batch.py",
+      "cli": "tools/member_b.py batch|verify",
+      "features": [
+        "atomic per-item checkpoint",
+        "resume with identity check",
+        "2 deterministic retries",
+        "per-item abstention fallback",
+        "992/992 completeness + hash",
+        "--only live verification"
+      ],
+      "rehearsal_992_fixture_dummy_seconds": 41.6,
+      "real_corpus_rehearsal": "not_run"
+    },
+    "citations": {
+      "builder": "kingscode/reasoning/citation_builder.py",
+      "repair": "kingscode/reasoning/citation_repair.py",
+      "mixed_citation_fake_decoder_50_rows": {
+        "n_citadas": 74,
+        "citas_sin_respaldo": 0,
+        "tasa_sin_respaldo": 0.0
+      },
+      "pending_luis_review": [
+        "guards.reference_support extraction",
+        "T1b body-vs-article",
+        "undated Constitución Política rejected by guard"
+      ]
+    },
+    "decoder_bakeoff": "not_run: needs GPU session and artifacts/retrieval_freeze.json",
+    "base_vs_plan": "NO GENERALIZATION CLAIM. WAITING FOR A BENCHMARK HANDOFF (independent v2 retrieval_gold >= 10)",
+    "gpu_lab_script": "tools/lab_gpu_session.ps1"
   }
 }

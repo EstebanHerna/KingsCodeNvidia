@@ -92,6 +92,14 @@ Cada carpeta contiene `questions.jsonl` (solo campos públicos), `submissions.js
 
 Las carpetas son nuevas por corrida. El fingerprint, JSONL final, decisiones y trazas sin tiempos son reproducibles; timestamps, rutas y latencias cambian. Cero citas emitidas implica tasa sin respaldo cero por convención, sin demostrar calidad de citas. La evidencia positiva/negativa de las guardas está en los tests.
 
+## B v2 en `main` (2026-09-29): planner, 992 robusto y citas
+
+- **Citas:** el decoder razona; `citation_repair.py` corre antes de `citation_guard` (acepta / reescribe a nivel de cuerpo / renombra al nombre de la evidencia / suprime la oración) y `citation_builder.py` escribe la cita final desde `canonical_body` + `article`. Solo se abstiene texto libre si queda vacío un campo obligatorio; las cerradas nunca se abstienen salvo sin evidencia (el validador oficial rechaza una fila no abstenida sin `pasajes_recuperados`). `citation_guard` sigue siendo la verificación final sin cambios de regla.
+- **Modos de recuperación:** `Pipeline(retrieval_mode="base"|"option"|"plan")`; default `option`. En `plan`, B llama `retrieve(Q0, k, graph_mode, query_views=[Q1..Q3])`: el locator exacto, el router y el reranker de A solo ven Q0.
+- **Planner:** planes congelados con `tools/member_b.py plan --input <jsonl> --model qwen3-8b` en `reports/query_plans/<id>/`; toda comparación los reproduce (`--plans <dir>`). Diagnóstico BASE vs PLAN: `tools/analyze_query_plans.py --plans <dir> --split dev` (solo cuando A entregue el benchmark independiente).
+- **992:** `tools/member_b.py batch --input <jsonl> --run-dir runs/<nombre> [--model qwen3-8b] [--exact-locator]` (checkpoints atómicos, `--fresh` para no reanudar, `--synthetic 992` para ensayo). Verificación en vivo: `tools/member_b.py verify --input <jsonl> --delivered <submissions.jsonl> --only 17,203,815`.
+- **Sesión GPU sin admin:** `powershell -ExecutionPolicy Bypass -File tools\lab_gpu_session.ps1 -CorpusSnapshot <snapshot de Luis> -InstallTorch -DownloadModels -DecoderSmoke -FreezePlans -RunSample`.
+
 ## Límites y siguiente paso
 
 El **decoder real está preparado** en `kingscode/generation/`, pero no hay pesos reales/bakeoff GPU versionados; tampoco hay calibración, RAGAS ni throughput T6 real. La **UI está implementada** en `interfaz/app.py` y conectada al pipeline, pero no tiene ejecución end-to-end versionada con corpus/GPU. `run.sh`, `Dockerfile` y `.dockerignore` están mergeados; su ejecución completa requiere un snapshot de corpus provisto/preservado y no está verificada en este checkout CPU.

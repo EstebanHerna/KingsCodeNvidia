@@ -27,7 +27,7 @@ sys.path.insert(0, str(ROOT))
 
 from kingscode.common import read_jsonl, write_json  # noqa: E402
 from kingscode.reasoning.official import official_bodies  # noqa: E402
-from kingscode.reasoning.pipeline import locator_switch, rrf_merge  # noqa: E402
+from kingscode.reasoning.pipeline import locator_switch, rrf_merge, supports_query_views  # noqa: E402
 from kingscode.reasoning.plan_store import PlanStore  # noqa: E402
 
 BENCH = ROOT / "benchmarks/kingscode_ir"
@@ -38,13 +38,18 @@ def _call(retrieve, switch, text, k, trusted):
 
 
 def rankings(items, store, retrieve, *, k=8, depth=32) -> list[dict]:
-    switch = locator_switch(retrieve)
+    """R_PLAN uses exactly the production path: A's native query_views when available."""
+    switch, native = locator_switch(retrieve), supports_query_views(retrieve)
     out = []
     for qid, text in items:
         plan = store.get(qid, text)
         base = _call(retrieve, switch, text, k, True)
-        views = [_call(retrieve, switch, v, k, False) for v in plan.views]
-        fused = rrf_merge([base, *views], k) if views else base
+        if plan.views and native:
+            fused = retrieve(text, k, "off", query_views=list(plan.views))
+        elif plan.views:
+            fused = rrf_merge([base, *[_call(retrieve, switch, v, k, False) for v in plan.views]], k)
+        else:
+            fused = base
         union = [_call(retrieve, switch, text, depth, True)] + [_call(retrieve, switch, v, depth, False) for v in plan.views]
         out.append({"id": qid, "plan_status": plan.status, "views": list(plan.views),
                     "generated_references": list(plan.generated_references),

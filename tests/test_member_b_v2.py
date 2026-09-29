@@ -141,6 +141,20 @@ class RetrievalModeTests(unittest.TestCase):
         self.assertEqual(trace["locator_control"], "disabled_for_generated_views")
         self.assertTrue(trace["plan"]["generated_references"])
 
+    def test_plan_mode_uses_a_native_query_views_with_q0_as_question(self):
+        text = "¿Cuál es el término para contestar la demanda?"
+        store = self._store(text, plan_json("demandado notificado", vocabulary="artículo 369 del Código General del Proceso"))
+        calls = []
+
+        def retrieve(question, k=8, graph_mode="auto", query_views=None):
+            calls.append((question, query_views))
+            return [ev()]
+        _, trace = Pipeline(retrieve, retrieval_mode="plan", plans=store, graph_policy="off").run(Question(79, text, "semi_open"))
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0][0], text)  # only Q0 reaches A's locator/router/reranker as the question
+        self.assertEqual(calls[0][1], list(store.get(79, text).views))
+        self.assertEqual(trace["locator_control"], "a_query_views_locator_on_q0_only")
+
     def test_retrieve_without_switch_is_reported(self):
         text = "pregunta de prueba"
         store = self._store(text, plan_json("hechos"))

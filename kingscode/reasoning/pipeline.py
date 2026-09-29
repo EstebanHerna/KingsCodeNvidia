@@ -53,6 +53,14 @@ def locator_switch(retrieve) -> str | None:
     return next((name for name in _LOCATOR_KWARGS if name in params), None)
 
 
+def supports_query_views(retrieve) -> bool:
+    """A's retrieve(question, k, graph_mode, query_views=...) (v0.2): locator on question only."""
+    try:
+        return "query_views" in inspect.signature(retrieve).parameters
+    except (TypeError, ValueError):
+        return False
+
+
 def retrieval_views(question: Question, query: NormalizedQuery, mode: str, plan=None) -> tuple[tuple[str, bool, str], ...]:
     """(text, trusted, role) per retrieval call. Q0 is always first and trusted.
 
@@ -132,6 +140,7 @@ class Pipeline:
         self.decoder, self.k, self.graph_policy = decoder or DummyDecoder(), k, graph_policy
         self.retrieval_mode, self.plans, self.max_refs = retrieval_mode, plans, max_refs
         self.locator_kwarg = locator_switch(retrieve)
+        self.native_views = supports_query_views(retrieve)
 
     def _call(self, text: str, trusted: bool, mode: str) -> list[dict]:
         if not trusted and self.locator_kwarg:
@@ -144,7 +153,21 @@ class Pipeline:
         # are fused deterministically with RRF.
         if len(views) == 1:
             return self._call(views[0][0], views[0][1], mode)
+        if self._native(views):
+            # A's own multi-view path: the exact locator, graph router and
+            # reranker see only Q0; generated views only widen candidates.
+            return self.retrieve(views[0][0], self.k, mode, query_views=[text for text, _, _ in views[1:]])
         return rrf_merge([self._call(text, trusted, mode) for text, trusted, _ in views], self.k)
+
+    def _native(self, views) -> bool:
+        return self.native_views and views[0][1] and all(not trusted for _, trusted, _ in views[1:])
+
+    def _locator_control(self, views) -> str | None:
+        if all(trusted for _, trusted, _ in views):
+            return None
+        if self._native(views):
+            return "a_query_views_locator_on_q0_only"
+        return "disabled_for_generated_views" if self.locator_kwarg else "retrieve_has_no_locator_switch"
 
     def run(self, question: Question):
         if not isinstance(question, Question):
@@ -179,11 +202,9 @@ class Pipeline:
             guard = citation_guard(row, evidence)
             trace = {"assessment": None, "abstention_reason": "citation_guard_rejected",
                      "citation_guard": guard, "citation_guard_fallback": exc.report}
-        untrusted = any(not trusted for _, trusted, _ in variants)
         trace.update(retrieval_mode=self.retrieval_mode,
                      views=[{"role": role, "trusted": trusted, "text": text} for text, trusted, role in variants],
-                     locator_control=None if not untrusted else (
-                         "disabled_for_generated_views" if self.locator_kwarg else "retrieve_has_no_locator_switch"),
+                     locator_control=self._locator_control(variants),
                      plan=None if plan is None else {"status": plan.status,
                                                      "generated_references": [list(map(str, r)) for r in plan.generated_references]})
         trace.update(id=question.id, query=query.record(), graph_decision=decision, graph_execution=executed,

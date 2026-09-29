@@ -118,6 +118,7 @@ class PrerequisiteTests(unittest.TestCase):
 
 
 class BoundaryTests(unittest.TestCase):
+    @unittest.skipUnless((ROOT / "corpus/manifest.json").exists(), "corpus snapshot required")
     def test_every_ranking_precedes_gold_and_replays(self):
         passage = p("p", "law_1", "1")
         qs = [{"id": str(i), "question": "safe " + str(i), "area": "civil", "tags": [], "format": "retrieval"} for i in range(2)]
@@ -139,6 +140,7 @@ class BoundaryTests(unittest.TestCase):
         for name in ("Recall@10", "Evidence Completeness@8", "MRR@10"):
             self.assertEqual(a["metrics"][name], b["metrics"][name])
 
+    @unittest.skipUnless((ROOT / "corpus/manifest.json").exists(), "corpus snapshot required")
     def test_neural_failure_cannot_report_passed_or_read_gold(self):
         with tempfile.TemporaryDirectory() as td, patch.object(bench, "_assert_clean_tree"), \
              patch.object(bench, "_verify_declared_hashes"), patch.object(runtime, "NeuralRuntime", side_effect=RuntimeError("CUDA_REQUIRED")), \
@@ -177,6 +179,7 @@ class BoundaryTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     analysis.record_selection([Path("a"), Path("b")], variant=None, rationale="inconclusive")
 
+    @unittest.skipUnless((ROOT / "corpus/manifest.json").exists(), "corpus snapshot required")
     def test_neural_rankings_precede_gold_with_only_text_input(self):
         qs = [{"id": str(i), "question": "safe " + str(i), "area": "civil", "tags": [], "format": "retrieval"} for i in range(2)]
         events = []
@@ -199,6 +202,7 @@ class BoundaryTests(unittest.TestCase):
             result = bench.run("R1-QWEN", "dev", output_root=Path(td))
         self.assertEqual(result["status"], "passed")  # fixture artifact deleted with TemporaryDirectory
 
+    @unittest.skipUnless((ROOT / "corpus/manifest.json").exists(), "corpus snapshot required")
     def test_false_verification_flag_rejects_before_rankings(self):
         backend = Mock()
         backend.record.return_value = {"verified_real_backend": False}

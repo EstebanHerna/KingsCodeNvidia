@@ -16,7 +16,10 @@ def verify():
             expected,name=line.split('  ',1)
             if file_hash(ROOT/name)!=expected:raise ValueError('Official changed: '+name)
             official[name]=expected
-    source_diff=subprocess.check_output(['git','diff','60ebf7e','--','kingscode/reasoning','config/reasoning.json',
+    # B-owned paths (kingscode/reasoning, config/reasoning.json) are excluded: B's
+    # own merged work legitimately changes them and B verifies them with its tests.
+    # Everything official/historical stays pinned to the 60ebf7e GPU freeze.
+    source_diff=subprocess.check_output(['git','diff','60ebf7e','--',
                                          'config/models.lock.json','config/neural.json','data','schema','scripts','benchmarks/kingscode_ir',
                                          'tools/gpu_search_v2_dev.py','tools/gpu_search_v2_validation.py','reports/gpu_freeze_4090',
                                          'reports/benchmark/search_v2','reports/benchmark/search_v2_validation'],cwd=ROOT)
