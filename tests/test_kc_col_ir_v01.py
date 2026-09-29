@@ -13,8 +13,9 @@ from tools import independent_ir_v2
 class IndependentBenchmarkTests(unittest.TestCase):
     def test_inventory_and_deterministic_sample_are_valid(self):
         result = verify_kc_col_ir_v01.verify()
-        self.assertEqual(result["externado_pool"], 270)
-        self.assertEqual(result["dev_annotation_batch"], 30)
+        self.assertEqual(result["jep_pool"], 62)
+        self.assertEqual(result["primary_dev_annotation_batch"], 30)
+        self.assertEqual(result["externado_reproducibility_batch"], 30)
         self.assertEqual(result["accepted_retrieval_gold"], 0)
         self.assertFalse(result["validation_performance_inspected"])
         self.assertFalse(result["cuda_ready"])

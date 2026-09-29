@@ -95,7 +95,7 @@
     ]
   },
   "next_action": {
-    "member_a": "Place official ICFES bytes under ignored tmp/official-source-intake and verify with tools/benchmark_source_intake.py plus independent SHA-256; then extract/review permitted DEV questions. G01: 7 false candidate targets rejected; 7 replacements unresolved pending cited primary bytes. D01 identity regression added, broad review open. No baseline until >=10 accepted independent RETRIEVAL_GOLD.",
+    "member_a": "Review JEP-CUJ-2025 deterministic 30-item candidate batch for factual-only vs legal/implicit retrieval, then primary-source/temporal review; no retrieval baseline or CUDA until >=10 accepted independent gold packets.",
     "member_b": "On the target GPU run the two prepared verifications, prepare exact model snapshots, GPU smoke, freeze retrieval evidence and execute D1-D3. No new tests were run in Gate 2-Prep by user instruction.",
     "shared": "Use feat/member-a-corpus-v02-locator, based on 60ebf7e GPU freeze. No merge to main. B continues its own decoder work; do not infer decoder success from retrieval results."
   },
@@ -471,12 +471,14 @@
       "independent_v2_baseline": "NOT RUN: zero accepted independent retrieval-gold items; minimum gate 10."
     },
     "kc_col_ir_v01": {
-      "status": "acquisition_partial_annotation_pending",
+      "status": "recent_dev_candidates_annotation_pending_validation_isolated_externado_repro_only",
       "source_manifest": "benchmarks/kc_col_ir_v0.1/source_manifest.jsonl",
       "source_families": {
-        "DEV": "Universidad Externado de Colombia",
-        "VALIDATION_CANDIDATE": "Universidad Libre (raw downloads unresolved; no parsing/performance inspection)",
-        "SEALED_FUTURE": "ICFES/SIRNA"
+        "DEV_CANDIDATE": "JEP Concurso Universitario third edition (2025); 30 sampled from 62 official question/response items",
+        "DISCOVERY_ONLY": "JEP fourth edition 2026 announced; no 2026 questions verified",
+        "VALIDATION_CANDIDATE": "Javeriana Moot Seguros 2026; one official answers PDF hash-verified only, not parsed",
+        "REPRODUCIBILITY_ONLY": "Externado preparatorios 2011; original 30 sample retained",
+        "SEALED_FUTURE": "Externado/Asobancaria 2025 pending source identity; ICFES/SIRNA"
       },
       "externado_documents_acquired": 2,
       "externado_numbered_candidates": 270,
@@ -491,13 +493,17 @@
       "cuda_ready": false,
       "runner": "tools/independent_ir_v2.py; implemented but intentionally gated",
       "validation_performance_inspected": false,
-      "blocking_issue": "Mechanical extraction from 2011 PDF has broken accent glyphs; exact transcription/source-item review and primary-law evidence review remain.",
-      "validation_sources_status": "Four historical Universidad Libre URLs returned generic HTML, not PDF; signatures only inspected, no parsing or retrieval performance review.",
+      "blocking_issue": "JEP items require review for factual-only vs legal/implicit retrieval and primary-source/temporal evidence; questions endpoint is 2025 despite current 2026 landing.",
+      "validation_sources_status": "Javeriana official Q&A PDF #1 hash checked only, not parsed; another candidate URL returned HTML and is not counted.",
       "test_count": 231,
       "benchmark_v2_check": "PASS: 10 hashes; holdout not parsed; selectable=false",
-      "snapshot_verification": "PASS: official hashes, v0.1 snapshot, v0.2 hashes, G01/D01 regression"
+      "snapshot_verification": "PASS: official hashes, v0.1 snapshot, v0.2 hashes, G01/D01 regression",
+      "jep_2025_source_questions": 62,
+      "externado_2011_reproducibility_sample": 30,
+      "javeriana_validation_documents_hash_verified": 1,
+      "javeriana_validation_parsed": false
     },
-    "next_action_kc_col_ir_v01": "Review local ignored Externado source bytes against 30 deterministic sample IDs, verify exact wording/options and map primary law/temporal status; accept >=10 retrieval-gold packets before baseline."
+    "next_action_kc_col_ir_v01": "Review JEP-CUJ-2025 deterministic 30-item candidate batch for factual-only vs legal/implicit retrieval, then primary-source/temporal review; no retrieval baseline or CUDA until >=10 accepted independent gold packets."
   },
   "runtime_blocked_official_sources": 3
 }

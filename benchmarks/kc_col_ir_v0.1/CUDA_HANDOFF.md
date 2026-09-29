@@ -1,12 +1,9 @@
 # KC-COL-IR-v0.1 — CUDA handoff
 
 **CUDA_READY: false. Do not run the independent baseline yet.** There are zero
-accepted independent DEV retrieval-gold items; the gate is at least 10.
+accepted independent DEV retrieval-gold items; the gate is at least 10. Current primary DEV candidates are JEP-CUJ-2025 (30 from 62 exact official items); Externado 2011 is reproducibility-only. Javeriana 2026 is validation-only and remains unparsed.
 
-This acquisition checkpoint has no frozen gold/candidate set suitable for a
-score. Do not substitute benchmark-v1, `kingscode_ir_v2`, Search V2, or
-Universidad Libre validation questions. Graph setting for the first future
-comparison is OFF.
+The candidate batch is frozen, but it is not gold and is not yet suitable for a score. Do not substitute benchmark-v1, `kingscode_ir_v2`, Search V2, or Javeriana validation questions. Graph setting for the first future comparison is OFF.
 
 ## Required preflight once the gate is met
 

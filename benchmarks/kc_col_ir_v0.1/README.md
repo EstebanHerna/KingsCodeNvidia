@@ -1,43 +1,16 @@
 # KC-COL-IR-v0.1
 
-Independent, cross-institution Colombian legal retrieval benchmark. DEV is
-restricted to Universidad Externado de Colombia; Universidad Libre belongs to
-the isolated VALIDATION family; ICFES/SIRNA are SEALED/FUTURE. Sources that
-contain only syllabus topics are coverage-only.
+Independent retrieval benchmark from real, source-linked Colombian legal questions. Candidate wording remains local/ignored until rights and exact-text review are complete. Item selection is deterministic and independent of retrieval results.
 
-## Current acquisition checkpoint
+## Current source roles
 
-The verified local Externado acquisition contains the 2011 Private I / Civil
-Procedure question bank (270 numbered items mechanically detected) and the
-2025/2026 Labor and Social Security preparatory topic bank (225 bullets, not
-counted as independent questions). The first is the only question-bearing
-source acquired in this checkpoint. Its extracted text and the source PDFs
-stay under ignored `tmp/kc_col_ir_v0.1/`; the Git manifest contains provenance,
-hashes and counts, not the bank wording. Mechanical extraction is not yet
-human-verified for exact wording or options.
+- **DEV candidate:** JEP Concurso Universitario, third edition (2025). Its official `/preguntas` page currently exposes 62 clarification-question/response pairs. A deterministic sample of 30 is in the human-review queue. These are not all legal-retrieval questions: some ask for facts, while the JEP explicitly declines to answer some legal/strategic questions. Classify before admitting gold. The current site's 2026 fourth-edition announcement does not make the 2025 question page a 2026 source.
+- **VALIDATION candidate:** Javeriana Moot Court Hernán Fabio López / Seguros 2026. One official Q&A PDF was signature/hash checked and stored under ignored `tmp/`; it has not been parsed, scored, or used to tune retrieval. The organizer notes some answers may be inferred from the case or reserved for team analysis, so any later annotation must preserve that distinction.
+- **Reproducibility only:** Externado Civil Procedure 2011. Preserve the 270-item pool and its original deterministic sample of 30 in `questions/reproducibility_externado_2011.jsonl`; it is no longer primary DEV.
+- **Sealed/discovery:** Externado/Asobancaria moot source (year and source identity require resolution), JEP 2026 questions (not verified on the current question endpoint), and ICFES/SIRNA.
 
-The first deterministic batch is 30 candidate IDs selected from the complete
-numbered pool using SHA-256 of
-`institution_family + source_document + source_item_number`, sorted
-ascending, with a 30-item cap. See `sampling_manifest.json`. Retrieval has not
-been run. Each candidate is `NEEDS_HUMAN_REVIEW`; none is retrieval gold yet.
-The 2011 source predates major procedural reforms, so all candidates begin as
-`UNCERTAIN` until their legal basis receives independent temporal review.
+## Integrity and gates
 
-Universidad Libre URLs are registered as `VALIDATION_CANDIDATE`, but this
-checkpoint did not acquire or parse their bytes. There are zero counted
-validation questions and no validation retrieval exposure. Other institutions
-are discovery-only; access restrictions are not bypassed.
+Question text and official responses are stored only in ignored local pools; the Git records contain IDs, provenance, hashes and review state. `gold/dev.jsonl` remains empty. All 30 JEP candidates and the 30 Externado reproducibility records remain unreviewed/temporally uncertain. Baseline and CUDA remain locked until at least 10 independent DEV retrieval-gold packets pass human and primary-source review. Validation data must remain unparsed and uninspected for retrieval performance until the predeclared architecture-selection point.
 
-## Files and privacy
-
-- `source_manifest.jsonl`: one provenance row per discovered document.
-- `questions/dev.jsonl`: metadata-only annotation queue; no source question
-  wording is redistributed in this repository.
-- `gold/dev.jsonl`: empty until independent evidence review is completed.
-- `manifest.json`: frozen acquisition and split status.
-- `CUDA_HANDOFF.md`: first-session run card; CUDA_READY remains false until
-  at least 10 independent DEV gold records are accepted.
-
-Source-bank wording remains in local ignored acquisition artifacts. Confirm
-reproduction/redistribution permission before publishing extracted wording.
+See `source_manifest.jsonl`, `sampling_manifest.json`, `sampling_manifest_externado_2011.json`, `CUDA_HANDOFF.md` and `docs/DECISION_LOG.md`.

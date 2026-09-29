@@ -160,3 +160,12 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
 - Mechanical acquisition of the official 2011 Externado Civil Procedure bank yields 270 numbered candidates, but extraction glyph damage means exact wording remains unverified. Do not accept or run retrieval on them until human transcription/option QA and independent primary-law/temporal review.
 - Hash-sample 30 before retrieval. Freeze the >=10 accepted DEV retrieval-gold gate. First comparison uses C0 BM25/C1 Qwen dense/C2 RRF/C3 hybrid+Qwen reranker, same candidate depth, graph OFF. No GPU execution in this acquisition session.
 - Historical Universidad Libre sources are `VALIDATION_CANDIDATE`; URLs currently return HTML, not verified PDF bytes. Do not parse/score until DEV architecture selection.
+
+
+## 2026-09-29 — Prioridad de fuentes recientes para KC-COL-IR-v0.1
+
+- Reorientar DEV candidato hacia JEP: la página oficial de preguntas contiene 62 ítems de la tercera edición (2025), aunque la página institucional ya anuncia la cuarta edición 2026. No fechar los ítems 2025 como 2026. La edición JEP 2026 queda discovery-only hasta que publique preguntas verificables.
+- Congelar 30 ítems JEP por hash antes de retrieval, con texto/respuesta en pool local ignorado. Todos siguen `NEEDS_HUMAN_REVIEW` y `UNCERTAIN`; primero separar aclaraciones puramente fácticas, cuestiones jurídicas no respondidas y casos útiles para retrieval implícito. Sin gold admitido.
+- Mover el muestreo Externado 2011 a reproducibilidad-only, preservando los 30 IDs, selección y pool sin reemplazarlo ni mezclarlo con DEV.
+- Registrar Javeriana Moot Seguros 2026 como validation candidate. Solo se verificó firma/hash de un PDF oficial de respuestas; no se parseó ni se inspeccionó rendimiento. La publicación advierte que algunas respuestas pueden inferirse del caso o reservarse al análisis de los equipos.
+- Mantener baseline/CUDA bloqueados hasta >=10 gold DEV recientes aceptados con evidencia primaria y revisión temporal. No seleccionar ítems por métricas de retrieval.

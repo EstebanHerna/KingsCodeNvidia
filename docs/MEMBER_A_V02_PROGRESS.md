@@ -37,3 +37,12 @@ Next exact action: obtain the official PDFs and independent hashes, place them i
 - Added `tools/verify_kc_col_ir_v01.py`; it verifies split-family isolation, inventory hashes, ignored pool hash, deterministic sampling, zero gold leakage and the closed baseline gate. Verification passes.
 - G01: reject the seven wrong containing-passage targets; the seven replacement-effect claims remain unresolved/inactive. D01 content-dedup regression passes while the broader provenance audit remains open. G02/C01/P02/P01 remain fixed. Corpus v0.1 and Member B remain untouched.
 - Next exact task: human-verify the 30 local source items/options against the original PDF and primary law, assign temporal status independently of retrieval, and accept at least 10 complete minimal-evidence packets before any baseline.
+
+
+## 2026-09-29 — Cambio de prioridad DEV a fuentes recientes
+
+- La cola primaria de `benchmarks/kc_col_ir_v0.1/questions/dev.jsonl` se reemplazó por 30 ítems deterministas del conjunto oficial JEP publicado en `/preguntas`. El HTML UTF-8 se preserva localmente con hash; pool completo de 62 y wording/respuestas permanecen ignorados fuera de Git. No se ha ejecutado retrieval ni seleccionado por rendimiento.
+- Corrección de fecha: `/preguntas` corresponde a la tercera edición 2025; el sitio anuncia la cuarta edición 2026 pero no se verificaron preguntas 2026. La lista requiere filtro humano: hay aclaraciones fácticas, temas jurídicos/estratégicos y respuestas que remiten a expediente/jurisprudencia; algunas cuestiones jurídicas no reciben respuesta de fondo.
+- Externado 2011 conserva intactos sus 30 IDs, regla de muestreo y 270 candidatos en archivos `reproducibilidad_externado_2011`; deja de ser DEV primario.
+- Javeriana Seguros 2026 queda validation candidate. Se comprobó firma y SHA-256 de un PDF oficial de respuestas; no se extrajo texto ni se midió retrieval. La página indica que algunas respuestas deben inferirse del caso o son parte del análisis propio. Un segundo URL candidato respondió HTML y no se cuenta como PDF adquirido.
+- Estado: 0 gold aceptados, 30 JEP por revisar, validación no parseada/no inspeccionada, `CUDA_READY=false`. Próximo paso: revisión humana de pregunta exacta, carácter implícito, evidencia mínima primaria y temporalidad para JEP; no correr baseline hasta >=10 gold válidos.
