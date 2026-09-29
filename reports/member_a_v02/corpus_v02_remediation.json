@@ -8,9 +8,13 @@
   "blocked_acquisitions": 1,
   "defects": {
     "G01": {
-      "status": "PENDING_SOURCE_SCOPE",
+      "status": "CANDIDATE_EDGES_REJECTED_REPLACEMENTS_UNRESOLVED",
       "fixed": false,
-      "reason": "Semantic edge review remains open: no source-backed subject/target/direction validation has been completed; no semantic edge was activated."
+      "reason": "Seven wrong containing-passage targets rejected from exact official text review. Replacement legal-effect claims remain unverified pending cited primary bytes; no semantic edge is activated.",
+      "review_report": "reports/member_a_v02/g01_relation_review_v02.json",
+      "rejected_candidates": 7,
+      "unresolved_replacements": 7,
+      "active_semantic_edges": 0
     },
     "G02": {
       "status": "FIXED_V02_REGRESSION_VERIFIED",
@@ -41,12 +45,13 @@
       "scope": "chapter heading no longer remains inside preceding article passage"
     },
     "D01": {
-      "status": "IDENTITY_INVARIANT_PRESERVED_REVIEW_OPEN",
+      "status": "IDENTITY_INVARIANT_REGRESSION_COVERED_REVIEW_OPEN",
       "fixed": false,
-      "reason": "No content-to-document collapse is introduced. v0.2 fragment identity includes source-unit occurrence; broader source identity audit remains open."
+      "reason": "Regression confirms equal normalized content hash does not merge distinct canonical legal documents. Broader provenance and repeated-boilerplate audit remains open.",
+      "test": "tests.test_corpus_v02.CorpusV02SourceRepairTests.test_d01_equal_content_hash_does_not_merge_distinct_documents"
     }
   },
   "source_evidence": "Four official raw sources and SHA-256 values are preserved in corpora/corpus-v0.2/manifest.json. Regression fixtures use exact publisher blocks; v0.1 is unchanged.",
-  "next_action": "Resolve G01 with source-backed relation review; independently obtain ≥10 accepted official/human-authored retrieval-gold items before any untuned baseline; continue human scope review before accepting v0.2 documents.",
+  "next_action": "Acquire verified official benchmark bytes in ignored tmp/official-source-intake, extract permitted items locally, and acquire cited primary instruments before semantic-edge acceptance. Baseline only after >=10 accepted independent RETRIEVAL_GOLD.",
   "audit_source_count": 4
 }

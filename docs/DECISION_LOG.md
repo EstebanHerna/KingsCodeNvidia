@@ -139,3 +139,16 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
 - Leave G01 semantic relationships and D01 document identity review open; no semantic edges or automatic content-based document merges are activated.
 - Official ICFES PDF origins remained unavailable; record indexed-only evidence without ingesting questions. The current SIRNA guide contains illustrative examples but its terms prohibit reproduction/transformation; no assessment examples are copied into benchmark assets. An ICFES 2021 source-rendering exposure is logged as validation candidate only.
 - No independent retrieval gold was admitted. The baseline gate remains closed until at least 10 reviewed independent items exist.
+
+
+## 2026-09-29 — Member A official-source runtime block and G01 candidate review
+
+- The original ICFES Gestión del Conflicto 2026 and Comunicación Jurídica 2021 PDFs, current official module candidates, and the official toolbox landing URL were retried using browser navigation and browser-compatible headers. HTTP 404 in this runtime is recorded as `RUNTIME_ACQUISITION_BLOCKED`, because official ICFES index entries confirm the resources exist; indexed content is not accepted as original bytes.
+- Added a hash-gated local intake helper targeting ignored `tmp/official-source-intake/`. It checks the recorded source ID, official ICFES host, input path, PDF signature and SHA-256 before indicating that local extraction may begin. Hash verification alone does not establish authenticity or usage rights.
+- Reviewed the seven G01 candidate edges against the exact official containing-source text and recorded source URLs/hashes. Rejected the seven wrong containing-passage targets. The corrected target/modifier claims remain unresolved until their referenced legal instrument bytes are acquired; zero semantic edges are active.
+- Added a D01 regression for equal content hashes across distinct canonical legal identities; broader provenance audit remains open.
+- Independent extracted questions and retrieval-gold remain zero; no baseline or retrieval experiment is justified. No v0.1 or Member B files changed.
+
+- Validación de esta continuación (segunda pasada final): 226 tests PASS; `python tools/benchmark_v2.py check` PASS con 10 hashes y holdout sin parsear; `python tools/verify_member_a_v02.py` PASS con 19 archivos oficiales, 326 archivos raw/clean v0.1 y 18 hashes v0.2. Sin GPU ni baseline.
+- Precisión de adquisición: el PDF ICFES Gestión del Conflicto 2026-2 de mayo es una guía de orientación listada en el catálogo oficial, no un cuadernillo de preguntas. Se excluye de la intake de ítems; la fuente de preguntas original de febrero permanece confirmada por indexación oficial pero bloqueada por 404.
+- Validación tras separar el PDF de orientación: tercera suite completa de esta continuación, 226 tests PASS; `benchmark_v2.py check` PASS (10 hashes, no holdout); verificador de snapshot PASS.

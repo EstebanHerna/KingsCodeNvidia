@@ -95,16 +95,16 @@
     ]
   },
   "next_action": {
-    "member_a": "Complete G01 semantic relation review and D01 identity audit from source bytes; acquire/review at least 10 independent official or separately authored assessment items before a single untuned retrieval baseline. No items currently qualify.",
+    "member_a": "Place official ICFES bytes under ignored tmp/official-source-intake and verify with tools/benchmark_source_intake.py plus independent SHA-256; then extract/review permitted DEV questions. G01: 7 false candidate targets rejected; 7 replacements unresolved pending cited primary bytes. D01 identity regression added, broad review open. No baseline until >=10 accepted independent RETRIEVAL_GOLD.",
     "member_b": "On the target GPU run the two prepared verifications, prepare exact model snapshots, GPU smoke, freeze retrieval evidence and execute D1-D3. No new tests were run in Gate 2-Prep by user instruction.",
     "shared": "Use feat/member-a-corpus-v02-locator, based on 60ebf7e GPU freeze. No merge to main. B continues its own decoder work; do not infer decoder success from retrieval results."
   },
   "next_actions": [
-    "Resolve an accessible official ICFES or CSJ assessment item source and record stable URLs, source hashes, item IDs and use terms in benchmarks/kingscode_ir_v2/source_manifest.jsonl",
-    "G02/C01/P02/P01 parser remediations now have source bytes and tests in corpus-v0.2; continue G01/D01 review and preserve v0.1.",
-    "Assign source and duplicate families to DEV/VALIDATION/SEALED_EVAL before tuning; keep sealed material outside production retrieval",
-    "After reviewer-verified RETRIEVAL_GOLD exists, run the current retrieval stack once without tuning and report required metrics and failure taxonomy",
-    "Run python -m unittest discover -s tests -v, tools/verify_member_a_v02.py and tools/benchmark_v2.py check; independently verify hashes before pushing"
+    "For one of the three question-booklet source IDs in benchmarks/kingscode_ir_v2/source_manifest.jsonl, place bytes under ignored tmp/official-source-intake and run tools/benchmark_source_intake.py --source-id ID --file PATH --sha256 HASH.",
+    "Review use terms after intake; extract exact official questions only locally. Gestión del Conflicto source family is DEV; Comunicación Jurídica is VALIDATION. Current extracted/admitted count: 0.",
+    "Acquire seven cited target/modifier primary instruments and review G01 replacements; keep zero semantic edges active until verified.",
+    "After >=10 accepted independent RETRIEVAL_GOLD, run one frozen untuned baseline and failure taxonomy.",
+    "Run python -m unittest discover -s tests -v, python tools/benchmark_v2.py check, and python tools/verify_member_a_v02.py before pushing this branch."
   ],
   "do_not_forget": [
     "OpenRouter key is for evaluator, not the competitive system",
@@ -426,10 +426,14 @@
       "source_exposure_logged": true,
       "assessment_sources_reviewed": 3,
       "source_disposition": {
-        "ICFES_Gestion_Conflicto_2026": "official index confirms 20 pages/20 questions/answer+assertion key; exact URL HTTP 404; no local bytes/hash/items",
-        "ICFES_Comunicacion_Juridica_2021": "official index confirms 15 pages/answer table; exact URL HTTP 404; VALIDATION exposure logged; no local bytes/hash/items",
-        "CSJ_SIRNA_guide_2026": "official bytes/hash verified; 54 pages, 3 public examples/answers; examples not transcribed; full bank not verified"
-      }
+        "ICFES-GESTION-CONFLICTO-2026": "RUNTIME_ACQUISITION_BLOCKED: official index confirms the original question booklet; its exact URL returned HTTP 404. The current May resource is only an orientation guide, also HTTP 404; no local bytes/hash/items; DEV_CANDIDATE.",
+        "ICFES-COMUNICACION-JURIDICA-2021": "RUNTIME_ACQUISITION_BLOCKED: official index confirms publication; exact URL and current module candidate HTTP 404; no local bytes/hash/items; VALIDATION_CANDIDATE, prior indexed text exposure stays validation-only.",
+        "ICFES-COMUNICACION-JURIDICA-2026": "RUNTIME_ACQUISITION_BLOCKED: current official item resource indexed; direct request HTTP 404; separate VALIDATION family.",
+        "CSJ_SIRNA_guide_2026": "Official 54-page guide bytes/hash were previously verified; 3 public examples not extracted due stated reproduction/transformation restriction; full bank unverified.",
+        "ICFES-GESTION-CONFLICTO-2026-MAY_GUIDE": "Official orientation guide only; not an assessment-item replacement and excluded from benchmark intake; PDF HTTP 404."
+      },
+      "runtime_blocked_official_sources": 3,
+      "latest_official_acquisition": "Three official question-booklet PDFs (Gestión 2026, Comunicación 2021 and Comunicación 2026) were confirmed by official ICFES indexing but returned HTTP 404 in this runtime; a separate May 2026 orientation guide is guidance-only. No bytes or questions acquired."
     },
     "corpus_v02": {
       "provisional_documents": 4,
@@ -449,17 +453,22 @@
         "P01"
       ],
       "audit_sources_preserved": 4,
-      "parser_regression_tests_passed": 5
+      "parser_regression_tests_passed": 5,
+      "g01_candidate_targets_rejected": 7,
+      "g01_replacements_unresolved": 7,
+      "g01_active_semantic_edges": 0,
+      "d01_regression_test": "Equal content hash does not merge distinct canonical document identities; broad audit remains open"
     },
     "international_inventory": "5 candidates; applicability and document links need review; benchmark items 0",
-    "current_baseline": "none on independent v2",
+    "current_baseline": "none on independent v2; 0 accepted retrieval gold (gate >=10)",
     "next_experiment": "none until >=10 independent retrieval-gold items are accepted; then one untuned baseline and failure taxonomy",
     "verification": {
-      "unittest": "PASS: 220 tests on final source-manifest state; three full suite passes during this session",
-      "benchmark_integrity": "PASS: 10 hashes; holdout not parsed; no selection permitted",
-      "snapshot_verification": "PASS: tools/verify_member_a_v02.py; 19 official files, 326 v0.1 raw/clean files, 18 v0.2 hashes",
-      "parser_fixtures": "PASS: 5 focused tests; four excerpts equal exact official source blocks",
-      "independent_v2_baseline": "NOT RUN: zero independent retrieval-gold items"
+      "unittest": "PASS: 226 tests; three complete suite passes overall, including the final pass after distinguishing the orientation guide from question booklets. jsonschema==4.26.0 loaded from ignored tmp/test-dependencies.",
+      "benchmark_integrity": "PASS: python tools/benchmark_v2.py check; 10 hashes; holdout not parsed; selectable=false.",
+      "snapshot_verification": "PASS: python tools/verify_member_a_v02.py; 19 official files, 326 v0.1 raw/clean files, 18 v0.2 hashes; no GPU or holdout run.",
+      "parser_fixtures": "PASS: six focused corpus-v0.2 tests, including D01 identity regression.",
+      "independent_v2_baseline": "NOT RUN: zero accepted independent retrieval-gold items; minimum gate 10."
     }
-  }
+  },
+  "runtime_blocked_official_sources": 3
 }

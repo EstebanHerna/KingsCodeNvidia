@@ -9,13 +9,15 @@
     "CONTIENE": 29
   },
   "semantic_edges_active": 0,
-  "review_queue_rows": 0,
-  "reviewed_relations": 0,
-  "rejected_relations": 0,
-  "unresolved_relations": 0,
+  "review_queue_rows": 7,
+  "reviewed_relations": 7,
+  "rejected_relations": 7,
+  "unresolved_relations": 7,
   "audit_followup": {
-    "G01": "Still open. The seven suspect relations have no verified source-backed subject/target/direction review; no semantic edges are active."
+    "G01": "Seven false targets rejected; seven corrected relations remain unresolved pending referenced primary bytes. No semantic edges active."
   },
   "policy": "Structural edges are provisional pending document review. No semantic relation is retrieval-active until exact source text, subject, target and direction are reviewed.",
-  "selection_permitted": false
+  "selection_permitted": false,
+  "candidate_target_rejections": 7,
+  "replacement_claims_unresolved": 7
 }

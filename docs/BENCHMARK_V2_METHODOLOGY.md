@@ -4,7 +4,15 @@ This benchmark targets unseen Colombian legal questions. Version 1 is closed to 
 
 ## Source intake
 
-The source manifest records official candidate repositories and retrieval status. As of 2026-09-29, two ICFES direct PDF URLs returned 404. The current ICFES tools page also failed to load in verification. The official SIRNA page confirms an exam guide exists but the crawler did not expose a public item bank. Therefore the independent item count is zero. No question text, gold answers, or expected legal basis were fabricated to fill this gap.
+The source manifest records official candidate repositories and retrieval status. As of 2026-09-29, ICFES's official index confirms the two requested question booklets and current 2026 module booklets exist. The original PDFs, current-module candidate PDFs, and official toolbox landing URL returned HTTP 404 in this runtime, including browser-compatible direct requests. This is `RUNTIME_ACQUISITION_BLOCKED`, not `SOURCE_UNAVAILABLE`; indexed text is not source bytes. Three question-booklet candidates (Gestión 2026, Comunicación Jurídica 2021 and Comunicación Jurídica 2026) remain hashless with zero extracted/admitted items. The May 2026 Gestión URL is an official orientation guide, not an item source, and is recorded separately. No question text, gold answers, or legal basis are fabricated.
+
+External byte intake is prepared at the ignored path `tmp/official-source-intake/`. After independently obtaining official bytes and an independently supplied SHA-256, verify before any extraction:
+
+```powershell
+python tools/benchmark_source_intake.py --source-id ICFES-GESTION-CONFLICTO-2026 --file tmp/official-source-intake/<file>.pdf --sha256 <64-hex-sha256>
+```
+
+The helper checks source registry identity, official ICFES domain, path confinement, PDF framing, and exact SHA-256. Hash match proves byte integrity only, not legal authenticity or permission to redistribute. Keep all assessment bytes and item extracts out of tracked Git. Review the source's current use terms before extraction. Gestión del Conflicto items belong to DEV; Comunicación Jurídica belongs to VALIDATION and never informs DEV tuning. Keep source/edition families separate.
 
 Candidate items require official source identity, stable item/page reference, source hash, access date, use terms, duplicate-family analysis, and split assignment before retrieval tuning. A source with no accessible item text contributes zero benchmark items. External international datasets remain methodological references and cannot supply Colombian legal gold.
 

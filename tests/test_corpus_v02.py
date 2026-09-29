@@ -6,6 +6,7 @@ from kingscode.corpus_v02 import (
     join_split_article_headings, parse_document_v02, remove_decision_table_of_contents,
 )
 from kingscode.metadata import canonical_fragment_id
+from kingscode.metadata import canonical_document_id
 
 ROOT = Path(__file__).resolve().parent
 FIXTURES = ROOT / "fixtures" / "corpus_v02"
@@ -21,6 +22,17 @@ def meta(doc_id, source_type, norm_name, number, year, canonical_body, url):
 
 
 class CorpusV02SourceRepairTests(unittest.TestCase):
+    def test_d01_equal_content_hash_does_not_merge_distinct_documents(self):
+        body = ["jurisprudencia", "C-1189", 2000]
+        first = {"doc_id": "sentencia_c_1189_de_2000", "source_type": "decision",
+                 "canonical_body": body, "source_url": "https://official.example/a",
+                 "content_hash": "same-boilerplate-hash"}
+        second = {"doc_id": "sentencia_c_127_de_2011", "source_type": "decision",
+                  "canonical_body": ["jurisprudencia", "C-127", 2011],
+                  "source_url": "https://official.example/b", "content_hash": "same-boilerplate-hash"}
+        self.assertEqual(first["content_hash"], second["content_hash"])
+        self.assertNotEqual(canonical_document_id(first), canonical_document_id(second))
+
     def test_fixtures_match_preserved_official_source_blocks(self):
         spans = __import__("json").loads((FIXTURES / "source_spans.json").read_text(encoding="utf-8-sig"))
         raw_root = ROOT.parent / "corpora" / "corpus-v0.2" / "raw"
