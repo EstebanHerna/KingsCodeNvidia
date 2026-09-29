@@ -95,6 +95,18 @@ def _strings(value, path=""):
             yield from _strings(child, f"{path}[{i}]")
 
 
+def reference_support(ref, emitted: list[dict]) -> list[dict]:
+    """Passages that support `ref` under this guard's criterion (shared with citation_repair)."""
+    support = supporting_passages(ref, emitted)
+    # Metadata cannot create a citation absent from the displayed text.
+    return [p for p in support if any(
+        (ref.body is None or r.body == ref.body) and (ref.article is None or r.article == ref.article)
+        for r in references(p["text"])) or (
+        ref.article is not None and ref.body is not None
+        and any(r.body == ref.body for r in references(p["text"]))
+        and any(r.article == ref.article for r in references(p["text"])))]
+
+
 def citation_guard(row: dict, passages: list[dict]) -> dict:
     """Never repair/mutate row; reject any unsupported reference/evidence record."""
     validate_submission(row)
@@ -117,14 +129,7 @@ def citation_guard(row: dict, passages: list[dict]) -> dict:
     claims, unsupported = [], 0
     for field, text in _strings({k: v for k, v in row.items() if k not in {"pasajes_recuperados", "id", "formato", "abstencion", "latencia_ms"}}):
         for ref in references(text):
-            support = supporting_passages(ref, emitted)
-            # Metadata cannot create a citation absent from the displayed text.
-            support = [p for p in support if any(
-                (ref.body is None or r.body == ref.body) and (ref.article is None or r.article == ref.article)
-                for r in references(p["text"])) or (
-                ref.article is not None and ref.body is not None
-                and any(r.body == ref.body for r in references(p["text"]))
-                and any(r.article == ref.article for r in references(p["text"])))]
+            support = reference_support(ref, emitted)
             if not support:
                 unsupported += 1
             claims.append({"field": field, "reference": ref.record(), "supported": bool(support),

@@ -156,3 +156,19 @@ Leer `legal_basis` solo en el script de medición, nunca en el pipeline (mismo p
 1. **Ahora:** merge de la rama GPU a `main` y actualización de la documentación de estado (A). B no avanza sobre otra base.
 2. **Locator productivo:** A entrega `retrieve()` con locator, sus tests y la procedencia. B corre B1 contra él y regenera `retrieval_freeze.json`.
 3. **Freeze de corpus v0.2 (o decisión de quedarse en v0.1 + locator):** a partir de ahí retrieval no cambia y B compara solo decoders.
+
+---
+
+## 6. Estado al 2026-09-29 (rama `feat/b-planner-batch-citations`)
+
+| Tarea | Estado | Evidencia |
+|---|---|---|
+| B0 | BLOQUEADO (humano/A) | merge de la rama GPU, subida de `dense.npy`/`.tar.gz`, correo B5 |
+| B1 | DIFERIDO | espera el locator productivo de A; la preservación de Q0 y de referencias del planner ya tiene tests |
+| B2 | HECHO, requiere revisión de Luis | `kingscode/reasoning/citation_repair.py`; `tasa_sin_respaldo` 0,0 sobre 50 filas con citas mezcladas |
+| B3 | HECHO (parcial: el decoder aún no devuelve `pasajes_usados`, se usan los 3 primeros) | `kingscode/reasoning/citation_builder.py`; ida y vuelta en las 5 fixtures |
+| B4 | NO EJECUTADO | requiere `corpus/` local |
+| B6 | PREPARADO, no ejecutado | sin GPU; `retrieval_freeze.json` aún no existe |
+| B7 | HECHO | `kingscode/reasoning/batch.py`, `tools/member_b.py batch|verify`; resume idéntico byte a byte; 992 fixtures en 41,6 s |
+| B8 | PARCIAL | interfaz y `run.sh` existen; probar con corpus real |
+| Planner | HECHO sin ejecución real | `planner.py`, `plan_store.py`, `planner_backend.py`, `tools/analyze_query_plans.py`; NO GENERALIZATION CLAIM hasta el DEV independiente de A |
