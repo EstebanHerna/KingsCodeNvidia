@@ -19,6 +19,10 @@ def verify() -> dict:
     legacy=read_jsonl(BENCH/"questions/reproducibility_externado_2011.jsonl")
     gold=read_jsonl(BENCH/"gold/dev.jsonl")
     dispositions=read_jsonl(BENCH/"review/jep_2026_dispositions.jsonl")
+    expansion_meta=json.loads((BENCH/"review/expansion_batch_1.json").read_text(encoding="utf-8"))
+    expansion_queue=read_jsonl(BENCH/"review/expansion_batch_1_queue.jsonl")
+    expansion_questions=read_jsonl(BENCH/"review/expansion_batch_1_questions.jsonl")
+    expansion_dispositions=read_jsonl(BENCH/"review/expansion_batch_1_dispositions.jsonl")
     acquisitions=read_jsonl(BENCH/"review/primary_source_acquisitions.jsonl")
     sample=json.loads((BENCH/"sampling_manifest.json").read_text(encoding="utf-8"))
     old_sample=json.loads((BENCH/"sampling_manifest_externado_2011.json").read_text(encoding="utf-8"))
@@ -54,11 +58,11 @@ def verify() -> dict:
     if any("minimal_evidence_sets" in d for d in dispositions): raise ValueError("Ambiguous disposition evidence-set field; use external/corpus split")
     if len(gold)!=manifest["counts"].get("accepted_retrieval_gold"): raise ValueError("Accepted-gold count mismatch")
     gold_ids=[g.get("question_id") for g in gold]
-    if len(gold_ids)!=len(set(gold_ids)) or not set(gold_ids)<=set(qids): raise ValueError("Gold IDs must be unique frozen candidates")
-    disp_by_id={d["question_id"]:d for d in dispositions}; gold_by_id={g["question_id"]:g for g in gold}
+    if len(gold_ids)!=len(set(gold_ids)) or not set(gold_ids)<=set(qids)|{r["question_id"] for r in expansion_questions}: raise ValueError("Gold IDs must be unique frozen candidates")
+    disp_by_id={d["question_id"]:d for d in dispositions+expansion_dispositions}; gold_by_id={g["question_id"]:g for g in gold}
     statuses={"ACCEPTED_RETRIEVAL_GOLD","REJECTED_NOT_RETRIEVAL","REJECTED_INSUFFICIENT_AUTHORITATIVE_ANSWER","PENDING_PRIMARY_EVIDENCE","PENDING_TEMPORAL_REVIEW"}
     if any(d.get("review_status") not in statuses for d in dispositions): raise ValueError("Unknown review status")
-    question_by_id={q["question_id"]:q for q in questions}
+    question_by_id={q["question_id"]:q for q in questions+expansion_questions}
     for d in dispositions:
         q=question_by_id[d["question_id"]]
         if q.get("review_status")!=d.get("review_status") or q.get("temporal_review_status")!=d.get("temporal_review_status"):
@@ -78,9 +82,29 @@ def verify() -> dict:
         if g["corpus_coverage"]=="MISSING" and (g.get("corpus_minimal_evidence_sets") or g.get("gold_document_ids")): raise ValueError(f"Missing corpus coverage claims corpus IDs: {qid}")
         if g.get("legacy_question_id")!=disp_by_id[qid].get("legacy_question_id"): raise ValueError(f"Legacy question mapping mismatch: {qid}")
     counts={s:sum(d["review_status"]==s for d in dispositions) for s in statuses}
-    expected_ids={"JEP-CUJ-2026-Q"+n.zfill(3) for n in ("9","12","13","30","31","37","43","45","49")}
+    expected_ids={"JEP-CUJ-2026-Q"+n.zfill(3) for n in ("9","12","13","25","30","31","37","43","45","49")}
     if set(gold_ids)!=expected_ids: raise ValueError("Accepted-gold packet set differs from the reviewed primary set")
-    if counts["ACCEPTED_RETRIEVAL_GOLD"]!=9: raise ValueError(f"Unexpected accepted gold count: {counts}")
+    if counts["ACCEPTED_RETRIEVAL_GOLD"]!=9: raise ValueError(f"Unexpected original-batch accepted gold count: {counts}")
+    if expansion_meta.get("status")!="FROZEN_BEFORE_CONTENT_REVIEW" or expansion_meta.get("selection_before_content_review") is not True or expansion_meta.get("expansion_content_read_before_freeze") is not False or expansion_meta.get("retrieval_executed") is not False: raise ValueError("Expansion was not verifiably frozen before content review")
+    if len(expansion_queue)!=10 or len(expansion_questions)!=10 or len(expansion_dispositions)!=10: raise ValueError("Expansion batch must have exactly ten frozen, reviewed items")
+    expnums=expansion_meta["expansion_item_numbers"]
+    expansion_pool=read_jsonl(ROOT/"tmp/kc_col_ir_v0.1/pool/jep_cuj_2026_full_pool.jsonl")
+    expansion_ranked=sorted((hashlib.sha256((r["legacy_source_family"]+r["legacy_source_document"]+r["source_item_number"]).encode()).hexdigest(),r) for r in expansion_pool)
+    deterministic_next=[str(r["source_item_number"]) for _,r in expansion_ranked[30:40]]
+    selection_digest=hashlib.sha256(json.dumps(expnums,ensure_ascii=False,separators=(",",":")).encode("utf-8")).hexdigest()
+    if expansion_meta.get("pool_sha256")!=sample.get("pool_artifact_sha256") or expansion_meta.get("pool_size")!=62 or expnums!=deterministic_next or expansion_meta.get("original_selected_item_numbers")!=sample.get("selected_item_numbers") or expansion_meta.get("combined_reviewed_candidate_item_numbers")!=sample.get("selected_item_numbers")+expnums or expansion_meta.get("expansion_selection_sha256")!=selection_digest: raise ValueError("Expansion deterministic pre-review selection proof mismatch")
+    if len(expnums)!=10 or set(expnums)&set(sample["selected_item_numbers"]): raise ValueError("Expansion overlaps or changes the original 30")
+    if [r["source_item_number"] for r in expansion_queue]!=expnums or [r["source_item_number"] for r in expansion_questions]!=expnums: raise ValueError("Expansion queue order differs from frozen manifest")
+    if [r["question_id"] for r in expansion_dispositions]!=[r["question_id"] for r in expansion_questions]: raise ValueError("Expansion disposition coverage/order mismatch")
+    qpool={str(r["source_item_number"]):r for r in read_jsonl(ROOT/"tmp/kc_col_ir_v0.1/pool/jep_cuj_2026_full_pool.jsonl")}
+    for row, disp in zip(expansion_questions, expansion_dispositions):
+        official=qpool[row["source_item_number"]]
+        qhash=hashlib.sha256(official["question_text"].encode("utf-8")).hexdigest()
+        ahash=hashlib.sha256(official["official_response"].encode("utf-8")).hexdigest()
+        if row["question_text_sha256"]!=qhash or row["official_response_sha256"]!=ahash: raise ValueError(f"Expansion source hash mismatch: {row['question_id']}")
+        if disp["review_status"]!=row["review_status"] or disp.get("retrieval_performance_used") is not False: raise ValueError(f"Expansion disposition inconsistency: {row['question_id']}")
+    exp_counts={s:sum(r["review_status"]==s for r in expansion_dispositions) for s in statuses}
+    if exp_counts["ACCEPTED_RETRIEVAL_GOLD"]!=1 or len(dispositions)+len(expansion_dispositions)!=40: raise ValueError("Expansion review counts do not reconcile")
     if any(not a.get("source_id") or not a.get("sha256") or len(a["sha256"])!=64 or not a.get("source_url") or a.get("bytes") is None or not a.get("signature") or not a.get("final_url") or not a.get("retrieved_at_utc") or not a.get("document_identity") for a in acquisitions): raise ValueError("Acquired source provenance incomplete")
     acq_ids=[a["source_id"] for a in acquisitions]
     if len(acq_ids)!=len(set(acq_ids)): raise ValueError("Duplicate acquired source identity")
@@ -117,11 +141,24 @@ def verify() -> dict:
     oldrows=read_jsonl(old_path); oldrank=sorted((hashlib.sha256((r["source_family"]+r["source_document"]+r["source_item_number"]).encode()).hexdigest(),r) for r in oldrows)
     old_expected={"EXTERNADO-PRIVADO-I-PROCESAL-CIVIL-2011-Q"+r["source_item_number"].zfill(3) for _,r in oldrank[:30]}
     if old_expected!={r["question_id"] for r in legacy}: raise ValueError("Externado reproducibility sample changed")
+    controlled=read_jsonl(BENCH/"review/controlled_cuj2026_v1_coverage.jsonl")
+    competitive=read_jsonl(BENCH/"review/competitive_corpus_v01_coverage.jsonl")
+    if len(controlled)!=10 or len(competitive)!=10 or any(r["controlled_corpus_coverage"]!="COMPLETE" for r in controlled) or any(r["competitive_corpus_coverage"]!="MISSING" for r in competitive): raise ValueError("Dual corpus coverage profile counts are invalid")
+    if any(r["profile_id"]!="KC-COL-IR-CUJ2026-CONTROLLED-v1" for r in controlled): raise ValueError("Controlled coverage profile identity mismatch")
+    controlled_docs=read_jsonl(BENCH/"review/controlled_cuj2026_v1_documents.jsonl")
+    valid_docs={d["doc_id"] for d in controlled_docs}
+    valid_pages={f"CUJ2026-P{d['member_index']:02d}-{p:04d}-{d['source_member_sha256'][:12]}" for d in controlled_docs for p in range(1,d["page_count"]+1) if p not in d.get("empty_pages",[])}
+    mappings=read_jsonl(BENCH/"review/controlled_cuj2026_v1_mapping.jsonl")
+    expected_mapping_keys={(g["question_id"],u["external_evidence_unit_id"]) for g in gold for u in g["external_evidence_units"]}
+    if {(r["question_id"],r["external_evidence_unit_id"]) for r in mappings}!=expected_mapping_keys: raise ValueError("Controlled mapping does not cover every external evidence unit exactly once")
+    if {r["question_id"] for r in controlled}!={g["question_id"] for g in gold} or {r["question_id"] for r in competitive}!={g["question_id"] for g in gold}: raise ValueError("Dual coverage ledger question IDs differ from accepted gold")
+    if any(r["external_evidence_unit_id"] in set(r["controlled_passage_ids"]) for r in mappings): raise ValueError("External evidence ID masquerades as a passage ID")
+    if any(r["controlled_document_id"] not in valid_docs or not set(r["controlled_passage_ids"])<=valid_pages for r in mappings): raise ValueError("Controlled mapping references nonexistent document/page")
     ncomplete=sum(g["corpus_coverage"]=="COMPLETE" for g in gold)
     if manifest["gold_gate"]["minimum_accepted_retrieval_gold"]!=10 or manifest["gold_gate"]["unlocked"]!=(len(gold)>=10): raise ValueError("Gold gate state inconsistent")
     if manifest["ranking_gate"]["minimum_complete_corpus_gold"]!=10 or manifest["ranking_gate"]["ranking_n"]!=ncomplete or manifest["ranking_gate"]["unlocked"]!=(ncomplete>=10): raise ValueError("Ranking gate state inconsistent")
     if manifest["cuda_ready"] or manifest["baseline_gate"]["unlocked"]: raise ValueError("CUDA/ranking baseline must remain locked")
     if manifest["validation_exposure"]["parsed"] or manifest["validation_exposure"]["retrieval_performance_inspected"]: raise ValueError("Javeriana validation must remain unparsed/uninspected")
-    return {"status":"PASS","sources":len(sources),"jep_pool":len(pool),"primary_dev_annotation_batch":len(questions),"externado_reproducibility_batch":len(legacy),"review_dispositions":counts,"acquired_source_artifacts":len(acquisitions),"expediente_2026_members":len(members),"accepted_retrieval_gold":len(gold),"corpus_coverage_counts":{s:sum(g["corpus_coverage"]==s for g in gold) for s in ("COMPLETE","PARTIAL","MISSING","AMBIGUOUS")},"ranking_n":ncomplete,"validation_performance_inspected":False,"cuda_ready":False,"selection_sha256":sample["selection_sha256"],"zip_integrity":"PASS"}
+    return {"status":"PASS","sources":len(sources),"jep_pool":len(pool),"primary_dev_annotation_batch":len(questions),"expansion_batch_1":len(expansion_questions),"externado_reproducibility_batch":len(legacy),"review_dispositions":counts,"expansion_dispositions":exp_counts,"acquired_source_artifacts":len(acquisitions),"expediente_2026_members":len(members),"accepted_retrieval_gold":len(gold),"competitive_corpus_coverage_counts":{s:sum(r["competitive_corpus_coverage"]==s for r in competitive) for s in ("COMPLETE","PARTIAL","MISSING","AMBIGUOUS")},"controlled_corpus_coverage_counts":{s:sum(r["controlled_corpus_coverage"]==s for r in controlled) for s in ("COMPLETE","PARTIAL","MISSING","AMBIGUOUS")},"ranking_n":ncomplete,"validation_performance_inspected":False,"cuda_ready":False,"selection_sha256":sample["selection_sha256"],"zip_integrity":"PASS"}
 
 if __name__=="__main__": print(json.dumps(verify(),ensure_ascii=False,indent=2))

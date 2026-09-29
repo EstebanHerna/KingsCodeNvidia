@@ -1,6 +1,6 @@
 {
   "benchmark": "KC-COL-IR-v0.1",
-  "status": "jep_cuj_2026_source_corrected_9_gold_0_complete_ranking_locked",
+  "status": "cuj2026_expansion_reviewed_10_gold_controlled_corpus_not_materialized",
   "created": "2026-09-29",
   "source_manifest": "source_manifest.jsonl",
   "source_manifest_sha256": "1d81836dfb701aa0baf099732268ca71d27bccb2665f7b9840e319f27ebf9499",
@@ -20,30 +20,35 @@
     "javeriana_validation_documents_hash_verified": 1,
     "externado_2011_pool_candidates": 270,
     "externado_2011_reproducibility_batch": 30,
-    "accepted_retrieval_gold": 9,
-    "needs_human_review": 7,
-    "rejected": 14,
+    "accepted_retrieval_gold": 10,
+    "needs_human_review": 9,
+    "rejected": 21,
     "temporal_status": {
-      "CURRENTLY_SUPPORTABLE": 9,
+      "CURRENTLY_SUPPORTABLE": 10,
       "HISTORICAL_ONLY": 0,
-      "UNCERTAIN": 7,
-      "NOT_APPLICABLE": 14
+      "UNCERTAIN": 9,
+      "NOT_APPLICABLE": 21
     },
-    "reviewed_dispositions": 30,
-    "retrieval_gold_candidates_pending_primary_evidence": 7,
-    "explicit_reference_low_difficulty": 1,
-    "factual_clarification_only": 6,
+    "reviewed_dispositions": 40,
+    "retrieval_gold_candidates_pending_primary_evidence": 9,
+    "explicit_reference_low_difficulty": 2,
+    "factual_clarification_only": 7,
     "legal_strategy_not_answered": 6,
-    "answer_not_sufficient_for_gold": 8,
+    "answer_not_sufficient_for_gold": 14,
     "corpus_complete_accepted_gold": 0,
     "corpus_partial_accepted_gold": 0,
-    "corpus_missing_accepted_gold": 9,
+    "corpus_missing_accepted_gold": 10,
     "corpus_ambiguous_accepted_gold": 0,
+    "competitive_corpus_missing_accepted_gold": 10,
+    "controlled_corpus_complete_accepted_gold": 10,
+    "controlled_corpus_materialized": false,
     "ranking_eligible_accepted_gold": 0,
-    "pending_gold_or_temporal_resolution": 7,
+    "pending_gold_or_temporal_resolution": 9,
     "jep_2026_source_questions": 62,
     "jep_2026_dev_annotation_batch": 30,
-    "jep_2025_misclassified_prior_snapshot": 62
+    "jep_2025_misclassified_prior_snapshot": 62,
+    "jep_2026_expansion_batch_1": 10,
+    "jep_2026_total_reviewed_candidates": 40
   },
   "sampling_manifest": "sampling_manifest.json",
   "question_wording_committed": false,
@@ -53,7 +58,7 @@
     "minimum_accepted_dev_retrieval_gold": 10,
     "minimum_complete_corpus_gold": 10,
     "unlocked": false,
-    "status": "LOCKED_GOLD_GATE"
+    "status": "LOCKED_CONTROLLED_PROFILE_NOT_MATERIALIZED"
   },
   "validation_exposure": {
     "raw_downloaded": true,
@@ -63,7 +68,7 @@
     "note": "One official Q&A PDF signature/hash verified; no text extracted and no retrieval tuning."
   },
   "runner": "tools/independent_ir_v2.py",
-  "runner_status": "IMPLEMENTED_BUT_GOLD_GATE_LOCKED_AND_RANKING_GATE_LOCKED",
+  "runner_status": "GOLD_GATE_UNLOCKED_RANKING_PROFILE_PASSAGES_NOT_MATERIALIZED",
   "question_manifest_sha256": "4bce1a2257eb23e9ad8db711f1e34cf9184cc42d603dd79542ef8b6527d3e44a",
   "sampling_manifest_sha256": "0dce285f10ea959452eab97b4087f585c9399770970a4282d3bc96114d275d88",
   "git_sha_at_acquisition_checkpoint": "a3834baf3fd89069fa1efea02b45edad62d6f5b6",
@@ -73,8 +78,8 @@
   "primary_source_review": {
     "disposition_file": "review/jep_2026_dispositions.jsonl",
     "acquisition_file": "review/primary_source_acquisitions.jsonl",
-    "minimal_evidence_packets_created": 9,
-    "corpus_coverage_assessed_for_accepted_gold": 9,
+    "minimal_evidence_packets_created": 10,
+    "corpus_coverage_assessed_for_accepted_gold": 10,
     "method": "exact current official question page and 2026 hypothetical packet review; no retrieval outputs used",
     "blocking_sources": [
       "Standalone Auto SRVR-ADHC-023 / SRVR-023-ADHC-CASO-01 file not present as a separate ZIP member; current resolution cites it",
@@ -85,6 +90,7 @@
     "acquired_source_artifacts": 47,
     "current_jep_family": "jep_concurso_universitario_2026",
     "frozen_selection_recomputed": false,
+    "expansion_batch_1": "review/expansion_batch_1.json; selection frozen before content review",
     "frozen_selected_item_numbers": [
       "37",
       "33",
@@ -120,18 +126,22 @@
   },
   "gold_gate": {
     "minimum_accepted_retrieval_gold": 10,
-    "accepted_retrieval_gold": 9,
-    "unlocked": false,
-    "status": "LOCKED"
+    "accepted_retrieval_gold": 10,
+    "unlocked": true,
+    "status": "UNLOCKED"
   },
   "ranking_gate": {
     "minimum_complete_corpus_gold": 10,
-    "complete_corpus_gold": 0,
+    "profile_id": "KC-COL-IR-CUJ2026-CONTROLLED-v1",
+    "complete_corpus_gold": 10,
     "ranking_n": 0,
     "unlocked": false,
-    "status": "LOCKED",
-    "requires_gold_gate": true
+    "status": "LOCKED_CONTROLLED_PASSAGE_FILE_NOT_MATERIALIZED",
+    "requires_gold_gate": true,
+    "requires_controlled_profile_materialized": true
   },
+  "retrieval_benchmark_ready": false,
+  "cuda_execution_started": false,
   "jep_source_provenance_correction": {
     "from": "jep_concurso_universitario_2025",
     "to": "jep_concurso_universitario_2026",

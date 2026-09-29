@@ -1,0 +1,22 @@
+{
+  "profile_id": "KC-COL-IR-CUJ2026-CONTROLLED-v1",
+  "purpose": "Controlled ranking corpus, separate from KingsCode competitive corpus-v0.1",
+  "source_boundary": "All six textual PDF members of the complete official CUJ 2026 expediente ZIP; selection is not gold-driven",
+  "source_archive_url": "https://concursouniversitariorelatoria.jep.gov.co/concursocarp/expedientes/EXPEDIENTE_CONCURSO_JEP_2026.zip",
+  "source_archive_sha256": "3f9dc1765e8ea18588c13a48e1785b506f6a0c06eef3743057e2d34097d9b101",
+  "parser_version": "pypdf-6.10.0-page-extract-text",
+  "parser_rule": "One passage per nonempty physical PDF page; preserve extracted Unicode text; page-local offsets are Unicode code points",
+  "passage_id_rule": "CUJ2026-P{member_index:02d}-{physical_page:04d}-{member_sha256_prefix12}",
+  "document_id_rule": "CUJ2026-D{member_index:02d}-{member_sha256_prefix12}",
+  "document_count": 6,
+  "physical_page_count": 191,
+  "passage_count": 190,
+  "passages_sha256": "019dee8a805e87fbacfce45cd448f4b538b921d6d7c5aa7ff3a82a5472a894ef",
+  "build_sha256": "6bbf448a6cac3f368f0456699205f56891cbb144e4418a53c544d1753fb8f51b",
+  "build_status": "SOURCE_HASHES_AND_IN_MEMORY_EXTRACTION_VERIFIED; PASSAGE FILE NOT MATERIALIZED IN THIS WORKTREE",
+  "local_corpus_root": "ignored:tmp/kc_col_ir_v0.1/controlled_cuj2026_v1",
+  "audio_policy": "Both MP3 members inventoried and excluded; no ASR or generative transcription",
+  "redistribution": "Extracted passage text remains local/ignored pending rights review; no PDFs, ZIP, audio or page text committed",
+  "retrieval_executed": false,
+  "cuda_execution_started": false
+}

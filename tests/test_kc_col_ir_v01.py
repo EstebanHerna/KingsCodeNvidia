@@ -24,15 +24,22 @@ class IndependentBenchmarkTests(unittest.TestCase):
         self.assertEqual(result["jep_pool"],62)
         self.assertEqual(result["primary_dev_annotation_batch"],30)
         self.assertEqual(result["externado_reproducibility_batch"],30)
-        self.assertEqual(result["accepted_retrieval_gold"],9)
-        self.assertEqual(result["corpus_coverage_counts"],{"COMPLETE":0,"PARTIAL":0,"MISSING":9,"AMBIGUOUS":0})
+        self.assertEqual(result["accepted_retrieval_gold"],10)
+        self.assertEqual(result["competitive_corpus_coverage_counts"],{"COMPLETE":0,"PARTIAL":0,"MISSING":10,"AMBIGUOUS":0})
+        self.assertEqual(result["controlled_corpus_coverage_counts"],{"COMPLETE":10,"PARTIAL":0,"MISSING":0,"AMBIGUOUS":0})
         self.assertEqual(result["ranking_n"],0)
         self.assertFalse(result["validation_performance_inspected"])
         self.assertFalse(result["cuda_ready"])
 
-    def test_runner_stays_locked_below_gold_gate(self):
-        with self.assertRaisesRegex(PermissionError,"GOLD_GATE_LOCKED"):
+    def test_runner_stays_locked_until_materialized_controlled_corpus(self):
+        with self.assertRaisesRegex(PermissionError,"RANKING_GATE_LOCKED"):
             independent_ir_v2.preflight()
+
+    def test_controlled_ranking_population_is_separate_from_competitive_coverage(self):
+        gold=[{"question_id":f"q{i}","corpus_coverage":"MISSING"} for i in range(10)]
+        controlled=[{"question_id":f"q{i}","controlled_corpus_coverage":"COMPLETE"} for i in range(10)]
+        self.assertEqual(independent_ir_v2.metric_population(gold,"competitive_corpus_v01")["ranking_n"],0)
+        self.assertEqual(independent_ir_v2.metric_population(gold,"controlled_cuj2026_v1",controlled)["ranking_n"],10)
 
     def test_30_candidates_10_accepted_and_20_pending_pass_gold_subset_gate(self):
         candidates=[{"question_id":f"q{i}", "review_status":"PENDING_PRIMARY_EVIDENCE", "temporal_review_status":"UNCERTAIN"} for i in range(30)]
@@ -67,6 +74,10 @@ class IndependentBenchmarkTests(unittest.TestCase):
         self.assertEqual(pop["coverage_n"],4);self.assertEqual(pop["ranking_n"],1)
         self.assertEqual(pop["coverage_counts"]["MISSING"],1);self.assertEqual(pop["corpus_missing_rate"],0.25)
         independent_ir_v2.validate_gold_record(gold_record("missing","MISSING"))
+
+    def test_nine_gold_stays_below_minimum_but_ten_unlocks_gold_threshold(self):
+        self.assertLess(9, independent_ir_v2.MIN_GOLD)
+        self.assertGreaterEqual(10, independent_ir_v2.MIN_GOLD)
 
     def test_external_evidence_ids_never_enter_corpus_ranking_metrics(self):
         gold=gold_record("q","COMPLETE")

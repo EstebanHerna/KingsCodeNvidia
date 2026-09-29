@@ -1,8 +1,18 @@
 # Member A v0.2 progress — 2026-09-29
 
-Status: PARTIAL. Branch `feat/member-a-corpus-v02-locator`, checkpoint `d310bbd5754f7305649adb4aacea68ebe1400f31`. Do not merge to `main`.
+Status: PARTIAL. Branch `feat/member-a-corpus-v02-locator`, continuation parent `1beb08b0703af1f577d628d1826aecd2d2781f58`. Do not merge to `main`.
 
 The completed G02, C01, P02 and P01 v0.2-only parser repairs, query-view/locator and retrieval-diagnostic work remain intact. Corpus v0.1 and the official starter pack remain untouched. Corpus v0.2 still contains four provisional documents, 72 passages, 33 nodes, 29 structural edges and zero active semantic edges. No corpus expansion or retrieval architecture change was justified by independent DEV evidence.
+
+## 2026-09-29 — KC-COL-IR CUJ expansion and profile mapping
+
+- Continued from parent `1beb08b0703af1f577d628d1826aecd2d2781f58` on `feat/member-a-corpus-v02-locator`. Preserved the already-dirty README and MASTER_KNOWLEDGE provenance changes and included them in the worktree review.
+- Frozen the deterministic next 10 candidates before reading their text. Original 30 remain unchanged. The expansion item numbers are 22, 15, 39, 3, 26, 17, 21, 56, 5 and 25. Pool SHA-256: `af07237db321115562da4d64527c675d2bb99fe49c730b5f1ebcf2ac3bf85476`; selection SHA-256: `dc1332cb1477f96ea2652f2699befc317f4e053b67e8b8d987ef9397ecf13131`.
+- Expansion dispositions: 1 accepted (Q025), 6 rejected for insufficient authoritative answer, 1 rejected as non-retrieval, 2 pending primary evidence (Q017 exact Auto 023; Q005 unnamed jurisprudence). Total reviewed candidates are 40; accepted total is 10. Gold IDs are Q009, Q012, Q013, Q025, Q030, Q031, Q037, Q043, Q045 and Q049.
+- Built a controlled profile definition from all six textual PDFs in the full official CUJ 2026 ZIP; all 18 archive members were inventoried. Two MP3s were excluded without ASR. The deterministic in-memory extraction contains 191 physical pages / 190 nonempty passages, with passage hash `019dee8a805e87fbacfce45cd448f4b538b921d6d7c5aa7ff3a82a5472a894ef` and build hash `6bbf448a6cac3f368f0456699205f56891cbb144e4418a53c544d1753fb8f51b`. The passage file is not materialized in this worktree.
+- Dual coverage is explicit: competitive corpus-v0.1 is MISSING for 10/10; controlled page mappings are COMPLETE for 10/10. Gold gate is unlocked; ranking execution stays locked by the current manifest until the controlled passage artifact is materialized; CUDA_READY=false.
+- Added runner profile support and CPU integrity checks. `tools/verify_kc_col_ir_v01.py` passes; 11 focused unit tests pass; `independent_ir_v2.py check` reports the controlled corpus is not materialized. No retrieval, CUDA, encoder, reranker, decoder or validation performance was run/inspected.
+- Next exact task: materialize the deterministic local/ignored corpus artifact, verify output file hashes against the frozen profile, then reconcile the ranking execution gate without changing question membership. Do not run C0-C3 or CUDA in this continuation.
 
 ## Benchmark acquisition
 

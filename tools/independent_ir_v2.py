@@ -21,11 +21,17 @@ COMPONENTS = ("C0", "C1", "C2", "C3")
 COVERAGE_STATES = {"COMPLETE", "PARTIAL", "MISSING", "AMBIGUOUS"}
 
 
-def metric_population(gold_rows: list[dict]) -> dict:
-    """Return coverage denominators and IDs eligible for pure ranking metrics."""
+def metric_population(gold_rows: list[dict], profile: str = "competitive_corpus_v01",
+                      controlled_rows: list[dict] | None = None) -> dict:
+    """Return coverage denominators and profile-specific ranking IDs."""
+    if profile not in {"competitive_corpus_v01", "controlled_cuj2026_v1"}:
+        raise ValueError(f"Unknown corpus profile: {profile}")
+    controlled = {r["question_id"]: r for r in (controlled_rows or [])}
     by_state = {state: [] for state in COVERAGE_STATES}
     for row in gold_rows:
-        state = row.get("corpus_coverage")
+        state = (row.get("competitive_corpus_coverage", row.get("corpus_coverage"))
+                 if profile == "competitive_corpus_v01" else
+                 controlled.get(row["question_id"], {}).get("controlled_corpus_coverage"))
         if state not in COVERAGE_STATES:
             raise ValueError(f"Accepted gold has invalid corpus_coverage: {state!r}")
         by_state[state].append(row["question_id"])
@@ -36,6 +42,7 @@ def metric_population(gold_rows: list[dict]) -> dict:
         "ranking_n": len(by_state["COMPLETE"]),
         "ranking_question_ids": sorted(by_state["COMPLETE"]),
         "corpus_missing_rate": len(by_state["MISSING"]) / total if total else None,
+        "profile_id": profile,
     }
 
 
@@ -121,7 +128,7 @@ def hydrate_candidate_questions(candidates: list[dict], pool_rows: list[dict]) -
     return hydrated
 
 
-def preflight() -> tuple[dict, list[dict], dict[str, dict]]:
+def preflight(corpus_profile: str = "controlled_cuj2026_v1") -> tuple[dict, list[dict], dict[str, dict]]:
     manifest = read_json(BENCH / "manifest.json")
     candidates = read_jsonl(BENCH / "questions/dev.jsonl")
     gold_rows = read_jsonl(BENCH / "gold/dev.jsonl")
@@ -136,13 +143,17 @@ def preflight() -> tuple[dict, list[dict], dict[str, dict]]:
     if any(q.get("split") == "VALIDATION" or q.get("institution_family") == "universidad_libre_preparatorios"
            for q in candidates):
         raise ValueError("Validation-family question leakage")
+    expansion = read_jsonl(BENCH / "review/expansion_batch_1_questions.jsonl")
+    candidate_ids = {q["question_id"] for q in candidates}
+    candidates.extend(q for q in expansion if q["question_id"] not in candidate_ids)
     evaluation_questions, gold = select_evaluation_subset(candidates, gold_rows)
     sample = read_json(BENCH / "sampling_manifest.json")
     pool_path = ROOT / "tmp/kc_col_ir_v0.1/pool/jep_cuj_2026_full_pool.jsonl"
     if not pool_path.exists() or file_hash(pool_path) != sample.get("pool_artifact_sha256"):
         raise ValueError("Frozen ignored official question pool missing or hash mismatch")
     evaluation_questions = hydrate_candidate_questions(evaluation_questions, read_jsonl(pool_path))
-    population = metric_population(list(gold.values()))
+    controlled_rows = read_jsonl(BENCH / "review/controlled_cuj2026_v1_coverage.jsonl")
+    population = metric_population(list(gold.values()), corpus_profile, controlled_rows)
     gold_gate = len(gold) >= MIN_GOLD
     ranking_gate = population["ranking_n"] >= MIN_COMPLETE
     if not gold_gate:
@@ -153,6 +164,10 @@ def preflight() -> tuple[dict, list[dict], dict[str, dict]]:
         raise PermissionError("GOLD_GATE_LOCKED: manifest has not recorded independent gold review")
     if manifest.get("ranking_gate", {}).get("unlocked") is not True:
         raise PermissionError("RANKING_GATE_LOCKED: manifest has not recorded corpus-complete gold review")
+    if corpus_profile == "controlled_cuj2026_v1":
+        profile = read_json(BENCH / "review/controlled_cuj2026_v1_profile.json")
+        if not profile.get("build_status", "").startswith("MATERIALIZED"):
+            raise PermissionError("CONTROLLED_PROFILE_NOT_MATERIALIZED: passage file is required before execution")
     if manifest.get("cuda_ready") is not True or manifest.get("baseline_gate", {}).get("unlocked") is not True:
         raise PermissionError("CUDA_READY=false: ranking/configuration comparison remains locked")
     return manifest, evaluation_questions, gold
@@ -184,11 +199,13 @@ def score(ranked: list[dict], gold: dict, corpus_docs: set[str]) -> dict:
             "complete_set_at_10_diagnostic": complete10}
 
 
-def run(component: str, config_path: Path) -> dict:
+def run(component: str, config_path: Path, corpus_profile: str = "controlled_cuj2026_v1") -> dict:
     if component not in COMPONENTS:
         raise ValueError(f"component must be one of {COMPONENTS}")
-    manifest, questions, gold = preflight()
+    manifest, questions, gold = preflight(corpus_profile)
     cfg = read_json(config_path)
+    if corpus_profile == "controlled_cuj2026_v1":
+        cfg["corpus"] = "tmp/kc_col_ir_v0.1/controlled_cuj2026_v1"
     from kingscode.retrieval import Retriever
     spec = cfg["components"][component]
     started = time.perf_counter()
@@ -216,7 +233,10 @@ def run(component: str, config_path: Path) -> dict:
     corpus_docs = {p.get("canonical_document_id") or p["doc_id"] for p in passages}
     records, latencies = [], []
     out_k = max(cfg["metrics_k"], cfg["evidence_k"])
-    ranking_questions = [q for q in questions if gold[q["question_id"]]["corpus_coverage"] == "COMPLETE"]
+    controlled_rows = read_jsonl(BENCH / "review/controlled_cuj2026_v1_coverage.jsonl")
+    population = metric_population(list(gold.values()), corpus_profile, controlled_rows)
+    complete_ids = set(population["ranking_question_ids"])
+    ranking_questions = [q for q in questions if q["question_id"] in complete_ids]
     for q in ranking_questions:
         question = q.get("question")
         if not isinstance(question, str) or not question.strip():
@@ -228,6 +248,11 @@ def run(component: str, config_path: Path) -> dict:
             results = retriever.retrieve(question, out_k)
         latency = (time.perf_counter() - t0) * 1000; latencies.append(latency)
         g = gold[q["question_id"]]
+        if corpus_profile == "controlled_cuj2026_v1":
+            controlled = next(row for row in controlled_rows if row["question_id"] == q["question_id"])
+            g = dict(g, corpus_coverage="COMPLETE",
+                     corpus_minimal_evidence_sets=controlled["controlled_corpus_minimal_evidence_sets"],
+                     gold_document_ids=controlled["controlled_gold_document_ids"])
         ranked = [{"rank": rank, "passage_id": p["passage_id"],
                    "doc_id": p["doc_id"], "canonical_document_id": p.get("canonical_document_id"),
                    "scores": p.get("scores", {}), "source_url": p.get("source_url")}
@@ -253,7 +278,7 @@ def run(component: str, config_path: Path) -> dict:
     rank_rows = [row for row in records if row["metrics"] is not None]
     metrics = sorted({k for row in rank_rows for k in row["metrics"] if not k.endswith("diagnostic")})
     aggregate = {k: statistics.mean(row["metrics"][k] for row in rank_rows) for k in metrics} if rank_rows else {}
-    populations = metric_population(list(gold.values()))
+    populations = metric_population(list(gold.values()), corpus_profile, controlled_rows)
     coverage_n = populations["coverage_n"]
     coverage_rates = {state: (count / coverage_n if coverage_n else None)
                       for state, count in populations["coverage_counts"].items()}
@@ -267,7 +292,7 @@ def run(component: str, config_path: Path) -> dict:
     aggregate.update({"latency_p50_ms": statistics.median(latencies), "latency_p95_ms": pct(.95),
                       "questions": len(records), "ranking_questions": len(rank_rows)})
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
-    result = {"benchmark": "KC-COL-IR-v0.1", "component": component, "split": "DEV",
+    result = {"benchmark": "KC-COL-IR-v0.1", "corpus_profile": corpus_profile, "component": component, "split": "DEV",
               "git_sha": head, "benchmark_manifest_sha256": file_hash(BENCH / "manifest.json"),
               "corpus_manifest_sha256": file_hash(ROOT / cfg["corpus"] / "manifest.json"),
               "config": spec, "graph_mode": "off", "metrics": aggregate,
@@ -283,19 +308,27 @@ if __name__ == "__main__":
     parser.add_argument("command", choices=("check", "run"))
     parser.add_argument("--component", choices=COMPONENTS)
     parser.add_argument("--config", type=Path, default=BENCH / "runner.json")
+    parser.add_argument("--corpus-profile", choices=("controlled_cuj2026_v1", "competitive_corpus_v01"), default="controlled_cuj2026_v1")
     args = parser.parse_args()
     if args.command == "check":
         manifest = read_json(BENCH / "manifest.json")
         rows = read_jsonl(BENCH / "gold/dev.jsonl")
-        population = metric_population(rows)
+        controlled_rows = read_jsonl(BENCH / "review/controlled_cuj2026_v1_coverage.jsonl")
+        population = metric_population(rows, args.corpus_profile, controlled_rows)
         print(json.dumps({"status": "GATED", "benchmark": "KC-COL-IR-v0.1",
                           "cuda_ready": manifest["cuda_ready"],
                           "gold_gate": {"accepted": len(rows), "minimum": MIN_GOLD, "unlocked": len(rows) >= MIN_GOLD},
-                          "ranking_gate": {"ranking_n": population["ranking_n"], "minimum_complete": MIN_COMPLETE,
-                                           "unlocked": population["ranking_n"] >= MIN_COMPLETE},
+                          "ranking_gate": {"controlled_complete_coverage_n": population["ranking_n"],
+                                           "ranking_n": manifest.get("ranking_gate", {}).get("ranking_n", 0),
+                                           "minimum_complete": MIN_COMPLETE,
+                                           "unlocked": manifest.get("ranking_gate", {}).get("unlocked") is True
+                                                      and population["ranking_n"] >= MIN_COMPLETE
+                                                      and read_json(BENCH / "review/controlled_cuj2026_v1_profile.json").get("build_status", "").startswith("MATERIALIZED")},
                           "candidate_count": len(read_jsonl(BENCH / "questions/dev.jsonl")),
+                          "corpus_profile": args.corpus_profile,
+                          "controlled_profile_materialized": read_json(BENCH / "review/controlled_cuj2026_v1_profile.json").get("build_status", "").startswith("MATERIALIZED"),
                           "validated_subset_only": True}, indent=2))
     elif not args.component:
         parser.error("run requires --component C0|C1|C2|C3")
     else:
-        print(json.dumps(run(args.component, args.config), ensure_ascii=False, indent=2))
+        print(json.dumps(run(args.component, args.config, args.corpus_profile), ensure_ascii=False, indent=2))
