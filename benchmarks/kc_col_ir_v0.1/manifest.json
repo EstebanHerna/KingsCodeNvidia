@@ -1,24 +1,25 @@
 {
   "benchmark": "KC-COL-IR-v0.1",
-  "status": "acquisition_partial_dev_pool_frozen_annotation_pending_validation_unacquired",
+  "status": "jep_2025_item_reviewed_primary_evidence_unresolved_gold_gate_locked",
   "created": "2026-09-29",
   "source_manifest": "source_manifest.jsonl",
-  "source_manifest_sha256": "db37d0e2c6d2ab62bd87e7575ebbee6fdf18454ddc3f51ef49c543528adf7080",
+  "source_manifest_sha256": "7b6d6303786257adb1d2cbcc11eb995662ffb163e6950a552039e99715631e67",
   "institution_family_splits": {
-    "externado_preparatorios": "DEV",
-    "universidad_libre_preparatorios": "VALIDATION_CANDIDATE",
+    "jep_concurso_universitario_2025": "DEV_CANDIDATE",
+    "jep_concurso_universitario_2026": "DISCOVERY_ONLY_NO_ITEMS_VERIFIED",
+    "javeriana_moot_seguros_2026": "VALIDATION_CANDIDATE",
+    "externado_preparatorios_2011": "REPRODUCIBILITY_ONLY",
+    "externado_asobancaria_moot_2025": "SEALED_FUTURE",
     "icfes_sirna_other_independent": "SEALED_FUTURE"
   },
   "counts": {
-    "externado_documents_acquired": 2,
-    "externado_independent_question_candidates": 270,
-    "externado_annotation_batch": 30,
-    "universidad_libre_documents_acquired": 0,
-    "universidad_libre_questions_acquired": 0,
-    "other_institution_question_candidates": 0,
-    "dev_candidates": 30,
-    "validation_candidates": 0,
-    "end_to_end_only": 0,
+    "jep_2025_source_questions": 62,
+    "jep_2025_dev_annotation_batch": 30,
+    "jep_2026_questions_verified": 0,
+    "javeriana_2026_question_count_parsed": 0,
+    "javeriana_validation_documents_hash_verified": 1,
+    "externado_2011_pool_candidates": 270,
+    "externado_2011_reproducibility_batch": 30,
     "accepted_retrieval_gold": 0,
     "needs_human_review": 30,
     "rejected": 0,
@@ -27,24 +28,54 @@
       "HISTORICAL_ONLY": 0,
       "UNCERTAIN": 30,
       "NOT_APPLICABLE": 0
-    }
+    },
+    "reviewed_dispositions": 30,
+    "retrieval_gold_candidates_pending_primary_evidence": 13,
+    "explicit_reference_low_difficulty": 5,
+    "factual_clarification_only": 3,
+    "legal_strategy_not_answered": 6,
+    "answer_not_sufficient_for_gold": 3,
+    "corpus_complete_accepted_gold": 0,
+    "corpus_partial_accepted_gold": 0,
+    "corpus_missing_accepted_gold": 0,
+    "corpus_ambiguous_accepted_gold": 0,
+    "ranking_eligible_accepted_gold": 0,
+    "pending_gold_or_temporal_resolution": 30
   },
   "sampling_manifest": "sampling_manifest.json",
   "question_wording_committed": false,
-  "questions_sha256": "e11fc42f11c1a7cccb3f07e26a8c2e57cc9119cd8582562f0820a0f9eea9ae49",
+  "questions_sha256": "b2f0287fecaa5197e91d80c2b78e604429af174976a29f71d813bf9bff66305d",
   "cuda_ready": false,
   "baseline_gate": {
     "minimum_accepted_dev_retrieval_gold": 10,
     "unlocked": false
   },
   "validation_exposure": {
-    "raw_downloaded": false,
+    "raw_downloaded": true,
     "parsed": false,
-    "retrieval_performance_inspected": false
+    "retrieval_performance_inspected": false,
+    "valid_javeriana_official_answer_pdf_hashes": 1,
+    "note": "One official Q&A PDF signature/hash verified; no text extracted and no retrieval tuning."
   },
   "runner": "tools/independent_ir_v2.py",
   "runner_status": "IMPLEMENTED_BUT_BASELINE_GATE_LOCKED",
-  "question_manifest_sha256": "aed15c890433cab11cde37fc01ea26d6e01fdfee67979c28bf4e6f5e89fe630f",
-  "sampling_manifest_sha256": "be89829908b16f13d6f72e72337c06dae3886ce1808e61fb008a9cd9ee1a6dcd",
-  "git_sha_at_acquisition_checkpoint": "a3834baf3fd89069fa1efea02b45edad62d6f5b6"
+  "question_manifest_sha256": "b2f0287fecaa5197e91d80c2b78e604429af174976a29f71d813bf9bff66305d",
+  "sampling_manifest_sha256": "df05ff066d982531c843feb298f391c932c68fe9fd1d94d9d7e7550d62625163",
+  "git_sha_at_acquisition_checkpoint": "a3834baf3fd89069fa1efea02b45edad62d6f5b6",
+  "legacy_reproducibility_questions_sha256": "aed15c890433cab11cde37fc01ea26d6e01fdfee67979c28bf4e6f5e89fe630f",
+  "legacy_reproducibility_sampling_sha256": "be89829908b16f13d6f72e72337c06dae3886ce1808e61fb008a9cd9ee1a6dcd",
+  "question_sha256": "b2f0287fecaa5197e91d80c2b78e604429af174976a29f71d813bf9bff66305d",
+  "primary_source_review": {
+    "disposition_file": "review/jep_2025_dispositions.jsonl",
+    "acquisition_file": "review/primary_source_acquisitions.jsonl",
+    "minimal_evidence_packets_created": 0,
+    "corpus_coverage_assessed_for_accepted_gold": 0,
+    "method": "source/question review only; no retrieval outputs used",
+    "blocking_sources": [
+      "Exact SRVR-012 Resolución de Conclusiones cited by the questions",
+      "Relevant official voluntary-version material",
+      "SRVR-ADHC-023 / Auto 023 of 2024 and related source-specific records"
+    ],
+    "acquired_source_artifacts": 24
+  }
 }
