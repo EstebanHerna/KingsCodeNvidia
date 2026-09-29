@@ -48,3 +48,12 @@ Failures are classified as `corpus_missing`, `wrong_document`, `correct_document
 ## Reproducibility and review
 
 Every run stores git branch/commit, corpus/graph/BM25 hashes, model and config identity, benchmark manifest hash, split, seed, hardware/runtime, latency, aggregate/subgroup metrics, and per-question outcomes. The final critic pass verifies schema, gold/input separation, split disjointness, corpus gold resolution, absence of closed-model content, holdout/official-50 discipline, metric tests, reproducibility, unchanged official files, and unchanged Member B code.
+
+
+## KC-COL-IR-v0.1 independent gold and corpus coverage
+
+Gold relevance is established from independent external primary evidence, not from the contents or outputs of the KingsCode retrieval system. Gold acceptance requires an exact source question, a legitimate retrieval target, independently verified primary evidence, temporal review, and a frozen minimal evidence set. The presence of those sources in the frozen KingsCode corpus is not an acceptance requirement. Each accepted gold item receives a separate corpus coverage label: COMPLETE, PARTIAL, MISSING, or AMBIGUOUS.
+
+Absence of required gold evidence from the frozen corpus is reported as corpus_missing and is not converted into a retrieval ranking failure. PARTIAL and MISSING coverage are excluded from pure ranking metric denominators; PARTIAL is reported as corpus_missing until a complete minimum evidence set is represented. AMBIGUOUS coverage is reported separately and excluded from ranking metrics.
+
+Retriever-ranking metrics are reported on the subset for which the frozen corpus contains sufficient gold evidence, while corpus coverage metrics are reported across all accepted gold. Every metric reports its denominator: ranking metrics use COMPLETE coverage only; missing/partial/complete/ambiguous rates use all accepted gold. If no gold has been accepted, both populations have n=0 and rates are N/A. Gold evidence provenance and acquired primary source bytes are kept separate from the competitive corpus; source acquisition does not authorize corpus modification.

@@ -169,3 +169,10 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
 - Mover el muestreo Externado 2011 a reproducibilidad-only, preservando los 30 IDs, selección y pool sin reemplazarlo ni mezclarlo con DEV.
 - Registrar Javeriana Moot Seguros 2026 como validation candidate. Solo se verificó firma/hash de un PDF oficial de respuestas; no se parseó ni se inspeccionó rendimiento. La publicación advierte que algunas respuestas pueden inferirse del caso o reservarse al análisis de los equipos.
 - Mantener baseline/CUDA bloqueados hasta >=10 gold DEV recientes aceptados con evidencia primaria y revisión temporal. No seleccionar ítems por métricas de retrieval.
+
+
+## 2026-09-29 — KC-COL-IR gold is corpus-independent
+
+**Decision:** establish accepted gold only from independently verified external primary evidence and frozen minimal evidence sets; evaluate frozen-corpus coverage as a separate annotation. A valid accepted gold may be COMPLETE, PARTIAL, MISSING, or AMBIGUOUS. Ranking metrics use only COMPLETE cases; coverage and failure taxonomy use all accepted gold. `corpus_missing` is never converted into a ranking failure. No retrieval output may guide item selection, evidence-set design, or review.
+
+**Current review:** all 30 deterministic JEP 2025 items were dispositioned from exact local frozen question/response bytes. Thirteen remain retrieval-gold candidates pending exact primary sources; five are explicit-reference; three factual-only; six strategy/legal questions receive no substantive official answer; three answers are insufficient. No packets accepted because sources cited by the questions were not independently verified. The acquired Case 01 Resolution No. 02 (2022) and official JEP 2025 expediente archive were hashed and identity-checked but are not substitutes for the referenced SRVR-012/voluntary-version/Auto 023 materials. Gold remains 0, no corpus coverage denominator exists, and the baseline/CUDA gate remains closed.

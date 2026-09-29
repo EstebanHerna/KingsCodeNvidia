@@ -23,6 +23,8 @@ def verify() -> dict:
     questions = read_jsonl(BENCH / "questions/dev.jsonl")
     legacy = read_jsonl(BENCH / "questions/reproducibility_externado_2011.jsonl")
     gold = read_jsonl(BENCH / "gold/dev.jsonl")
+    dispositions = read_jsonl(BENCH / "review/jep_2025_dispositions.jsonl")
+    acquisitions = read_jsonl(BENCH / "review/primary_source_acquisitions.jsonl")
     sample = json.loads((BENCH / "sampling_manifest.json").read_text(encoding="utf-8"))
     old_sample = json.loads((BENCH / "sampling_manifest_externado_2011.json").read_text(encoding="utf-8"))
     required = {"source_id", "institution", "institution_family", "title", "year", "source_type",
@@ -66,9 +68,63 @@ def verify() -> dict:
         raise ValueError("Legacy reproducibility question hash mismatch")
     if sha(BENCH / "sampling_manifest_externado_2011.json") != manifest["legacy_reproducibility_sampling_sha256"]:
         raise ValueError("Legacy sampling manifest hash mismatch")
-    if len(questions) != sample["selected_count"] or len(legacy) != old_sample["selected_count"] or len(gold) != 0:
+    if len(questions) != sample["selected_count"] or len(legacy) != old_sample["selected_count"]:
         raise ValueError("Unexpected candidate queue or gold count")
-    if any(row["review_status"] != "NEEDS_HUMAN_REVIEW" or row["temporal_review_status"] != "UNCERTAIN" for row in questions + legacy):
+    question_ids = {row["question_id"] for row in questions}
+    if len(dispositions) != 30 or {row["question_id"] for row in dispositions} != question_ids:
+        raise ValueError("JEP dispositions must preserve exactly the frozen 30 IDs")
+    allowed_dispositions = {"RETRIEVAL_GOLD_CANDIDATE", "FACTUAL_CLARIFICATION_ONLY",
+                            "LEGAL_STRATEGY_NOT_ANSWERED", "EXPLICIT_REFERENCE_LOW_DIFFICULTY",
+                            "ANSWER_NOT_SUFFICIENT_FOR_GOLD", "AMBIGUOUS", "REJECTED"}
+    if any(row.get("disposition") not in allowed_dispositions for row in dispositions):
+        raise ValueError("Unknown JEP review disposition")
+    if any(row.get("retrieval_performance_used") is not False or row.get("minimal_evidence_sets") != []
+           or row.get("temporal_review_status") != "UNCERTAIN"
+           or row.get("corpus_coverage_status") != "NOT_ASSESSED_NO_ACCEPTED_GOLD"
+           for row in dispositions):
+        raise ValueError("Candidate review may not use retrieval, invent evidence sets, or couple gold to corpus coverage")
+    if any(k in row for row in dispositions for k in ("retrieval_results", "rankings", "retrieval_score", "recall")):
+        raise ValueError("Retrieval-derived annotation field found")
+    if manifest["counts"].get("accepted_retrieval_gold") != len(gold):
+        raise ValueError("Manifest accepted-gold count mismatch")
+    gold_by_id = {row["question_id"]: row for row in gold}
+    if len(gold_by_id) != len(gold) or not set(gold_by_id) <= question_ids:
+        raise ValueError("Accepted gold must map one-to-one to frozen DEV question IDs")
+    for qid, row in gold_by_id.items():
+        if row.get("review_status") != "ACCEPTED_RETRIEVAL_GOLD" or not row.get("minimal_evidence_sets") or \
+           any(not evidence_set for evidence_set in row.get("minimal_evidence_sets", [])):
+            raise ValueError(f"Accepted gold lacks review status/evidence sets: {qid}")
+        if not row.get("evidence_sources") or row.get("temporal_review_status") not in {
+                "CURRENTLY_SUPPORTABLE", "HISTORICAL_ONLY", "NOT_APPLICABLE"}:
+            raise ValueError(f"Accepted gold lacks independent source provenance/temporal review: {qid}")
+        if any(not source.get("source_id") or not source.get("sha256") or not source.get("source_url")
+               for source in row["evidence_sources"]):
+            raise ValueError(f"Accepted gold source provenance is incomplete: {qid}")
+        if row.get("corpus_coverage") not in {"COMPLETE", "PARTIAL", "MISSING", "AMBIGUOUS"}:
+            raise ValueError(f"Accepted gold has invalid corpus coverage: {qid}")
+    counts = {name: sum(row["disposition"] == name for row in dispositions) for name in allowed_dispositions}
+    if counts["RETRIEVAL_GOLD_CANDIDATE"] != 13 or counts["EXPLICIT_REFERENCE_LOW_DIFFICULTY"] != 5 or \
+       counts["FACTUAL_CLARIFICATION_ONLY"] != 3 or counts["LEGAL_STRATEGY_NOT_ANSWERED"] != 6 or \
+       counts["ANSWER_NOT_SUFFICIENT_FOR_GOLD"] != 3 or counts["REJECTED"] != 0 or counts["AMBIGUOUS"] != 0:
+        raise ValueError(f"Unexpected human/source review disposition counts: {counts}")
+    if any(not row.get("sha256") or not row.get("final_url") or not row.get("retrieved_at_utc")
+           or not row.get("document_identity") for row in acquisitions):
+        raise ValueError("Acquired-source provenance incomplete")
+    if len({row["source_id"] for row in acquisitions}) != len(acquisitions) or \
+       any(len(row["sha256"]) != 64 or not row.get("source_url") or not row.get("bytes")
+           or not row.get("signature") for row in acquisitions):
+        raise ValueError("Acquired-source identity, hash, byte count, URL or signature invalid")
+    members = [row for row in acquisitions if row.get("parent_archive_source_id")]
+    archive = next(row for row in acquisitions if row["source_id"] == "JEP-CUJ-2025-EXPEDIENTE-ZIP")
+    if len(members) != 22 or any(row["parent_archive_sha256"] != archive["sha256"] for row in members):
+        raise ValueError("Official expediente member provenance does not resolve to its archive")
+    externado = next(row for row in sources if row["source_id"] == "EXTERNADO-PRIVADO-I-PROCESAL-CIVIL-2011")
+    if externado["split"] != "REPRODUCIBILITY_ONLY" or externado["exposure_status"] != \
+       "ACQUIRED_HASHED_MECHANICAL_POOL_REPRODUCIBILITY_ONLY":
+        raise ValueError("Externado must stay reproducibility-only")
+    if any(row["review_status"] != "NEEDS_HUMAN_REVIEW" or row["temporal_review_status"] != "UNCERTAIN"
+           for row in questions if row["question_id"] not in gold_by_id) or \
+       any(row["review_status"] != "NEEDS_HUMAN_REVIEW" or row["temporal_review_status"] != "UNCERTAIN" for row in legacy):
         raise ValueError("Unreviewed items must remain uncertain and unaccepted")
     if {row["source_family"] for row in questions} != {"jep_concurso_universitario_2025"}:
         raise ValueError("Primary DEV candidate queue must contain only the JEP 2025 family")
@@ -98,6 +154,8 @@ def verify() -> dict:
         raise ValueError("Validation family must remain unparsed and uninspected")
     return {"status": "PASS", "sources": len(sources), "jep_pool": len(jep_pool),
             "primary_dev_annotation_batch": len(questions), "externado_reproducibility_batch": len(legacy),
+            "review_dispositions": counts, "acquired_source_artifacts": len(acquisitions),
+            "expediente_pdf_members": len(members),
             "accepted_retrieval_gold": len(gold), "validation_performance_inspected": False,
             "cuda_ready": False, "sampling_sha256": sample["selection_sha256"]}
 
