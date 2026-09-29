@@ -7,13 +7,46 @@
   "provisional_documents": 4,
   "blocked_acquisitions": 1,
   "defects": {
-    "G01": {"status": "PENDING_SOURCE_SCOPE", "fixed": false, "reason": "The audit is based on seven v0.1 graph examples; their source documents are not all in v0.2 and no corrected relation has been independently reviewed."},
-    "G02": {"status": "BLOCKED_SOURCE_ABSENT", "fixed": false, "reason": "SU-214/2016 primary source is not in the v0.2 source snapshot."},
-    "C01": {"status": "BLOCKED_SOURCE_ABSENT", "fixed": false, "reason": "C-355/2006 primary source is not in the v0.2 source snapshot."},
-    "P02": {"status": "BLOCKED_SOURCE_ABSENT", "fixed": false, "reason": "Ley 137/1994 primary source is not in the v0.2 source snapshot."},
-    "P01": {"status": "PENDING_FIXTURE_SCOPE", "fixed": false, "reason": "The finding is sampled across v0.1 documents; v0.2 parser correction requires per-source structural fixtures and must not change v0.1 behavior."},
-    "D01": {"status": "PENDING_IDENTITY_REVIEW", "fixed": false, "reason": "Shared boilerplate hashes alone do not establish document identity; no content-to-document collapse was added to v0.2."}
+    "G01": {
+      "status": "PENDING_SOURCE_SCOPE",
+      "fixed": false,
+      "reason": "Semantic edge review remains open: no source-backed subject/target/direction validation has been completed; no semantic edge was activated."
+    },
+    "G02": {
+      "status": "FIXED_V02_REGRESSION_VERIFIED",
+      "fixed": true,
+      "source": "SU-214/2016 official HTML preserved in v0.2 manifest",
+      "test": "tests.test_corpus_v02.CorpusV02SourceRepairTests.test_g02_removes_only_paginated_toc_rows",
+      "scope": "bounded verified TOC removal; full decision remains provisional"
+    },
+    "C01": {
+      "status": "FIXED_V02_REGRESSION_VERIFIED",
+      "fixed": true,
+      "source": "C-355/2006 official HTML preserved in v0.2 manifest",
+      "test": "tests.test_corpus_v02.CorpusV02SourceRepairTests.test_c01_same_heading_occurrences_keep_distinct_fragment_ids",
+      "scope": "repeated source-unit headings receive distinct v0.2 canonical fragment ids"
+    },
+    "P02": {
+      "status": "FIXED_V02_REGRESSION_VERIFIED",
+      "fixed": true,
+      "source": "Ley 137/1994 official HTML and PDF preserved in v0.2 manifest",
+      "test": "tests.test_corpus_v02.CorpusV02SourceRepairTests.test_p02_joins_split_article_number_and_body",
+      "scope": "split article-number/body boundaries covered by source-backed fixture"
+    },
+    "P01": {
+      "status": "FIXED_V02_REGRESSION_VERIFIED",
+      "fixed": true,
+      "source": "Ley 137/1994 official HTML preserved in v0.2 manifest",
+      "test": "tests.test_corpus_v02.CorpusV02SourceRepairTests.test_p01_major_heading_closes_prior_article",
+      "scope": "chapter heading no longer remains inside preceding article passage"
+    },
+    "D01": {
+      "status": "IDENTITY_INVARIANT_PRESERVED_REVIEW_OPEN",
+      "fixed": false,
+      "reason": "No content-to-document collapse is introduced. v0.2 fragment identity includes source-unit occurrence; broader source identity audit remains open."
+    }
   },
-  "source_evidence": "Primary raw bytes and hashes are preserved for each acquired v0.2 document in corpora/corpus-v0.2/manifest.json. Findings without matching acquired primary bytes remain pending.",
-  "next_action": "Acquire the exact official sources for G02/C01/P02 and add source-excerpt fixtures before changing parser logic; then implement and review each isolated correction with v0.2-only regression tests."
+  "source_evidence": "Four official raw sources and SHA-256 values are preserved in corpora/corpus-v0.2/manifest.json. Regression fixtures use exact publisher blocks; v0.1 is unchanged.",
+  "next_action": "Resolve G01 with source-backed relation review; independently obtain ≥10 accepted official/human-authored retrieval-gold items before any untuned baseline; continue human scope review before accepting v0.2 documents.",
+  "audit_source_count": 4
 }

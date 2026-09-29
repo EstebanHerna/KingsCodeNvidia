@@ -5,13 +5,17 @@
   "documents": 4,
   "nodes": 33,
   "active_edges": 29,
-  "active_edge_types": {"CONTIENE": 29},
+  "active_edge_types": {
+    "CONTIENE": 29
+  },
   "semantic_edges_active": 0,
   "review_queue_rows": 0,
   "reviewed_relations": 0,
   "rejected_relations": 0,
   "unresolved_relations": 0,
-  "audit_followup": {"G01": "The seven suspect relations belong to historical v0.1 examples and are not copied to active v0.2 adjacency. Exact source-backed subject/target review remains pending."},
+  "audit_followup": {
+    "G01": "Still open. The seven suspect relations have no verified source-backed subject/target/direction review; no semantic edges are active."
+  },
   "policy": "Structural edges are provisional pending document review. No semantic relation is retrieval-active until exact source text, subject, target and direction are reviewed.",
   "selection_permitted": false
 }

@@ -130,3 +130,12 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
 - Los seis hallazgos G01/G02/C01/P02/P01/D01 siguen pendientes. Se registra explícitamente qué evidencias no están en el snapshot. No se cambia v0.1 ni se intenta arreglar el parser por heurística. El grafo v0.2 permanece provisional: 29 `CONTIENE`, cero aristas semánticas activas y cero relaciones revisadas.
 - El piloto existente contiene 12 casos corpus-derivados, no independientes ni seleccionables. No se amplía a 20–30 hasta revisar la estructura de las fuentes v0.2; esto evita convertir errores potenciales de parsing en diagnósticos supuestamente correctos.
 - No se autoriza un experimento de retrieval: todavía no hay preguntas independientes aceptadas en DEV ni distribución de fallos. Próximo paso recomendado: obtener fuentes oficiales faltantes para las correcciones estructurales y continuar intake de assessment externo accesible; luego revisar bytes/fixtures antes de parser y benchmark.
+
+
+## 2026-09-29 — Corpus v0.2 source-backed parser repairs and assessment intake update
+
+- Preserve four primary legal sources in `corpora/corpus-v0.2/raw/` with URL, TLS/HTTP metadata and SHA-256 recorded in the v0.2 manifest. These are audit sources; the existing four-document/72-passage v0.2 snapshot was not rebuilt. Corpus v0.1 remains unchanged.
+- Add v0.2-only corrections for publisher TOC rows (G02), repeated decision headings (C01), split statute headings (P02), and article termination at a major hierarchy heading (P01). Regression fixtures are checked against exact extracted blocks from the preserved bytes. The parser keeps PDF-specific safeguards when operating through the sanitized-block path.
+- Leave G01 semantic relationships and D01 document identity review open; no semantic edges or automatic content-based document merges are activated.
+- Official ICFES PDF origins remained unavailable; record indexed-only evidence without ingesting questions. The current SIRNA guide contains illustrative examples but its terms prohibit reproduction/transformation; no assessment examples are copied into benchmark assets. An ICFES 2021 source-rendering exposure is logged as validation candidate only.
+- No independent retrieval gold was admitted. The baseline gate remains closed until at least 10 reviewed independent items exist.

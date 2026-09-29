@@ -240,6 +240,78 @@
     "raw/sentencia_sl_648_de_2018.pdf": "7f24b49f510f5af12fcb2e9a0bbb4836fe3927a339c127f80aa6fa88a1c5621d",
     "raw/sentencia_sp_1167_de_2022.pdf": "9f48c7ad623395fbac34866b1877f90f52a9d099c37a7cb9ae7eaab9dc93bf48",
     "raw/sentencia_sp_1680_de_2022.pdf": "cfd220418dcd5f5a208f8d01b56f9235db55f291c71bf4716ae81fcad5cc6d88",
-    "raw/sentencia_sp_1945_de_2019.pdf": "e51ee1e2b68827d8597888525683ac2a3729594abcc154c3a80aa77e9ead1f85"
-  }
+    "raw/sentencia_sp_1945_de_2019.pdf": "e51ee1e2b68827d8597888525683ac2a3729594abcc154c3a80aa77e9ead1f85",
+    "raw/sentencia_su_214_de_2016.html": "1644d3af32b02571b2f8ba0305170c3282b6849def6197df16c2c8ad38b1a85b",
+    "raw/sentencia_c_355_de_2006.html": "13254dea6a3c8e4ca7ff13a931f55179262c5746f47d533e16f126b57384eae6",
+    "raw/ley_137_de_1994.html": "e9ae807b07f57cf20b7590e4823fc3d6d15cefa24961ad2217f3d4e355e15816",
+    "raw/ley_137_de_1994.pdf": "346625a054db7a38d3b22abc599b6d0e9ed0901b6b42c92a39fc50bd30119fa1"
+  },
+  "audit_sources": [
+    {
+      "source_id": "CORTE-SU214-2016",
+      "doc_id": "sentencia_su_214_de_2016",
+      "institution": "Corte Constitucional",
+      "title": "Sentencia SU-214 de 2016",
+      "year": 2016,
+      "official_url": "https://www.corteconstitucional.gov.co/relatoria/2016/su214-16.htm",
+      "local_raw_path": "corpora/corpus-v0.2/raw/sentencia_su_214_de_2016.html",
+      "media_type": "text/html",
+      "source_sha256": "1644d3af32b02571b2f8ba0305170c3282b6849def6197df16c2c8ad38b1a85b",
+      "http_status": 200,
+      "tls_verified": true,
+      "retrieved_at": "2026-09-29",
+      "purpose": "G02 publisher-index boundary regression fixture",
+      "parser_status": "acquired_audit_source_not_reparsed_into_snapshot"
+    },
+    {
+      "source_id": "CORTE-C355-2006",
+      "doc_id": "sentencia_c_355_de_2006",
+      "institution": "Corte Constitucional",
+      "title": "Sentencia C-355 de 2006",
+      "year": 2006,
+      "official_url": "https://www.corteconstitucional.gov.co/relatoria/2006/c-355-06.htm",
+      "local_raw_path": "corpora/corpus-v0.2/raw/sentencia_c_355_de_2006.html",
+      "media_type": "text/html",
+      "source_sha256": "13254dea6a3c8e4ca7ff13a931f55179262c5746f47d533e16f126b57384eae6",
+      "http_status": 200,
+      "tls_verified": true,
+      "retrieved_at": "2026-09-29",
+      "purpose": "C01 repeated-section identity regression fixture",
+      "parser_status": "acquired_audit_source_not_reparsed_into_snapshot"
+    },
+    {
+      "source_id": "FP-LEY137-1994-HTML",
+      "doc_id": "ley_137_de_1994",
+      "institution": "Departamento Administrativo de la Función Pública",
+      "title": "Ley 137 de 1994",
+      "year": 1994,
+      "official_url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=13966",
+      "local_raw_path": "corpora/corpus-v0.2/raw/ley_137_de_1994.html",
+      "media_type": "text/html",
+      "source_sha256": "e9ae807b07f57cf20b7590e4823fc3d6d15cefa24961ad2217f3d4e355e15816",
+      "http_status": 200,
+      "tls_verified": true,
+      "retrieved_at": "2026-09-29",
+      "purpose": "P01/P02 heading-boundary and split-article regression fixtures",
+      "parser_status": "acquired_audit_source_not_reparsed_into_snapshot"
+    },
+    {
+      "source_id": "FP-LEY137-1994-PDF",
+      "doc_id": "ley_137_de_1994",
+      "institution": "Departamento Administrativo de la Función Pública",
+      "title": "Ley 137 de 1994, texto PDF oficial",
+      "year": 1994,
+      "official_url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma_pdf.php?i=13966",
+      "local_raw_path": "corpora/corpus-v0.2/raw/ley_137_de_1994.pdf",
+      "media_type": "application/pdf",
+      "source_sha256": "346625a054db7a38d3b22abc599b6d0e9ed0901b6b42c92a39fc50bd30119fa1",
+      "http_status": 200,
+      "tls_verified": true,
+      "retrieved_at": "2026-09-29",
+      "purpose": "Cross-format corroboration of official Ley 137 text",
+      "parser_status": "acquired_audit_crosscheck_only"
+    }
+  ],
+  "audit_source_count": 4,
+  "parser_audit_fixtures": "tests/fixtures/corpus_v02/source_spans.json"
 }

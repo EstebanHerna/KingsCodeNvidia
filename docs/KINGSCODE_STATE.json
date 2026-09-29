@@ -95,13 +95,13 @@
     ]
   },
   "next_action": {
-    "member_a": "Acquire missing primary sources for G02/C01/P02 and add byte-backed regression fixtures for all v0.2 corrections. Continue independent assessment-source intake. Multi-view metrics are implemented but no independent gold exists; do not tune or claim baseline.",
+    "member_a": "Complete G01 semantic relation review and D01 identity audit from source bytes; acquire/review at least 10 independent official or separately authored assessment items before a single untuned retrieval baseline. No items currently qualify.",
     "member_b": "On the target GPU run the two prepared verifications, prepare exact model snapshots, GPU smoke, freeze retrieval evidence and execute D1-D3. No new tests were run in Gate 2-Prep by user instruction.",
     "shared": "Use feat/member-a-corpus-v02-locator, based on 60ebf7e GPU freeze. No merge to main. B continues its own decoder work; do not infer decoder success from retrieval results."
   },
   "next_actions": [
     "Resolve an accessible official ICFES or CSJ assessment item source and record stable URLs, source hashes, item IDs and use terms in benchmarks/kingscode_ir_v2/source_manifest.jsonl",
-    "Acquire missing primary sources for G02/C01/P02 and add byte-backed parser fixtures/tests in corpus-v0.2 only; preserve v0.1.",
+    "G02/C01/P02/P01 parser remediations now have source bytes and tests in corpus-v0.2; continue G01/D01 review and preserve v0.1.",
     "Assign source and duplicate families to DEV/VALIDATION/SEALED_EVAL before tuning; keep sealed material outside production retrieval",
     "After reviewer-verified RETRIEVAL_GOLD exists, run the current retrieval stack once without tuning and report required metrics and failure taxonomy",
     "Run python -m unittest discover -s tests -v, tools/verify_member_a_v02.py and tools/benchmark_v2.py check; independently verify hashes before pushing"
@@ -123,10 +123,11 @@
       "exact_locator_productization_in_progress",
       "benchmark_v2_independent_source_gate_open_zero_independent_items",
       "corpus_v02_acquisition_partial_four_documents_provisional_one_blocked",
-      "corpus_v02_audit_remediation_pending_G01_G02_C01_P02_P01_D01",
       "corpus_v01_immutable",
       "query_view_evidence_metrics_implemented_no_empirical_baseline",
-      "v02_remediation_pending_source_bytes_for_G01_G02_C01_P02_P01_D01"
+      "corpus_v02_G02_C01_P02_P01_fixed_source_backed_tests_passed",
+      "corpus_v02_G01_D01_review_open",
+      "benchmark_v2_independent_items_zero_no_baseline"
     ],
     "member_b": [
       "gate_1b_historically_verified_dummy_preserved",
@@ -288,7 +289,8 @@
     "official_hashes_unchanged": 19,
     "neural_smoke_with_real_weights": true,
     "full_neural_benchmark": false,
-    "scope": "member_a; Gate 1B status is under member_b.verification"
+    "scope": "member_a; Gate 1B status is under member_b.verification",
+    "last_member_a_v02_tests": null
   },
   "member_b": {
     "gate": "1B",
@@ -392,18 +394,42 @@
     "this_session_gpu_executed": false,
     "b_modified": false,
     "corpus_v01_modified": false,
-    "status": "in_progress"
+    "status": "in_progress",
+    "parser_repairs_verified": [
+      "G02",
+      "C01",
+      "P02",
+      "P01"
+    ],
+    "open_reviews": [
+      "G01",
+      "D01"
+    ],
+    "assessment_source_intake": {
+      "independent_items": 0,
+      "retrieval_gold": 0,
+      "assessment_sources_reviewed": 3,
+      "baseline_permitted": false
+    }
   },
   "member_a_v02_status": {
     "branch": "feat/member-a-corpus-v02-locator",
     "base_commit": "60ebf7e",
-    "status": "partial_no_selection_no_merge",
+    "status": "partial_remediations_verified_no_selection_no_merge",
     "benchmark_v2": {
       "independent_source_items": 0,
       "retrieval_gold": 0,
       "end_to_end_only": 0,
       "sealed_eval": 0,
-      "legacy_pilot": "12-case corpus-derived technical smoke only; 6 DEV exposures recorded; not selectable"
+      "legacy_pilot": "12-case corpus-derived technical smoke only; 6 DEV exposures recorded; not selectable",
+      "assessment_sources_discovered": 3,
+      "source_exposure_logged": true,
+      "assessment_sources_reviewed": 3,
+      "source_disposition": {
+        "ICFES_Gestion_Conflicto_2026": "official index confirms 20 pages/20 questions/answer+assertion key; exact URL HTTP 404; no local bytes/hash/items",
+        "ICFES_Comunicacion_Juridica_2021": "official index confirms 15 pages/answer table; exact URL HTTP 404; VALIDATION exposure logged; no local bytes/hash/items",
+        "CSJ_SIRNA_guide_2026": "official bytes/hash verified; 54 pages, 3 public examples/answers; examples not transcribed; full bank not verified"
+      }
     },
     "corpus_v02": {
       "provisional_documents": 4,
@@ -414,20 +440,25 @@
       "blocked_documents": 1,
       "audit_fix_families_pending": [
         "G01",
+        "D01"
+      ],
+      "audit_fixes_verified": [
         "G02",
         "C01",
         "P02",
-        "P01",
-        "D01"
-      ]
+        "P01"
+      ],
+      "audit_sources_preserved": 4,
+      "parser_regression_tests_passed": 5
     },
     "international_inventory": "5 candidates; applicability and document links need review; benchmark items 0",
     "current_baseline": "none on independent v2",
-    "next_experiment": "no retrieval experiment until independent DEV retrieval gold and untuned baseline failure distribution exist",
+    "next_experiment": "none until >=10 independent retrieval-gold items are accepted; then one untuned baseline and failure taxonomy",
     "verification": {
-      "unittest": "PASS: 210 tests",
-      "benchmark_integrity": "PASS: 10 hashes, holdout not parsed",
-      "snapshot_verification": "PASS twice: 19 official files, 326 raw/clean v0.1 files, 14 v0.2 hashes",
+      "unittest": "PASS: 220 tests on final source-manifest state; three full suite passes during this session",
+      "benchmark_integrity": "PASS: 10 hashes; holdout not parsed; no selection permitted",
+      "snapshot_verification": "PASS: tools/verify_member_a_v02.py; 19 official files, 326 v0.1 raw/clean files, 18 v0.2 hashes",
+      "parser_fixtures": "PASS: 5 focused tests; four excerpts equal exact official source blocks",
       "independent_v2_baseline": "NOT RUN: zero independent retrieval-gold items"
     }
   }

@@ -177,4 +177,4 @@ Ablaciones → evidencia de componentes → composición explícita → validati
 ## Estado A v0.2 — 2026-09-29
 
 La rama actual preserva el freeze GPU y no reabre v1/Search V2. El piloto v2 previo es técnico y derivado del corpus; no se selecciona arquitectura con él. Consultar docs/MEMBER_A_V02_PROGRESS.md, docs/BENCHMARK_V2_METHODOLOGY.md, benchmarks/kingscode_ir_v2/source_manifest.jsonl y reports/international_sources_v02.json. Hay 0 preguntas independientes de retrieval y 0 SEALED_EVAL. No ejecutar un baseline sobre gold no verificado; primero resolver fuentes externas accesibles, documentar familias duplicadas y revisar gold.
-Corpus-v0.2 actual: 4 documentos provisionales; un PDF bloqueado; correcciones de G01/G02/C01/P02/P01/D01 pendientes. Mantener v0.1 intacto y exigir fixture, prueba y fuente para cada arreglo.
+Corpus-v0.2: 4 documentos provisionales; un PDF bloqueado; G02/C01/P02/P01 cuentan con fuentes oficiales preservadas y cinco regresiones focalizadas. G01 y D01 siguen pendientes de revisión. Mantener v0.1 intacto.

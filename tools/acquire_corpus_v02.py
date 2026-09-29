@@ -12,7 +12,8 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from kingscode.common import ROOT, file_hash, indexable, normalize, read_json, write_json, write_jsonl
 from kingscode.acquisition import fetch, soup_from_bytes
-from kingscode.corpus import parse_document, blocks_from_pdf
+from kingscode.corpus import blocks_from_pdf
+from kingscode.corpus_v02 import parse_document_v02
 from kingscode.retrieval import BM25Index
 
 OUT=ROOT/'corpora/corpus-v0.2'
@@ -48,7 +49,7 @@ def acquire():
             area='Derecho laboral' if number.startswith('SL') else 'Derecho penal' if number.startswith('SP') else 'Derecho administrativo'
             meta={**s,**transport,'norm_number':number,'year':int(year),'areas':[area],
                   'court':'Corte Suprema de Justicia' if s['source_type']=='decision' else None}
-            clean,ps,nodes,edges,info=parse_document(meta,data)
+            clean,ps,nodes,edges,info=parse_document_v02(meta,data)
             clean_path=OUT/'clean'/(s['doc_id']+'.txt');clean_path.parent.mkdir(parents=True,exist_ok=True)
             clean_path.write_text(clean,encoding='utf-8',newline='\n')
             for p in ps:
@@ -57,7 +58,7 @@ def acquire():
             record.update(**transport,status='parsed_provisional',identity=identity,raw_path=path.relative_to(ROOT).as_posix(),
                           clean_path=clean_path.relative_to(ROOT).as_posix(),clean_sha256=file_hash(clean_path),
                           passages=len(ps),review_status='human_structure_and_scope_review_pending',layout_review='not_performed',
-                          temporal_status='unknown',parser='legal-blocks-1.2 reused; known defects tracked separately',
+                          temporal_status='unknown',parser=info.get('parser_version','legal-blocks-v02-audit-1'),
                           institution=meta['court'] or 'Funcion Publica',areas=[area])
             all_passages.extend(ps);all_nodes.extend(nodes)
             # The audit found wrong subjects on semantic edges. Keep proposed
