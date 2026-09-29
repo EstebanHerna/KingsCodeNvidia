@@ -52,6 +52,8 @@ El corpus v0.1 **no está en ninguna rama de GitHub** (tampoco en `feat/member-a
 2. Subir esos archivos a Drive/OneDrive (también es el entregable 5, junto con `dense.npy` y un `LICENSE`).
 3. En la PC que lo recibe: `python tools/package_corpus_snapshot.py verify <ruta>/kingscode-corpus-v0.1.tar.gz`, luego `tar -xzf … -C .` y `python tools/verify_member_a_v02.py`. O pasar el `.tar.gz` a `tools/lab_gpu_session.ps1 -CorpusSnapshot`, que verifica antes de extraer.
 
+**Atajo con scripts (PowerShell, sin admin):** en la PC que tiene `corpus\`, `powershell -ExecutionPolicy Bypass -File tools\subir_corpus_snapshot.ps1` (empaqueta, verifica, añade `dense.npy` si coincide con el freeze de la 4090, crea `LICENSE` y el `.zip` único, y publica el release `corpus-v0.1-snapshot` del repo público; con `-NoUpload` solo empaqueta para Drive). En una PC nueva, `powershell -ExecutionPolicy Bypass -File tools\preparar_maquina_nueva.ps1` clona, instala, descarga el release, verifica, extrae, valida y deja lista la sesión GPU.
+
 El paquete no incluye `dense.npy` (106.741.888 bytes, SHA-256 `0c156c5e9…`): para los modos denso/híbrido hay que traerlo aparte o reconstruirlo en GPU con `tools/member_a.py dense`. Hash de un paquete ya generado reportado por el equipo: `fef7300ccfe731c0b4edb07e9199f7db830a38071f9549fd5b6f0f3120b2d851` (el hash del `.tar.gz` puede variar entre builds de zlib; la verificación autoritativa es por archivo).
 
 ### Dentro de `corpora/corpus-v0.2/`
