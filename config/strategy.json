@@ -29,7 +29,7 @@
     ],
     "graph_query_policy": "B legal-router-v1 uses question and initial flat evidence to choose OFF/AUTO/ON; boolean adapter for A; A executes expansion unchanged",
     "active_backend": "bm25",
-    "full_neural_benchmark_completed": false,
+    "full_neural_benchmark_completed": true,
     "models_lock": "config/models.lock.json",
     "neural_config": "config/neural.json",
     "controlled_legal_query_expansion_status": "implemented by B legal-query-v1; finite aliases, deterministic, references preserved",
@@ -42,7 +42,19 @@
     ],
     "graph_budget": 10,
     "rrf_constant": 60,
-    "exclude_ambiguous_articles": true
+    "exclude_ambiguous_articles": true,
+    "exact_locator": {
+      "version": "legal-locator-v1",
+      "policy": "candidate_union_before_reranker",
+      "public_cpu_profile": true,
+      "class_legacy_default": false,
+      "no_identifier_substitution": true,
+      "metadata_boost": false,
+      "graph_feature": false,
+      "graph_expansion_default": "off (public profile graph_budget=0)",
+      "source": "Search V2 validation tied locator configurations; no new v1 tuning"
+    },
+    "encoder_fallback_status": "BGE blocked: separate approved lock/loader/index required; no automatic fallback"
   },
   "decoder_candidates": [
     "Qwen/Qwen3-8B",
@@ -73,9 +85,9 @@
   },
   "version": "0.5",
   "next_action": {
-    "member_a": "target_gpu_runbook_then_retrieval_matrix_R0_R5",
+    "member_a": "benchmark_v2_review_and_corpus_v02_cpu_preparation",
     "member_b": "execute_deferred_verifications_on_target_then_gpu_smoke_and_decoder_sample",
-    "shared": "gate2_prep_prepared_not_tested; no_gpu_or_bakeoff_results"
+    "shared": "GPU retrieval historical results reconciled; decoder status remains separately owned by B"
   },
   "interfaces": {
     "retrieve": "retrieve(question, k, graph_mode=\"auto\") -> passages",

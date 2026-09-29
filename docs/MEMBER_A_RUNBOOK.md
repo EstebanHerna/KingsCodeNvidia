@@ -151,3 +151,24 @@ con el manifest. Para GPU: configurar/validar CUDA, construir el índice Qwen y
 ejecutar R1-QWEN/R2-QWEN antes de R3–R8. BGE-M3 requiere una decisión separada
 de lock inmutable + loader/index; no usar una revisión no fijada. Consultar
 `docs/BENCHMARK_METHODOLOGY.md` y el task board para la secuencia completa.
+
+## Fase vigente: v0.2 CPU tras resultados RTX 4090
+
+Los comandos GPU anteriores quedan como registro histórico, no como siguiente tarea. **No repetir R1–R8, no ajustar validation v1 y no ejecutar su holdout de arquitectura.** Consultar `reports/member_a_v02/gpu_reconciliation.json`. BGE no dispone de lock/loader/index aprobados.
+
+La rama de trabajo es `feat/member-a-corpus-v02-locator`, basada en el freeze 60ebf7e. Copiar el snapshot existente a `corpus/` si se trabaja en otra máquina; no usar acquire/build/reproduce sobre v0.1. Esta sesión no instala CUDA, no carga decoders y no construye dense.
+
+```powershell
+python -m unittest discover -s tests -v
+python tools/verify_member_a_v02.py
+python tools/member_a.py query --question "Ley 1564 de 2012 artículo 90" --mode bm25 --graph-mode off --exact-locator
+python tools/benchmark_v2.py check
+python tools/benchmark_v2.py dev
+python tools/plan_corpus_v02.py
+```
+
+El piloto v2 solo comprueba el flujo técnico; sus métricas no seleccionan arquitectura. Revisar el schema, la metodología y la cola humana antes de ampliar casos. `tools/verify_member_a_second.py` reconstruye corpus y repite el sample oficial: no es compatible con las restricciones actuales, por eso se usa la verificación v0.2 que solo lee el snapshot.
+
+### FINAL INTEGRATED RETRIEVAL CANDIDATE
+
+Ablaciones → evidencia de componentes → composición explícita → validation v2 → selección → holdout autorizado → confirmación oficial → freeze top 8. El candidato puede combinar componentes, pero solo tras medir sus interacciones. Exact locator añade candidatos; metadata es soft; graph expansion añade vecinos y graph features puntúa evidencia existente. Dedup conserva provenance y es distinto de diversidad documental. Ninguna de estas opciones se activa por disponibilidad. El artifact de selección debe guardar configuración completa y su fingerprint; el freeze debe coincidir exactamente. Esta fase queda diferida hasta un benchmark v2 revisado, no reabre v1.

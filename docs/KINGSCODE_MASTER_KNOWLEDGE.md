@@ -477,3 +477,13 @@ la 4090, y BGE-M3 no tiene lock/loader/reporte reproducible. Los diagnósticos
 CPU de grafo/R6/R7/R8 no sustituyen sus variantes R3-based. Revisar
 `docs/BENCHMARK_METHODOLOGY.md`, `docs/RETRIEVAL_BENCHMARK_TASK_BOARD.json` y
 `reports/benchmark/selection/selected_config.json` antes de continuar.
+
+## 2026-09-28 — reconciliación GPU y siguiente fase A v0.2
+
+Los resultados de `origin/feat/member-a-gpu-results-4090-20260928` (60ebf7e) son evidencia medida; las menciones anteriores a GPU_BLOCKED describen estados históricos. Main sigue en a3548a1 al comenzar esta fase. `reports/member_a_v02/gpu_reconciliation.json` contrasta los artefactos: R1-QWEN/R2-QWEN/R3–R8 DEV, R2 validation, Search V2 DEV (39 configuraciones) y dos ejecuciones Search V2 validation (39 cada una).
+
+DEV HYB120_LOC_META_1p25: EC@8=0.9916666666666667, Recall@10=0.9958333333333333, MRR@10=1.0. En validation empatan configuraciones con locator, incluyendo HYB120_LOC_META_0p0 y BM25120_LOC_META_0p0, con 1.0 en esas tres métricas. Esto respalda candidate injection, no superioridad de metadata_scale=1.25 ni rendimiento jurídico general. La latencia de Search V2 es costo compartido de exploración. Se conservan resultados negativos.
+
+Validation v1 queda CERRADA para tuning. El holdout de arquitectura no se utiliza aquí; R0 sí tiene un baseline holdout histórico ya consumido. No confundir ambos. Corpus-v0.1 es el snapshot histórico inmutable; la nueva adquisición y los cambios de parsing van exclusivamente a corpus-v0.2. El dense GPU está documentado por su hash, pero no disponible localmente para volver a verificar sus bytes.
+
+La fase A actual productiviza `legal_locator.py` y prepara benchmark v2 diverso y una adquisición acotada. R0–R8 son ablaciones: las composiciones futuras requieren evidencia de validation v2 y medición de interacciones. Graph expansion y graph features son ejes distintos. Ninguna composición, decoder ni freeze de top 8 competitivo queda seleccionado por esta reconciliación.

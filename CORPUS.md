@@ -328,3 +328,9 @@ No altera el corpus ni lo usa como proxy de calidad. R0 BM25 y los diagnósticos
 CPU están en `reports/benchmark/`; Qwen/BGE/hybrid/reranker siguen bloqueados
 por GPU/configuración. El reporte de selección declara honestamente
 `no_selection` hasta medir las variantes R1–R8 correctas sobre la 4090.
+
+## Snapshot histórico y transición v0.2 (2026-09-28)
+
+Corpus-v0.1 (163 documentos, 26,558 pasajes, 26,060 indexables) queda inmutable como base medida de RTX4090/Search V2. Hashes de pasajes/grafo/BM25 contrastados con `reports/gpu_freeze_4090/CRITICAL_ARTIFACT_HASHES.json`; ver `reports/member_a_v02/gpu_reconciliation.json`. Dense histórico: `0c156c5e95dce92d6abd6404a39242bd724228bfdf99f4e9e44ddf5dd16b8347` (registro del entorno GPU; bytes no disponibles en este checkout CPU). No se infiere vigencia ni calidad total del parser de estos hashes.
+
+Toda nueva fuente, parsing corregido, grafo o BM25 pertenece a `corpora/corpus-v0.2/`. La prioridad es revisar los 28 targets originales, cerrar brechas CSJ/Consejo de Estado y resolver nodos externos con evidencia oficial. El plan distingue fuente localizada, texto adquirido y documento aceptado. No se construye dense v0.2 durante esta sesión.

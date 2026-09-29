@@ -28,13 +28,14 @@
     "vram_gb": 24,
     "colab_primary": false,
     "cuda_checked": true,
-    "target_cuda_checked": false,
+    "target_cuda_checked": true,
     "checked_machine": "local Windows CPU; not the target RTX 4090",
     "local_report": "reports/hardware.json",
     "local_torch": "2.12.0+cpu",
-    "local_cuda_available": false
+    "local_cuda_available": false,
+    "target_evidence": "reports/gpu_freeze_4090; RTX 4090 retrieval executed externally and preserved at 60ebf7e; this session is CPU only"
   },
-  "phase": "gate2_prep_prepared_pending_tests_and_target_gpu",
+  "phase": "member_a_v02_locator_and_benchmark_v2_cpu_preparation",
   "architecture_version": "0.5",
   "retrieval": {
     "chunking_primary": "legal_structure_aware",
@@ -48,11 +49,12 @@
     "graph_rag": "graph_aware_from_corpus_v0_selective_query_expansion",
     "graph_fast_path": "BM25+dense+RRF; graph only when relationship/hierarchy helps",
     "active_backend": "bm25",
-    "dense_implementation": "implemented; real-weight two-passage CPU smoke",
-    "full_dense_index_built": false,
-    "full_neural_benchmark_completed": false,
+    "dense_implementation": "Qwen3 0.6B real GPU retrieval measured; see member_a_v02/gpu_reconciliation.json",
+    "full_dense_index_built": true,
+    "full_neural_benchmark_completed": true,
     "graph_router": "member B legal-router-v1; flat evidence OFF/AUTO/ON with boolean adapter for A",
-    "controlled_legal_query_expansion_status": "implemented by B legal-query-v1; finite aliases, deterministic, references preserved"
+    "controlled_legal_query_expansion_status": "implemented by B legal-query-v1; finite aliases, deterministic, references preserved",
+    "dense_index_location": "GPU historical snapshot; dense bytes not available in this CPU checkout"
   },
   "decoder_bakeoff": [
     "Qwen/Qwen3-8B",
@@ -93,20 +95,16 @@
     ]
   },
   "next_action": {
-    "member_a": "Internal benchmark v1 is complete and R0 baseline is measured; do not select architecture yet. On target GPU: verify snapshot, prepare Qwen dense and an approved BGE-M3 implementation/lock, run same-ID R1/R2 complementarity and R3-R8 on validation, then one post-selection holdout and official-50 confirmation without retuning.",
+    "member_a": "CPU locator productization, benchmark-v2 pilot/review queue and corpus-v0.2 prioritized acquisition. Historical corpus-v0.1 immutable.",
     "member_b": "On the target GPU run the two prepared verifications, prepare exact model snapshots, GPU smoke, freeze retrieval evidence and execute D1-D3. No new tests were run in Gate 2-Prep by user instruction.",
-    "shared": "Start with git pull --ff-only origin main; verify the delivered commit. Follow docs/GPU_DAY_RUNBOOK.md. Do not claim GPU/bakeoff completion before measured results."
+    "shared": "Use feat/member-a-corpus-v02-locator, based on 60ebf7e GPU freeze. No merge to main. B continues its own decoder work; do not infer decoder success from retrieval results."
   },
   "next_actions": [
-    "git pull --ff-only origin main",
-    "Verify delivered commit and transfer the existing corpus snapshot if using another machine",
-    "Create venv and install requirements-knowledge.txt; run preflight and the two prepared verifications on the target machine",
-    "python tools/prepare_gpu_environment.py --diagnose --output reports/gpu_diagnostic.json",
-    "python tools/prepare_gpu_environment.py --plan --report reports/gpu_diagnostic.json",
-    "Select/install compatible PyTorch manually, then requirements-gpu.txt; no CUDA wheel guessed in this delivery",
-    "Prepare approved model access, download exact snapshots and verify them offline",
-    "Run GPU smoke, build dense, benchmark R0-R5, freeze evidence, then compare D1-D3 with the same freeze",
-    "Keep RAGAS authorization/key, fine-tuning and competitive freeze separate"
+    "Read docs/A_TO_B_V02_CONTRACT.md and docs/BENCHMARK_V2_METHODOLOGY.md",
+    "python tools/verify_member_a_v02.py",
+    "python tools/benchmark_v2.py check",
+    "Review benchmark-v2 complex authoring queue and corpus-v0.2 source evidence; do not tune v1 validation",
+    "B consumes public retrieve() with provenance or an explicitly frozen chosen profile; GPU reranker replay remains separate"
   ],
   "do_not_forget": [
     "OpenRouter key is for evaluator, not the competitive system",
@@ -121,10 +119,11 @@
   "agents_protocol": "AGENTS.md",
   "current_work": {
     "member_a": [
-      "baseline_complete_and_verified",
-      "full_neural_index_and_benchmark_pending_target_gpu",
-      "source_ambiguity_and_acquisition_backlog",
-      "public_retrieve_integrated_with_member_b_dummy"
+      "gpu_results_reconciled",
+      "exact_locator_productization_in_progress",
+      "benchmark_v2_scaffold_in_progress",
+      "corpus_v02_targeted_acquisition_in_progress",
+      "corpus_v01_immutable"
     ],
     "member_b": [
       "gate_1b_historically_verified_dummy_preserved",
@@ -150,7 +149,9 @@
     "excluded_passages": 498,
     "frozen_for_competition": false,
     "manifest": "corpus_manifest.json",
-    "report": "CORPUS.md"
+    "report": "CORPUS.md",
+    "historical_snapshot": true,
+    "next_version": "corpus-v0.2 (separate directory; not yet frozen)"
   },
   "member_a_v06": {
     "status": "prepared_not_gpu_validated",
@@ -165,32 +166,85 @@
       "kingscode/coverage_report.py"
     ],
     "canonical_ids": "deterministic, url-independent; document and fragment namespaces separate",
-    "acquisition_backlog": {"total": 28, "source_unavailable": 14, "not_found": 11, "identifier_suspect": 2, "ambiguous": 1,
-                             "policy": "identifiers never rewritten or substituted"},
+    "acquisition_backlog": {
+      "total": 28,
+      "source_unavailable": 14,
+      "not_found": 11,
+      "identifier_suspect": 2,
+      "ambiguous": 1,
+      "policy": "identifiers never rewritten or substituted"
+    },
     "dedup_diversification": "configurable, off by default, provenance preserved; ablation-ready",
-    "failure_taxonomy": ["success", "corpus_missing", "correct_document_wrong_passage", "wrong_document", "ranking_failure", "graph_failure", "ambiguous_ground_truth"],
-    "document_mismatch_rate": {"bm25_off": 0.6585, "bm25_on": 0.6098, "note": "own definition; not claimed identical to academic DRM"},
-    "experiments": {"R6": "exact locator + metadata features (soft prior, union)", "R7": "document-first -> passage", "R8": "R3 + diversification", "owner": "member_a", "changes_default_path": false},
+    "failure_taxonomy": [
+      "success",
+      "corpus_missing",
+      "correct_document_wrong_passage",
+      "wrong_document",
+      "ranking_failure",
+      "graph_failure",
+      "ambiguous_ground_truth"
+    ],
+    "document_mismatch_rate": {
+      "bm25_off": 0.6585,
+      "bm25_on": 0.6098,
+      "note": "own definition; not claimed identical to academic DRM"
+    },
+    "experiments": {
+      "R6": "exact locator + metadata features (soft prior, union)",
+      "R7": "document-first -> passage",
+      "R8": "R3 + diversification",
+      "owner": "member_a",
+      "changes_default_path": false
+    },
     "embedding_representation": "experimental only; excludes technical provenance; not a measured replacement",
-    "reports": ["reports/acquisition_backlog_v06.json", "reports/corpus_coverage_v06.json",
-                 "reports/retrieval_failures_bm25_off.json", "reports/retrieval_failures_bm25_auto.json", "reports/retrieval_failures_bm25_on.json"],
+    "reports": [
+      "reports/acquisition_backlog_v06.json",
+      "reports/corpus_coverage_v06.json",
+      "reports/retrieval_failures_bm25_off.json",
+      "reports/retrieval_failures_bm25_auto.json",
+      "reports/retrieval_failures_bm25_on.json"
+    ],
     "corpus_rebuild": "byte-identical to corpus-v0.1; hashes unchanged; metric changes none (only timestamps/latency/code_sha256 differ in run reports)",
-    "verification": {"tests_passed": 132, "new_tests": 44, "first_pass": true, "second_independent_pass": true,
-                      "official_files_unchanged": 19, "member_b_unchanged": true},
-    "gpu_only": ["dense/hybrid index build", "hybrid+reranker R6/R7/R8 neural variants", "full neural benchmark"]
+    "verification": {
+      "tests_passed": 132,
+      "new_tests": 44,
+      "first_pass": true,
+      "second_independent_pass": true,
+      "official_files_unchanged": 19,
+      "member_b_unchanged": true
+    },
+    "gpu_only": [
+      "dense/hybrid index build",
+      "hybrid+reranker R6/R7/R8 neural variants",
+      "full neural benchmark"
+    ]
   },
   "member_a_retrieval_benchmark_v1": {
-    "status": "internal_benchmark_complete_neural_selection_gpu_blocked",
+    "status": "gpu_measured_search_v2_saturated_explicit_references",
     "manifest": "benchmarks/kingscode_ir/manifests/benchmark_manifest.json",
     "manifest_sha256": "326a405748dd20f641d5cf4103ceaafb6a19f07b43db54d95f472a2b439e3071",
-    "split": {"dev": 120, "validation": 40, "holdout": 40},
+    "split": {
+      "dev": 120,
+      "validation": 40,
+      "holdout": 40
+    },
     "generation": "deterministic templates over verified corpus metadata; no closed-model questions",
     "human_review_queue": 20,
-    "r0_validation": {"Evidence Completeness@8": 0.575, "Recall@10": 0.625, "MRR@10": 0.3738888888888889, "Document Mismatch Rate": 0.1},
-    "r0_holdout": {"purpose": "predeclared_baseline_only", "Evidence Completeness@8": 0.55, "Recall@10": 0.575, "MRR@10": 0.3564880952380952},
-    "selection": "no_selection; R1-R8 real variants GPU_BLOCKED",
+    "r0_validation": {
+      "Evidence Completeness@8": 0.575,
+      "Recall@10": 0.625,
+      "MRR@10": 0.3738888888888889,
+      "Document Mismatch Rate": 0.1
+    },
+    "r0_holdout": {
+      "purpose": "predeclared_baseline_only",
+      "Evidence Completeness@8": 0.55,
+      "Recall@10": 0.575,
+      "MRR@10": 0.3564880952380952
+    },
+    "selection": "no final architecture selected; validation-v1 CLOSED for tuning",
     "bge_m3": "user-reported old-sample values are unverified; no local run/report/model lock/implementation",
-    "next_action": "On RTX 4090 execute R1-QWEN and approved BGE-M3 setup, complementarity, R2-R8 validation selection, then one post-selection holdout and official-50 confirmation."
+    "next_action": "Productize exact locator; evaluate new components/compositions only on reviewed benchmark-v2. Do not repeat R1-R8 or consume architecture holdout."
   },
   "retrieval_results": {
     "report": "reports/retrieval_bm25.json",
@@ -320,5 +374,21 @@
     "fine_tuning_implemented": false,
     "first_command_on_gpu": "git pull --ff-only origin main",
     "first_diagnostic": "python tools/prepare_gpu_environment.py --diagnose --output reports/gpu_diagnostic.json"
+  },
+  "member_a_v02": {
+    "branch": "feat/member-a-corpus-v02-locator",
+    "base_commit": "60ebf7e61e46201034d8cd26d1ad780c68dc8ad5",
+    "gpu_reconciliation": "reports/member_a_v02/gpu_reconciliation.json",
+    "search_v2_dev_completed": true,
+    "search_v2_validation_completed": true,
+    "validation_v1_closed": true,
+    "post_selection_holdout_executed": false,
+    "r0_holdout_predeclared_baseline_historically_consumed": true,
+    "robust_finding": "exact locator injection + general candidate union, not superiority of metadata_scale 1.25",
+    "limitation": "v1 dominated by EXPLICIT references; 99-100 percent is not general legal QA quality",
+    "this_session_gpu_executed": false,
+    "b_modified": false,
+    "corpus_v01_modified": false,
+    "status": "in_progress"
   }
 }

@@ -125,3 +125,9 @@ fallos. B no recibe estos golds ni depende de sus internals. La selección
 requiere validation + confirmación posterior; hasta entonces B no recibe un
 nuevo freeze. El auditor revisa fuga, integridad de splits/golds, metodología y
 provenance antes de aceptar cada checkpoint.
+
+## Handoff vigente tras GPU — A v0.2
+
+A: `feat/member-a-corpus-v02-locator` desde 60ebf7e. Responsable de locator productivo, snapshot histórico v0.1, benchmark v2, adquisición v0.2 y riesgos de parser/grafo. Las ramas de harness y auditoría anteriores se conservan como checkpoints; no se reejecutan R1–R8.
+
+B: conservar referencias explícitas al normalizar la consulta, consumir `retrieve(question, k, graph_mode="auto")`, respetar provenance y estados temporales desconocidos. Seguir `docs/A_TO_B_V02_CONTRACT.md`. B decide y ejecuta su decoder con evidencia congelada de un perfil explícito; no inferir calidad del decoder a partir del 1.0 de retrieval v1. Revisión cruzada pendiente con Luis antes de aceptar arquitectura o freeze competitivo.
