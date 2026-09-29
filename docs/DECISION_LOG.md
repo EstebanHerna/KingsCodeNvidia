@@ -122,3 +122,11 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
 - Se añade inventario internacional selectivo de candidatos CAN/OIT/interamericano. Ratificación o aplicabilidad permanece pendiente de verificación para cada instrumento; no se indexa automáticamente. Benchmark internacional: cero ítems.
 - Corpus-v0.1 queda inmutable. Corpus-v0.2 tiene cuatro documentos provisionales y las remediaciones G01/G02/C01/P02/P01/D01 aún no están completas; cada cambio requiere fuente primaria, fixture y prueba.
 - Sin gold independiente no existe baseline útil ni distribución de fallos para escoger experimento. La siguiente ejecución será un baseline no ajustado sobre DEV externo revisado.
+
+## 2026-09-29 — Diagnósticos de vistas y estado de remediación A v0.2
+
+- El checkout remoto de `feat/member-a-corpus-v02-locator` estaba limpio en 790bf85. La suite completa pasó con 210 tests después de proporcionar `jsonschema==4.26.0` desde un directorio temporal ignorado; la primera invocación sin esa dependencia falló al importar siete módulos/casos.
+- Se implementan métricas puras para Oracle Multi-View Recall, Fusion Loss y Graph Recovery Rate sobre `minimal_evidence_sets`, incluyendo alternativas. Las pruebas verifican alternativas, pérdida de fusión y recuperación condicionada a misses iniciales. No hay ranking/gold independiente; no se reportan valores empíricos ni baseline.
+- Los seis hallazgos G01/G02/C01/P02/P01/D01 siguen pendientes. Se registra explícitamente qué evidencias no están en el snapshot. No se cambia v0.1 ni se intenta arreglar el parser por heurística. El grafo v0.2 permanece provisional: 29 `CONTIENE`, cero aristas semánticas activas y cero relaciones revisadas.
+- El piloto existente contiene 12 casos corpus-derivados, no independientes ni seleccionables. No se amplía a 20–30 hasta revisar la estructura de las fuentes v0.2; esto evita convertir errores potenciales de parsing en diagnósticos supuestamente correctos.
+- No se autoriza un experimento de retrieval: todavía no hay preguntas independientes aceptadas en DEV ni distribución de fallos. Próximo paso recomendado: obtener fuentes oficiales faltantes para las correcciones estructurales y continuar intake de assessment externo accesible; luego revisar bytes/fixtures antes de parser y benchmark.

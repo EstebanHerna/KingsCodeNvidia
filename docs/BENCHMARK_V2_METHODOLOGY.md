@@ -25,3 +25,7 @@ A small category may be added only when an externally sourced item genuinely req
 ## Baseline and next action
 
 Do not tune benchmark v1 or rerun Search V2. Once independently sourced DEV items and their retrieval gold exist, first run the current A retrieval stack once without tuning, with exact-locator/graph behavior explicitly frozen and recorded. Report Evidence Completeness@8, Complete Evidence Set@8, Recall@10, MRR@10, nDCG@10, Document Recall, Corpus Missing Rate, latency and the required failure taxonomy. Only that baseline and failure distribution can justify a retrieval experiment. Until then no experiment is evidence-justified.
+
+## Multi-view and graph diagnostics
+
+`kingscode/retrieval_diagnostics.py` provides metric primitives over frozen passage-ID rankings and `minimal_evidence_sets`: Oracle Multi-View Recall takes the union of per-view top-k results; Fusion Loss compares this oracle coverage with the fused ranking; Graph Recovery Rate measures complete-set recovery among questions incomplete before graph expansion. Alternative sufficient sets are evaluated by best-set completeness and are never flattened into a single mandatory union. These are implementation capabilities only: there is currently no independent reviewed DEV set, so there are no empirical scores and no baseline. Rank all views and graph variants before loading gold.

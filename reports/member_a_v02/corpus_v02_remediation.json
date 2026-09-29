@@ -1,0 +1,19 @@
+{
+  "version": "member-a-corpus-v02-remediation-status-1",
+  "corpus_v01_modified": false,
+  "v02_documents": 4,
+  "v02_passages": 72,
+  "accepted_documents": 0,
+  "provisional_documents": 4,
+  "blocked_acquisitions": 1,
+  "defects": {
+    "G01": {"status": "PENDING_SOURCE_SCOPE", "fixed": false, "reason": "The audit is based on seven v0.1 graph examples; their source documents are not all in v0.2 and no corrected relation has been independently reviewed."},
+    "G02": {"status": "BLOCKED_SOURCE_ABSENT", "fixed": false, "reason": "SU-214/2016 primary source is not in the v0.2 source snapshot."},
+    "C01": {"status": "BLOCKED_SOURCE_ABSENT", "fixed": false, "reason": "C-355/2006 primary source is not in the v0.2 source snapshot."},
+    "P02": {"status": "BLOCKED_SOURCE_ABSENT", "fixed": false, "reason": "Ley 137/1994 primary source is not in the v0.2 source snapshot."},
+    "P01": {"status": "PENDING_FIXTURE_SCOPE", "fixed": false, "reason": "The finding is sampled across v0.1 documents; v0.2 parser correction requires per-source structural fixtures and must not change v0.1 behavior."},
+    "D01": {"status": "PENDING_IDENTITY_REVIEW", "fixed": false, "reason": "Shared boilerplate hashes alone do not establish document identity; no content-to-document collapse was added to v0.2."}
+  },
+  "source_evidence": "Primary raw bytes and hashes are preserved for each acquired v0.2 document in corpora/corpus-v0.2/manifest.json. Findings without matching acquired primary bytes remain pending.",
+  "next_action": "Acquire the exact official sources for G02/C01/P02 and add source-excerpt fixtures before changing parser logic; then implement and review each isolated correction with v0.2-only regression tests."
+}

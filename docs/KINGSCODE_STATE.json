@@ -95,13 +95,13 @@
     ]
   },
   "next_action": {
-    "member_a": "Preserve 4090 freeze and v0.1. Complete corpus-v0.2 audit fixes with source-backed fixtures. Populate benchmark-v2 only from accessible independently sourced items; current independent retrieval-gold and sealed-eval counts are zero. Run untuned baseline only after source-backed DEV gold exists.",
+    "member_a": "Acquire missing primary sources for G02/C01/P02 and add byte-backed regression fixtures for all v0.2 corrections. Continue independent assessment-source intake. Multi-view metrics are implemented but no independent gold exists; do not tune or claim baseline.",
     "member_b": "On the target GPU run the two prepared verifications, prepare exact model snapshots, GPU smoke, freeze retrieval evidence and execute D1-D3. No new tests were run in Gate 2-Prep by user instruction.",
     "shared": "Use feat/member-a-corpus-v02-locator, based on 60ebf7e GPU freeze. No merge to main. B continues its own decoder work; do not infer decoder success from retrieval results."
   },
   "next_actions": [
     "Resolve an accessible official ICFES or CSJ assessment item source and record stable URLs, source hashes, item IDs and use terms in benchmarks/kingscode_ir_v2/source_manifest.jsonl",
-    "Complete corpus-v0.2 fixes for G01/G02/C01/P02/P01/D01 using source evidence, regression fixtures and tests; never modify corpus-v0.1",
+    "Acquire missing primary sources for G02/C01/P02 and add byte-backed parser fixtures/tests in corpus-v0.2 only; preserve v0.1.",
     "Assign source and duplicate families to DEV/VALIDATION/SEALED_EVAL before tuning; keep sealed material outside production retrieval",
     "After reviewer-verified RETRIEVAL_GOLD exists, run the current retrieval stack once without tuning and report required metrics and failure taxonomy",
     "Run python -m unittest discover -s tests -v, tools/verify_member_a_v02.py and tools/benchmark_v2.py check; independently verify hashes before pushing"
@@ -124,7 +124,9 @@
       "benchmark_v2_independent_source_gate_open_zero_independent_items",
       "corpus_v02_acquisition_partial_four_documents_provisional_one_blocked",
       "corpus_v02_audit_remediation_pending_G01_G02_C01_P02_P01_D01",
-      "corpus_v01_immutable"
+      "corpus_v01_immutable",
+      "query_view_evidence_metrics_implemented_no_empirical_baseline",
+      "v02_remediation_pending_source_bytes_for_G01_G02_C01_P02_P01_D01"
     ],
     "member_b": [
       "gate_1b_historically_verified_dummy_preserved",
