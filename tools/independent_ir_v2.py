@@ -16,6 +16,7 @@ from kingscode.common import ROOT, file_hash, read_json, read_jsonl, write_json
 
 BENCH = ROOT / "benchmarks/kc_col_ir_v0.1"
 MIN_GOLD = 10
+MIN_COMPLETE = 10
 COMPONENTS = ("C0", "C1", "C2", "C3")
 COVERAGE_STATES = {"COMPLETE", "PARTIAL", "MISSING", "AMBIGUOUS"}
 
@@ -39,49 +40,122 @@ def metric_population(gold_rows: list[dict]) -> dict:
 
 
 def validate_gold_record(gold: dict) -> None:
-    """Validate gold from its independent sources without consulting the corpus."""
+    """Validate external gold independently from its current corpus mapping."""
     if gold.get("review_status") != "ACCEPTED_RETRIEVAL_GOLD":
         raise ValueError("Gold record is not accepted retrieval gold")
-    if not gold.get("minimal_evidence_sets") or any(not s for s in gold["minimal_evidence_sets"]):
-        raise ValueError("Gold must contain nonempty alternative minimal evidence sets")
-    if not gold.get("evidence_sources") or any(not src.get("source_id") or not src.get("sha256") or
+    units = gold.get("external_evidence_units", [])
+    unit_ids = [unit.get("external_evidence_unit_id") for unit in units]
+    if not units or len(unit_ids) != len(set(unit_ids)) or any(not x for x in unit_ids):
+        raise ValueError("Gold must define unique external evidence units")
+    source_ids = {src.get("source_id") for src in gold.get("evidence_sources", [])}
+    if not source_ids or any(not src.get("source_id") or not src.get("sha256") or
             not src.get("source_url") for src in gold["evidence_sources"]):
-        raise ValueError("Gold evidence must be backed by independently sourced primary material")
+        raise ValueError("Gold evidence must be backed by independently sourced material")
+    if any(unit.get("source_id") not in source_ids or not unit.get("sha256") or
+           not unit.get("source_url") or not unit.get("page") for unit in units):
+        raise ValueError("External evidence unit lacks source identity or locator")
+    external_sets = gold.get("external_minimal_evidence_sets", [])
+    if not external_sets or any(not s or not set(s) <= set(unit_ids) for s in external_sets):
+        raise ValueError("Gold must contain valid external minimal evidence sets")
     if gold.get("temporal_review_status") not in {"CURRENTLY_SUPPORTABLE", "HISTORICAL_ONLY", "NOT_APPLICABLE"}:
         raise ValueError("Gold temporal/legal applicability is unresolved")
-    if gold.get("corpus_coverage") not in COVERAGE_STATES:
+    state = gold.get("corpus_coverage")
+    if state not in COVERAGE_STATES:
         raise ValueError("Accepted gold has invalid corpus coverage")
+    corpus_sets = gold.get("corpus_minimal_evidence_sets", [])
+    mapping = gold.get("evidence_mapping")
+    if not isinstance(mapping, dict) or set(mapping) != set(unit_ids):
+        raise ValueError("External-to-corpus evidence mapping must cover every external unit")
+    corpus_ids = {pid for passages in mapping.values() for pid in passages}
+    if any(not isinstance(ids, list) for ids in mapping.values()):
+        raise ValueError("Corpus evidence mapping values must be passage-ID lists")
+    if state == "COMPLETE" and (not corpus_sets or any(not s for s in corpus_sets) or
+                                 any(not set(s) <= corpus_ids for s in corpus_sets)):
+        raise ValueError("COMPLETE coverage requires corpus-only minimal evidence sets")
+    if state == "MISSING" and corpus_sets:
+        raise ValueError("MISSING coverage cannot claim corpus passage IDs")
+    if state == "MISSING" and gold.get("gold_document_ids"):
+        raise ValueError("MISSING coverage cannot claim corpus document IDs")
+
+
+def select_evaluation_subset(candidates: list[dict], gold_rows: list[dict]) -> tuple[list[dict], dict[str, dict]]:
+    """Select only accepted gold in the frozen candidate queue; preserve all other candidates."""
+    candidate_ids = [row.get("question_id") for row in candidates]
+    gold_ids = [row.get("question_id") for row in gold_rows]
+    if any(not qid for qid in candidate_ids + gold_ids):
+        raise ValueError("Question IDs must be present")
+    if len(candidate_ids) != len(set(candidate_ids)):
+        raise ValueError("Duplicate frozen candidate question IDs")
+    if len(gold_ids) != len(set(gold_ids)):
+        raise ValueError("Duplicate gold IDs")
+    if not set(gold_ids) <= set(candidate_ids):
+        raise ValueError("Gold ID is not a frozen candidate")
+    gold = {row["question_id"]: row for row in gold_rows}
+    for record in gold.values():
+        validate_gold_record(record)
+    if len(gold) < MIN_GOLD:
+        raise PermissionError(f"GOLD_GATE_LOCKED: {len(gold)} accepted gold; minimum is {MIN_GOLD}")
+    selected = [row for row in candidates if row["question_id"] in gold]
+    return selected, gold
+
+
+def hydrate_candidate_questions(candidates: list[dict], pool_rows: list[dict]) -> list[dict]:
+    """Resolve exact wording from the ignored local official-source pool by frozen item number."""
+    pool = {str(row.get("source_item_number")): row for row in pool_rows}
+    if len(pool) != len(pool_rows):
+        raise ValueError("Duplicate item numbers in ignored official question pool")
+    hydrated = []
+    for candidate in candidates:
+        row = dict(candidate)
+        if isinstance(row.get("question"), str) and row["question"].strip():
+            hydrated.append(row)
+            continue
+        item = pool.get(str(row.get("source_item_number")))
+        if not item or not isinstance(item.get("question_text"), str):
+            raise ValueError(f"Exact source wording unavailable for {row.get('question_id')}")
+        digest = hashlib.sha256(item["question_text"].encode("utf-8")).hexdigest()
+        if digest != row.get("question_text_sha256"):
+            raise ValueError(f"Ignored pool wording hash mismatch for {row.get('question_id')}")
+        row["question"] = item["question_text"]
+        hydrated.append(row)
+    return hydrated
 
 
 def preflight() -> tuple[dict, list[dict], dict[str, dict]]:
     manifest = read_json(BENCH / "manifest.json")
-    questions = read_jsonl(BENCH / "questions/dev.jsonl")
+    candidates = read_jsonl(BENCH / "questions/dev.jsonl")
     gold_rows = read_jsonl(BENCH / "gold/dev.jsonl")
     if manifest.get("benchmark") != "KC-COL-IR-v0.1":
         raise ValueError("Unexpected benchmark identity")
-    if manifest.get("cuda_ready") is not True or manifest.get("baseline_gate", {}).get("unlocked") is not True:
-        raise PermissionError("BASELINE_GATE_LOCKED: CUDA_READY requires >=10 accepted independent DEV retrieval-gold items")
-    if len(gold_rows) < MIN_GOLD or manifest["counts"].get("accepted_retrieval_gold", 0) < MIN_GOLD:
-        raise PermissionError("BASELINE_GATE_LOCKED: fewer than 10 accepted DEV retrieval-gold items")
     if manifest.get("question_manifest_sha256") != file_hash(BENCH / "questions/dev.jsonl"):
         raise ValueError("DEV questions hash mismatch")
     if manifest.get("source_manifest_sha256") != file_hash(BENCH / "source_manifest.jsonl"):
         raise ValueError("Source manifest hash mismatch")
-    if len(questions) != len(gold_rows):
-        raise ValueError("Question/gold row count mismatch")
-    gold = {row["question_id"]: row for row in gold_rows}
-    if len(gold) != len(gold_rows) or set(gold) != {row["question_id"] for row in questions}:
-        raise ValueError("Question/gold ID mismatch or duplicate")
-    if any(q.get("review_status") != "ACCEPTED_RETRIEVAL_GOLD" or q.get("temporal_review_status") not in
-           {"CURRENTLY_SUPPORTABLE", "HISTORICAL_ONLY", "NOT_APPLICABLE"} for q in questions):
-        raise ValueError("DEV contains unreviewed or temporally uncertain items")
+    if manifest["counts"].get("accepted_retrieval_gold", 0) != len(gold_rows):
+        raise ValueError("Accepted-gold count mismatch")
     if any(q.get("split") == "VALIDATION" or q.get("institution_family") == "universidad_libre_preparatorios"
-           for q in questions):
+           for q in candidates):
         raise ValueError("Validation-family question leakage")
-    for record in gold.values():
-        validate_gold_record(record)
-    return manifest, questions, gold
-
+    evaluation_questions, gold = select_evaluation_subset(candidates, gold_rows)
+    sample = read_json(BENCH / "sampling_manifest.json")
+    pool_path = ROOT / "tmp/kc_col_ir_v0.1/pool/jep_cuj_2026_full_pool.jsonl"
+    if not pool_path.exists() or file_hash(pool_path) != sample.get("pool_artifact_sha256"):
+        raise ValueError("Frozen ignored official question pool missing or hash mismatch")
+    evaluation_questions = hydrate_candidate_questions(evaluation_questions, read_jsonl(pool_path))
+    population = metric_population(list(gold.values()))
+    gold_gate = len(gold) >= MIN_GOLD
+    ranking_gate = population["ranking_n"] >= MIN_COMPLETE
+    if not gold_gate:
+        raise PermissionError(f"GOLD_GATE_LOCKED: {len(gold)} accepted gold; minimum is {MIN_GOLD}")
+    if not ranking_gate:
+        raise PermissionError(f"RANKING_GATE_LOCKED: {population['ranking_n']} COMPLETE corpus gold; minimum is {MIN_COMPLETE}")
+    if manifest.get("gold_gate", {}).get("unlocked") is not True:
+        raise PermissionError("GOLD_GATE_LOCKED: manifest has not recorded independent gold review")
+    if manifest.get("ranking_gate", {}).get("unlocked") is not True:
+        raise PermissionError("RANKING_GATE_LOCKED: manifest has not recorded corpus-complete gold review")
+    if manifest.get("cuda_ready") is not True or manifest.get("baseline_gate", {}).get("unlocked") is not True:
+        raise PermissionError("CUDA_READY=false: ranking/configuration comparison remains locked")
+    return manifest, evaluation_questions, gold
 
 def _dcg(ids: list[str], gold: set[str]) -> float:
     return sum((1.0 if item in gold else 0.0) / math.log2(rank + 2)
@@ -93,7 +167,7 @@ def score(ranked: list[dict], gold: dict, corpus_docs: set[str]) -> dict:
         raise ValueError("Pure ranking metrics require COMPLETE frozen-corpus coverage")
     ids = [p["passage_id"] for p in ranked]
     docs = [p.get("canonical_document_id") or p["doc_id"] for p in ranked]
-    alternatives = gold["minimal_evidence_sets"]
+    alternatives = gold["corpus_minimal_evidence_sets"]
     union = set().union(*(set(s) for s in alternatives))
     found8 = set(ids[:8]); found10 = set(ids[:10])
     complete = any(set(s) <= found8 for s in alternatives)
@@ -142,7 +216,8 @@ def run(component: str, config_path: Path) -> dict:
     corpus_docs = {p.get("canonical_document_id") or p["doc_id"] for p in passages}
     records, latencies = [], []
     out_k = max(cfg["metrics_k"], cfg["evidence_k"])
-    for q in questions:
+    ranking_questions = [q for q in questions if gold[q["question_id"]]["corpus_coverage"] == "COMPLETE"]
+    for q in ranking_questions:
         question = q.get("question")
         if not isinstance(question, str) or not question.strip():
             raise ValueError(f"Question text unavailable for {q['question_id']}; exact wording review incomplete")
@@ -167,7 +242,7 @@ def run(component: str, config_path: Path) -> dict:
             failure = "success"
         elif not (set(g["gold_document_ids"]) & recovered_docs):
             failure = "wrong_document"
-        elif not any(set(s) & set(p["passage_id"] for p in results[:10]) for s in g["minimal_evidence_sets"]):
+        elif not any(set(s) & set(p["passage_id"] for p in results[:10]) for s in g["corpus_minimal_evidence_sets"]):
             failure = "correct_document_wrong_passage"
         else:
             failure = "ranking_failure"
@@ -210,9 +285,16 @@ if __name__ == "__main__":
     parser.add_argument("--config", type=Path, default=BENCH / "runner.json")
     args = parser.parse_args()
     if args.command == "check":
+        manifest = read_json(BENCH / "manifest.json")
+        rows = read_jsonl(BENCH / "gold/dev.jsonl")
+        population = metric_population(rows)
         print(json.dumps({"status": "GATED", "benchmark": "KC-COL-IR-v0.1",
-                          "cuda_ready": read_json(BENCH / "manifest.json")["cuda_ready"],
-                          "minimum_accepted_gold": MIN_GOLD}, indent=2))
+                          "cuda_ready": manifest["cuda_ready"],
+                          "gold_gate": {"accepted": len(rows), "minimum": MIN_GOLD, "unlocked": len(rows) >= MIN_GOLD},
+                          "ranking_gate": {"ranking_n": population["ranking_n"], "minimum_complete": MIN_COMPLETE,
+                                           "unlocked": population["ranking_n"] >= MIN_COMPLETE},
+                          "candidate_count": len(read_jsonl(BENCH / "questions/dev.jsonl")),
+                          "validated_subset_only": True}, indent=2))
     elif not args.component:
         parser.error("run requires --component C0|C1|C2|C3")
     else:

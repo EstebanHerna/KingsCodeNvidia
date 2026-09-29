@@ -95,12 +95,12 @@
     ]
   },
   "next_action": {
-    "member_a": "Continue exact primary-source acquisition and evidence/temporal review for the frozen JEP 2025 batch; keep gold independent of corpus presence and report coverage separately. No retrieval or CUDA until >=10 accepted gold packets and gate review.",
+    "member_a": "Complete source review on feat/member-a-corpus-v02-locator; keep original CUJ item selection frozen; obtain remaining primary evidence to reach >=10 gold; ranking requires >=10 corpus-COMPLETE gold; do not run retrieval or CUDA while either gate is locked.",
     "member_b": "On the target GPU run the two prepared verifications, prepare exact model snapshots, GPU smoke, freeze retrieval evidence and execute D1-D3. No new tests were run in Gate 2-Prep by user instruction.",
     "shared": "Use feat/member-a-corpus-v02-locator, based on 60ebf7e GPU freeze. No merge to main. B continues its own decoder work; do not infer decoder success from retrieval results."
   },
   "next_actions": [
-    "KC-COL-IR-v0.1: JEP 2025 third-edition deterministic 30/62 DEV candidate batch reviewed; acquire and independently verify exact SRVR-012, relevant voluntary-version material, Auto SRVR-ADHC-023/2024 and item-specific primary evidence. Do not run retrieval until >=10 accepted independent gold packets.",
+    "KC-COL-IR-v0.1: current official CUJ 2026 fourth-edition 30-item frozen batch corrected from prior 2025 misclassification; 9 accepted retrieval gold, 7 pending, 14 rejected; obtain source evidence to resolve pending candidates. Do not run retrieval until >=10 independently accepted gold AND >=10 corpus-COMPLETE gold.",
     "The historical ICFES intake is superseded for benchmark split purposes: retain its provenance but keep ICFES SEALED_FUTURE in KC-COL-IR-v0.1.",
     "Acquire seven cited target/modifier primary instruments and review G01 replacements; keep zero semantic edges active until verified.",
     "After >=10 accepted independent RETRIEVAL_GOLD, run one frozen untuned baseline and failure taxonomy.",
@@ -471,54 +471,62 @@
       "independent_v2_baseline": "NOT RUN: zero accepted independent retrieval-gold items; minimum gate 10."
     },
     "kc_col_ir_v01": {
-      "status": "candidate_review_complete_primary_sources_unresolved_gold0",
+      "status": "jep_cuj_2026_source_corrected_9_gold_0_complete_ranking_locked",
       "source_manifest": "benchmarks/kc_col_ir_v0.1/source_manifest.jsonl",
       "source_families": {
-        "DEV_CANDIDATE": "JEP Concurso Universitario third edition (2025); 30 sampled from 62 official question/response items",
-        "DISCOVERY_ONLY": "JEP fourth edition 2026 announced; no 2026 questions verified",
-        "VALIDATION_CANDIDATE": "Javeriana Moot Seguros 2026; one official answers PDF hash-verified only, not parsed",
-        "REPRODUCIBILITY_ONLY": "Externado preparatorios 2011; original 30 sample retained",
-        "SEALED_FUTURE": "Externado/Asobancaria 2025 pending source identity; ICFES/SIRNA"
+        "DEV_CANDIDATE": "JEP Concurso Universitario 2026 fourth edition SeRVR; 30 original frozen item numbers carried forward from prior mislabeled batch",
+        "PROVENANCE_ONLY": "Official versions index identifies CUJ 2025 third edition as SDSJ; old 2025 ZIP is not evidence for current gold",
+        "VALIDATION_CANDIDATE": "Javeriana Moot Seguros 2026; one official answers PDF hash-verified only, not parsed"
       },
       "externado_documents_acquired": 2,
       "externado_numbered_candidates": 270,
       "dev_hash_sample": 30,
       "reviewed": 30,
-      "accepted_retrieval_gold": 0,
-      "needs_human_review": 30,
-      "rejected": 0,
-      "temporal_uncertain": 30,
+      "accepted_retrieval_gold": 9,
+      "needs_human_review": 7,
+      "rejected": 14,
+      "temporal_uncertain": 7,
       "universidad_libre_question_candidates": 0,
-      "baseline_gate": "locked_until_10_accepted_independent_dev_gold",
+      "baseline_gate": "locked_until_10_accepted_and_10_corpus_complete_dev_gold",
       "cuda_ready": false,
-      "runner": "tools/independent_ir_v2.py; implemented but intentionally gated",
+      "runner": "tools/independent_ir_v2.py; subset selection fixed; no retrieval run",
       "validation_performance_inspected": false,
       "blocking_issue": "Exact source identity remains unresolved: the acquired 2022 Case 01 resolution and official 2025 competition expediente do not yet establish exact correspondence to the cited SRVR-012, voluntary-version and Auto 023 evidence needed for candidate items. Gold/dev.jsonl remains empty; no retrieval used.",
       "validation_sources_status": "Javeriana official Q&A PDF #1 hash checked only, not parsed; another candidate URL returned HTML and is not counted.",
-      "test_count": 231,
+      "test_count": 240,
       "benchmark_v2_check": "PASS: 10 hashes; holdout not parsed; selectable=false",
       "snapshot_verification": "PASS: official hashes, v0.1 snapshot, v0.2 hashes, G01/D01 regression",
-      "jep_2025_source_questions": 62,
+      "jep_2025_source_questions": 0,
       "externado_2011_reproducibility_sample": 30,
       "javeriana_validation_documents_hash_verified": 1,
       "javeriana_validation_parsed": false,
       "disposition_counts": {
-        "RETRIEVAL_GOLD_CANDIDATE": 13,
-        "EXPLICIT_REFERENCE_LOW_DIFFICULTY": 5,
-        "FACTUAL_CLARIFICATION_ONLY": 3,
-        "LEGAL_STRATEGY_NOT_ANSWERED": 6,
-        "ANSWER_NOT_SUFFICIENT_FOR_GOLD": 3
+        "ACCEPTED_RETRIEVAL_GOLD": 9,
+        "PENDING_PRIMARY_EVIDENCE": 7,
+        "REJECTED_INSUFFICIENT_AUTHORITATIVE_ANSWER": 8,
+        "REJECTED_NOT_RETRIEVAL": 6
       },
       "corpus_coverage_accepted_gold": {
         "COMPLETE": 0,
         "PARTIAL": 0,
-        "MISSING": 0,
-        "AMBIGUOUS": 0,
-        "status": "N/A; no accepted gold"
+        "MISSING": 9,
+        "AMBIGUOUS": 0
       },
-      "minimal_evidence_packets_created": 0,
+      "minimal_evidence_packets_created": 9,
       "ranking_eligible_gold": 0,
-      "next_action_kc_col_ir_v01": "Acquire exact official SRVR-012 Resolution of Conclusions, relevant voluntary-version material and Auto SRVR-ADHC-023/2024; verify each source and construct item-level independent evidence packets before any corpus coverage mapping."
+      "next_action_kc_col_ir_v01": "Resolve at least one additional pending item from exact official primary evidence without retrieval outcomes; acquire standalone Auto 023 if required; then map any eligible items against frozen corpus passages.",
+      "pending_primary_evidence": 7,
+      "rejected_not_retrieval": 6,
+      "rejected_insufficient_authoritative_answer": 8,
+      "ranking_n": 0,
+      "gold_gate": "locked_until_10_accepted_independent_dev_gold",
+      "ranking_gate": "locked_until_10_accepted_gold_are_corpus_complete",
+      "source_provenance_correction": "JEP CUJ 2026; original 30 item numbers, original deterministic selection SHA retained; no resampling",
+      "primary_packet": "2026 official ZIP 157859322 bytes, SHA-256 3f9dc1765e8ea18588c13a48e1785b506f6a0c06eef3743057e2d34097d9b101; 18 members hash recorded; CRC PASS",
+      "standalone_auto_023": "Not present as a separate ZIP member; resolution references it and reports partial scope; must not claim standalone acquisition",
+      "corpus_coverage_method": "Direct source-manifest/document identity and full-text scan over 26,558 corpus-v0.1 passages; no retrieval outputs",
+      "remaining_blockers": "Need one more independently defensible gold without lowering standard; 7 candidate items remain pending primary-evidence resolution; all 9 accepted gold lack corpus representation.",
+      "jep_2026_source_questions": 62
     },
     "next_action_kc_col_ir_v01": "Acquire exact official SRVR-012 Resolution of Conclusions, relevant voluntary-version material and Auto SRVR-ADHC-023/2024; verify item-specific primary evidence before freezing any gold packets."
   },
