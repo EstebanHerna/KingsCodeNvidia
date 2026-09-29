@@ -100,8 +100,8 @@
     "shared": "Use feat/member-a-corpus-v02-locator, based on 60ebf7e GPU freeze. No merge to main. B continues its own decoder work; do not infer decoder success from retrieval results."
   },
   "next_actions": [
-    "For one of the three question-booklet source IDs in benchmarks/kingscode_ir_v2/source_manifest.jsonl, place bytes under ignored tmp/official-source-intake and run tools/benchmark_source_intake.py --source-id ID --file PATH --sha256 HASH.",
-    "Review use terms after intake; extract exact official questions only locally. Gestión del Conflicto source family is DEV; Comunicación Jurídica is VALIDATION. Current extracted/admitted count: 0.",
+    "KC-COL-IR-v0.1: QA the 30 Externado DEV hash-sampled items against source PDF and primary Colombian law; do not run retrieval until >=10 accepted gold. Universidad Libre validation files remain unparsed/uninspected.",
+    "The historical ICFES intake is superseded for benchmark split purposes: retain its provenance but keep ICFES SEALED_FUTURE in KC-COL-IR-v0.1.",
     "Acquire seven cited target/modifier primary instruments and review G01 replacements; keep zero semantic edges active until verified.",
     "After >=10 accepted independent RETRIEVAL_GOLD, run one frozen untuned baseline and failure taxonomy.",
     "Run python -m unittest discover -s tests -v, python tools/benchmark_v2.py check, and python tools/verify_member_a_v02.py before pushing this branch."
@@ -424,13 +424,14 @@
       "legacy_pilot": "12-case corpus-derived technical smoke only; 6 DEV exposures recorded; not selectable",
       "assessment_sources_discovered": 3,
       "source_exposure_logged": true,
-      "assessment_sources_reviewed": 3,
+      "assessment_sources_reviewed": 4,
       "source_disposition": {
-        "ICFES-GESTION-CONFLICTO-2026": "RUNTIME_ACQUISITION_BLOCKED: official index confirms the original question booklet; its exact URL returned HTTP 404. The current May resource is only an orientation guide, also HTTP 404; no local bytes/hash/items; DEV_CANDIDATE.",
-        "ICFES-COMUNICACION-JURIDICA-2021": "RUNTIME_ACQUISITION_BLOCKED: official index confirms publication; exact URL and current module candidate HTTP 404; no local bytes/hash/items; VALIDATION_CANDIDATE, prior indexed text exposure stays validation-only.",
-        "ICFES-COMUNICACION-JURIDICA-2026": "RUNTIME_ACQUISITION_BLOCKED: current official item resource indexed; direct request HTTP 404; separate VALIDATION family.",
+        "ICFES-GESTION-CONFLICTO-2026": "RUNTIME_ACQUISITION_BLOCKED: official index confirms the original question booklet; its exact URL returned HTTP 404. The current May resource is only an orientation guide, also HTTP 404; no local bytes/hash/items; DEV_CANDIDATE. Current KC-COL-IR-v0.1 cross-institution policy: SEALED_FUTURE; no DEV/validation tuning.",
+        "ICFES-COMUNICACION-JURIDICA-2021": "RUNTIME_ACQUISITION_BLOCKED: official index confirms publication; exact URL and current module candidate HTTP 404; no local bytes/hash/items; VALIDATION_CANDIDATE, prior indexed text exposure stays validation-only. Current KC-COL-IR-v0.1 cross-institution policy: SEALED_FUTURE; no DEV/validation tuning.",
+        "ICFES-COMUNICACION-JURIDICA-2026": "RUNTIME_ACQUISITION_BLOCKED: current official item resource indexed; direct request HTTP 404; separate VALIDATION family. Current KC-COL-IR-v0.1 cross-institution policy: SEALED_FUTURE; no DEV/validation tuning.",
         "CSJ_SIRNA_guide_2026": "Official 54-page guide bytes/hash were previously verified; 3 public examples not extracted due stated reproduction/transformation restriction; full bank unverified.",
-        "ICFES-GESTION-CONFLICTO-2026-MAY_GUIDE": "Official orientation guide only; not an assessment-item replacement and excluded from benchmark intake; PDF HTTP 404."
+        "ICFES-GESTION-CONFLICTO-2026-MAY_GUIDE": "Official orientation guide only; not an assessment-item replacement and excluded from benchmark intake; PDF HTTP 404. Current KC-COL-IR-v0.1 cross-institution policy: SEALED_FUTURE; no DEV/validation tuning.",
+        "ICFES-GESTION-CONFLICTO-2018-EXTERNADO": "Legacy intake candidate from Externado-hosted mirror; source bytes unavailable; current cross-institution policy assigns ICFES SEALED_FUTURE, not DEV or validation. Current KC-COL-IR-v0.1 cross-institution policy: SEALED_FUTURE; no DEV/validation tuning."
       },
       "runtime_blocked_official_sources": 3,
       "latest_official_acquisition": "Three official question-booklet PDFs (Gestión 2026, Comunicación 2021 and Comunicación 2026) were confirmed by official ICFES indexing but returned HTTP 404 in this runtime; a separate May 2026 orientation guide is guidance-only. No bytes or questions acquired."
@@ -468,7 +469,35 @@
       "snapshot_verification": "PASS: python tools/verify_member_a_v02.py; 19 official files, 326 v0.1 raw/clean files, 18 v0.2 hashes; no GPU or holdout run.",
       "parser_fixtures": "PASS: six focused corpus-v0.2 tests, including D01 identity regression.",
       "independent_v2_baseline": "NOT RUN: zero accepted independent retrieval-gold items; minimum gate 10."
-    }
+    },
+    "kc_col_ir_v01": {
+      "status": "acquisition_partial_annotation_pending",
+      "source_manifest": "benchmarks/kc_col_ir_v0.1/source_manifest.jsonl",
+      "source_families": {
+        "DEV": "Universidad Externado de Colombia",
+        "VALIDATION_CANDIDATE": "Universidad Libre (raw downloads unresolved; no parsing/performance inspection)",
+        "SEALED_FUTURE": "ICFES/SIRNA"
+      },
+      "externado_documents_acquired": 2,
+      "externado_numbered_candidates": 270,
+      "dev_hash_sample": 30,
+      "reviewed": 0,
+      "accepted_retrieval_gold": 0,
+      "needs_human_review": 30,
+      "rejected": 0,
+      "temporal_uncertain": 30,
+      "universidad_libre_question_candidates": 0,
+      "baseline_gate": "locked_until_10_accepted_independent_dev_gold",
+      "cuda_ready": false,
+      "runner": "tools/independent_ir_v2.py; implemented but intentionally gated",
+      "validation_performance_inspected": false,
+      "blocking_issue": "Mechanical extraction from 2011 PDF has broken accent glyphs; exact transcription/source-item review and primary-law evidence review remain.",
+      "validation_sources_status": "Four historical Universidad Libre URLs returned generic HTML, not PDF; signatures only inspected, no parsing or retrieval performance review.",
+      "test_count": 231,
+      "benchmark_v2_check": "PASS: 10 hashes; holdout not parsed; selectable=false",
+      "snapshot_verification": "PASS: official hashes, v0.1 snapshot, v0.2 hashes, G01/D01 regression"
+    },
+    "next_action_kc_col_ir_v01": "Review local ignored Externado source bytes against 30 deterministic sample IDs, verify exact wording/options and map primary law/temporal status; accept >=10 retrieval-gold packets before baseline."
   },
   "runtime_blocked_official_sources": 3,
   "member_a_corpus_quality_audit_v07": {

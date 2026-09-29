@@ -22,6 +22,17 @@ class BenchmarkSourceIntakeTests(unittest.TestCase):
         }, {
             "source_id": "ICFES-COMUNICACION-JURIDICA-2026",
             "official_url": "https://www.icfes.gov.co/wp-content/uploads/current.pdf",
+        }, {
+            "source_id": "ICFES-GESTION-CONFLICTO-2018-EXTERNADO",
+            "issuer": "ICFES",
+            "canonical_year": 2018,
+            "canonical_source_status": "OFFICIAL_ICFES_LISTING_VERIFIED",
+            "official_listing_url": "https://www.icfes.gov.co/publicaciones-icfes/guias-de-orientacion/2018-2/",
+            "retrieval_host": "Universidad Externado de Colombia",
+            "retrieval_allowed_hostname": "www.uexternado.edu.co",
+            "retrieval_url": "https://www.uexternado.edu.co/wp-content/uploads/2021/08/Cuadernillo-Gestion-del-conflicto-Saber-Pro-2021.pdf",
+            "retrieval_status": "INSTITUTIONAL_MIRROR_BYTES_BLOCKED_HTTP_403",
+            "identity_verification": "PENDING_LOCAL_DOCUMENT_METADATA_AND_BYTES",
         }]
         self.reader = patch("tools.benchmark_source_intake.read_jsonl", return_value=self.source_rows)
         self.reader.start()
@@ -36,6 +47,21 @@ class BenchmarkSourceIntakeTests(unittest.TestCase):
         self.assertEqual(result["sha256"], self.sha256)
         self.assertFalse(result["question_text_emitted"])
         self.assertIn("authenticity", result["hash_scope"])
+
+    def test_mirror_source_preserves_publisher_year_and_retrieval_host_separately(self):
+        result = verify_pdf("ICFES-GESTION-CONFLICTO-2018-EXTERNADO", self.pdf, self.sha256, root=self.root)
+        self.assertEqual(result["issuer"], "ICFES")
+        self.assertEqual(result["canonical_year"], 2018)
+        self.assertEqual(result["canonical_source_status"], "OFFICIAL_ICFES_LISTING_VERIFIED")
+        self.assertEqual(result["retrieval_host"], "Universidad Externado de Colombia")
+        self.assertIn("uexternado.edu.co", result["retrieval_url"])
+        self.assertEqual(result["retrieval_status"], "INSTITUTIONAL_MIRROR_BYTES_BLOCKED_HTTP_403")
+        self.assertEqual(result["identity_verification"], "PENDING_LOCAL_DOCUMENT_METADATA_AND_BYTES")
+
+    def test_mirror_source_rejects_unlisted_retrieval_host(self):
+        self.source_rows[2]["retrieval_url"] = "https://mirror.example/booklet.pdf"
+        with self.assertRaisesRegex(ValueError, "allowlist"):
+            verify_pdf("ICFES-GESTION-CONFLICTO-2018-EXTERNADO", self.pdf, self.sha256, root=self.root)
 
     def test_rejects_mismatched_hash(self):
         with self.assertRaisesRegex(ValueError, "SHA-256 mismatch"):

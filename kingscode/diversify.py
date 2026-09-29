@@ -58,20 +58,27 @@ def collapse_duplicates(passages: list[dict], level: str = "content") -> list[di
     The kept passage gains a ``duplicate_group`` field listing the passage_ids and
     source_urls of the collapsed mirrors, so no provenance is lost.
     """
-    seen: dict[str, dict] = {}
-    order: list[str] = []
+    seen: dict[tuple[str, str], dict] = {}
+    order: list[tuple[str, str]] = []
     for p in passages:
-        key = dedup_key(p, level)
+        content_key = dedup_key(p, level)
+        # Equal boilerplate is useful for audit grouping, but it does not make
+        # two different laws or decisions mirrors. Only collapse content matches
+        # inside the same canonical legal work; this preserves D01 identities.
+        identity_key = canonical_document_id(p) if level == "content" else ""
+        key = (content_key, identity_key)
         if key not in seen:
             kept = dict(p)
-            kept["duplicate_group"] = {"level": level, "key": key,
+            kept["duplicate_group"] = {"level": level, "key": content_key,
                                        "members": [{"passage_id": p.get("passage_id"),
-                                                    "source_url": p.get("source_url")}]}
+                                                    "source_url": p.get("source_url"),
+                                                    "canonical_document_id": canonical_document_id(p)}]}
             seen[key] = kept
             order.append(key)
         else:
             seen[key]["duplicate_group"]["members"].append(
-                {"passage_id": p.get("passage_id"), "source_url": p.get("source_url")})
+                {"passage_id": p.get("passage_id"), "source_url": p.get("source_url"),
+                 "canonical_document_id": canonical_document_id(p)})
     return [seen[k] for k in order]
 
 

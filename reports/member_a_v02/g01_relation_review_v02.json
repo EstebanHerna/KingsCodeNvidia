@@ -7,7 +7,7 @@
   "accepted_semantic_relations": 0,
   "active_semantic_edges": 0,
   "v01_modified": false,
-  "review_method": "Exact statements are retained in official primary-source bytes and source acquisition metadata. The candidate points to the containing passage instead of the distinct provision named by the text. Cited instruments remain unaquired for positive verification.",
+  "review_method": "Exact statements retained in hash-verified official containing-source bytes; the named grammatical target is distinguished from the containing passage. Rejected target associations are complete. Positive legal-effect claims remain unresolved pending the cited instrument bytes. Candidate wrong-container targets are rejected; each replacement-effect claim remains unresolved pending the cited primary instrument bytes.",
   "relations": [
     {
       "review_id": "G01-01",
@@ -156,5 +156,9 @@
       "replacement_relation_active": false,
       "rationale": "The official containing text identifies a different legal provision from the current candidate target. Rejecting this wrong container target does not certify legal effect or replacement edge; acquire and review the cited instruments before acceptance."
     }
-  ]
+  ],
+  "status": "SOURCE_BACKED_CANDIDATE_REVIEW_COMPLETE_REPLACEMENT_EFFECTS_UNRESOLVED",
+  "candidate_review_complete": true,
+  "remaining_uncertainty": "The exact grammatical subjects in seven official corpus passages were reviewed and all seven wrong containing-passage targets rejected. Whether each separate cited instrument legally modified/repealed the subject provision remains unverified until those instrument sources are independently acquired and reviewed; no replacement semantic edge is active.",
+  "review_status": "CANDIDATE_TARGET_REVIEW_COMPLETE_LEGAL_EFFECT_REVIEW_OPEN"
 }
