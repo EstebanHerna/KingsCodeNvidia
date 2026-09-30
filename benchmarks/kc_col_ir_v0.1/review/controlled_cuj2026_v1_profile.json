@@ -1,0 +1,30 @@
+{
+  "profile_id": "KC-COL-IR-CUJ2026-CONTROLLED-v1",
+  "purpose": "Controlled retrieval ranking corpus, separate from competitive corpus-v0.1",
+  "source_boundary": "All eligible textual PDF members of the complete official CUJ 2026 expediente ZIP; no gold-driven document selection",
+  "source_archive_sha256": "3f9dc1765e8ea18588c13a48e1785b506f6a0c06eef3743057e2d34097d9b101",
+  "build_sha256": "9569be4855bc9223eb346280de21d14b080da8e9b73aa9353175d59345492056",
+  "passages_sha256": "c942cdfe6ec7f0c88ea0ebe4977540a99b93d98d3404b2972f9609b4499b3a7c",
+  "passages_hash_semantics": "SHA-256 over canonical UTF-8 JSONL: sort_keys=true, ensure_ascii=false, compact row JSON, LF after every passage; includes provenance fields including member_index.",
+  "previous_in_memory_extraction_sha256": "019dee8a805e87fbacfce45cd448f4b538b921d6d7c5aa7ff3a82a5472a894ef",
+  "previous_hash_semantics": "Same page text, IDs and metadata serialized as canonical UTF-8 JSONL before explicit member_index was added to each passage record.",
+  "document_count": 6,
+  "passage_count": 190,
+  "page_count": 191,
+  "parser": "pypdf-6.10.0-page-extract-text",
+  "local_corpus_root": "ignored:tmp/kc_col_ir_v0.1/controlled_cuj2026_v1",
+  "materialized": true,
+  "build_status": "MATERIALIZED_VERIFIED",
+  "controlled_corpus_fingerprint": "9569be4855bc9223eb346280de21d14b080da8e9b73aa9353175d59345492056",
+  "controlled_manifest_sha256": "5bcb56f772c6f502d79c41cfef684e61e82b7cd13c7c3c442e35c73730974d3f",
+  "bm25_index_sha256": "277184f3a954de79746589b1e28c932cd2d557bfc2a3e52fe9ab130d7e406a87",
+  "index_files": {
+    "passages.jsonl": "c942cdfe6ec7f0c88ea0ebe4977540a99b93d98d3404b2972f9609b4499b3a7c",
+    "index/bm25.json": "277184f3a954de79746589b1e28c932cd2d557bfc2a3e52fe9ab130d7e406a87",
+    "graph/nodes.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "graph/edges.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "audio_policy": "Audio members inventoried but excluded from text passages; no ASR/generative transcription.",
+  "redistribution": "Derived page text remains ignored/local pending rights review.",
+  "retrieval_executed": false
+}
