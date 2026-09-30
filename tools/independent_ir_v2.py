@@ -13,18 +13,26 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from kingscode.common import ROOT, file_hash, read_json, read_jsonl, write_json
+from tools.verify_controlled_cuj2026 import validate_mappings
 
 BENCH = ROOT / "benchmarks/kc_col_ir_v0.1"
 MIN_GOLD = 10
+MIN_COMPLETE = 10
 COMPONENTS = ("C0", "C1", "C2", "C3")
 COVERAGE_STATES = {"COMPLETE", "PARTIAL", "MISSING", "AMBIGUOUS"}
 
 
-def metric_population(gold_rows: list[dict]) -> dict:
-    """Return coverage denominators and IDs eligible for pure ranking metrics."""
+def metric_population(gold_rows: list[dict], profile: str = "competitive_corpus_v01",
+                      controlled_rows: list[dict] | None = None) -> dict:
+    """Return coverage denominators and profile-specific ranking IDs."""
+    if profile not in {"competitive_corpus_v01", "controlled_cuj2026_v1"}:
+        raise ValueError(f"Unknown corpus profile: {profile}")
+    controlled = {r["question_id"]: r for r in (controlled_rows or [])}
     by_state = {state: [] for state in COVERAGE_STATES}
     for row in gold_rows:
-        state = row.get("corpus_coverage")
+        state = (row.get("competitive_corpus_coverage", row.get("corpus_coverage"))
+                 if profile == "competitive_corpus_v01" else
+                 controlled.get(row["question_id"], {}).get("controlled_corpus_coverage"))
         if state not in COVERAGE_STATES:
             raise ValueError(f"Accepted gold has invalid corpus_coverage: {state!r}")
         by_state[state].append(row["question_id"])
@@ -35,53 +43,158 @@ def metric_population(gold_rows: list[dict]) -> dict:
         "ranking_n": len(by_state["COMPLETE"]),
         "ranking_question_ids": sorted(by_state["COMPLETE"]),
         "corpus_missing_rate": len(by_state["MISSING"]) / total if total else None,
+        "profile_id": profile,
     }
 
 
 def validate_gold_record(gold: dict) -> None:
-    """Validate gold from its independent sources without consulting the corpus."""
+    """Validate external gold independently from its current corpus mapping."""
     if gold.get("review_status") != "ACCEPTED_RETRIEVAL_GOLD":
         raise ValueError("Gold record is not accepted retrieval gold")
-    if not gold.get("minimal_evidence_sets") or any(not s for s in gold["minimal_evidence_sets"]):
-        raise ValueError("Gold must contain nonempty alternative minimal evidence sets")
-    if not gold.get("evidence_sources") or any(not src.get("source_id") or not src.get("sha256") or
+    units = gold.get("external_evidence_units", [])
+    unit_ids = [unit.get("external_evidence_unit_id") for unit in units]
+    if not units or len(unit_ids) != len(set(unit_ids)) or any(not x for x in unit_ids):
+        raise ValueError("Gold must define unique external evidence units")
+    source_ids = {src.get("source_id") for src in gold.get("evidence_sources", [])}
+    if not source_ids or any(not src.get("source_id") or not src.get("sha256") or
             not src.get("source_url") for src in gold["evidence_sources"]):
-        raise ValueError("Gold evidence must be backed by independently sourced primary material")
+        raise ValueError("Gold evidence must be backed by independently sourced material")
+    if any(unit.get("source_id") not in source_ids or not unit.get("sha256") or
+           not unit.get("source_url") or not unit.get("page") for unit in units):
+        raise ValueError("External evidence unit lacks source identity or locator")
+    external_sets = gold.get("external_minimal_evidence_sets", [])
+    if not external_sets or any(not s or not set(s) <= set(unit_ids) for s in external_sets):
+        raise ValueError("Gold must contain valid external minimal evidence sets")
     if gold.get("temporal_review_status") not in {"CURRENTLY_SUPPORTABLE", "HISTORICAL_ONLY", "NOT_APPLICABLE"}:
         raise ValueError("Gold temporal/legal applicability is unresolved")
-    if gold.get("corpus_coverage") not in COVERAGE_STATES:
+    state = gold.get("corpus_coverage")
+    if state not in COVERAGE_STATES:
         raise ValueError("Accepted gold has invalid corpus coverage")
+    corpus_sets = gold.get("corpus_minimal_evidence_sets", [])
+    mapping = gold.get("evidence_mapping")
+    if not isinstance(mapping, dict) or set(mapping) != set(unit_ids):
+        raise ValueError("External-to-corpus evidence mapping must cover every external unit")
+    corpus_ids = {pid for passages in mapping.values() for pid in passages}
+    if any(not isinstance(ids, list) for ids in mapping.values()):
+        raise ValueError("Corpus evidence mapping values must be passage-ID lists")
+    if state == "COMPLETE" and (not corpus_sets or any(not s for s in corpus_sets) or
+                                 any(not set(s) <= corpus_ids for s in corpus_sets)):
+        raise ValueError("COMPLETE coverage requires corpus-only minimal evidence sets")
+    if state == "MISSING" and corpus_sets:
+        raise ValueError("MISSING coverage cannot claim corpus passage IDs")
+    if state == "MISSING" and gold.get("gold_document_ids"):
+        raise ValueError("MISSING coverage cannot claim corpus document IDs")
 
 
-def preflight() -> tuple[dict, list[dict], dict[str, dict]]:
+def select_evaluation_subset(candidates: list[dict], gold_rows: list[dict]) -> tuple[list[dict], dict[str, dict]]:
+    """Select only accepted gold in the frozen candidate queue; preserve all other candidates."""
+    candidate_ids = [row.get("question_id") for row in candidates]
+    gold_ids = [row.get("question_id") for row in gold_rows]
+    if any(not qid for qid in candidate_ids + gold_ids):
+        raise ValueError("Question IDs must be present")
+    if len(candidate_ids) != len(set(candidate_ids)):
+        raise ValueError("Duplicate frozen candidate question IDs")
+    if len(gold_ids) != len(set(gold_ids)):
+        raise ValueError("Duplicate gold IDs")
+    if not set(gold_ids) <= set(candidate_ids):
+        raise ValueError("Gold ID is not a frozen candidate")
+    gold = {row["question_id"]: row for row in gold_rows}
+    for record in gold.values():
+        validate_gold_record(record)
+    if len(gold) < MIN_GOLD:
+        raise PermissionError(f"GOLD_GATE_LOCKED: {len(gold)} accepted gold; minimum is {MIN_GOLD}")
+    selected = [row for row in candidates if row["question_id"] in gold]
+    return selected, gold
+
+
+def hydrate_candidate_questions(candidates: list[dict], pool_rows: list[dict]) -> list[dict]:
+    """Resolve exact wording from the ignored local official-source pool by frozen item number."""
+    pool = {str(row.get("source_item_number")): row for row in pool_rows}
+    if len(pool) != len(pool_rows):
+        raise ValueError("Duplicate item numbers in ignored official question pool")
+    hydrated = []
+    for candidate in candidates:
+        row = dict(candidate)
+        if isinstance(row.get("question"), str) and row["question"].strip():
+            hydrated.append(row)
+            continue
+        item = pool.get(str(row.get("source_item_number")))
+        if not item or not isinstance(item.get("question_text"), str):
+            raise ValueError(f"Exact source wording unavailable for {row.get('question_id')}")
+        digest = hashlib.sha256(item["question_text"].encode("utf-8")).hexdigest()
+        if digest != row.get("question_text_sha256"):
+            raise ValueError(f"Ignored pool wording hash mismatch for {row.get('question_id')}")
+        row["question"] = item["question_text"]
+        hydrated.append(row)
+    return hydrated
+
+
+def verify_controlled_profile_files(gold_rows: list[dict]) -> dict:
+    """Verify the local profile and every accepted evidence mapping without querying."""
+    profile = read_json(BENCH / "review/controlled_cuj2026_v1_profile.json")
+    corpus = ROOT / "tmp/kc_col_ir_v0.1/controlled_cuj2026_v1"
+    if profile.get("materialized") is not True or profile.get("build_status") != "MATERIALIZED_VERIFIED":
+        raise PermissionError("CONTROLLED_PROFILE_NOT_MATERIALIZED")
+    passages_path = corpus / "passages.jsonl"
+    manifest_path = corpus / "manifest.json"
+    bm25_path = corpus / "index/bm25.json"
+    for path in (passages_path, manifest_path, bm25_path):
+        if not path.is_file():
+            raise PermissionError(f"CONTROLLED_PROFILE_FILE_MISSING: {path.name}")
+    if file_hash(passages_path) != profile.get("passages_sha256"):
+        raise ValueError("CONTROLLED_PROFILE_PASSAGES_HASH_MISMATCH")
+    if file_hash(manifest_path) != profile.get("controlled_manifest_sha256"):
+        raise ValueError("CONTROLLED_PROFILE_MANIFEST_HASH_MISMATCH")
+    if file_hash(bm25_path) != profile.get("bm25_index_sha256"):
+        raise ValueError("CONTROLLED_PROFILE_BM25_HASH_MISMATCH")
+    passages = read_jsonl(passages_path)
+    documents = read_jsonl(BENCH / "review/controlled_cuj2026_v1_documents.jsonl")
+    mappings = read_jsonl(BENCH / "review/controlled_cuj2026_v1_mapping.jsonl")
+    coverage = read_jsonl(BENCH / "review/controlled_cuj2026_v1_coverage.jsonl")
+    return validate_mappings(gold_rows, mappings, coverage, passages, documents)
+
+
+def preflight(corpus_profile: str = "controlled_cuj2026_v1") -> tuple[dict, list[dict], dict[str, dict]]:
     manifest = read_json(BENCH / "manifest.json")
-    questions = read_jsonl(BENCH / "questions/dev.jsonl")
+    candidates = read_jsonl(BENCH / "questions/dev.jsonl")
     gold_rows = read_jsonl(BENCH / "gold/dev.jsonl")
     if manifest.get("benchmark") != "KC-COL-IR-v0.1":
         raise ValueError("Unexpected benchmark identity")
-    if manifest.get("cuda_ready") is not True or manifest.get("baseline_gate", {}).get("unlocked") is not True:
-        raise PermissionError("BASELINE_GATE_LOCKED: CUDA_READY requires >=10 accepted independent DEV retrieval-gold items")
-    if len(gold_rows) < MIN_GOLD or manifest["counts"].get("accepted_retrieval_gold", 0) < MIN_GOLD:
-        raise PermissionError("BASELINE_GATE_LOCKED: fewer than 10 accepted DEV retrieval-gold items")
     if manifest.get("question_manifest_sha256") != file_hash(BENCH / "questions/dev.jsonl"):
         raise ValueError("DEV questions hash mismatch")
     if manifest.get("source_manifest_sha256") != file_hash(BENCH / "source_manifest.jsonl"):
         raise ValueError("Source manifest hash mismatch")
-    if len(questions) != len(gold_rows):
-        raise ValueError("Question/gold row count mismatch")
-    gold = {row["question_id"]: row for row in gold_rows}
-    if len(gold) != len(gold_rows) or set(gold) != {row["question_id"] for row in questions}:
-        raise ValueError("Question/gold ID mismatch or duplicate")
-    if any(q.get("review_status") != "ACCEPTED_RETRIEVAL_GOLD" or q.get("temporal_review_status") not in
-           {"CURRENTLY_SUPPORTABLE", "HISTORICAL_ONLY", "NOT_APPLICABLE"} for q in questions):
-        raise ValueError("DEV contains unreviewed or temporally uncertain items")
+    if manifest["counts"].get("accepted_retrieval_gold", 0) != len(gold_rows):
+        raise ValueError("Accepted-gold count mismatch")
     if any(q.get("split") == "VALIDATION" or q.get("institution_family") == "universidad_libre_preparatorios"
-           for q in questions):
+           for q in candidates):
         raise ValueError("Validation-family question leakage")
-    for record in gold.values():
-        validate_gold_record(record)
-    return manifest, questions, gold
-
+    expansion = read_jsonl(BENCH / "review/expansion_batch_1_questions.jsonl")
+    candidate_ids = {q["question_id"] for q in candidates}
+    candidates.extend(q for q in expansion if q["question_id"] not in candidate_ids)
+    evaluation_questions, gold = select_evaluation_subset(candidates, gold_rows)
+    sample = read_json(BENCH / "sampling_manifest.json")
+    pool_path = ROOT / "tmp/kc_col_ir_v0.1/pool/jep_cuj_2026_full_pool.jsonl"
+    if not pool_path.exists() or file_hash(pool_path) != sample.get("pool_artifact_sha256"):
+        raise ValueError("Frozen ignored official question pool missing or hash mismatch")
+    evaluation_questions = hydrate_candidate_questions(evaluation_questions, read_jsonl(pool_path))
+    controlled_rows = read_jsonl(BENCH / "review/controlled_cuj2026_v1_coverage.jsonl")
+    population = metric_population(list(gold.values()), corpus_profile, controlled_rows)
+    gold_gate = len(gold) >= MIN_GOLD
+    ranking_gate = population["ranking_n"] >= MIN_COMPLETE
+    if not gold_gate:
+        raise PermissionError(f"GOLD_GATE_LOCKED: {len(gold)} accepted gold; minimum is {MIN_GOLD}")
+    if not ranking_gate:
+        raise PermissionError(f"RANKING_GATE_LOCKED: {population['ranking_n']} COMPLETE corpus gold; minimum is {MIN_COMPLETE}")
+    if manifest.get("gold_gate", {}).get("unlocked") is not True:
+        raise PermissionError("GOLD_GATE_LOCKED: manifest has not recorded independent gold review")
+    if manifest.get("ranking_gate", {}).get("unlocked") is not True:
+        raise PermissionError("RANKING_GATE_LOCKED: manifest has not recorded corpus-complete gold review")
+    if corpus_profile == "controlled_cuj2026_v1":
+        verify_controlled_profile_files(list(gold.values()))
+    if manifest.get("cuda_ready") is not True or manifest.get("baseline_gate", {}).get("unlocked") is not True:
+        raise PermissionError("CUDA_READY=false: ranking/configuration comparison remains locked")
+    return manifest, evaluation_questions, gold
 
 def _dcg(ids: list[str], gold: set[str]) -> float:
     return sum((1.0 if item in gold else 0.0) / math.log2(rank + 2)
@@ -93,9 +206,19 @@ def score(ranked: list[dict], gold: dict, corpus_docs: set[str]) -> dict:
         raise ValueError("Pure ranking metrics require COMPLETE frozen-corpus coverage")
     ids = [p["passage_id"] for p in ranked]
     docs = [p.get("canonical_document_id") or p["doc_id"] for p in ranked]
-    alternatives = gold["minimal_evidence_sets"]
+    alternatives = gold["corpus_minimal_evidence_sets"]
     union = set().union(*(set(s) for s in alternatives))
     found8 = set(ids[:8]); found10 = set(ids[:10])
+    # Fraction of the best matching valid minimal evidence set recovered
+    # within Top-8, separate from the binary complete-set metric.
+    completeness8 = max(
+        (
+            len(found8 & set(evidence_set)) / len(set(evidence_set))
+            for evidence_set in alternatives
+            if evidence_set
+        ),
+        default=0.0,
+    )
     complete = any(set(s) <= found8 for s in alternatives)
     complete10 = any(set(s) <= found10 for s in alternatives)
     first = next((i for i, item in enumerate(ids[:10], 1) if item in union), None)
@@ -103,18 +226,20 @@ def score(ranked: list[dict], gold: dict, corpus_docs: set[str]) -> dict:
     ideal = sum(1 / math.log2(i + 2) for i in range(min(len(union), 10)))
     gold_docs = set(gold["gold_document_ids"])
     found_docs = set(docs[:10])
-    return {"Evidence Completeness@8": float(complete), "Complete Evidence Set@8": float(complete),
+    return {"Evidence Completeness@8": completeness8, "Complete Evidence Set@8": float(complete),
             "Recall@10": len(found10 & union) / len(union) if union else 0.0,
             "MRR@10": 1 / first if first else 0.0, "nDCG@10": dcg / ideal if ideal else 0.0,
             "Document Recall": len(found_docs & gold_docs) / len(gold_docs) if gold_docs else 0.0,
             "complete_set_at_10_diagnostic": complete10}
 
 
-def run(component: str, config_path: Path) -> dict:
+def run(component: str, config_path: Path, corpus_profile: str = "controlled_cuj2026_v1") -> dict:
     if component not in COMPONENTS:
         raise ValueError(f"component must be one of {COMPONENTS}")
-    manifest, questions, gold = preflight()
+    manifest, questions, gold = preflight(corpus_profile)
     cfg = read_json(config_path)
+    if corpus_profile == "controlled_cuj2026_v1":
+        cfg["corpus"] = "tmp/kc_col_ir_v0.1/controlled_cuj2026_v1"
     from kingscode.retrieval import Retriever
     spec = cfg["components"][component]
     started = time.perf_counter()
@@ -142,7 +267,11 @@ def run(component: str, config_path: Path) -> dict:
     corpus_docs = {p.get("canonical_document_id") or p["doc_id"] for p in passages}
     records, latencies = [], []
     out_k = max(cfg["metrics_k"], cfg["evidence_k"])
-    for q in questions:
+    controlled_rows = read_jsonl(BENCH / "review/controlled_cuj2026_v1_coverage.jsonl")
+    population = metric_population(list(gold.values()), corpus_profile, controlled_rows)
+    complete_ids = set(population["ranking_question_ids"])
+    ranking_questions = [q for q in questions if q["question_id"] in complete_ids]
+    for q in ranking_questions:
         question = q.get("question")
         if not isinstance(question, str) or not question.strip():
             raise ValueError(f"Question text unavailable for {q['question_id']}; exact wording review incomplete")
@@ -153,6 +282,11 @@ def run(component: str, config_path: Path) -> dict:
             results = retriever.retrieve(question, out_k)
         latency = (time.perf_counter() - t0) * 1000; latencies.append(latency)
         g = gold[q["question_id"]]
+        if corpus_profile == "controlled_cuj2026_v1":
+            controlled = next(row for row in controlled_rows if row["question_id"] == q["question_id"])
+            g = dict(g, corpus_coverage="COMPLETE",
+                     corpus_minimal_evidence_sets=controlled["controlled_corpus_minimal_evidence_sets"],
+                     gold_document_ids=controlled["controlled_gold_document_ids"])
         ranked = [{"rank": rank, "passage_id": p["passage_id"],
                    "doc_id": p["doc_id"], "canonical_document_id": p.get("canonical_document_id"),
                    "scores": p.get("scores", {}), "source_url": p.get("source_url")}
@@ -163,11 +297,11 @@ def run(component: str, config_path: Path) -> dict:
             failure = "corpus_missing"
         elif g["corpus_coverage"] == "AMBIGUOUS":
             failure = "ambiguous_ground_truth"
-        elif metric["Evidence Completeness@8"]:
+        elif metric["Complete Evidence Set@8"]:
             failure = "success"
         elif not (set(g["gold_document_ids"]) & recovered_docs):
             failure = "wrong_document"
-        elif not any(set(s) & set(p["passage_id"] for p in results[:10]) for s in g["minimal_evidence_sets"]):
+        elif not any(set(s) & set(p["passage_id"] for p in results[:10]) for s in g["corpus_minimal_evidence_sets"]):
             failure = "correct_document_wrong_passage"
         else:
             failure = "ranking_failure"
@@ -178,7 +312,9 @@ def run(component: str, config_path: Path) -> dict:
     rank_rows = [row for row in records if row["metrics"] is not None]
     metrics = sorted({k for row in rank_rows for k in row["metrics"] if not k.endswith("diagnostic")})
     aggregate = {k: statistics.mean(row["metrics"][k] for row in rank_rows) for k in metrics} if rank_rows else {}
-    populations = metric_population(list(gold.values()))
+    populations = metric_population(list(gold.values()), corpus_profile, controlled_rows)
+    competitive_rows = read_jsonl(BENCH / "review/competitive_corpus_v01_coverage.jsonl")
+    competitive_pop = metric_population(list(gold.values()), "competitive_corpus_v01", competitive_rows)
     coverage_n = populations["coverage_n"]
     coverage_rates = {state: (count / coverage_n if coverage_n else None)
                       for state, count in populations["coverage_counts"].items()}
@@ -188,11 +324,16 @@ def run(component: str, config_path: Path) -> dict:
                       "Corpus Missing Rate": coverage_rates["MISSING"],
                       "Corpus Complete Rate": coverage_rates["COMPLETE"],
                       "Corpus Partial Rate": coverage_rates["PARTIAL"],
+                      "coverage_profile": corpus_profile,
+                      "competitive_corpus_coverage_counts": competitive_pop["coverage_counts"],
+                      "competitive_corpus_missing_rate": competitive_pop["corpus_missing_rate"],
+                      "controlled_corpus_coverage_counts": metric_population(list(gold.values()), "controlled_cuj2026_v1", controlled_rows)["coverage_counts"],
+                      "controlled_corpus_complete_rate": metric_population(list(gold.values()), "controlled_cuj2026_v1", controlled_rows)["coverage_counts"]["COMPLETE"] / coverage_n if coverage_n else None,
                       "metric_denominators": {name: populations["ranking_n"] for name in metrics}})
     aggregate.update({"latency_p50_ms": statistics.median(latencies), "latency_p95_ms": pct(.95),
                       "questions": len(records), "ranking_questions": len(rank_rows)})
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
-    result = {"benchmark": "KC-COL-IR-v0.1", "component": component, "split": "DEV",
+    result = {"benchmark": "KC-COL-IR-v0.1", "corpus_profile": corpus_profile, "component": component, "split": "DEV",
               "git_sha": head, "benchmark_manifest_sha256": file_hash(BENCH / "manifest.json"),
               "corpus_manifest_sha256": file_hash(ROOT / cfg["corpus"] / "manifest.json"),
               "config": spec, "graph_mode": "off", "metrics": aggregate,
@@ -208,12 +349,36 @@ if __name__ == "__main__":
     parser.add_argument("command", choices=("check", "run"))
     parser.add_argument("--component", choices=COMPONENTS)
     parser.add_argument("--config", type=Path, default=BENCH / "runner.json")
+    parser.add_argument("--corpus-profile", choices=("controlled_cuj2026_v1", "competitive_corpus_v01"), default="controlled_cuj2026_v1")
     args = parser.parse_args()
     if args.command == "check":
+        manifest = read_json(BENCH / "manifest.json")
+        rows = read_jsonl(BENCH / "gold/dev.jsonl")
+        controlled_rows = read_jsonl(BENCH / "review/controlled_cuj2026_v1_coverage.jsonl")
+        population = metric_population(rows, args.corpus_profile, controlled_rows)
+        profile_verified = False
+        if args.corpus_profile == "controlled_cuj2026_v1":
+            try:
+                verify_controlled_profile_files(rows)
+                profile_verified = True
+            except (OSError, KeyError, ValueError, PermissionError):
+                profile_verified = False
+        ranking_unlocked = manifest.get("ranking_gate", {}).get("unlocked") is True and population["ranking_n"] >= MIN_COMPLETE and profile_verified
         print(json.dumps({"status": "GATED", "benchmark": "KC-COL-IR-v0.1",
-                          "cuda_ready": read_json(BENCH / "manifest.json")["cuda_ready"],
-                          "minimum_accepted_gold": MIN_GOLD}, indent=2))
+                          "cuda_ready": manifest["cuda_ready"],
+                          "gold_gate": {"accepted": len(rows), "minimum": MIN_GOLD, "unlocked": len(rows) >= MIN_GOLD},
+                          "ranking_gate": {"controlled_complete_coverage_n": population["ranking_n"],
+                                           "ranking_n": manifest.get("ranking_gate", {}).get("ranking_n", 0),
+                                           "minimum_complete": MIN_COMPLETE,
+                                           "unlocked": ranking_unlocked},
+                          "controlled_profile_verified": profile_verified,
+                          "retrieval_benchmark_ready": manifest.get("retrieval_benchmark_ready") is True and ranking_unlocked,
+                          "execution_started": False,
+                          "candidate_count": len(read_jsonl(BENCH / "questions/dev.jsonl")) + len(read_jsonl(BENCH / "review/expansion_batch_1_questions.jsonl")),
+                          "corpus_profile": args.corpus_profile,
+                          "controlled_profile_materialized": read_json(BENCH / "review/controlled_cuj2026_v1_profile.json").get("build_status", "").startswith("MATERIALIZED"),
+                          "validated_subset_only": True}, indent=2))
     elif not args.component:
         parser.error("run requires --component C0|C1|C2|C3")
     else:
-        print(json.dumps(run(args.component, args.config), ensure_ascii=False, indent=2))
+        print(json.dumps(run(args.component, args.config, args.corpus_profile), ensure_ascii=False, indent=2))

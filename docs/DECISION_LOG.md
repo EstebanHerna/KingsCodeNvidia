@@ -559,3 +559,30 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
 - **Pesos:** `prepare_models.py --download` ya usa `allow_patterns` (pesos/tokenizer/config) y verifica contra los metadatos Git/LFS del Hub; no descarga el repo completo.
 - **Verificado aquí:** parseo PowerShell de ambos scripts, `py_compile` del runner embebido, recorrido en seco de ambas fases en un directorio temporal, `member_b.py decoder-smoke|sample --dry-run` con los argumentos exactos y lectura de `powercfg`. **No verificado:** ejecución en GPU.
 - **Dependencia:** los runners hacen worktree de `origin/main`; requieren que el PR #6 (`docs/mapa-del-repo`) esté mergeado.
+
+## 2026-09-29 — Corrección de procedencia CUJ 2026 y revisión de gold KC-COL-IR
+
+- La página oficial actual `/preguntas` y el paquete SeRVR corresponden a la cuarta edición CUJ 2026. La tercera edición CUJ 2025 fue SDSJ; el ZIP 2025 adquirido se conserva solo como prueba de procedencia y queda marcado `NOT_SOURCE_FOR_CUJ_2026_GOLD`.
+- Caveat de procedencia: `/preguntas` es contenido mixto y conserva boilerplate obsoleto “2025 / Tercera Edición”. La atribución a CUJ 2026 se basa en la identidad del caso y la coincidencia de materiales exactos con el paquete oficial 2026; el paquete SDSJ 2025 no coincide. Se conservan los mismos 30 IDs/números originales, sin remuestreo.
+- Se migraron los 30 IDs a `JEP-CUJ-2026-Qnnn`, conservando `legacy_question_id`, los mismos números de ítem y el SHA original de selección. No se volvió a muestrear. Externado 2011 continúa solo para reproducibilidad y Javeriana 2026 sigue sin parsear ni inspeccionar.
+- El ZIP oficial CUJ 2026 (157,859,322 bytes, SHA-256 `3f9dc1765e8ea18588c13a48e1785b506f6a0c06eef3743057e2d34097d9b101`) contiene 18 miembros hash-verificados, incluida la resolución hipotética SRVR-012 de 147 páginas y las versiones voluntarias de Ainhoa y Laureano. No sustituirla por la Resolución real No. 02 de 2022. El Auto 023 independiente no aparece como miembro separado.
+- Disposición de los 30 ítems: 9 `ACCEPTED_RETRIEVAL_GOLD`, 7 `PENDING_PRIMARY_EVIDENCE`, 8 `REJECTED_INSUFFICIENT_AUTHORITATIVE_ANSWER`, 6 `REJECTED_NOT_RETRIEVAL`. Q045/Q049 quedan en el grupo duplicado `EL_BILLAR_DATE`. El objetivo de 10 no justifica aceptar evidencia incompleta.
+- Los 9 gold tienen evidencia externa primaria separada de IDs del corpus; el inventario/texto completo de los 26,558 pasajes de corpus-v0.1 no contiene las fuentes/personas del caso. Cobertura: 0 COMPLETE, 0 PARTIAL, 9 MISSING, 0 AMBIGUOUS; ranking_n=0.
+- Se corrigió el runner para exigir >=10 gold y, separadamente, >=10 gold COMPLETE antes de ranking/CUDA. El test cubre 30 candidatos, 10 gold válidos y 20 candidatos pendientes, así como exclusión de IDs de evidencia externa de métricas puras. Solo verificaciones CPU; retrieval y CUDA no ejecutados.
+
+
+## 2026-09-29 — CUJ expansion and controlled corpus profile
+
+- Preserved the original 30 selected CUJ item numbers and froze `EXPANSION_BATCH_1` as the next 10 IDs by the same SHA-256 ordering before reading their content. The pool hash is `af07237db321115562da4d64527c675d2bb99fe49c730b5f1ebcf2ac3bf85476`; expansion selection hash is `dc1332cb1477f96ea2652f2699befc317f4e053b67e8b8d987ef9397ecf13131`. All 10 received separate dispositions; only Q025 was accepted.
+- Gold now totals 10 and GOLD_GATE is unlocked. IDs: Q009, Q012, Q013, Q025, Q030, Q031, Q037, Q043, Q045 and Q049. Competitive corpus-v0.1 independently remains MISSING for all 10 (100% missing rate).
+- Defined `KC-COL-IR-CUJ2026-CONTROLLED-v1` from all six textual PDFs in the complete official 2026 ZIP, not from the gold-document list. The 18-member archive inventory includes two excluded MP3s and all metadata members; extraction verified 191 physical pages and 190 nonempty page passages. Archive SHA-256: `3f9dc1765e8ea18588c13a48e1785b506f6a0c06eef3743057e2d34097d9b101`; in-memory passage hash: `019dee8a805e87fbacfce45cd448f4b538b921d6d7c5aa7ff3a82a5472a894ef`.
+- Separate external evidence units, controlled page mappings, and competitive corpus coverage in independent ledgers. Controlled mappings are page/source verified for 10/10, but passage file is not materialized in this worktree; ranking execution remains locked, ranking_n=0 in the manifest, and CUDA_READY=false. No retrieval, neural ranking, CUDA or validation inspection was performed.
+
+
+## 2026-09-29 — Materialized CUJ controlled profile (pre-ranking freeze)
+
+- Materialized the already-frozen six-PDF CUJ 2026 corpus under ignored `tmp/kc_col_ir_v0.1/controlled_cuj2026_v1/`; the 18-member archive was fully inventoried, including two excluded MP3s and archive metadata. No source bytes are tracked.
+- Verified 191 physical PDF pages and 190 nonempty page passages. `passages.jsonl` SHA-256 is `c942cdfe6ec7f0c88ea0ebe4977540a99b93d98d3404b2972f9609b4499b3a7c`; runtime manifest SHA-256 is `5bcb56f772c6f502d79c41cfef684e61e82b7cd13c7c3c442e35c73730974d3f`; BM25 index SHA-256 is `277184f3a954de79746589b1e28c932cd2d557bfc2a3e52fe9ab130d7e406a87`; corpus fingerprint is `9569be4855bc9223eb346280de21d14b080da8e9b73aa9353175d59345492056`.
+- The previously reported `019dee8a...` hash is reproduced exactly by serializing the same passage rows without the explicit `member_index` provenance field. The new canonical JSONL hash includes `member_index`; the earlier value was preserved as a distinct schema/hash record, not overwritten.
+- All 24 external-evidence mappings across 10 accepted questions resolve to 18 unique real passages with matching source member, document and physical page; all 10 minimal evidence sets resolve. Competitive corpus-v0.1 remains 10/10 MISSING (Missing Rate 1.0).
+- CPU BM25 construction and reopen through `Retriever` passed; tokenizer version is `accent-fold-unicode-words-1`. `GOLD_GATE=UNLOCKED`, `RANKING_GATE=UNLOCKED` (ranking_n=10), `retrieval_benchmark_ready=true`; `CUDA_READY=false` and `cuda_execution_started=false`. No retrieval query, C0-C3, dense model, reranker, CUDA or validation inspection ran.

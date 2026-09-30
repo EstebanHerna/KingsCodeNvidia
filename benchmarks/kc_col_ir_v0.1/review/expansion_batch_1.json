@@ -1,0 +1,23 @@
+{
+  "batch_id": "EXPANSION_BATCH_1",
+  "status": "FROZEN_BEFORE_CONTENT_REVIEW",
+  "source_id": "JEP-CUJ-2026-PREGUNTAS",
+  "source_family": "jep_concurso_universitario_2026",
+  "source_url": "https://concursouniversitariorelatoria.jep.gov.co/preguntas",
+  "source_page_sha256": "27cba7569d9579b35b8edebe266b8a82d37c8429637892b7c631dabe57c4040d",
+  "pool_artifact": "ignored:tmp/kc_col_ir_v0.1/pool/jep_cuj_2026_full_pool.jsonl",
+  "pool_sha256": "af07237db321115562da4d64527c675d2bb99fe49c730b5f1ebcf2ac3bf85476",
+  "pool_size": 62,
+  "ranking_rule": "Sort ascending by SHA256(UTF8(legacy_source_family + legacy_source_document + source_item_number)); concatenate fields without delimiter. Preserve the original first 30 membership; EXPANSION_BATCH_1 is ranked positions 31-40 among all 62 items.",
+  "original_selected_item_numbers": ["37", "33", "12", "29", "4", "50", "46", "55", "57", "51", "31", "9", "8", "30", "49", "42", "19", "54", "20", "62", "10", "28", "53", "13", "43", "45", "16", "23", "58", "61"],
+  "expansion_item_numbers": ["22", "15", "39", "3", "26", "17", "21", "56", "5", "25"],
+  "expansion_rank_hashes": ["5791fe15d0bb38fb53e1d9a9183c657f29345c710a2deb6893ec7d65aec9945e", "5f6fcf2d7f9bbc81ca3035741b4396c1f14a36980480f5f253e4211d846d69e7", "663c4fdb56440c64a53f1958cdd998871abefe5c6bbd116a3989d058d6341129", "6b68ffc09d06556b07db024f11e516642da0fd5e8b9ed6230f28347f37ff839e", "6bb8d9449a2d948cb304d3e621a5c71129af81f188502eb28c78d7e3fe60be8a", "6be2a63b30db537f8a3a1f78c6438a4e93846c05b07afe593f5d4b54a9872066", "6d9d35c294f6f4acf2f0bfb6cb1ce7dc28ec82432ff36d11d799893c068d2b0f", "6ee557aba85c77c547471869894ac1bc62dc92b68f6d227918656a1fcb275446", "73351969e5e5bba396dc85d1ad3e7426d15a858e12a01f8a9e9891098c15eb11", "77405d10c1bd3ee3c69777d98248859b10e48ffcb2aed38ec1eb9a8e491b3303"],
+  "combined_reviewed_candidate_item_numbers": ["37", "33", "12", "29", "4", "50", "46", "55", "57", "51", "31", "9", "8", "30", "49", "42", "19", "54", "20", "62", "10", "28", "53", "13", "43", "45", "16", "23", "58", "61", "22", "15", "39", "3", "26", "17", "21", "56", "5", "25"],
+  "expansion_selection_sha256": "dc1332cb1477f96ea2652f2699befc317f4e053b67e8b8d987ef9397ecf13131",
+  "selection_sha256_method": "SHA256 of compact UTF-8 JSON array of expansion_item_numbers in ranked order.",
+  "frozen_at_utc": "2026-09-29T22:23:57Z",
+  "selection_before_content_review": true,
+  "expansion_content_read_before_freeze": false,
+  "retrieval_executed": false,
+  "review_queue": "review/expansion_batch_1_queue.jsonl"
+}
