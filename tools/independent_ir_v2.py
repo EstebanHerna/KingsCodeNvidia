@@ -209,6 +209,16 @@ def score(ranked: list[dict], gold: dict, corpus_docs: set[str]) -> dict:
     alternatives = gold["corpus_minimal_evidence_sets"]
     union = set().union(*(set(s) for s in alternatives))
     found8 = set(ids[:8]); found10 = set(ids[:10])
+    # Fraction of the best matching valid minimal evidence set recovered
+    # within Top-8, separate from the binary complete-set metric.
+    completeness8 = max(
+        (
+            len(found8 & set(evidence_set)) / len(set(evidence_set))
+            for evidence_set in alternatives
+            if evidence_set
+        ),
+        default=0.0,
+    )
     complete = any(set(s) <= found8 for s in alternatives)
     complete10 = any(set(s) <= found10 for s in alternatives)
     first = next((i for i, item in enumerate(ids[:10], 1) if item in union), None)
@@ -216,7 +226,7 @@ def score(ranked: list[dict], gold: dict, corpus_docs: set[str]) -> dict:
     ideal = sum(1 / math.log2(i + 2) for i in range(min(len(union), 10)))
     gold_docs = set(gold["gold_document_ids"])
     found_docs = set(docs[:10])
-    return {"Evidence Completeness@8": float(complete), "Complete Evidence Set@8": float(complete),
+    return {"Evidence Completeness@8": completeness8, "Complete Evidence Set@8": float(complete),
             "Recall@10": len(found10 & union) / len(union) if union else 0.0,
             "MRR@10": 1 / first if first else 0.0, "nDCG@10": dcg / ideal if ideal else 0.0,
             "Document Recall": len(found_docs & gold_docs) / len(gold_docs) if gold_docs else 0.0,
@@ -287,7 +297,7 @@ def run(component: str, config_path: Path, corpus_profile: str = "controlled_cuj
             failure = "corpus_missing"
         elif g["corpus_coverage"] == "AMBIGUOUS":
             failure = "ambiguous_ground_truth"
-        elif metric["Evidence Completeness@8"]:
+        elif metric["Complete Evidence Set@8"]:
             failure = "success"
         elif not (set(g["gold_document_ids"]) & recovered_docs):
             failure = "wrong_document"

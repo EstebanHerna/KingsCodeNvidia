@@ -1,6 +1,6 @@
 {
   "benchmark": "KC-COL-IR-v0.1",
-  "status": "cuj2026_expansion_reviewed_10_gold_controlled_corpus_not_materialized",
+  "status": "cuj2026_10_gold_controlled_corpus_materialized_ranking_ready_preexperimental_metric_freeze",
   "created": "2026-09-29",
   "source_manifest": "source_manifest.jsonl",
   "source_manifest_sha256": "1d81836dfb701aa0baf099732268ca71d27bccb2665f7b9840e319f27ebf9499",
@@ -175,5 +175,14 @@
     "to": "jep_concurso_universitario_2026",
     "reason": "current /preguntas Q&A content matches the current fourth-edition SeRVR packet; the 2025 third edition is identified by the official versions page as SDSJ",
     "selection": "same 30 source item numbers and original deterministic selection SHA-256 retained; no resampling"
+  },
+  "metric_definition_version": "kc-col-ir-ranking-metrics-v1",
+  "metric_definitions": {
+    "Evidence Completeness@8": "For each valid minimal evidence set, compute the fraction of its passage IDs present in Top-8; report the maximum fraction across alternative valid minimal evidence sets.",
+    "Complete Evidence Set@8": "Binary: 1 iff Top-8 fully contains at least one valid minimal evidence set; otherwise 0.",
+    "Recall@10": "Recall over the union of frozen relevant passage IDs in Top-10.",
+    "MRR@10": "Reciprocal rank of the first frozen relevant passage in Top-10.",
+    "nDCG@10": "Binary-relevance nDCG over frozen relevant passage IDs in Top-10.",
+    "Document Recall": "Fraction of frozen gold documents represented in Top-10."
   }
 }

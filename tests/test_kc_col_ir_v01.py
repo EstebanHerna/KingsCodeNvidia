@@ -137,4 +137,28 @@ class IndependentBenchmarkTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"require COMPLETE"):
             independent_ir_v2.score([],gold_record("q","PARTIAL"),{"doc"})
 
+    def test_evidence_completeness_at_8_is_fractional_not_binary(self):
+        gold = gold_record("q", "COMPLETE")
+        gold["corpus_minimal_evidence_sets"] = [["p1", "p2", "p3", "p4"]]
+        ranked = [{"passage_id": "p1", "doc_id": "doc"}, {"passage_id": "p2", "doc_id": "doc"}]
+        metric = independent_ir_v2.score(ranked, gold, {"doc"})
+        self.assertAlmostEqual(metric["Evidence Completeness@8"], 0.5)
+        self.assertEqual(metric["Complete Evidence Set@8"], 0.0)
+
+    def test_complete_evidence_set_at_8_stays_binary(self):
+        gold = gold_record("q", "COMPLETE")
+        gold["corpus_minimal_evidence_sets"] = [["p1", "p2", "p3", "p4"]]
+        ranked = [{"passage_id": f"p{i}", "doc_id": "doc"} for i in range(1, 5)]
+        metric = independent_ir_v2.score(ranked, gold, {"doc"})
+        self.assertEqual(metric["Evidence Completeness@8"], 1.0)
+        self.assertEqual(metric["Complete Evidence Set@8"], 1.0)
+
+    def test_evidence_completeness_uses_best_alternative_set(self):
+        gold = gold_record("q", "COMPLETE")
+        gold["corpus_minimal_evidence_sets"] = [["p1", "p2", "p3", "p4"], ["p5", "p6"]]
+        ranked = [{"passage_id": "p5", "doc_id": "doc"}, {"passage_id": "p6", "doc_id": "doc"}]
+        metric = independent_ir_v2.score(ranked, gold, {"doc"})
+        self.assertEqual(metric["Evidence Completeness@8"], 1.0)
+        self.assertEqual(metric["Complete Evidence Set@8"], 1.0)
+
 if __name__=="__main__": unittest.main()

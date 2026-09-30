@@ -95,7 +95,7 @@
     ]
   },
   "next_action": {
-    "member_a": "Controlled CUJ 2026 corpus is materialized and ranking-ready on feat/member-a-corpus-v02-locator. Preserve the current gold and corpus freeze; complete target-runtime handoff checks separately before any empirical C0-C3 ranking or CUDA execution.",
+    "member_a": "Preexperimental retrieval metric definitions are frozen. Preserve the 10-gold controlled corpus and complete the target-runtime handoff before the first empirical C0-C3 run.",
     "member_b": "On the target GPU run the two prepared verifications, prepare exact model snapshots, GPU smoke, freeze retrieval evidence and execute D1-D3. No new tests were run in Gate 2-Prep by user instruction.",
     "shared": "Use feat/member-a-corpus-v02-locator, based on 60ebf7e GPU freeze. No merge to main. B continues its own decoder work; do not infer decoder success from retrieval results."
   },
@@ -461,8 +461,8 @@
       "d01_regression_test": "Equal content hash does not merge distinct canonical document identities; broad audit remains open"
     },
     "international_inventory": "5 candidates; applicability and document links need review; benchmark items 0",
-    "current_baseline": "none on independent v2; 0 accepted retrieval gold (gate >=10)",
-    "next_experiment": "none until >=10 independent retrieval-gold items are accepted; then one untuned baseline and failure taxonomy",
+    "current_baseline": "No empirical KC-COL-IR-v0.1 controlled ranking result yet. Gold=10, controlled ranking_n=10, GOLD_GATE and RANKING_GATE unlocked.",
+    "next_experiment": "Complete target RTX 4090 runtime handoff, then execute the frozen C0-C3 comparison on KC-COL-IR-CUJ2026-CONTROLLED-v1 with graph OFF.",
     "verification": {
       "unittest": "PASS: 226 tests; three complete suite passes overall, including the final pass after distinguishing the orientation guide from question booklets. jsonschema==4.26.0 loaded from ignored tmp/test-dependencies.",
       "benchmark_integrity": "PASS: python tools/benchmark_v2.py check; 10 hashes; holdout not parsed; selectable=false.",
