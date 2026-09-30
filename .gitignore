@@ -11,3 +11,5 @@ models/
 *.npz
 *.faiss
 runs/
+dist/
+*.tar.gz

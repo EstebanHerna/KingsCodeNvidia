@@ -98,7 +98,7 @@ Las carpetas son nuevas por corrida. El fingerprint, JSONL final, decisiones y t
 - **Modos de recuperación:** `Pipeline(retrieval_mode="base"|"option"|"plan")`; default `option`. En `plan`, B llama `retrieve(Q0, k, graph_mode, query_views=[Q1..Q3])`: el locator exacto, el router y el reranker de A solo ven Q0.
 - **Planner:** planes congelados con `tools/member_b.py plan --input <jsonl> --model qwen3-8b` en `reports/query_plans/<id>/`; toda comparación los reproduce (`--plans <dir>`). Diagnóstico BASE vs PLAN: `tools/analyze_query_plans.py --plans <dir> --split dev` (solo cuando A entregue el benchmark independiente).
 - **992:** `tools/member_b.py batch --input <jsonl> --run-dir runs/<nombre> [--model qwen3-8b] [--exact-locator]` (checkpoints atómicos, `--fresh` para no reanudar, `--synthetic 992` para ensayo). Verificación en vivo: `tools/member_b.py verify --input <jsonl> --delivered <submissions.jsonl> --only 17,203,815`.
-- **Sesión GPU sin admin:** `powershell -ExecutionPolicy Bypass -File tools\lab_gpu_session.ps1 -CorpusSnapshot <snapshot de Luis> -InstallTorch -DownloadModels -DecoderSmoke -FreezePlans -RunSample`.
+- **Sesión GPU sin admin (script único):** `powershell -ExecutionPolicy Bypass -File tools\kingscode_gpu_todo.ps1` en la PC que tiene `corpus\` y GPU: copia limpia de `main`, valida corpus e índice denso, publica corpus+índice, entorno CUDA, decoder, smoke, planes congelados, `sample_50` real con evaluador oficial y proyección a 992.
 
 ## Límites y siguiente paso
 

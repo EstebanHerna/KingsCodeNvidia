@@ -3,8 +3,11 @@
 ## Para Claude Code
 `CLAUDE.md` (importa `AGENTS.md` y fija el orden de lectura), luego `docs/B_EXTENSION_PLAN.md` y `docs/DECISION_LOG.md` para lo más reciente. Comandos: `/b-contexto`, `/b-medir`, `/b-tarea T1`.
 
+## Mapa del repositorio
+`docs/MAPA_DEL_REPO.md`: qué es cada carpeta, dónde está cada corpus (`corpus/` v0.1 fuera de git vs `corpora/corpus-v0.2/` agregado provisional) y qué falta para el sábado.
+
 ## Estado vigente (2026-09-29, prevalece sobre las secciones históricas de abajo)
-Todo A+B está mergeado en `main`: resultados 4090, corpus v0.2/locator y auditoría v0.7 (A); planner con replay, ejecución robusta de 992 y reparación/construcción de citas (B). Sesión en PC con GPU sin admin: `tools/lab_gpu_session.ps1`. Planes vigentes: `docs/CORPUS_V02_PLAN.md` (A) y `docs/B_PLAN_POST_GPU.md` (B). Última entrada: `docs/DECISION_LOG.md`.
+Todo A+B está mergeado en `main`: resultados 4090, corpus v0.2/locator y auditoría v0.7 (A); planner con replay, ejecución robusta de 992 y reparación/construcción de citas (B). Sesión en PC con GPU sin admin: `tools/kingscode_gpu_todo.ps1`. Planes vigentes: `docs/CORPUS_V02_PLAN.md` (A) y `docs/B_PLAN_POST_GPU.md` (B). Última entrada: `docs/DECISION_LOG.md`.
 
 ## Para cualquier humano o agente
 1. `AGENTS.md`
