@@ -10,10 +10,13 @@
 #   [4] Valida el indice denso con las mismas reglas que DenseIndex de A.
 #   [5] Publica corpus + indice + LICENSE como release del repo publico (entregable 5).
 #   [6] Entorno GPU: PyTorch CUDA dentro del venv, BF16, VRAM.
-#   [7] Descarga el decoder (Qwen3-8B por defecto) fijado por lock.
-#   [8] Smoke del decoder real.
-#   [9] Congela los planes del planner Qwen para sample_50 (replay futuro BASE vs PLAN).
-#  [10] Corrida end-to-end de sample_50 con el decoder real + evaluador oficial (sin RAGAS).
+#   [7] Descarga y verifica el decoder fijado por lock (ALIA ~7,77B por defecto; Qwen3-8B,
+#       8.190.735.360 parametros, solo con -IncludePendingEligibility y marcado como no competitivo).
+#   Pasos [8]-[11] SOLO si existe artifacts\retrieval_freeze.json de A (GPU_DAY_RUNBOOK sec. 8);
+#   si no, se detienen con BLOCKED_ON_A_FREEZE. Misma evidencia congelada para cada decoder.
+#   [8] Valida el freeze y fija su SHA-256 (se re-verifica antes y despues de cada decoder).
+#   [9] decoder-smoke sobre el freeze.
+#  [10] sample_50 sobre el freeze + evaluador oficial (sin RAGAS). Sin retrieval en vivo ni planner.
 #  [11] Proyeccion de tiempo para 992 preguntas.
 #  [12] Guarda todo en reports\lab_session\<fecha> y lo sube a una rama lab/<fecha>.
 #
@@ -24,14 +27,16 @@
 #   cd $HOME
 #   powershell -ExecutionPolicy Bypass -File kingscode_gpu_todo.ps1
 #   ... -Source "C:\ruta\KingsCodeNvidia"   (repo que tiene corpus\; si no, lo busca)
-#   ... -Models "qwen3-8b,alia-legal-7b"    (corridas exploratorias extra; sin seleccion)
+#   ... -Models "alia-legal-7b,salamandra-7b" (comparacion sin seleccion; Salamandra requiere acceso HF)
+#   ... -IncludePendingEligibility          (agrega qwen3-8b con elegibilidad pendiente)
 #   ... -SkipPublish -SkipDecoder -RebuildDense -NoPush
 # =====================================================================
 param(
     [string]$Source = "",
     [string]$Work = "$HOME\KingsCodeRun",
     [string]$GitHubRepo = "IngSeb0/KingsCodeNvidia",
-    [string]$Models = "qwen3-8b",
+    [string]$Models = "alia-legal-7b",
+    [switch]$IncludePendingEligibility,
     [string]$Tag = "corpus-v0.1-snapshot",
     [string]$License = "CC BY 4.0",
     [switch]$SkipPublish,
@@ -233,46 +238,58 @@ Equipo KingsCode - Hackathon 2026, Universidad de los Andes.
 }
 
 # ---------------------------------------------------------------------
-$ModelList = $Models.Split(",") | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+$ModelList = @($Models.Split(",") | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+if ($IncludePendingEligibility -and $ModelList -notcontains "qwen3-8b") { $ModelList += "qwen3-8b" }
+$Eligibility = [ordered]@{}
+foreach ($m in $ModelList) { $Eligibility[$m] = $(if ($m -in @("qwen3-8b", "llama31-8b")) { "pending_organizer_confirmation_not_competitive" } else { "within_8B" }) }
+Done "decoder_eligibility" $Eligibility
 if ($GpuOk -and -not $SkipDecoder) {
     Step "[7] Pesos del decoder fijados por lock ($($ModelList -join ', '))"
     $FreeGb = [math]::Round((Get-PSDrive (Split-Path $Work -Qualifier).TrimEnd(":")).Free / 1GB, 1)
-    Write-Host "Espacio libre: $FreeGb GB (cada decoder ~16 GB)"
-    foreach ($m in $ModelList) { & $Py tools\prepare_models.py --download $m; Check "descarga $m" }
+    Write-Host "Espacio libre: $FreeGb GB (cada decoder ~16 GB; solo archivos de pesos/tokenizer del lock)"
+    foreach ($m in $ModelList) {
+        & $Py tools\prepare_models.py --download $m; Check "descarga $m"
+        & $Py tools\prepare_models.py --verify $m; Check "verificacion $m"
+        if ($Eligibility[$m] -ne "within_8B") { Warn "$m tiene elegibilidad PENDIENTE (supera 8.000.000.000 parametros literales); no es candidato competitivo hasta la confirmacion." }
+    }
 
-    Step "[8] Smoke del decoder real ($($ModelList[0]), BF16, temperatura 0)"
-    & $Py tools\gpu_smoke.py --model $ModelList[0] --precision bf16 --output-root "$Out\decoder_smoke"
-    $SmokeOk = ($LASTEXITCODE -eq 0)
-    if (-not $SmokeOk) { Warn "el smoke fallo; revisa $Out\decoder_smoke (si es CUDA_OOM, ese registro habilita int8/int4)." }
-    Done "decoder_smoke" $SmokeOk
-
-    Step "[9] Congelar planes del planner Qwen para sample_50 (no se evalua aqui)"
-    & $Py tools\member_b.py plan --input data\sample_50.jsonl --model qwen3-8b | Out-File -Encoding utf8 "$Out\plans_freeze.json"
-    if ($LASTEXITCODE -ne 0) { Warn "no se pudieron congelar los planes" }
-    Done "plans" (Get-Content "$Out\plans_freeze.json" -Raw)
-
-    if ($SmokeOk) {
+    # GPU_DAY_RUNBOOK sec. 8: decoder-smoke/sample/bakeoff solo sobre el freeze de ocho evidencias de A,
+    # la misma evidencia para cada decoder. Sin retrieval en vivo, sin planner.
+    $Freeze = "$Work\artifacts\retrieval_freeze.json"
+    if (-not (Test-Path $Freeze)) {
+        Warn "BLOCKED_ON_A_FREEZE: no existe artifacts\retrieval_freeze.json. Pesos listos; el decoder se corre cuando A publique su seleccion y el freeze."
+        Done "decoder" "BLOCKED_ON_A_FREEZE"
+    } else {
+        Step "[8] Freeze de A: validacion"
+        & $Py -c "import sys; sys.path.insert(0, '.'); from pathlib import Path; from kingscode.generation.retrieval_experiments import load_freeze; load_freeze(Path(r'$Freeze'))"; Check "freeze de A"
+        $FreezeSha = (Get-FileHash $Freeze -Algorithm SHA256).Hash.ToLower()
         $Results = @()
         foreach ($m in $ModelList) {
-            Step "[10] sample_50 end-to-end con $m (BM25 + locator exacto de A + reparacion de citas)"
-            $Run = "$Work\runs\${Stamp}_$m"
-            & $Py tools\member_b.py batch --input data\sample_50.jsonl --run-dir $Run --fresh --model $m --exact-locator --retrieval-mode option; Check "batch $m"
-            & $Py scripts\evaluate.py --submission "$Run\submissions.jsonl" --split sample --out "$Out\evaluation_$m.json"; Check "evaluate $m"
-            Copy-Item "$Run\batch_report.json" "$Out\batch_report_$m.json"
-            Copy-Item "$Run\submissions.jsonl" "$Out\submissions_sample_$m.jsonl"
-            $Ev = Get-Content "$Out\evaluation_$m.json" -Raw | ConvertFrom-Json
-            $Br = Get-Content "$Run\batch_report.json" -Raw | ConvertFrom-Json
-            $Spq = [math]::Round($Br.seconds / 50, 2)
-            Step "[11] Presupuesto de tiempo para 992 con $m"
-            & $Py tools\benchmark_budget.py --seconds-per-question $Spq --questions 992 --hours 6 | Out-File -Encoding utf8 "$Out\budget_$m.txt"
-            Get-Content "$Out\budget_$m.txt"
-            $Results += [ordered]@{ model = $m; total_sin_ragas = $Ev.total_automatico.obtenidos; cerradas = $Ev.cerradas.puntos;
-                                    citas = $Ev.citas.puntos; abstencion = $Ev.abstencion.puntos; errores_validacion = $Ev.validacion.errores;
-                                    seconds_per_question = $Spq; fallbacks = $Br.fallback_ids.Count }
+            if ((Get-FileHash $Freeze -Algorithm SHA256).Hash.ToLower() -ne $FreezeSha) { throw "STOP: el freeze cambio antes de $m" }
+            Step "[9] decoder-smoke con $m (BF16, temperatura 0, evidencia congelada)"
+            & $Py tools\member_b.py decoder-smoke --model $m --retrieval-freeze $Freeze --allow-optional --output-root "$Out\decoders" | Out-File -Encoding utf8 "$Out\decoder_smoke_$m.json"
+            if ($LASTEXITCODE -ne 0) { Warn "decoder-smoke de $m fallo; ver $Out\decoder_smoke_$m.json (CUDA_OOM habilita int8/int4)."; $Results += [ordered]@{ model = $m; status = "smoke_failed" }; continue }
+            Step "[10] sample_50 con $m sobre el mismo freeze + evaluador oficial (sin RAGAS)"
+            & $Py tools\member_b.py sample --model $m --retrieval-freeze $Freeze --allow-optional --output-root "$Out\decoders" | Out-File -Encoding utf8 "$Out\sample_$m.json"
+            # member_b.py imprime al final un JSON con indentacion; se toma desde la ultima llave en columna 0.
+            $Raw = Get-Content "$Out\sample_$m.json" -Raw
+            $At = $(if ($Raw.StartsWith("{")) { 0 } else { $Raw.LastIndexOf("`n{") + 1 })
+            try { $Rec = $Raw.Substring($At) | ConvertFrom-Json } catch { $Rec = [pscustomobject]@{ status = "failed_unparsed_output" } }
+            if ((Get-FileHash $Freeze -Algorithm SHA256).Hash.ToLower() -ne $FreezeSha) { throw "STOP: el freeze cambio durante $m" }
+            $Auto = $Rec.official_evaluation.total_automatico
+            $Spq = $(if ($Rec.metrics.completed_questions_per_second) { [math]::Round(1 / $Rec.metrics.completed_questions_per_second, 2) } else { $null })
+            if ($Spq) {
+                Step "[11] Presupuesto de tiempo para 992 con $m"
+                & $Py tools\benchmark_budget.py --seconds-per-question $Spq --questions 992 --hours 6 | Out-File -Encoding utf8 "$Out\budget_$m.txt"
+                Get-Content "$Out\budget_$m.txt"
+            }
+            $Results += [ordered]@{ model = $m; status = $Rec.status; eligibility = $Eligibility[$m]; automatico_sin_ragas = $Auto.obtenidos;
+                                    posibles = $Auto.posibles; seconds_per_question = $Spq; abstenciones = $Rec.metrics.abstentions;
+                                    citas_sin_respaldo = $Rec.metrics.unsupported_citation_count }
         }
         $Results | ConvertTo-Json | Out-File -Encoding utf8 "$Out\sample_results.json"
-        $Results | ForEach-Object { Write-Host ("{0}: {1} / 50 sin RAGAS (cerradas {2}, citas {3}, abstencion {4}); {5} s/pregunta" -f $_.model, $_.total_sin_ragas, $_.cerradas, $_.citas, $_.abstencion, $_.seconds_per_question) -ForegroundColor Green }
-        Done "sample" $Results
+        $Results | ForEach-Object { Write-Host ("{0} [{1}]: {2} / {3} automatico sin RAGAS; {4} s/pregunta" -f $_.model, $_.eligibility, $_.automatico_sin_ragas, $_.posibles, $_.seconds_per_question) -ForegroundColor Green }
+        Done "decoder" ([ordered]@{ freeze_sha256 = $FreezeSha; results = $Results; selection = "none: comparison only" })
     }
 } elseif (-not $GpuOk) { Warn "sin GPU BF16: no se corre el decoder." }
 
@@ -284,7 +301,6 @@ if (-not $NoPush) {
     $Branch = "lab/$Stamp"
     git checkout -b $Branch; Check "rama $Branch"
     git add "reports/lab_session/$Stamp"; Check "git add"
-    if (Test-Path "reports/query_plans") { git add reports/query_plans; Check "git add planes" }
     git -c user.name="KingsCode lab" -c user.email="lab@kingscode.local" commit -m "Lab GPU session $Stamp (main $Sha)"; Check "git commit"
     git push -u origin $Branch
     if ($LASTEXITCODE -ne 0) { Warn "no se pudo subir $Branch; los resultados quedan en $Out" } else { Write-Host "Resultados subidos a la rama $Branch" -ForegroundColor Green }

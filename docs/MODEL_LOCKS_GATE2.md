@@ -30,6 +30,8 @@ La configuración pública consultada reporta 8192 posiciones para ALIA y 40960 
 
 La API oficial reportó 8.190.735.360 parámetros para Qwen3-8B y 8.030.261.248 para Llama 3.1-8B. ALIA y Salamandra: 7.768.117.248. Los dos nombres «8B» superan literalmente 8.000.000.000; se conserva su preparación porque son candidatos solicitados, pero **su elegibilidad competitiva bajo un límite numérico estricto requiere aclaración de la organización**. No se marca elegibilidad verificada ni se cambia el modelo silenciosamente.
 
+Desde el 2026-09-30 los runners de GPU (`tools/run_b_gpu_4090.ps1`, `tools/kingscode_gpu_todo.ps1`) usan ALIA por defecto; Qwen3-8B solo entra con `-IncludePendingEligibility` y su resultado queda etiquetado `pending_organizer_confirmation_not_competitive` hasta que la organización confirme por escrito.
+
 ## Preparación reproducible y límites
 
 `tools/prepare_models.py` descarga únicamente revisiones fijadas, verifica el SHA del repositorio y los hashes Git/LFS de todos los archivos necesarios, y guarda un manifest en `models/.kingscode_manifests/`. La ejecución posterior verifica hashes localmente y no contacta al Hub. Pesos y manifests de caché permanecen fuera de Git.
