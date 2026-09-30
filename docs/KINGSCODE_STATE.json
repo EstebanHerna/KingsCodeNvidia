@@ -95,7 +95,7 @@
     ]
   },
   "next_action": {
-    "member_a": "Review and commit pre-CUDA hardening from codex/pre-cuda-hardening; run the local-tokenizer CPU audit when the ignored controlled profile is available; then complete target-runtime handoff. Keep C0-C3 unexecuted until a separate empirical-ranking phase is authorized.",
+    "member_a": "On the target machine, restore the frozen controlled profile and pinned tokenizers, run tools/audit_kc_col_ir_tokens.py, and complete target-runtime handoff. Keep C0-C3 unexecuted until a separate empirical-ranking phase is authorized.",
     "member_b": "On the target GPU run the two prepared verifications, prepare exact model snapshots, GPU smoke, freeze retrieval evidence and execute D1-D3. No new tests were run in Gate 2-Prep by user instruction.",
     "shared": "Use feat/member-a-corpus-v02-locator, based on 60ebf7e GPU freeze. No merge to main. B continues its own decoder work; do not infer decoder success from retrieval results."
   },

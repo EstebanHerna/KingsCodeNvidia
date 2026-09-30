@@ -91,7 +91,8 @@ Source-page caveat: the current JEP `/preguntas` page is mixed-edition and retai
 ## 2026-09-30 — Pre-CUDA hardening continuation from main e528161
 
 - Synchronized the clean local `main` to `origin/main` at `e52816145970adddc70300b1a9988c02b4cd1c8d` by fast-forward and created `codex/pre-cuda-hardening` from that commit. No source data or benchmark membership changed.
+- Freeze commit `40590fc1a49e5d54a8398f255af5cdf1a47edc46` was pushed to `origin/codex/pre-cuda-hardening`; `main` remains unchanged at `e528161`.
 - Added token-length audit tooling for the exact pinned Qwen encoder/reranker tokenizers. It reads only the frozen 10 DEV questions and 190 controlled passages, uses local snapshots only, and does not load model weights, query retrieval, or initialize CUDA. It was not run because the ignored controlled profile is absent in this checkout.
 - Extended ranking reports with Candidate@30 metrics, candidate duplication diagnostics, execution identity, synchronous per-query timing, and correctly scoped initialization/total timings. Added a fail-closed invariant for duplicate or missing indexed `passage_id` values.
 - Preregistered the maximum-two shortlist rule in `docs/experiments/KC_COL_IR_CUJ2026_SHORTLIST_V1.json`; Javeriana validation remains unparsed, so independent validation is not ready.
-- `CUDA_READY=false`; no C0-C3, retrieval, CUDA, validation scoring, decoder, or tests were run in this continuation. The upstream handoff's stop-before-ranking instruction remains in force.
+- `CUDA_READY=false`; no C0-C3, retrieval, CUDA, validation scoring, decoder, or tests were run in this continuation. Next exact action on the target machine: restore the frozen profile and pinned tokenizers, run `python tools/audit_kc_col_ir_tokens.py`, then complete the target-runtime handoff. The upstream handoff's stop-before-ranking instruction remains in force.
