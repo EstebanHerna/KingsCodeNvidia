@@ -1,8 +1,27 @@
 # Member A v0.2 progress — 2026-09-29
 
-Status: PARTIAL. Branch `feat/member-a-corpus-v02-locator`, checkpoint `5f89eb61c70109f0ace2b58d43fbf45fdb634176`. Do not merge to `main`.
+Status: PARTIAL. Branch `feat/member-a-corpus-v02-locator`, continuation parent `093265cdebf2233fc8dcc6bdc23aa120e68dc584`. Do not merge to `main`.
 
 The completed G02, C01, P02 and P01 v0.2-only parser repairs, query-view/locator and retrieval-diagnostic work remain intact. Corpus v0.1 and the official starter pack remain untouched. Corpus v0.2 still contains four provisional documents, 72 passages, 33 nodes, 29 structural edges and zero active semantic edges. No corpus expansion or retrieval architecture change was justified by independent DEV evidence.
+
+## 2026-09-29 — KC-COL-IR CUJ expansion and profile mapping
+
+- Continued from parent `1beb08b0703af1f577d628d1826aecd2d2781f58` on `feat/member-a-corpus-v02-locator`. Preserved the already-dirty README and MASTER_KNOWLEDGE provenance changes and included them in the worktree review.
+- Frozen the deterministic next 10 candidates before reading their text. Original 30 remain unchanged. The expansion item numbers are 22, 15, 39, 3, 26, 17, 21, 56, 5 and 25. Pool SHA-256: `af07237db321115562da4d64527c675d2bb99fe49c730b5f1ebcf2ac3bf85476`; selection SHA-256: `dc1332cb1477f96ea2652f2699befc317f4e053b67e8b8d987ef9397ecf13131`.
+- Expansion dispositions: 1 accepted (Q025), 6 rejected for insufficient authoritative answer, 1 rejected as non-retrieval, 2 pending primary evidence (Q017 exact Auto 023; Q005 unnamed jurisprudence). Total reviewed candidates are 40; accepted total is 10. Gold IDs are Q009, Q012, Q013, Q025, Q030, Q031, Q037, Q043, Q045 and Q049.
+- Built a controlled profile definition from all six textual PDFs in the full official CUJ 2026 ZIP; all 18 archive members were inventoried. Two MP3s were excluded without ASR. The deterministic in-memory extraction contains 191 physical pages / 190 nonempty passages, with passage hash `019dee8a805e87fbacfce45cd448f4b538b921d6d7c5aa7ff3a82a5472a894ef` and build hash `6bbf448a6cac3f368f0456699205f56891cbb144e4418a53c544d1753fb8f51b`. The passage file is not materialized in this worktree.
+- Dual coverage is explicit: competitive corpus-v0.1 is MISSING for 10/10; controlled page mappings are COMPLETE for 10/10. Gold gate is unlocked; ranking execution stays locked by the current manifest until the controlled passage artifact is materialized; CUDA_READY=false.
+- Added runner profile support and CPU integrity checks. `tools/verify_kc_col_ir_v01.py` passes; 11 focused unit tests pass; `independent_ir_v2.py check` reports the controlled corpus is not materialized. No retrieval, CUDA, encoder, reranker, decoder or validation performance was run/inspected.
+- Next exact task: materialize the deterministic local/ignored corpus artifact, verify output file hashes against the frozen profile, then reconcile the ranking execution gate without changing question membership. Do not run C0-C3 or CUDA in this continuation.
+
+## 2026-09-29 — Controlled CUJ profile materialized; stop before ranking
+
+- Materialized the full frozen profile at `tmp/kc_col_ir_v0.1/controlled_cuj2026_v1/` from all six eligible textual PDFs in the hash-verified 18-member official archive. The profile includes 6 documents, 191 physical PDF pages and 190 nonempty passages; both MP3s remain excluded without ASR. Raw/derived files remain ignored and untracked.
+- Passage file SHA-256 `c942cdfe6ec7f0c88ea0ebe4977540a99b93d98d3404b2972f9609b4499b3a7c`; runtime manifest SHA-256 `5bcb56f772c6f502d79c41cfef684e61e82b7cd13c7c3c442e35c73730974d3f`; BM25 SHA-256 `277184f3a954de79746589b1e28c932cd2d557bfc2a3e52fe9ab130d7e406a87`; corpus fingerprint `9569be4855bc9223eb346280de21d14b080da8e9b73aa9353175d59345492056`.
+- Reconciled the prior extraction hash `019dee8a...`: it is the canonical passage JSONL hash with `member_index` omitted. The materialized schema adds that required member-provenance field; the new hash is calculated over the full serialized records and differs as expected.
+- All 24 external-unit mappings (10 gold questions) point to 18 unique actual page passages with matching doc/member/page provenance. All controlled minimal evidence sets resolve. Competitive corpus-v0.1 remains 10/10 MISSING. GOLD_GATE and RANKING_GATE are unlocked; `ranking_n=10`, `retrieval_benchmark_ready=true`, `CUDA_READY=false` pending target-runtime handoff.
+- CPU-only verification re-extracted the corpus for determinism, loaded BM25 and opened `Retriever` without issuing a query. No C0-C3, retrieval query, dense retrieval, reranking, CUDA or validation inspection ran.
+- Next exact task: review the frozen handoff values on the target runtime, then conduct empirical ranking only in a separate authorized phase. Do not execute C0-C3 in this commit.
 
 ## Benchmark acquisition
 
@@ -55,3 +74,15 @@ Next exact action: obtain the official PDFs and independent hashes, place them i
 - Acquired the official JEP Resolución de Conclusiones No. 02 de 2022 (3,142,097 bytes; SHA-256 `f098f08da604605108ffc2d84d60fd634ddcd44ef7ea5ba640591499972501d9`) and the official 2025 competition expediente ZIP (14,892,990 bytes; SHA-256 `f6d875129723a6d6ddfc27e32725cf6457846d692beff095e3d5729599e3ee8d`). All 22 archived PDFs have individual identity/hash/size/signature records in ignored acquisition metadata. Exact correspondence of these acquired materials to the sources and anonymized facts referenced by each sampled question remains unconfirmed; they are not silently substituted.
 - No minimal evidence packets can yet be frozen, so accepted gold remains 0 and corpus coverage for accepted gold is N/A (0 COMPLETE/PARTIAL/MISSING/AMBIGUOUS; ranking denominator 0). KingsCode corpus v0.1 and `gold/dev.jsonl` remain unchanged. CUDA/baseline gate remains locked.
 - Exact sources still needed: SRVR-012 resolution, relevant voluntary-version material, Auto SRVR-ADHC-023/2024, and any other source actually required item-by-item.
+
+
+## 2026-09-29 — CUJ 2026 provenance correction and primary evidence pass
+
+Source-page caveat: the current JEP `/preguntas` page is mixed-edition and retains stale “2025 / Tercera Edición” boilerplate. The 30 items are attributed to CUJ 2026 only because case identity and exact materials match the official 2026 packet; the 2025 SDSJ packet does not match. Original 30 sample IDs/item numbers and selection SHA are preserved; no resampling occurred.
+
+- Corrected the current JEP source family/year from CUJ 2025 to CUJ 2026 without changing the deterministic sample: all 30 source item numbers and original selection SHA are preserved; IDs now include the legacy 2025 ID.
+- Acquired the exact official CUJ 2026 ZIP (157,859,322 bytes; SHA-256 `3f9dc1765e8ea18588c13a48e1785b506f6a0c06eef3743057e2d34097d9b101`), verified 18 members/CRC and per-member hashes. It contains the hypothetical 147-page SRVR-012 resolution, Ainhoa and Laureano voluntary-version transcripts, two roadmap PDFs and audio. The Auto 023 document is referenced in the packet but is not a standalone member. The actual 2022 resolution and 2025 SDSJ ZIP remain explicitly excluded as substitutes.
+- Reviewed all 30 exact frozen question/answer pairs against the current 2026 HTML and the primary packet. Dispositions: 9 accepted, 7 pending primary evidence, 8 rejected for insufficient authoritative answer, 6 rejected as non-retrieval. Q045/Q049 are preserved in duplicate group `EL_BILLAR_DATE`. Accepted set: Q009, Q012, Q013, Q030, Q031, Q037, Q043, Q045, Q049. Q031 is explicitly tagged low difficulty.
+- External evidence units are separate from corpus passage IDs. A direct document-identity/full-text scan of corpus-v0.1’s 26,558 passages found no case-packet/source identity matches: 9 MISSING, 0 COMPLETE/PARTIAL/AMBIGUOUS; ranking_n=0.
+- Runner now selects the intersection of frozen candidate IDs and accepted gold, has separate >=10 GOLD_GATE / >=10 COMPLETE RANKING_GATE, and scores only corpus passage IDs. CPU verifier and nine focused CPU tests were run; retrieval, CUDA, and validation parsing/performance inspection were not run. CUDA_READY=false.
+- Next exact action: resolve at least one additional pending candidate from the primary packet or another exact official primary source without using retrieval outcomes; acquire standalone Auto 023 if Q043 requires it. Then update gold/corpus mappings and hashes. Keep ranking locked until ten golds have COMPLETE corpus evidence.

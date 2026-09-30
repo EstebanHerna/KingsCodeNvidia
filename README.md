@@ -2,6 +2,10 @@
 
 KingsCode v0.5: sistema de recuperación jurídica para el Hackathon AI Week 2026. La capa del Integrante A incluye adquisición de fuentes oficiales, parsing estructural, grafo, BM25 y adaptadores abiertos de embeddings/RRF/reranking.
 
+## Estado del benchmark independiente
+
+`KC-COL-IR-v0.1` mantiene los 30 candidatos originales y añade una expansión determinista revisada de 10 ítems CUJ 2026. Hay 10 gold aceptados; todos faltan en corpus-v0.1 y están mapeados a páginas del perfil controlado materializado (190 pasajes). Los gates de gold y ranking están abiertos; `CUDA_READY=false` y no se ejecutó retrieval. Ver [estado y metodología](benchmarks/kc_col_ir_v0.1/README.md).
+
 ## Empezar
 
 - [Guía del proyecto](START_HERE.md)
