@@ -41,8 +41,8 @@
     "corpus_ambiguous_accepted_gold": 0,
     "competitive_corpus_missing_accepted_gold": 10,
     "controlled_corpus_complete_accepted_gold": 10,
-    "controlled_corpus_materialized": false,
-    "ranking_eligible_accepted_gold": 0,
+    "controlled_corpus_materialized": true,
+    "ranking_eligible_accepted_gold": 10,
     "pending_gold_or_temporal_resolution": 9,
     "jep_2026_source_questions": 62,
     "jep_2026_dev_annotation_batch": 30,
@@ -57,8 +57,8 @@
   "baseline_gate": {
     "minimum_accepted_dev_retrieval_gold": 10,
     "minimum_complete_corpus_gold": 10,
-    "unlocked": false,
-    "status": "LOCKED_CONTROLLED_PROFILE_NOT_MATERIALIZED"
+    "unlocked": true,
+    "status": "RANKING_PROFILE_READY_CUDA_NOT_EXECUTED"
   },
   "validation_exposure": {
     "raw_downloaded": true,
@@ -68,7 +68,7 @@
     "note": "One official Q&A PDF signature/hash verified; no text extracted and no retrieval tuning."
   },
   "runner": "tools/independent_ir_v2.py",
-  "runner_status": "GOLD_GATE_UNLOCKED_RANKING_PROFILE_PASSAGES_NOT_MATERIALIZED",
+  "runner_status": "GOLD_AND_CONTROLLED_RANKING_GATES_UNLOCKED_CUDA_NOT_EXECUTED",
   "question_manifest_sha256": "4bce1a2257eb23e9ad8db711f1e34cf9184cc42d603dd79542ef8b6527d3e44a",
   "sampling_manifest_sha256": "0dce285f10ea959452eab97b4087f585c9399770970a4282d3bc96114d275d88",
   "git_sha_at_acquisition_checkpoint": "a3834baf3fd89069fa1efea02b45edad62d6f5b6",
@@ -134,14 +134,42 @@
     "minimum_complete_corpus_gold": 10,
     "profile_id": "KC-COL-IR-CUJ2026-CONTROLLED-v1",
     "complete_corpus_gold": 10,
-    "ranking_n": 0,
-    "unlocked": false,
-    "status": "LOCKED_CONTROLLED_PASSAGE_FILE_NOT_MATERIALIZED",
+    "ranking_n": 10,
+    "unlocked": true,
+    "status": "UNLOCKED_CONTROLLED_PROFILE_VERIFIED",
     "requires_gold_gate": true,
     "requires_controlled_profile_materialized": true
   },
-  "retrieval_benchmark_ready": false,
+  "retrieval_benchmark_ready": true,
   "cuda_execution_started": false,
+  "controlled_profile_materialization": {
+    "profile_id": "KC-COL-IR-CUJ2026-CONTROLLED-v1",
+    "profile_document_sha256": "91fb82825ba61f1f6fc98f2f7a8cc950ea181e1a5e407d7c19fceef41b56f873",
+    "source_archive_sha256": "3f9dc1765e8ea18588c13a48e1785b506f6a0c06eef3743057e2d34097d9b101",
+    "controlled_manifest_sha256": "5bcb56f772c6f502d79c41cfef684e61e82b7cd13c7c3c442e35c73730974d3f",
+    "passages_sha256": "c942cdfe6ec7f0c88ea0ebe4977540a99b93d98d3404b2972f9609b4499b3a7c",
+    "bm25_index_sha256": "277184f3a954de79746589b1e28c932cd2d557bfc2a3e52fe9ab130d7e406a87",
+    "controlled_corpus_fingerprint": "9569be4855bc9223eb346280de21d14b080da8e9b73aa9353175d59345492056",
+    "documents": 6,
+    "physical_pages": 191,
+    "passages": 190,
+    "tokenizer_version": "accent-fold-unicode-words-1",
+    "passages_hash_semantics": "Canonical UTF-8 JSONL SHA-256, sort_keys=true, ensure_ascii=false, compact object encoding, LF per row; includes member_index. The earlier 019dee8a805e87fbacfce45cd448f4b538b921d6d7c5aa7ff3a82a5472a894ef reproduces exactly when member_index is omitted from those same rows."
+  },
+  "comparison_freeze": {
+    "components": ["C0 BM25", "C1 Qwen dense", "C2 BM25+dense+RRF", "C3 hybrid+Qwen reranker"],
+    "graph_mode": "off",
+    "candidate_k": 30,
+    "evidence_k": 8,
+    "metrics_k": 10,
+    "qwen_embedding_revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+    "qwen_reranker_revision": "e61197ed45024b0ed8a2d74b80b4d909f1255473",
+    "models_lock_sha256": "ee061a56af47dd4af995b3f57b7fac452054ca15a3e88ee091ebf835ce3c4ec5",
+    "question_source_pool_sha256": "af07237db321115562da4d64527c675d2bb99fe49c730b5f1ebcf2ac3bf85476",
+    "question_manifest_sha256": "4bce1a2257eb23e9ad8db711f1e34cf9184cc42d603dd79542ef8b6527d3e44a",
+    "gold_sha256": "e4b3786229ece1cd7082179a175e7ee19c5eb0d9173095630074a99fbb2ed0d6",
+    "retrieval_executed": false
+  },
   "jep_source_provenance_correction": {
     "from": "jep_concurso_universitario_2025",
     "to": "jep_concurso_universitario_2026",

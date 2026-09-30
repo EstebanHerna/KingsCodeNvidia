@@ -1,6 +1,6 @@
 # Member A v0.2 progress — 2026-09-29
 
-Status: PARTIAL. Branch `feat/member-a-corpus-v02-locator`, continuation parent `1beb08b0703af1f577d628d1826aecd2d2781f58`. Do not merge to `main`.
+Status: PARTIAL. Branch `feat/member-a-corpus-v02-locator`, continuation parent `093265cdebf2233fc8dcc6bdc23aa120e68dc584`. Do not merge to `main`.
 
 The completed G02, C01, P02 and P01 v0.2-only parser repairs, query-view/locator and retrieval-diagnostic work remain intact. Corpus v0.1 and the official starter pack remain untouched. Corpus v0.2 still contains four provisional documents, 72 passages, 33 nodes, 29 structural edges and zero active semantic edges. No corpus expansion or retrieval architecture change was justified by independent DEV evidence.
 
@@ -13,6 +13,15 @@ The completed G02, C01, P02 and P01 v0.2-only parser repairs, query-view/locator
 - Dual coverage is explicit: competitive corpus-v0.1 is MISSING for 10/10; controlled page mappings are COMPLETE for 10/10. Gold gate is unlocked; ranking execution stays locked by the current manifest until the controlled passage artifact is materialized; CUDA_READY=false.
 - Added runner profile support and CPU integrity checks. `tools/verify_kc_col_ir_v01.py` passes; 11 focused unit tests pass; `independent_ir_v2.py check` reports the controlled corpus is not materialized. No retrieval, CUDA, encoder, reranker, decoder or validation performance was run/inspected.
 - Next exact task: materialize the deterministic local/ignored corpus artifact, verify output file hashes against the frozen profile, then reconcile the ranking execution gate without changing question membership. Do not run C0-C3 or CUDA in this continuation.
+
+## 2026-09-29 — Controlled CUJ profile materialized; stop before ranking
+
+- Materialized the full frozen profile at `tmp/kc_col_ir_v0.1/controlled_cuj2026_v1/` from all six eligible textual PDFs in the hash-verified 18-member official archive. The profile includes 6 documents, 191 physical PDF pages and 190 nonempty passages; both MP3s remain excluded without ASR. Raw/derived files remain ignored and untracked.
+- Passage file SHA-256 `c942cdfe6ec7f0c88ea0ebe4977540a99b93d98d3404b2972f9609b4499b3a7c`; runtime manifest SHA-256 `5bcb56f772c6f502d79c41cfef684e61e82b7cd13c7c3c442e35c73730974d3f`; BM25 SHA-256 `277184f3a954de79746589b1e28c932cd2d557bfc2a3e52fe9ab130d7e406a87`; corpus fingerprint `9569be4855bc9223eb346280de21d14b080da8e9b73aa9353175d59345492056`.
+- Reconciled the prior extraction hash `019dee8a...`: it is the canonical passage JSONL hash with `member_index` omitted. The materialized schema adds that required member-provenance field; the new hash is calculated over the full serialized records and differs as expected.
+- All 24 external-unit mappings (10 gold questions) point to 18 unique actual page passages with matching doc/member/page provenance. All controlled minimal evidence sets resolve. Competitive corpus-v0.1 remains 10/10 MISSING. GOLD_GATE and RANKING_GATE are unlocked; `ranking_n=10`, `retrieval_benchmark_ready=true`, `CUDA_READY=false` pending target-runtime handoff.
+- CPU-only verification re-extracted the corpus for determinism, loaded BM25 and opened `Retriever` without issuing a query. No C0-C3, retrieval query, dense retrieval, reranking, CUDA or validation inspection ran.
+- Next exact task: review the frozen handoff values on the target runtime, then conduct empirical ranking only in a separate authorized phase. Do not execute C0-C3 in this commit.
 
 ## Benchmark acquisition
 

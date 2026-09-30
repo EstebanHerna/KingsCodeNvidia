@@ -1,10 +1,12 @@
 import sys
 import unittest
+import json
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 sys.path.insert(0, str(ROOT))
 import verify_kc_col_ir_v01
+import verify_controlled_cuj2026
 from tools import independent_ir_v2
 
 def gold_record(qid="q", state="MISSING"):
@@ -27,13 +29,49 @@ class IndependentBenchmarkTests(unittest.TestCase):
         self.assertEqual(result["accepted_retrieval_gold"],10)
         self.assertEqual(result["competitive_corpus_coverage_counts"],{"COMPLETE":0,"PARTIAL":0,"MISSING":10,"AMBIGUOUS":0})
         self.assertEqual(result["controlled_corpus_coverage_counts"],{"COMPLETE":10,"PARTIAL":0,"MISSING":0,"AMBIGUOUS":0})
-        self.assertEqual(result["ranking_n"],0)
+        self.assertEqual(result["ranking_n"],10)
         self.assertFalse(result["validation_performance_inspected"])
         self.assertFalse(result["cuda_ready"])
 
-    def test_runner_stays_locked_until_materialized_controlled_corpus(self):
-        with self.assertRaisesRegex(PermissionError,"RANKING_GATE_LOCKED"):
+    def test_runner_stays_locked_until_explicit_cuda_handoff(self):
+        with self.assertRaisesRegex(PermissionError,"CUDA_READY=false"):
             independent_ir_v2.preflight()
+
+    def test_controlled_materialization_is_deterministic_and_all_gold_mappings_resolve(self):
+        result=verify_controlled_cuj2026.verify()
+        self.assertEqual(result["documents"],6)
+        self.assertEqual(result["physical_pages"],191)
+        self.assertEqual(result["passages"],190)
+        self.assertEqual(result["mapping"]["gold_questions"],10)
+        self.assertEqual(result["mapping"]["controlled_complete"],10)
+        self.assertEqual(result["competitive_missing"],10)
+        self.assertEqual(result["deterministic_rebuild"],"PASS")
+
+    def test_missing_mapped_passage_fails_closed(self):
+        gold=verify_controlled_cuj2026.read_jsonl(verify_controlled_cuj2026.BENCH/"gold/dev.jsonl")
+        maps=verify_controlled_cuj2026.read_jsonl(verify_controlled_cuj2026.BENCH/"review/controlled_cuj2026_v1_mapping.jsonl")
+        coverage=verify_controlled_cuj2026.read_jsonl(verify_controlled_cuj2026.BENCH/"review/controlled_cuj2026_v1_coverage.jsonl")
+        docs=verify_controlled_cuj2026.read_jsonl(verify_controlled_cuj2026.BENCH/"review/controlled_cuj2026_v1_documents.jsonl")
+        passages=verify_controlled_cuj2026.read_jsonl(verify_controlled_cuj2026.CORPUS/"passages.jsonl")
+        passage_id=maps[0]["controlled_passage_ids"][0]
+        passages=[p for p in passages if p["passage_id"]!=passage_id]
+        with self.assertRaisesRegex(ValueError,"Mapped passage absent"):
+            verify_controlled_cuj2026.validate_mappings(gold,maps,coverage,passages,docs)
+
+    def test_ranking_readiness_requires_passage_file(self):
+        coverage=[{"question_id":f"q{i}","controlled_corpus_coverage":"COMPLETE"} for i in range(10)]
+        self.assertEqual(verify_controlled_cuj2026.ranking_readiness(coverage,False),
+                         {"controlled_complete_coverage_n":10,"ranking_n":0,"unlocked":False})
+        self.assertEqual(verify_controlled_cuj2026.ranking_readiness(coverage,True),
+                         {"controlled_complete_coverage_n":10,"ranking_n":10,"unlocked":True})
+
+    def test_manifest_gates_are_unlocked_but_cuda_is_not_claimed(self):
+        manifest=json.loads((verify_kc_col_ir_v01.BENCH/"manifest.json").read_text(encoding="utf-8"))
+        self.assertTrue(manifest["gold_gate"]["unlocked"])
+        self.assertTrue(manifest["ranking_gate"]["unlocked"])
+        self.assertEqual(manifest["ranking_gate"]["ranking_n"],10)
+        self.assertTrue(manifest["retrieval_benchmark_ready"])
+        self.assertFalse(manifest["cuda_ready"])
 
     def test_controlled_ranking_population_is_separate_from_competitive_coverage(self):
         gold=[{"question_id":f"q{i}","corpus_coverage":"MISSING"} for i in range(10)]
@@ -78,6 +116,9 @@ class IndependentBenchmarkTests(unittest.TestCase):
     def test_nine_gold_stays_below_minimum_but_ten_unlocks_gold_threshold(self):
         self.assertLess(9, independent_ir_v2.MIN_GOLD)
         self.assertGreaterEqual(10, independent_ir_v2.MIN_GOLD)
+        candidates=[{"question_id":f"q{i}"} for i in range(9)]
+        with self.assertRaisesRegex(PermissionError,"GOLD_GATE_LOCKED"):
+            independent_ir_v2.select_evaluation_subset(candidates,[gold_record(f"q{i}") for i in range(9)])
 
     def test_external_evidence_ids_never_enter_corpus_ranking_metrics(self):
         gold=gold_record("q","COMPLETE")

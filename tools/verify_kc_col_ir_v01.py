@@ -154,10 +154,14 @@ def verify() -> dict:
     if {r["question_id"] for r in controlled}!={g["question_id"] for g in gold} or {r["question_id"] for r in competitive}!={g["question_id"] for g in gold}: raise ValueError("Dual coverage ledger question IDs differ from accepted gold")
     if any(r["external_evidence_unit_id"] in set(r["controlled_passage_ids"]) for r in mappings): raise ValueError("External evidence ID masquerades as a passage ID")
     if any(r["controlled_document_id"] not in valid_docs or not set(r["controlled_passage_ids"])<=valid_pages for r in mappings): raise ValueError("Controlled mapping references nonexistent document/page")
-    ncomplete=sum(g["corpus_coverage"]=="COMPLETE" for g in gold)
+    controlled_profile=json.loads((BENCH/"review/controlled_cuj2026_v1_profile.json").read_text(encoding="utf-8"))
+    controlled_passages=ROOT/"tmp/kc_col_ir_v0.1/controlled_cuj2026_v1/passages.jsonl"
+    ncomplete=sum(r["controlled_corpus_coverage"]=="COMPLETE" for r in controlled)
     if manifest["gold_gate"]["minimum_accepted_retrieval_gold"]!=10 or manifest["gold_gate"]["unlocked"]!=(len(gold)>=10): raise ValueError("Gold gate state inconsistent")
-    if manifest["ranking_gate"]["minimum_complete_corpus_gold"]!=10 or manifest["ranking_gate"]["ranking_n"]!=ncomplete or manifest["ranking_gate"]["unlocked"]!=(ncomplete>=10): raise ValueError("Ranking gate state inconsistent")
-    if manifest["cuda_ready"] or manifest["baseline_gate"]["unlocked"]: raise ValueError("CUDA/ranking baseline must remain locked")
+    profile_ready=controlled_profile.get("materialized") is True and controlled_passages.is_file()
+    if manifest["ranking_gate"]["minimum_complete_corpus_gold"]!=10 or manifest["ranking_gate"]["ranking_n"]!=(ncomplete if profile_ready else 0) or manifest["ranking_gate"]["unlocked"]!=(ncomplete>=10 and profile_ready): raise ValueError("Ranking gate state inconsistent")
+    if manifest.get("retrieval_benchmark_ready")!=(ncomplete>=10 and profile_ready): raise ValueError("Retrieval benchmark readiness state inconsistent")
+    if manifest["cuda_ready"] or manifest["cuda_execution_started"]: raise ValueError("CUDA must remain unexecuted")
     if manifest["validation_exposure"]["parsed"] or manifest["validation_exposure"]["retrieval_performance_inspected"]: raise ValueError("Javeriana validation must remain unparsed/uninspected")
     return {"status":"PASS","sources":len(sources),"jep_pool":len(pool),"primary_dev_annotation_batch":len(questions),"expansion_batch_1":len(expansion_questions),"externado_reproducibility_batch":len(legacy),"review_dispositions":counts,"expansion_dispositions":exp_counts,"acquired_source_artifacts":len(acquisitions),"expediente_2026_members":len(members),"accepted_retrieval_gold":len(gold),"competitive_corpus_coverage_counts":{s:sum(r["competitive_corpus_coverage"]==s for r in competitive) for s in ("COMPLETE","PARTIAL","MISSING","AMBIGUOUS")},"controlled_corpus_coverage_counts":{s:sum(r["controlled_corpus_coverage"]==s for r in controlled) for s in ("COMPLETE","PARTIAL","MISSING","AMBIGUOUS")},"ranking_n":ncomplete,"validation_performance_inspected":False,"cuda_ready":False,"selection_sha256":sample["selection_sha256"],"zip_integrity":"PASS"}
 

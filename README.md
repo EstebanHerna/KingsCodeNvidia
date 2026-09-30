@@ -4,7 +4,7 @@ KingsCode v0.5: sistema de recuperación jurídica para el Hackathon AI Week 202
 
 ## Estado del benchmark independiente
 
-`KC-COL-IR-v0.1` mantiene los 30 candidatos originales y añade una expansión determinista revisada de 10 ítems CUJ 2026. Hay 10 gold aceptados; todos faltan en corpus-v0.1 y están mapeados a páginas del perfil controlado. El archivo de pasajes controlado aún no está materializado, así que el gate de ejecución permanece cerrado. No se ejecutó retrieval. Ver [estado y metodología](benchmarks/kc_col_ir_v0.1/README.md).
+`KC-COL-IR-v0.1` mantiene los 30 candidatos originales y añade una expansión determinista revisada de 10 ítems CUJ 2026. Hay 10 gold aceptados; todos faltan en corpus-v0.1 y están mapeados a páginas del perfil controlado materializado (190 pasajes). Los gates de gold y ranking están abiertos; `CUDA_READY=false` y no se ejecutó retrieval. Ver [estado y metodología](benchmarks/kc_col_ir_v0.1/README.md).
 
 ## Empezar
 

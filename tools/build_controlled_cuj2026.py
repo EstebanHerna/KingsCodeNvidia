@@ -55,6 +55,10 @@ def inventory_kind(name: str, data: bytes, is_dir: bool) -> str:
 
 def build(archive: Path = ARCHIVE, output: Path = OUT, profile_dir: Path = PROFILE_DIR,
           materialize: bool = True) -> dict:
+    archive = archive if archive.is_absolute() else ROOT / archive
+    output = output if output.is_absolute() else ROOT / output
+    profile_dir = profile_dir if profile_dir.is_absolute() else ROOT / profile_dir
+    archive, output, profile_dir = archive.resolve(), output.resolve(), profile_dir.resolve()
     try:
         from pypdf import PdfReader, __version__ as pypdf_version
     except ImportError as exc:
@@ -106,6 +110,7 @@ def build(archive: Path = ARCHIVE, output: Path = OUT, profile_dir: Path = PROFI
                         "passage_id": passage_id,
                         "doc_id": doc_id,
                         "canonical_document_id": doc_id,
+                        "member_index": index,
                         "text": text,
                         "norm_name": title,
                         "article": None,
@@ -145,7 +150,7 @@ def build(archive: Path = ARCHIVE, output: Path = OUT, profile_dir: Path = PROFI
     if len(documents) != 6:
         raise ValueError(f"Expected all six eligible textual PDFs; found {len(documents)}")
     sys.path.insert(0, str(ROOT))
-    from kingscode.retrieval import BM25Index
+    from kingscode.retrieval import BM25Index, TOKENIZER_VERSION
     from kingscode.common import indexable
     passage_bytes = "".join(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n" for row in passages).encode("utf-8")
     corpus_sha = digest(passage_bytes)
@@ -163,14 +168,20 @@ def build(archive: Path = ARCHIVE, output: Path = OUT, profile_dir: Path = PROFI
         "parser_rule": "extract_text once per physical PDF page; preserve returned Unicode text; page is the passage boundary",
         "documents": [{k: d[k] for k in ("doc_id", "member_index", "source_member_sha256", "page_count", "passage_count")} for d in documents],
         "passages_sha256": corpus_sha,
+        "passages_hash_semantics": "SHA-256 over canonical UTF-8 JSONL: sort_keys=true, ensure_ascii=false, compact row JSON, LF after every passage; includes provenance fields including member_index.",
+        "previous_in_memory_extraction_sha256": "019dee8a805e87fbacfce45cd448f4b538b921d6d7c5aa7ff3a82a5472a894ef",
+        "previous_hash_semantics": "Same page text, IDs and metadata serialized as canonical UTF-8 JSONL before explicit member_index was added to each passage record.",
+        "controlled_corpus_fingerprint": None,
         "passage_count": len(passages),
     }
-    build_sha = digest(canonical_bytes(build_identity))
+    build_identity["controlled_corpus_fingerprint"] = digest(canonical_bytes({k: v for k, v in build_identity.items() if k != "controlled_corpus_fingerprint"}))
+    build_sha = build_identity["controlled_corpus_fingerprint"]
     runtime_manifest = {
         **build_identity,
         "build_sha256": build_sha,
         "corpus_root": str(output.relative_to(ROOT).as_posix()),
         "index_files": {"passages.jsonl": corpus_sha},
+        "tokenizer_version": TOKENIZER_VERSION,
         "redistribution": "Local ignored build only; source and extracted text are not committed pending rights review.",
         "materialized": materialize,
     }
@@ -181,6 +192,7 @@ def build(archive: Path = ARCHIVE, output: Path = OUT, profile_dir: Path = PROFI
             "graph/edges.jsonl": digest((output / "graph/edges.jsonl").read_bytes()),
         })
         write_json(output / "manifest.json", runtime_manifest)
+        runtime_manifest_sha = digest((output / "manifest.json").read_bytes())
         profile_dir.mkdir(parents=True, exist_ok=True)
         write_json(profile_dir / "controlled_cuj2026_v1_profile.json", {
         "profile_id": PROFILE_ID,
@@ -189,12 +201,19 @@ def build(archive: Path = ARCHIVE, output: Path = OUT, profile_dir: Path = PROFI
         "source_archive_sha256": archive_sha,
         "build_sha256": build_sha,
         "passages_sha256": corpus_sha,
+        "passages_hash_semantics": build_identity["passages_hash_semantics"],
+        "previous_in_memory_extraction_sha256": build_identity["previous_in_memory_extraction_sha256"],
+        "previous_hash_semantics": build_identity["previous_hash_semantics"],
         "document_count": len(documents),
         "passage_count": len(passages),
         "page_count": sum(d["page_count"] for d in documents),
         "parser": f"pypdf-{pypdf_version}-page-extract-text",
         "local_corpus_root": "ignored:tmp/kc_col_ir_v0.1/controlled_cuj2026_v1",
         "materialized": True,
+        "build_status": "MATERIALIZED_VERIFIED",
+        "controlled_corpus_fingerprint": build_sha,
+        "controlled_manifest_sha256": runtime_manifest_sha,
+        "bm25_index_sha256": runtime_manifest["index_files"]["index/bm25.json"],
         "index_files": runtime_manifest["index_files"],
         "audio_policy": "Audio members inventoried but excluded from text passages; no ASR/generative transcription.",
         "redistribution": "Derived page text remains ignored/local pending rights review.",

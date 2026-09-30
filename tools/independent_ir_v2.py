@@ -13,6 +13,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from kingscode.common import ROOT, file_hash, read_json, read_jsonl, write_json
+from tools.verify_controlled_cuj2026 import validate_mappings
 
 BENCH = ROOT / "benchmarks/kc_col_ir_v0.1"
 MIN_GOLD = 10
@@ -128,6 +129,31 @@ def hydrate_candidate_questions(candidates: list[dict], pool_rows: list[dict]) -
     return hydrated
 
 
+def verify_controlled_profile_files(gold_rows: list[dict]) -> dict:
+    """Verify the local profile and every accepted evidence mapping without querying."""
+    profile = read_json(BENCH / "review/controlled_cuj2026_v1_profile.json")
+    corpus = ROOT / "tmp/kc_col_ir_v0.1/controlled_cuj2026_v1"
+    if profile.get("materialized") is not True or profile.get("build_status") != "MATERIALIZED_VERIFIED":
+        raise PermissionError("CONTROLLED_PROFILE_NOT_MATERIALIZED")
+    passages_path = corpus / "passages.jsonl"
+    manifest_path = corpus / "manifest.json"
+    bm25_path = corpus / "index/bm25.json"
+    for path in (passages_path, manifest_path, bm25_path):
+        if not path.is_file():
+            raise PermissionError(f"CONTROLLED_PROFILE_FILE_MISSING: {path.name}")
+    if file_hash(passages_path) != profile.get("passages_sha256"):
+        raise ValueError("CONTROLLED_PROFILE_PASSAGES_HASH_MISMATCH")
+    if file_hash(manifest_path) != profile.get("controlled_manifest_sha256"):
+        raise ValueError("CONTROLLED_PROFILE_MANIFEST_HASH_MISMATCH")
+    if file_hash(bm25_path) != profile.get("bm25_index_sha256"):
+        raise ValueError("CONTROLLED_PROFILE_BM25_HASH_MISMATCH")
+    passages = read_jsonl(passages_path)
+    documents = read_jsonl(BENCH / "review/controlled_cuj2026_v1_documents.jsonl")
+    mappings = read_jsonl(BENCH / "review/controlled_cuj2026_v1_mapping.jsonl")
+    coverage = read_jsonl(BENCH / "review/controlled_cuj2026_v1_coverage.jsonl")
+    return validate_mappings(gold_rows, mappings, coverage, passages, documents)
+
+
 def preflight(corpus_profile: str = "controlled_cuj2026_v1") -> tuple[dict, list[dict], dict[str, dict]]:
     manifest = read_json(BENCH / "manifest.json")
     candidates = read_jsonl(BENCH / "questions/dev.jsonl")
@@ -165,9 +191,7 @@ def preflight(corpus_profile: str = "controlled_cuj2026_v1") -> tuple[dict, list
     if manifest.get("ranking_gate", {}).get("unlocked") is not True:
         raise PermissionError("RANKING_GATE_LOCKED: manifest has not recorded corpus-complete gold review")
     if corpus_profile == "controlled_cuj2026_v1":
-        profile = read_json(BENCH / "review/controlled_cuj2026_v1_profile.json")
-        if not profile.get("build_status", "").startswith("MATERIALIZED"):
-            raise PermissionError("CONTROLLED_PROFILE_NOT_MATERIALIZED: passage file is required before execution")
+        verify_controlled_profile_files(list(gold.values()))
     if manifest.get("cuda_ready") is not True or manifest.get("baseline_gate", {}).get("unlocked") is not True:
         raise PermissionError("CUDA_READY=false: ranking/configuration comparison remains locked")
     return manifest, evaluation_questions, gold
@@ -279,6 +303,8 @@ def run(component: str, config_path: Path, corpus_profile: str = "controlled_cuj
     metrics = sorted({k for row in rank_rows for k in row["metrics"] if not k.endswith("diagnostic")})
     aggregate = {k: statistics.mean(row["metrics"][k] for row in rank_rows) for k in metrics} if rank_rows else {}
     populations = metric_population(list(gold.values()), corpus_profile, controlled_rows)
+    competitive_rows = read_jsonl(BENCH / "review/competitive_corpus_v01_coverage.jsonl")
+    competitive_pop = metric_population(list(gold.values()), "competitive_corpus_v01", competitive_rows)
     coverage_n = populations["coverage_n"]
     coverage_rates = {state: (count / coverage_n if coverage_n else None)
                       for state, count in populations["coverage_counts"].items()}
@@ -288,6 +314,11 @@ def run(component: str, config_path: Path, corpus_profile: str = "controlled_cuj
                       "Corpus Missing Rate": coverage_rates["MISSING"],
                       "Corpus Complete Rate": coverage_rates["COMPLETE"],
                       "Corpus Partial Rate": coverage_rates["PARTIAL"],
+                      "coverage_profile": corpus_profile,
+                      "competitive_corpus_coverage_counts": competitive_pop["coverage_counts"],
+                      "competitive_corpus_missing_rate": competitive_pop["corpus_missing_rate"],
+                      "controlled_corpus_coverage_counts": metric_population(list(gold.values()), "controlled_cuj2026_v1", controlled_rows)["coverage_counts"],
+                      "controlled_corpus_complete_rate": metric_population(list(gold.values()), "controlled_cuj2026_v1", controlled_rows)["coverage_counts"]["COMPLETE"] / coverage_n if coverage_n else None,
                       "metric_denominators": {name: populations["ranking_n"] for name in metrics}})
     aggregate.update({"latency_p50_ms": statistics.median(latencies), "latency_p95_ms": pct(.95),
                       "questions": len(records), "ranking_questions": len(rank_rows)})
@@ -315,16 +346,25 @@ if __name__ == "__main__":
         rows = read_jsonl(BENCH / "gold/dev.jsonl")
         controlled_rows = read_jsonl(BENCH / "review/controlled_cuj2026_v1_coverage.jsonl")
         population = metric_population(rows, args.corpus_profile, controlled_rows)
+        profile_verified = False
+        if args.corpus_profile == "controlled_cuj2026_v1":
+            try:
+                verify_controlled_profile_files(rows)
+                profile_verified = True
+            except (OSError, KeyError, ValueError, PermissionError):
+                profile_verified = False
+        ranking_unlocked = manifest.get("ranking_gate", {}).get("unlocked") is True and population["ranking_n"] >= MIN_COMPLETE and profile_verified
         print(json.dumps({"status": "GATED", "benchmark": "KC-COL-IR-v0.1",
                           "cuda_ready": manifest["cuda_ready"],
                           "gold_gate": {"accepted": len(rows), "minimum": MIN_GOLD, "unlocked": len(rows) >= MIN_GOLD},
                           "ranking_gate": {"controlled_complete_coverage_n": population["ranking_n"],
                                            "ranking_n": manifest.get("ranking_gate", {}).get("ranking_n", 0),
                                            "minimum_complete": MIN_COMPLETE,
-                                           "unlocked": manifest.get("ranking_gate", {}).get("unlocked") is True
-                                                      and population["ranking_n"] >= MIN_COMPLETE
-                                                      and read_json(BENCH / "review/controlled_cuj2026_v1_profile.json").get("build_status", "").startswith("MATERIALIZED")},
-                          "candidate_count": len(read_jsonl(BENCH / "questions/dev.jsonl")),
+                                           "unlocked": ranking_unlocked},
+                          "controlled_profile_verified": profile_verified,
+                          "retrieval_benchmark_ready": manifest.get("retrieval_benchmark_ready") is True and ranking_unlocked,
+                          "execution_started": False,
+                          "candidate_count": len(read_jsonl(BENCH / "questions/dev.jsonl")) + len(read_jsonl(BENCH / "review/expansion_batch_1_questions.jsonl")),
                           "corpus_profile": args.corpus_profile,
                           "controlled_profile_materialized": read_json(BENCH / "review/controlled_cuj2026_v1_profile.json").get("build_status", "").startswith("MATERIALIZED"),
                           "validated_subset_only": True}, indent=2))
