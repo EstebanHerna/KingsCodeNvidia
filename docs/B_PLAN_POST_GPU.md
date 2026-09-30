@@ -188,4 +188,7 @@ Leer `legal_basis` solo en el script de medición, nunca en el pipeline (mismo p
 | `docker run -e FIXTURE=1` | PREPARED_NOT_EXECUTED (daemon apagado) |
 | Experimento BASE vs PLAN (`docs/experiments/B_BASE_VS_PLAN_v1.json`) | PREPARED_NOT_EXECUTED · BLOCKED_ON_A_FREEZE |
 | Freeze de retrieval real y bakeoff de decoders | BLOCKED_ON_A_FREEZE · BLOCKED_ON_GPU |
-| Planes Qwen congelados, primera generación real | BLOCKED_ON_GPU |
+| Planes Qwen congelados | BLOCKED_ON_A_FREEZE (solo para el experimento BASE vs PLAN; ya no se generan en la sesión GPU) |
+| Primera generación real | BLOCKED_ON_A_FREEZE · BLOCKED_ON_GPU |
+| Runners GPU (`run_b_gpu_4090.ps1 -Phase prep` / `-Phase decoder`, `kingscode_gpu_todo.ps1`) alineados con el runbook §8 (2026-09-30) | IMPLEMENTED_AND_DRY_RUN_VERIFIED · fase `decoder` BLOCKED_ON_A_FREEZE · requiere merge del PR #6 |
+| Elegibilidad del decoder | ALIA (7.768.117.248) por defecto; Qwen3-8B (8.190.735.360) solo con `-IncludePendingEligibility`, marcado no competitivo hasta confirmación escrita (correo B5 pendiente) |

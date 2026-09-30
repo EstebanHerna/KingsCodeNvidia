@@ -96,7 +96,7 @@
   },
   "next_action": {
     "member_a": "Continue exact primary-source acquisition and evidence/temporal review for the frozen JEP 2025 batch; keep gold independent of corpus presence and report coverage separately. No retrieval or CUDA until >=10 accepted gold packets and gate review.",
-    "member_b": "On the target GPU run the two prepared verifications, prepare exact model snapshots, GPU smoke, freeze retrieval evidence and execute D1-D3. No new tests were run in Gate 2-Prep by user instruction.",
+    "member_b": "After PR #6 merges: on the 4090 run tools/run_b_gpu_4090.ps1 -Phase prep (env, corpus, dense status, ALIA weights). -Phase decoder only after A's selected configuration writes artifacts/retrieval_freeze.json (runbook sec. 8); Qwen3-8B only with -IncludePendingEligibility, not competitive until organizer confirmation.",
     "shared": "Use feat/member-a-corpus-v02-locator, based on 60ebf7e GPU freeze. No merge to main. B continues its own decoder work; do not infer decoder success from retrieval results."
   },
   "next_actions": [
