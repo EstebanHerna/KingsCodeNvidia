@@ -1,10 +1,12 @@
 # KC-COL-IR-v0.1 — CUDA handoff
 
-**retrieval_benchmark_ready: true. CUDA_READY: false. Do not execute C0-C3 or CUDA in this freeze.** GOLD_GATE and RANKING_GATE are both unlocked at 10/10. Competitive corpus-v0.1 coverage remains MISSING for all 10 (100%). The separate controlled CUJ 2026 profile contains 6 PDFs, 191 physical pages and 190 passages; all 10 accepted gold mappings resolve. The 30 original items are unchanged; the deterministic next 10 have all been reviewed. Combined dispositions: 10 accepted, 9 pending, 21 rejected. Externado 2011 remains reproducibility-only. Javeriana 2026 remains unparsed and uninspected.
+**retrieval_benchmark_ready: true. C0-C3 are authorized after the target handoff verifier passes. CUDA_READY remains false in the frozen manifest; readiness is established by a separate ignored target report, never by hand-editing this manifest.** GOLD_GATE and RANKING_GATE are both unlocked at 10/10. Competitive corpus-v0.1 coverage remains MISSING for all 10 (100%). The separate controlled CUJ 2026 profile contains 6 PDFs, 191 physical pages and 190 passages; all 10 accepted gold mappings resolve. The 30 original items are unchanged; the deterministic next 10 have all been reviewed. Combined dispositions: 10 accepted, 9 pending, 21 rejected. Externado 2011 remains reproducibility-only. Javeriana 2026 remains unparsed and uninspected.
 
 The frozen queue contains an accepted subset and reviewed pending/rejected candidates. Do not substitute benchmark-v1, `kingscode_ir_v2`, Search V2, or Javeriana validation questions. Graph setting for the first future ranking comparison is OFF.
 
 ## Frozen handoff inputs
+
+The exact ignored runtime inputs are bundled at `reports/kc_col_ir_v0.1_gpu_handoff.zip` (SHA-256 `16195415c1eec42348e3b036e878f9a7a285948e2275006043f09838f9cfdf5b`). Transfer that archive to the separate CUDA integration PC and expand it at the repository root. The bundle includes the frozen 62-item official-source pool, the official CUJ 2026 ZIP/acquisition ledger, and the controlled 190-passage corpus/BM25 files. It does not include model weights.
 
 The Git SHA is supplied by the freeze commit and captured in each later run report (do not use a self-referential SHA inside this document).
 
@@ -21,12 +23,40 @@ The Git SHA is supplied by the freeze commit and captured in each later run repo
 - Frozen comparison parameters: graph OFF; candidate_k=30; evidence_k=8; metrics_k=10; C0 BM25, C1 Qwen dense, C2 hybrid/RRF, C3 hybrid/Qwen reranker.
 - `CUDA_READY=false` because target-runtime handoff checks have not been completed. This does not mean CUDA ran; `cuda_execution_started=false`.
 
-Do not execute the benchmark in this freeze. The dedicated future runner interface is
-`python tools/independent_ir_v2.py run --config benchmarks/kc_col_ir_v0.1/runner.json`.
-It must use identical questions, corpus, gold, depth and graph OFF for all four
-components and write per-question rankings, failure classes, latency and the
-required aggregate metrics. The ranking gate and corpus are now verified; this
-commit deliberately stops before any C0-C3 execution.
+Before running C0-C3 on the integration RTX 4090, restore the ignored inputs and run:
+
+```powershell
+python tools/verify_controlled_cuj2026.py
+python tools/independent_ir_v2.py check --corpus-profile controlled_cuj2026_v1
+python tools/audit_kc_col_ir_tokens.py --output reports/kc_col_ir_v0.1/token_audit.json
+python tools/prepare_gpu_environment.py --diagnose --output reports/kc_col_ir_v0.1/gpu_diagnostic.json
+$SmokeResult = & python tools/gpu_smoke.py --model qwen3-8b --output-root reports/kc_col_ir_v0.1/gpu_smoke | ConvertFrom-Json
+if ($LASTEXITCODE -ne 0 -or $SmokeResult.status -ne 'passed') { throw 'GPU smoke did not pass; retain its report and stop.' }
+$SmokeReport = $SmokeResult.report
+```
+
+The GPU smoke must pass all BF16 matmul, Qwen embedding, Qwen reranker, decoder,
+and citation-guard stages. Then record the target handoff:
+
+```powershell
+python tools/verify_kc_col_ir_target_handoff.py `
+  --diagnostic reports/kc_col_ir_v0.1/gpu_diagnostic.json `
+  --gpu-smoke $SmokeReport `
+  --token-audit reports/kc_col_ir_v0.1/token_audit.json
+python tools/independent_ir_v2.py check --corpus-profile controlled_cuj2026_v1 --target-handoff reports/kc_col_ir_v0.1/target_handoff.json
+```
+
+Only a passing check unlocks the frozen C0-C3 commands below; `cuda_ready` in the
+committed manifest remains false as a historical freeze value. Each runner report
+captures the target handoff report hash. Run all four components with identical
+questions, corpus, gold, depth and graph OFF; keep validation untouched.
+
+```powershell
+foreach ($C in @('C0','C1','C2','C3')) {
+  python tools/independent_ir_v2.py run --component $C --config benchmarks/kc_col_ir_v0.1/runner.json --corpus-profile controlled_cuj2026_v1 --target-handoff reports/kc_col_ir_v0.1/target_handoff.json
+  if ($LASTEXITCODE -ne 0) { throw "KC-COL-IR $C failed; preserve reports and stop." }
+}
+```
 
 Planned components, after the gate:
 

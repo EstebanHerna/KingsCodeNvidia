@@ -157,7 +157,8 @@ def verify_controlled_profile_files(gold_rows: list[dict]) -> dict:
     return validate_mappings(gold_rows, mappings, coverage, passages, documents)
 
 
-def preflight(corpus_profile: str = "controlled_cuj2026_v1") -> tuple[dict, list[dict], dict[str, dict]]:
+def preflight(corpus_profile: str = "controlled_cuj2026_v1",
+              target_handoff: Path | None = None) -> tuple[dict, list[dict], dict[str, dict]]:
     manifest = read_json(BENCH / "manifest.json")
     candidates = read_jsonl(BENCH / "questions/dev.jsonl")
     gold_rows = read_jsonl(BENCH / "gold/dev.jsonl")
@@ -195,8 +196,12 @@ def preflight(corpus_profile: str = "controlled_cuj2026_v1") -> tuple[dict, list
         raise PermissionError("RANKING_GATE_LOCKED: manifest has not recorded corpus-complete gold review")
     if corpus_profile == "controlled_cuj2026_v1":
         verify_controlled_profile_files(list(gold.values()))
-    if manifest.get("cuda_ready") is not True or manifest.get("baseline_gate", {}).get("unlocked") is not True:
-        raise PermissionError("CUDA_READY=false: ranking/configuration comparison remains locked")
+    if manifest.get("baseline_gate", {}).get("unlocked") is not True:
+        raise PermissionError("RANKING_GATE_LOCKED: frozen comparison remains locked")
+    if target_handoff is None:
+        raise PermissionError("CUDA_READY=false: pass a verified --target-handoff report")
+    from tools.verify_kc_col_ir_target_handoff import verify_saved_handoff
+    verify_saved_handoff(target_handoff)
     return manifest, evaluation_questions, gold
 
 def _dcg(ids: list[str], gold: set[str]) -> float:
@@ -318,10 +323,11 @@ def validate_comparison_config(cfg: dict, manifest: dict) -> None:
             raise ValueError(f"COMPARISON_CONFIG_MISMATCH: frozen component {component} changed")
 
 
-def run(component: str, config_path: Path, corpus_profile: str = "controlled_cuj2026_v1") -> dict:
+def run(component: str, config_path: Path, corpus_profile: str = "controlled_cuj2026_v1",
+        target_handoff: Path | None = None) -> dict:
     if component not in COMPONENTS:
         raise ValueError(f"component must be one of {COMPONENTS}")
-    manifest, questions, gold = preflight(corpus_profile)
+    manifest, questions, gold = preflight(corpus_profile, target_handoff)
     cfg = read_json(config_path)
     validate_comparison_config(cfg, manifest)
     if corpus_profile == "controlled_cuj2026_v1":
@@ -443,6 +449,7 @@ def run(component: str, config_path: Path, corpus_profile: str = "controlled_cuj
         "models": ({role: {key: model[key] for key in ("repo_id", "revision", "manifest_sha256", "files_verified")}
                     for role, model in neural_record["models"].items()} if neural_record else {}),
         "model_lock_sha256": file_hash(ROOT / "config/models.lock.json"),
+        "target_handoff_sha256": file_hash(target_handoff) if target_handoff is not None else None,
         "neural_config_sha256": file_hash(ROOT / "config/neural.json"),
         "runner_config_sha256": file_hash(config_path),
         "retrieval_parameters": {"candidate_k": cfg["candidate_k"], "evidence_k": cfg["evidence_k"],
@@ -476,6 +483,8 @@ if __name__ == "__main__":
     parser.add_argument("--component", choices=COMPONENTS)
     parser.add_argument("--config", type=Path, default=BENCH / "runner.json")
     parser.add_argument("--corpus-profile", choices=("controlled_cuj2026_v1", "competitive_corpus_v01"), default="controlled_cuj2026_v1")
+    parser.add_argument("--target-handoff", type=Path,
+                        help="Verified target GPU/tokenizer handoff report from tools/verify_kc_col_ir_target_handoff.py")
     args = parser.parse_args()
     if args.command == "check":
         manifest = read_json(BENCH / "manifest.json")
@@ -489,16 +498,28 @@ if __name__ == "__main__":
                 profile_verified = True
             except (OSError, KeyError, ValueError, PermissionError):
                 profile_verified = False
+        cuda_ready = False
+        handoff_error = None
+        if args.target_handoff is not None:
+            try:
+                from tools.verify_kc_col_ir_target_handoff import verify_saved_handoff
+                verify_saved_handoff(args.target_handoff)
+                cuda_ready = True
+            except (OSError, KeyError, ValueError, PermissionError) as exc:
+                handoff_error = str(exc)
         ranking_unlocked = manifest.get("ranking_gate", {}).get("unlocked") is True and population["ranking_n"] >= MIN_COMPLETE and profile_verified
-        print(json.dumps({"status": "GATED", "benchmark": "KC-COL-IR-v0.1",
-                          "cuda_ready": manifest["cuda_ready"],
+        retrieval_ready = manifest.get("retrieval_benchmark_ready") is True and ranking_unlocked
+        print(json.dumps({"status": "READY_TO_RUN" if cuda_ready and retrieval_ready else "GATED",
+                          "benchmark": "KC-COL-IR-v0.1",
+                          "cuda_ready": cuda_ready,
+                          "target_handoff_error": handoff_error,
                           "gold_gate": {"accepted": len(rows), "minimum": MIN_GOLD, "unlocked": len(rows) >= MIN_GOLD},
                           "ranking_gate": {"controlled_complete_coverage_n": population["ranking_n"],
                                            "ranking_n": manifest.get("ranking_gate", {}).get("ranking_n", 0),
                                            "minimum_complete": MIN_COMPLETE,
                                            "unlocked": ranking_unlocked},
                           "controlled_profile_verified": profile_verified,
-                          "retrieval_benchmark_ready": manifest.get("retrieval_benchmark_ready") is True and ranking_unlocked,
+                          "retrieval_benchmark_ready": retrieval_ready,
                           "execution_started": False,
                           "candidate_count": len(read_jsonl(BENCH / "questions/dev.jsonl")) + len(read_jsonl(BENCH / "review/expansion_batch_1_questions.jsonl")),
                           "corpus_profile": args.corpus_profile,
@@ -507,4 +528,4 @@ if __name__ == "__main__":
     elif not args.component:
         parser.error("run requires --component C0|C1|C2|C3")
     else:
-        print(json.dumps(run(args.component, args.config, args.corpus_profile), ensure_ascii=False, indent=2))
+        print(json.dumps(run(args.component, args.config, args.corpus_profile, args.target_handoff), ensure_ascii=False, indent=2))

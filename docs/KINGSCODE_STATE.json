@@ -95,16 +95,15 @@
     ]
   },
   "next_action": {
-    "member_a": "On the target machine, restore the frozen controlled profile and pinned tokenizers, run tools/audit_kc_col_ir_tokens.py, and complete target-runtime handoff. Keep C0-C3 unexecuted until a separate empirical-ranking phase is authorized.",
-    "member_b": "On the target GPU run the two prepared verifications, prepare exact model snapshots, GPU smoke, freeze retrieval evidence and execute D1-D3. No new tests were run in Gate 2-Prep by user instruction.",
-    "shared": "Use feat/member-a-corpus-v02-locator, based on 60ebf7e GPU freeze. No merge to main. B continues its own decoder work; do not infer decoder success from retrieval results."
+    "member_a": "On the separate CUDA integration machine, restore the verified ignored CUJ profile/pool, run the pinned-tokenizer audit and Qwen GPU smoke, record reports with tools/verify_kc_col_ir_target_handoff.py, then run the frozen C0-C3 DEV matrix using --target-handoff. Preserve the validation split.",
+    "member_b": "Esteban owns B on his development PC. Integrate B after A's retrieval selection/freeze; run decoder and end-to-end evaluation on the separate CUDA integration PC.",
+    "shared": "A and B develop on separate PCs; a third RTX 4090 PC is the integration/runtime target. Use the frozen A handoff for C0-C3 first, then integrate and evaluate B without changing A's benchmark inputs."
   },
   "next_actions": [
-    "Pre-CUDA hardening: audit pinned-tokenizer input lengths, record execution identity, report Candidate@30 and duplicate diagnostics, correct timing semantics, enforce unique passage_id for RRF identity, and keep the <=2 DEV shortlist rule preregistered. No retrieval or CUDA was run.",
-    "KC-COL-IR-v0.1: original 30-item CUJ batch and deterministic 10-item expansion are frozen; 10 accepted gold unlock GOLD_GATE and RANKING_GATE. All 10 remain missing from competitive corpus-v0.1; the separate controlled 190-passage corpus and BM25 index are materialized and verified. Retrieval benchmark is ready; CUDA_READY=false pending target-runtime handoff. Do not run C0-C3 in this freeze.",
+    "KC-COL-IR-v0.1 handoff: frozen questions/gold and the controlled 190-passage CUJ profile are unchanged. Run the target token audit and GPU smoke, record the evidence report, then execute C0-C3 DEV only. The committed cuda_ready=false remains immutable; runtime readiness is report-backed.",
     "The historical ICFES intake is superseded for benchmark split purposes: retain its provenance but keep ICFES SEALED_FUTURE in KC-COL-IR-v0.1.",
     "Acquire seven cited target/modifier primary instruments and review G01 replacements; keep zero semantic edges active until verified.",
-    "After target-runtime handoff is explicitly cleared, run the frozen untuned C0-C3 comparison and failure taxonomy; this profile-freeze task did not execute it.",
+    "After the verified handoff report exists on the separate CUDA integration machine, run C0-C3 with the same 10 accepted questions, controlled corpus, graph OFF and frozen k values; inspect per-question failures before any validation or selection.",
     "Run python -m unittest discover -s tests -v, python tools/benchmark_v2.py check, and python tools/verify_member_a_v02.py before pushing this branch."
   ],
   "do_not_forget": [
