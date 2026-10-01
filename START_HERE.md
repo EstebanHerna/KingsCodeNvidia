@@ -32,3 +32,7 @@ Gate 2-Prep está preparado pero sin pruebas ejecutadas, por instrucción del us
 ## Actualización que prevalece sobre los próximos pasos históricos de arriba
 
 A ya tiene resultados RTX4090/Search V2 preservados en 60ebf7e. La fase vigente es locator productivo + benchmark v2 + corpus v0.2 en `feat/member-a-corpus-v02-locator`. Validation v1 cerrada; no reejecutar las variantes ni consumir holdout. Leer `reports/MEMBER_A_V02_PROGRESS.md` y `docs/A_TO_B_V02_CONTRACT.md`. B/decoder mantiene su estado independiente.
+
+## Estado más reciente: KC-COL-IR pre-CUDA (2026-09-30)
+
+`main` está en `e528161`. KC-COL-IR CUJ 2026 tiene 10 gold independientes y 10/10 completos en el perfil controlado de 190 pasajes; el corpus competitivo v0.1 sigue sin esas fuentes. `CUDA_READY=false`; el handoff vigente detiene la ejecución antes de C0-C3. El trabajo local de hardening está en `codex/pre-cuda-hardening`; consultar `docs/KC_COL_IR_PRE_CUDA_HARDENING.md` y `docs/experiments/KC_COL_IR_CUJ2026_SHORTLIST_V1.json`. Javeriana validation sigue sin parsear ni inspeccionar.

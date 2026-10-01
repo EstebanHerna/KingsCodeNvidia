@@ -586,3 +586,10 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
 - The previously reported `019dee8a...` hash is reproduced exactly by serializing the same passage rows without the explicit `member_index` provenance field. The new canonical JSONL hash includes `member_index`; the earlier value was preserved as a distinct schema/hash record, not overwritten.
 - All 24 external-evidence mappings across 10 accepted questions resolve to 18 unique real passages with matching source member, document and physical page; all 10 minimal evidence sets resolve. Competitive corpus-v0.1 remains 10/10 MISSING (Missing Rate 1.0).
 - CPU BM25 construction and reopen through `Retriever` passed; tokenizer version is `accent-fold-unicode-words-1`. `GOLD_GATE=UNLOCKED`, `RANKING_GATE=UNLOCKED` (ranking_n=10), `retrieval_benchmark_ready=true`; `CUDA_READY=false` and `cuda_execution_started=false`. No retrieval query, C0-C3, dense model, reranker, CUDA or validation inspection ran.
+
+## 2026-09-30 — Pre-CUDA hardening para KC-COL-IR CUJ 2026
+
+- Se trabaja desde `codex/pre-cuda-hardening`, creado por fast-forward limpio desde `main` `e52816145970adddc70300b1a9988c02b4cd1c8d`. El gate de 10 gold y 10 pasajes completos está desbloqueado, pero `CUDA_READY=false`; el handoff actual ordena parar antes de C0-C3.
+- Se incorporan auditoría CPU de longitudes con tokenizers locales fijados, identidad de ejecución en reportes, Candidate@30 y métricas descriptivas de duplicación, sincronización para medir latencia neural y separación correcta de inicialización/consulta/tiempo total. El RRF conserva la identidad `passage_id` y el índice falla cerrado ante IDs ausentes o repetidos.
+- La regla de shortlist de máximo dos candidatos queda preregistrada en `docs/experiments/KC_COL_IR_CUJ2026_SHORTLIST_V1.json`. Validation sigue bloqueada hasta adquirir/parsear/revisar su fuente independiente.
+- No se ejecutaron tests, retrieval, CUDA, validación ni decoder. El snapshot controlado y los tokenizers fijados no están completos en este checkout; la auditoría queda lista para ejecutarse localmente cuando esos artefactos estén disponibles.

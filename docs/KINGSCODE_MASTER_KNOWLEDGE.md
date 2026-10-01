@@ -1,7 +1,7 @@
 # KINGSCODE MASTER KNOWLEDGE — Hackathon AI Week 2026
 
 **Fuente canónica del proyecto.**  
-**Última actualización:** 2026-09-28\
+**Última actualización:** 2026-09-30\
 **Equipo activo:** 2 integrantes  
 **Estado:** v0.5 + capa v0.6 de A (metadatos/recuperación) preparada y validada en CPU; A y Gate 1B conservados. Gate 2-Prep tiene código/configuración/runbook preparados, sin ejecutar pruebas por instrucción final del usuario. CUDA objetivo, inferencia real, benchmark neuronal completo y bakeoff siguen pendientes.
 
@@ -503,3 +503,7 @@ En el siguiente checkpoint de la misma rama se añadieron primitivas y pruebas p
 ### KC-COL-IR-v0.1 independent benchmark (2026-09-29)
 
 KC-COL-IR-v0.1 uses 30 frozen item numbers from the current JEP CUJ 2026 fourth-edition (SeRVR) case materials; the prior 2025 label was corrected without resampling. The mixed-edition `/preguntas` page retains stale “2025 / Tercera Edición” boilerplate; attribution to CUJ 2026 rests on matching case identity and materials in the official 2026 packet. The 2025 third-edition SDSJ packet is provenance-only. A deterministic next-10 expansion was frozen before content review; 40 candidates have dispositions and 10 independently supported gold packets are accepted. All 10 are MISSING from competitive corpus-v0.1. A separate profile using all six textual PDFs from the full CUJ 2026 packet is materialized as 190 page passages; all 10 controlled evidence sets resolve to actual passages and the ranking gate is unlocked. `retrieval_benchmark_ready=true`; `CUDA_READY=false` pending target-runtime handoff. Javeriana 2026 remains unparsed/uninspected and Externado 2011 is reproducibility-only. No retrieval was executed. See `docs/MEMBER_A_V02_PROGRESS.md` and `benchmarks/kc_col_ir_v0.1/CUDA_HANDOFF.md`.
+
+### Pre-CUDA hardening (2026-09-30)
+
+The continuation starts from `main` `e52816145970adddc70300b1a9988c02b4cd1c8d` on the separate local branch `codex/pre-cuda-hardening`. It prepares a pinned local-tokenizer length audit, execution identity, Candidate@30 and duplicate diagnostics, explicit retrieval timing, unique `passage_id` checks, and a preregistered shortlist of at most two configurations. The controlled profile and tokenizer audit are not available in this checkout, so the audit has not run. No C0-C3, CUDA, validation scoring, decoder, or tests ran. `CUDA_READY` remains false and the current handoff still stops before ranking. See `docs/KC_COL_IR_PRE_CUDA_HARDENING.md`.

@@ -179,7 +179,7 @@ Lectura: el salto viene del **locator exacto** (inyecta el artículo citado en l
 | Grupo | Scripts |
 |---|---|
 | A: corpus | `member_a.py` (acquire/build/reproduce/dense/query), `acquire_corpus_v02.py`, `plan_corpus_v02.py`, `audit_corpus_quality_v07.py`, `document_member_a.py` |
-| A: benchmarks | `build_retrieval_benchmark.py`, `evaluate_retrieval_benchmark.py`, `analyze_retrieval_benchmark.py`, `benchmark_v2.py`, `benchmark_source_intake.py`, `independent_ir_v2.py` (KC-COL-IR, con gate), `retrieval_matrix.py`, `gpu_search_v2_dev.py`, `gpu_search_v2_validation.py` |
+| A: benchmarks | `build_retrieval_benchmark.py`, `evaluate_retrieval_benchmark.py`, `analyze_retrieval_benchmark.py`, `benchmark_v2.py`, `benchmark_source_intake.py`, `independent_ir_v2.py` (KC-COL-IR, con gate), `audit_kc_col_ir_tokens.py` (token audit CPU/local-only), `retrieval_matrix.py`, `gpu_search_v2_dev.py`, `gpu_search_v2_validation.py` |
 | A: verificación | `verify_member_a_v02.py`, `verify_member_a_second.py`, `verify_kc_col_ir_v01.py` |
 | B | `member_b.py` (smoke, decoder-smoke, sample, bakeoff, **batch**, **verify**, **plan**), `analyze_query_plans.py`, `analyze_citation_ceiling.py`, `verify_member_b_second.py` |
 | GPU / entorno | `kingscode_gpu_todo.ps1` (script único de la PC con GPU), `run_b_gpu_4090.ps1` (B en la 4090 con el `.venv` existente: `-Phase prep` hoy; `-Phase decoder` solo con el freeze de A), `check_cuda.py`, `prepare_gpu_environment.py`, `prepare_models.py`, `prepare_neural.py`, `neural_smoke.py`, `gpu_smoke.py`, `verify_gate2_prep.py`, `benchmark_budget.py` |

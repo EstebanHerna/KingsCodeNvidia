@@ -3,12 +3,15 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.metadata
 import json
 import math
+import platform
 import statistics
 import subprocess
 import sys
 import time
+import unicodedata
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -201,7 +204,7 @@ def _dcg(ids: list[str], gold: set[str]) -> float:
                for rank, item in enumerate(ids[:10]))
 
 
-def score(ranked: list[dict], gold: dict, corpus_docs: set[str]) -> dict:
+def score(ranked: list[dict], gold: dict, corpus_docs: set[str], candidate_k: int | None = None) -> dict:
     if gold.get("corpus_coverage") != "COMPLETE":
         raise ValueError("Pure ranking metrics require COMPLETE frozen-corpus coverage")
     ids = [p["passage_id"] for p in ranked]
@@ -221,16 +224,98 @@ def score(ranked: list[dict], gold: dict, corpus_docs: set[str]) -> dict:
     )
     complete = any(set(s) <= found8 for s in alternatives)
     complete10 = any(set(s) <= found10 for s in alternatives)
+    candidate_metrics = {}
+    if candidate_k is not None:
+        candidate_ids = set(ids[:candidate_k])
+        candidate_completeness = max(
+            (len(candidate_ids & set(s)) / len(set(s)) for s in alternatives if s),
+            default=0.0,
+        )
+        candidate_complete = any(set(s) <= candidate_ids for s in alternatives if s)
+        candidate_metrics = {
+            f"Candidate Evidence Completeness@{candidate_k}": candidate_completeness,
+            f"Candidate Complete Evidence Set@{candidate_k}": float(candidate_complete),
+            f"Candidate Recall@{candidate_k}": len(candidate_ids & union) / len(union) if union else 0.0,
+        }
     first = next((i for i, item in enumerate(ids[:10], 1) if item in union), None)
     dcg = _dcg(ids, union)
     ideal = sum(1 / math.log2(i + 2) for i in range(min(len(union), 10)))
     gold_docs = set(gold["gold_document_ids"])
     found_docs = set(docs[:10])
-    return {"Evidence Completeness@8": completeness8, "Complete Evidence Set@8": float(complete),
+    return {**candidate_metrics, "Evidence Completeness@8": completeness8, "Complete Evidence Set@8": float(complete),
             "Recall@10": len(found10 & union) / len(union) if union else 0.0,
             "MRR@10": 1 / first if first else 0.0, "nDCG@10": dcg / ideal if ideal else 0.0,
             "Document Recall": len(found_docs & gold_docs) / len(gold_docs) if gold_docs else 0.0,
             "complete_set_at_10_diagnostic": complete10}
+
+
+def candidate_diagnostics(ranked: list[dict], candidate_k: int) -> dict:
+    """Describe candidate-pool repetition without deleting or merging evidence."""
+    candidates = ranked[:candidate_k]
+
+    def repeated(values):
+        values = [value for value in values if value not in (None, "")]
+        return len(values) - len(set(values))
+
+    content_hashes = []
+    for passage in candidates:
+        text = passage.get("text")
+        if isinstance(text, str):
+            normalized = unicodedata.normalize("NFC", " ".join(text.split()))
+            content_hashes.append(hashlib.sha256(normalized.encode("utf-8")).hexdigest())
+    return {
+        "candidate_passage_count": len(candidates),
+        "candidate_unique_passage_ids": len({p.get("passage_id") for p in candidates}),
+        "candidate_duplicate_passage_id_occurrences": repeated([p.get("passage_id") for p in candidates]),
+        "candidate_duplicate_fragment_occurrences": repeated([p.get("canonical_fragment_id") for p in candidates]),
+        "candidate_exact_content_duplicate_occurrences": repeated(content_hashes),
+        "candidate_unique_documents": len({p.get("canonical_document_id") or p.get("doc_id") for p in candidates}),
+    }
+
+
+def _git_status_dirty(output_dir: str) -> bool:
+    output_pathspec = output_dir.replace("\\", "/").strip("/") + "/**"
+    status = subprocess.check_output(
+        ["git", "status", "--porcelain", "--untracked-files=all", "--", ".",
+         f":(exclude){output_pathspec}"], cwd=ROOT, text=True
+    )
+    return bool(status.strip())
+
+
+def _package_version(name: str) -> str | None:
+    try:
+        return importlib.metadata.version(name)
+    except importlib.metadata.PackageNotFoundError:
+        return None
+
+
+def validate_comparison_config(cfg: dict, manifest: dict) -> None:
+    """Fail closed if runtime parameters drift from the frozen profile."""
+    if cfg.get("benchmark") != manifest.get("benchmark") or cfg.get("split") != "dev":
+        raise ValueError("COMPARISON_CONFIG_MISMATCH: benchmark identity and split are frozen")
+    frozen = manifest.get("comparison_freeze", {})
+    expected = {
+        "candidate_k": frozen.get("candidate_k"),
+        "evidence_k": frozen.get("evidence_k"),
+        "metrics_k": frozen.get("metrics_k"),
+    }
+    for name, value in expected.items():
+        if value is None or cfg.get(name) != value:
+            raise ValueError(f"COMPARISON_CONFIG_MISMATCH: {name} must equal frozen value {value!r}")
+    if cfg.get("graph_mode") != frozen.get("graph_mode") or cfg.get("seed") != 0:
+        raise ValueError("COMPARISON_CONFIG_MISMATCH: graph mode and seed must match the frozen profile")
+    if cfg.get("rrf_constant", 60) != 60:
+        raise ValueError("COMPARISON_CONFIG_MISMATCH: RRF constant must remain 60")
+    expected_components = {
+        "C0": {"mode": "bm25", "encoder": None, "reranker": None},
+        "C1": {"mode": "dense", "encoder": "Qwen/Qwen3-Embedding-0.6B", "reranker": None},
+        "C2": {"mode": "hybrid", "encoder": "Qwen/Qwen3-Embedding-0.6B", "fusion": "RRF", "reranker": None},
+        "C3": {"mode": "hybrid", "encoder": "Qwen/Qwen3-Embedding-0.6B", "fusion": "RRF", "reranker": "Qwen/Qwen3-Reranker-0.6B"},
+    }
+    for component, expected_spec in expected_components.items():
+        actual = cfg.get("components", {}).get(component, {})
+        if actual != expected_spec:
+            raise ValueError(f"COMPARISON_CONFIG_MISMATCH: frozen component {component} changed")
 
 
 def run(component: str, config_path: Path, corpus_profile: str = "controlled_cuj2026_v1") -> dict:
@@ -238,11 +323,14 @@ def run(component: str, config_path: Path, corpus_profile: str = "controlled_cuj
         raise ValueError(f"component must be one of {COMPONENTS}")
     manifest, questions, gold = preflight(corpus_profile)
     cfg = read_json(config_path)
+    validate_comparison_config(cfg, manifest)
     if corpus_profile == "controlled_cuj2026_v1":
         cfg["corpus"] = "tmp/kc_col_ir_v0.1/controlled_cuj2026_v1"
     from kingscode.retrieval import Retriever
     spec = cfg["components"][component]
-    started = time.perf_counter()
+    run_started = time.perf_counter()
+    initialization_started = time.perf_counter()
+    runtime = None
     if spec["mode"] == "bm25":
         retriever = Retriever(ROOT / cfg["corpus"], mode="bm25", rerank=False,
                               candidate_k=cfg["candidate_k"], graph_budget=0, exact_locator=False,
@@ -263,10 +351,11 @@ def run(component: str, config_path: Path, corpus_profile: str = "controlled_cuj
                        "query_transform": "none; exact source wording only"}
         runtime = NeuralRuntime(ROOT / cfg["corpus"], runtime_cfg)
         retriever = runtime
+    initialization_seconds = time.perf_counter() - initialization_started
     passages = read_jsonl(ROOT / cfg["corpus"] / "passages.jsonl")
     corpus_docs = {p.get("canonical_document_id") or p["doc_id"] for p in passages}
     records, latencies = [], []
-    out_k = max(cfg["metrics_k"], cfg["evidence_k"])
+    out_k = max(cfg["candidate_k"], cfg["metrics_k"], cfg["evidence_k"])
     controlled_rows = read_jsonl(BENCH / "review/controlled_cuj2026_v1_coverage.jsonl")
     population = metric_population(list(gold.values()), corpus_profile, controlled_rows)
     complete_ids = set(population["ranking_question_ids"])
@@ -275,11 +364,15 @@ def run(component: str, config_path: Path, corpus_profile: str = "controlled_cuj
         question = q.get("question")
         if not isinstance(question, str) or not question.strip():
             raise ValueError(f"Question text unavailable for {q['question_id']}; exact wording review incomplete")
+        if runtime is not None:
+            runtime.sync()
         t0 = time.perf_counter()
         if component == "C0":
             results = retriever.retrieve(question, out_k, "off")
         else:
             results = retriever.retrieve(question, out_k)
+        if runtime is not None:
+            runtime.sync()
         latency = (time.perf_counter() - t0) * 1000; latencies.append(latency)
         g = gold[q["question_id"]]
         if corpus_profile == "controlled_cuj2026_v1":
@@ -291,7 +384,7 @@ def run(component: str, config_path: Path, corpus_profile: str = "controlled_cuj
                    "doc_id": p["doc_id"], "canonical_document_id": p.get("canonical_document_id"),
                    "scores": p.get("scores", {}), "source_url": p.get("source_url")}
                   for rank, p in enumerate(results, 1)]
-        metric = score(results, g, corpus_docs) if g["corpus_coverage"] == "COMPLETE" else None
+        metric = score(results, g, corpus_docs, candidate_k=cfg["candidate_k"]) if g["corpus_coverage"] == "COMPLETE" else None
         recovered_docs = {p.get("canonical_document_id") or p["doc_id"] for p in results[:10]}
         if g["corpus_coverage"] in {"MISSING", "PARTIAL"}:
             failure = "corpus_missing"
@@ -306,7 +399,9 @@ def run(component: str, config_path: Path, corpus_profile: str = "controlled_cuj
         else:
             failure = "ranking_failure"
         records.append({"question_id": q["question_id"], "ranking": ranked,
-                        "metrics": metric, "latency_ms": latency, "failure_classification": failure})
+                        "metrics": metric, "candidate_diagnostics": candidate_diagnostics(results, cfg["candidate_k"]),
+                        "retrieval_latency_ms": latency, "failure_classification": failure})
+    retrieval_question_seconds = sum(latencies) / 1000
     def pct(p):
         return sorted(latencies)[max(0, math.ceil(len(latencies) * p) - 1)] if latencies else None
     rank_rows = [row for row in records if row["metrics"] is not None]
@@ -330,14 +425,45 @@ def run(component: str, config_path: Path, corpus_profile: str = "controlled_cuj
                       "controlled_corpus_coverage_counts": metric_population(list(gold.values()), "controlled_cuj2026_v1", controlled_rows)["coverage_counts"],
                       "controlled_corpus_complete_rate": metric_population(list(gold.values()), "controlled_cuj2026_v1", controlled_rows)["coverage_counts"]["COMPLETE"] / coverage_n if coverage_n else None,
                       "metric_denominators": {name: populations["ranking_n"] for name in metrics}})
-    aggregate.update({"latency_p50_ms": statistics.median(latencies), "latency_p95_ms": pct(.95),
+    aggregate.update({"retrieval_latency_p50_ms": statistics.median(latencies), "retrieval_latency_p95_ms": pct(.95),
                       "questions": len(records), "ranking_questions": len(rank_rows)})
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+    neural_record = runtime.record() if runtime is not None else None
+    corpus_dir = ROOT / cfg["corpus"]
+    execution = {
+        "git_sha": head,
+        "git_dirty": _git_status_dirty(cfg["output_dir"]),
+        "command": [sys.executable, *sys.argv],
+        "python": sys.version,
+        "platform": {"system": platform.system(), "release": platform.release(),
+                     "machine": platform.machine()},
+        "packages": {name: _package_version(name) for name in ("torch", "transformers", "numpy")},
+        "cuda_runtime": neural_record["hardware"] if neural_record else None,
+        "verified_backend": neural_record["verified_real_backend"] if neural_record else False,
+        "models": ({role: {key: model[key] for key in ("repo_id", "revision", "manifest_sha256", "files_verified")}
+                    for role, model in neural_record["models"].items()} if neural_record else {}),
+        "model_lock_sha256": file_hash(ROOT / "config/models.lock.json"),
+        "neural_config_sha256": file_hash(ROOT / "config/neural.json"),
+        "runner_config_sha256": file_hash(config_path),
+        "retrieval_parameters": {"candidate_k": cfg["candidate_k"], "evidence_k": cfg["evidence_k"],
+                                 "metrics_k": cfg["metrics_k"], "graph_mode": cfg["graph_mode"],
+                                 "rrf_constant": 60, "seed": cfg["seed"], "query_transform": "none; exact source wording only"},
+        "corpus_passages_sha256": file_hash(corpus_dir / "passages.jsonl"),
+        "corpus_manifest_sha256": file_hash(corpus_dir / "manifest.json"),
+        "bm25_index_sha256": file_hash(corpus_dir / "index/bm25.json"),
+        "dense_index_sha256": file_hash(corpus_dir / "index/dense.npy") if (corpus_dir / "index/dense.npy").is_file() else None,
+    }
+    total_wall_seconds = time.perf_counter() - run_started
     result = {"benchmark": "KC-COL-IR-v0.1", "corpus_profile": corpus_profile, "component": component, "split": "DEV",
               "git_sha": head, "benchmark_manifest_sha256": file_hash(BENCH / "manifest.json"),
-              "corpus_manifest_sha256": file_hash(ROOT / cfg["corpus"] / "manifest.json"),
+              "corpus_manifest_sha256": file_hash(corpus_dir / "manifest.json"),
               "config": spec, "graph_mode": "off", "metrics": aggregate,
-              "per_question": records, "initialization_seconds": time.perf_counter() - started}
+              "per_question": records, "execution_identity": execution,
+              "timing": {"initialization_seconds": initialization_seconds,
+                         "sum_of_question_retrieval_seconds": retrieval_question_seconds,
+                         "total_wall_seconds": total_wall_seconds,
+                         "per_question_latency_includes_cuda_sync": runtime is not None,
+                         "warmup_queries": 0}}
     output = ROOT / cfg["output_dir"] / component
     output.mkdir(parents=True, exist_ok=True)
     write_json(output / "report.json", result)
