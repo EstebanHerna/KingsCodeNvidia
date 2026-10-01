@@ -96,7 +96,7 @@
   },
   "next_action": {
     "member_a": "On the RTX 4090 integration PC, run the end-to-end sample_50 diagnostic on the known local corpus plus provisional v0.2 using the fixed combined-corpus builder and tools/kingscode_pc_nueva_diagnostico.ps1 -AllowKnownLocalCorpusDrift -RetrieverMode hybrid -Rerank. Keep its results diagnostic-only because the local corpus differs from frozen v0.1.",
-    "member_b": "On the turing RTX 4090 PC run tools/kingscode_pc_nueva_diagnostico.ps1 from the repo copy (sample_50, Qwen3-8B BF16, SDPA attention, evidence fitted to context, BM25 + router). Then repeat changing one variable: -ExactLocator. Record s/question, projection for 992 (window 6 h), abstentions and official score without RAGAS. Decoder bakeoff on A's frozen evidence remains blocked until A's selection; no RAGAS spend until Esteban authorizes.",
+    "member_b": "Baseline on turing: 26.63/50 without RAGAS (Qwen3-8B, BM25+router, prompt v3), 1 fallback, 15.2 s/question. Next runs, one variable each vs 26.63: -ExactLocator, -PromptVersion v4, -CitationFill, -RetrieverMode hybrid, -Rerank, -Model alia-legal-7b; every run replays 3 items to check live-verification reproducibility. One RAGAS run on the best configuration only with Esteban's authorization. Friday 17:00: one-page progress report.",
     "shared": "A and B develop on separate PCs; a third RTX 4090 PC is the integration/runtime target. Review the full sample_50 hybrid+decoder diagnostic and official/RAGAS evaluations there. Keep its local corpus results separate from the controlled KC-COL-IR benchmark and from any competitive freeze."
   },
   "next_actions": [

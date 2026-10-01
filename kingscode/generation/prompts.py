@@ -34,33 +34,55 @@ Si falta evidencia necesaria para resolver la pregunta, abstente.""",
 }
 
 
+# v4 (2026-10-01), generic shape fixes from the first real Qwen3-8B run, none derived
+# from sample answers: abstencion listed with the fields (29/50 answers omitted it), the
+# statement's minimum lengths stated explicitly (9/50 were short), and for closed
+# questions the justification is written before the chosen letter.
+PROMPT_V4 = "grounded-formats-v4"
+FORMAT_INSTRUCTIONS_V4 = {
+    "multiple_choice": """Campos, en este orden: abstencion (false), justificacion (string), respuesta_correcta (A/B/C/D), descarte_opciones (objeto).
+Escribe primero la justificación: analiza la evidencia frente a cada opción y cita la norma verificable que la resuelve. Después elige respuesta_correcta, que debe ser la opción que esa justificación sostiene.
+descarte_opciones contiene solo las letras de las opciones incorrectas, cada una con una razón breve.
+Elige solo entre las opciones dadas. Si no puedes fundamentar la elección, abstente.""",
+    "semi_open": """Campos, en este orden: abstencion (false), respuesta (string), palabras_clave (array de strings), referencia_legal (string).
+respuesta debe tener entre 3 y 5 oraciones completas (mínimo 3, máximo 5) y como máximo 150 palabras. Incluye palabras clave pertinentes y una referencia legal verificable.
+No rellenes la extensión con afirmaciones sin respaldo. Si la evidencia no permite responder en ese formato, abstente.""",
+    "open_ended": """Campos, en este orden: abstencion (false), marco_normativo, analisis, jurisprudencia, conclusion (todos strings).
+analisis debe tener entre 5 y 8 oraciones completas (mínimo 5, máximo 8) que apliquen la evidencia al caso. Cita las normas efectivamente aportadas y conecta cada conclusión con la evidencia.
+En jurisprudencia cita solo decisiones aportadas; si no las hay, indica que no se aportó jurisprudencia, sin inventarla.
+Si falta evidencia necesaria para resolver la pregunta, abstente.""",
+}
+ACTIVE_PROMPT_VERSIONS = {PROMPT_VERSION, PROMPT_V4}
+
 MAX_USED_PASSAGES = 5
 ATTRIBUTION_INSTRUCTION = """Si respondes, añade también el campo "pasajes_usados": lista con los passage_id (como máximo {max_used}) de los pasajes de la evidencia en que realmente te basaste. Usa solo passage_id que aparezcan en la evidencia; no inventes identificadores.
 Si te abstienes, devuelve únicamente {{"abstencion":true}}."""
 LEGACY_PROMPT_VERSIONS = {"grounded-formats-v1", "grounded-formats-v2"}
 
 
-def system_prompt(fmt: str, max_used: int = MAX_USED_PASSAGES) -> str:
-    return COMMON + "\n" + FORMAT_INSTRUCTIONS[fmt] + "\n" + ATTRIBUTION_INSTRUCTION.format(max_used=max_used)
+def system_prompt(fmt: str, max_used: int = MAX_USED_PASSAGES, version: str = PROMPT_VERSION) -> str:
+    instructions = FORMAT_INSTRUCTIONS_V4 if version == PROMPT_V4 else FORMAT_INSTRUCTIONS
+    return COMMON + "\n" + instructions[fmt] + "\n" + ATTRIBUTION_INSTRUCTION.format(max_used=max_used)
 
 
-def prompt_sha256(max_used: int = MAX_USED_PASSAGES) -> str:
-    payload = json.dumps({"version": PROMPT_VERSION, "system": {f: system_prompt(f, max_used) for f in FORMAT_INSTRUCTIONS}},
+def prompt_sha256(max_used: int = MAX_USED_PASSAGES, version: str = PROMPT_VERSION) -> str:
+    payload = json.dumps({"version": version, "system": {f: system_prompt(f, max_used, version) for f in FORMAT_INSTRUCTIONS}},
                          ensure_ascii=False, sort_keys=True)
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
-def build_messages(question: Question, passages: list[dict], prompt: PromptSpec, *, max_used: int = MAX_USED_PASSAGES) -> list[dict]:
+def build_messages(question: Question, passages: list[dict], prompt: PromptSpec, *, max_used: int = MAX_USED_PASSAGES,
+                   version: str = PROMPT_VERSION) -> list[dict]:
     if not isinstance(question, Question) or prompt.format != question.format:
         raise ValueError("Prompt/question format mismatch")
-    if prompt.version not in LEGACY_PROMPT_VERSIONS | {PROMPT_VERSION}:
+    if prompt.version not in LEGACY_PROMPT_VERSIONS | {PROMPT_VERSION} or version not in ACTIVE_PROMPT_VERSIONS:
         raise ValueError("Unknown prompt version")
     evidence = [{k: p.get(k) for k in ("passage_id", "doc_id", "norm_name", "article", "source_url", "text")} for p in passages]
     # The existing Protocol provides the generic v1 descriptor. The real backend
     # explicitly materializes v2; the dummy's prompt/config remain untouched.
     # Question, options and evidence always travel as JSON data inside the user
     # message; nothing from them is ever placed in the system message.
-    return [{"role": "system", "content": system_prompt(question.format, max_used)},
+    return [{"role": "system", "content": system_prompt(question.format, max_used, version)},
             {"role": "user", "content": json.dumps({"pregunta": question.text, "opciones": question.options,
                                                         "evidencia": evidence}, ensure_ascii=False, sort_keys=True)}]
 

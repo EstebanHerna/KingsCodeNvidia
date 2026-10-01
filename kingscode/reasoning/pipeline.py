@@ -79,7 +79,7 @@ def retrieval_views(question: Question, query: NormalizedQuery, mode: str, plan=
     raise ValueError(f"Unknown retrieval mode {mode}; plan+option is disabled until PLAN and OPTION are measured separately")
 
 
-def _answer(question: Question, passages: list[dict], decoder: Decoder, *, max_refs: int = 3):
+def _answer(question: Question, passages: list[dict], decoder: Decoder, *, max_refs: int = 3, citation_fill: bool = False):
     check_passages(passages)
     evidence = deepcopy(passages[:10])
     assessment = assess_evidence(question.text, evidence)
@@ -108,7 +108,7 @@ def _answer(question: Question, passages: list[dict], decoder: Decoder, *, max_r
             # final citation strings come from the deterministic builder (B2/B3).
             source, before = "none", count_citations(row)
             row, repair = repair_citations(row, evidence)
-            row, refs = attach_references(row, evidence, usage.get("attribution"), max_refs)
+            row, refs = attach_references(row, evidence, usage.get("attribution"), max_refs, fill_ranked=citation_fill)
             if question.format != "multiple_choice" and any(
                     row.get(k) in (None, "", [], {}) for k in ANSWER_FIELDS[question.format]):
                 reason, source = "citation_repair_emptied_required_field", "citation_repair"
@@ -163,7 +163,7 @@ def answer(question: Question | str, passages: list[dict], format: str, *, quest
 class Pipeline:
     def __init__(self, retrieve, *, adapter: RetrieverGraphRouter | None = None, decoder: Decoder | None = None,
                  k: int = 8, graph_policy: str = "router", retrieval_mode: str = "option", plans=None,
-                 max_refs: int = 3):
+                 max_refs: int = 3, citation_fill: bool = False):
         if type(k) is not int or not 1 <= k <= 10 or graph_policy not in {"router", "off", "auto", "on"}:
             raise ValueError("Invalid evidence count/graph policy")
         if retrieval_mode not in RETRIEVAL_MODES:
@@ -173,6 +173,7 @@ class Pipeline:
         self.retrieve, self.adapter = retrieve, adapter
         self.decoder, self.k, self.graph_policy = decoder or DummyDecoder(), k, graph_policy
         self.retrieval_mode, self.plans, self.max_refs = retrieval_mode, plans, max_refs
+        self.citation_fill = citation_fill
         self.locator_kwarg = locator_switch(retrieve)
         self.native_views = supports_query_views(retrieve)
 
@@ -224,7 +225,7 @@ class Pipeline:
             passages = self._fetch(variants, executed)
         retrieved_ms = (perf_counter() - start) * 1000
         try:
-            row, trace = _answer(question, passages, self.decoder, max_refs=self.max_refs)
+            row, trace = _answer(question, passages, self.decoder, max_refs=self.max_refs, citation_fill=self.citation_fill)
         except CitationGuardError as exc:
             # Enunciado B.5: an unsupported/unsafe citation must be corrected or
             # suppressed, never void the whole run. _answer/answer() still raise

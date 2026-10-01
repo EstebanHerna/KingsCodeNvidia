@@ -138,6 +138,42 @@ class QwenSmokeRegressionTests(unittest.TestCase):
         self.assertIn("truncated_to_limit:respuesta", meta["field_coercions"])
         self.assertEqual(meta["format_warnings"], [])
 
+    def test_prompt_v4_is_opt_in_and_versioned(self):
+        from kingscode.generation.prompts import PROMPT_V4, build_messages, prompt_sha256, system_prompt
+        from kingscode.reasoning.decoder import PromptSpec
+        self.assertNotEqual(prompt_sha256(5), prompt_sha256(5, PROMPT_V4))
+        v3 = system_prompt("semi_open")
+        self.assertNotIn("mínimo 3", v3)                                   # default unchanged
+        v4 = build_messages(Q, [deepcopy(FIXTURES[1])], PromptSpec("semi_open"), version=PROMPT_V4)[0]["content"]
+        self.assertIn("abstencion (false)", v4)
+        self.assertIn("mínimo 3", v4)
+        mc = system_prompt("multiple_choice", 5, PROMPT_V4)
+        self.assertLess(mc.index("justificacion"), mc.index("respuesta_correcta"))
+        with self.assertRaises(ValueError):
+            build_messages(Q, [deepcopy(FIXTURES[1])], PromptSpec("semi_open"), version="grounded-formats-v9")
+
+    def test_citation_fill_adds_verified_ranked_citations_only_where_ragas_does_not_read(self):
+        from kingscode.reasoning.citation_builder import attach_references
+        evidence = [deepcopy(FIXTURES[i]) for i in (1, 0, 2, 3, 4)]
+        base = {"id": 1, "formato": "semi_open", "abstencion": False, "respuesta": "x", "palabras_clave": ["x"], "referencia_legal": ""}
+        attribution = {"status": "explicit", "ids": [FIXTURES[1]["passage_id"]]}
+        _, plain = attach_references(dict(base), evidence, attribution, 3)
+        _, filled = attach_references(dict(base), evidence, attribution, 5, fill_ranked=True)
+        self.assertEqual(len(plain), 1)
+        self.assertGreater(len(filled), 1)
+        self.assertEqual(filled[0], plain[0])                               # declared passage stays first
+        open_row = {"id": 1, "formato": "open_ended", "abstencion": False, "marco_normativo": "", "analisis": "a",
+                    "jurisprudencia": "j", "conclusion": "c"}
+        _, open_refs = attach_references(open_row, evidence, attribution, 5, fill_ranked=True)
+        self.assertEqual(len(open_refs), 1)                                 # RAGAS-read field never filled
+
+    def test_cli_exposes_prompt_and_citation_options(self):
+        import subprocess, sys
+        from kingscode.common import ROOT
+        out = subprocess.run([sys.executable, "tools/member_b.py", "--help"], cwd=ROOT, capture_output=True, text=True).stdout
+        self.assertIn("--prompt-version", out)
+        self.assertIn("--citation-fill", out)
+
     def test_length_warnings_cover_words_and_open_ended(self):
         self.assertEqual(length_warnings({"formato": "semi_open", "respuesta": "Uno. Dos. " + "x " * 160 + "."}),
                          ["semi_open_words_163_over_150"])
