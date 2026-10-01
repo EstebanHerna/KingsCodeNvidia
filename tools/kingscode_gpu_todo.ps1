@@ -10,8 +10,8 @@
 #   [4] Valida el indice denso con las mismas reglas que DenseIndex de A.
 #   [5] Publica corpus + indice + LICENSE como release del repo publico (entregable 5).
 #   [6] Entorno GPU: PyTorch CUDA dentro del venv, BF16, VRAM.
-#   [7] Descarga y verifica el decoder fijado por lock (ALIA ~7,77B por defecto; Qwen3-8B,
-#       8.190.735.360 parametros, solo con -IncludePendingEligibility y marcado como no competitivo).
+#   [7] Descarga y verifica el decoder fijado por lock (por defecto Qwen3-8B, sugerido
+#       en el enunciado sec. 3.1, y ALIA ~7,77B).
 #   Pasos [8]-[11] SOLO si existe artifacts\retrieval_freeze.json de A (GPU_DAY_RUNBOOK sec. 8);
 #   si no, se detienen con BLOCKED_ON_A_FREEZE. Misma evidencia congelada para cada decoder.
 #   [8] Valida el freeze y fija su SHA-256 (se re-verifica antes y despues de cada decoder).
@@ -28,14 +28,13 @@
 #   powershell -ExecutionPolicy Bypass -File kingscode_gpu_todo.ps1
 #   ... -Source "C:\ruta\KingsCodeNvidia"   (repo que tiene corpus\; si no, lo busca)
 #   ... -Models "alia-legal-7b,salamandra-7b" (comparacion sin seleccion; Salamandra requiere acceso HF)
-#   ... -IncludePendingEligibility          (agrega qwen3-8b con elegibilidad pendiente)
 #   ... -SkipPublish -SkipDecoder -RebuildDense -NoPush
 # =====================================================================
 param(
     [string]$Source = "",
     [string]$Work = "$HOME\KingsCodeRun",
     [string]$GitHubRepo = "IngSeb0/KingsCodeNvidia",
-    [string]$Models = "alia-legal-7b",
+    [string]$Models = "qwen3-8b,alia-legal-7b",
     [switch]$IncludePendingEligibility,
     [string]$Tag = "corpus-v0.1-snapshot",
     [string]$License = "CC BY 4.0",
@@ -241,7 +240,7 @@ Equipo KingsCode - Hackathon 2026, Universidad de los Andes.
 $ModelList = @($Models.Split(",") | ForEach-Object { $_.Trim() } | Where-Object { $_ })
 if ($IncludePendingEligibility -and $ModelList -notcontains "qwen3-8b") { $ModelList += "qwen3-8b" }
 $Eligibility = [ordered]@{}
-foreach ($m in $ModelList) { $Eligibility[$m] = $(if ($m -in @("qwen3-8b", "llama31-8b")) { "pending_organizer_confirmation_not_competitive" } else { "within_8B" }) }
+foreach ($m in $ModelList) { $Eligibility[$m] = $(if ($m -in @("qwen3-8b", "llama31-8b")) { "suggested_in_statement_3_1" } else { "within_8B" }) }
 Done "decoder_eligibility" $Eligibility
 if ($GpuOk -and -not $SkipDecoder) {
     Step "[7] Pesos del decoder fijados por lock ($($ModelList -join ', '))"
@@ -250,7 +249,6 @@ if ($GpuOk -and -not $SkipDecoder) {
     foreach ($m in $ModelList) {
         & $Py tools\prepare_models.py --download $m; Check "descarga $m"
         & $Py tools\prepare_models.py --verify $m; Check "verificacion $m"
-        if ($Eligibility[$m] -ne "within_8B") { Warn "$m tiene elegibilidad PENDIENTE (supera 8.000.000.000 parametros literales); no es candidato competitivo hasta la confirmacion." }
     }
 
     # GPU_DAY_RUNBOOK sec. 8: decoder-smoke/sample/bakeoff solo sobre el freeze de ocho evidencias de A,

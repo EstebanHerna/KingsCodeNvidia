@@ -192,3 +192,5 @@ Leer `legal_basis` solo en el script de medición, nunca en el pipeline (mismo p
 | Primera generación real | BLOCKED_ON_A_FREEZE · BLOCKED_ON_GPU |
 | Runners GPU (`run_b_gpu_4090.ps1 -Phase prep` / `-Phase decoder`, `kingscode_gpu_todo.ps1`) alineados con el runbook §8 (2026-09-30) | IMPLEMENTED_AND_DRY_RUN_VERIFIED · fase `decoder` BLOCKED_ON_A_FREEZE · requiere merge del PR #6 |
 | Elegibilidad del decoder | ALIA (7.768.117.248) por defecto; Qwen3-8B (8.190.735.360) solo con `-IncludePendingEligibility`, marcado no competitivo hasta confirmación escrita (correo B5 pendiente) |
+| Elegibilidad del decoder (2026-10-01) | Qwen3-8B elegible por decisión del equipo (sugerido en enunciado §3.1); por defecto `qwen3-8b,alia-legal-7b`. Sustituye la fila anterior |
+| RAGAS | EN PAUSA: sin gastar crédito hasta autorización de Esteban |

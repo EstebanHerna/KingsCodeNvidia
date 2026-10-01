@@ -96,7 +96,7 @@
   },
   "next_action": {
     "member_a": "On the target machine, restore the frozen controlled profile and pinned tokenizers, run tools/audit_kc_col_ir_tokens.py, and complete target-runtime handoff. Keep C0-C3 unexecuted until a separate empirical-ranking phase is authorized.",
-    "member_b": "On the 4090 run tools/run_b_gpu_4090.ps1 -Phase prep (env, corpus, dense status, ALIA weights). -Phase decoder only after A selects a retrieval configuration (KC-COL-IR shortlist rule, docs/KC_COL_IR_PRE_CUDA_HARDENING.md) and writes artifacts/retrieval_freeze.json (runbook sec. 8); Qwen3-8B only with -IncludePendingEligibility, not competitive until organizer confirmation.",
+    "member_b": "On the 4090 run tools/run_b_gpu_4090.ps1 -Phase prep (env, corpus, dense status, Qwen3-8B + ALIA weights). -Phase decoder only after A selects a retrieval configuration and writes artifacts/retrieval_freeze.json (runbook sec. 8). Qwen3-8B treated as eligible (suggested in statement sec. 3.1, team decision 2026-10-01). No RAGAS/OpenRouter spend until Esteban authorizes.",
     "shared": "Use feat/member-a-corpus-v02-locator, based on 60ebf7e GPU freeze. No merge to main. B continues its own decoder work; do not infer decoder success from retrieval results."
   },
   "next_actions": [
@@ -516,7 +516,12 @@
         "AMBIGUOUS": 0
       },
       "competitive_corpus_missing_rate": 1.0,
-      "controlled_corpus_coverage": {"COMPLETE": 10, "PARTIAL": 0, "MISSING": 0, "AMBIGUOUS": 0},
+      "controlled_corpus_coverage": {
+        "COMPLETE": 10,
+        "PARTIAL": 0,
+        "MISSING": 0,
+        "AMBIGUOUS": 0
+      },
       "minimal_evidence_packets_created": 10,
       "ranking_eligible_gold": 10,
       "next_action_kc_col_ir_v01": "Carry this frozen profile to the target-runtime preflight; run C0-C3 only in a later authorized empirical-ranking phase.",

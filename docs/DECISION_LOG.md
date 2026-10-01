@@ -593,3 +593,10 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
 - Se incorporan auditoría CPU de longitudes con tokenizers locales fijados, identidad de ejecución en reportes, Candidate@30 y métricas descriptivas de duplicación, sincronización para medir latencia neural y separación correcta de inicialización/consulta/tiempo total. El RRF conserva la identidad `passage_id` y el índice falla cerrado ante IDs ausentes o repetidos.
 - La regla de shortlist de máximo dos candidatos queda preregistrada en `docs/experiments/KC_COL_IR_CUJ2026_SHORTLIST_V1.json`. Validation sigue bloqueada hasta adquirir/parsear/revisar su fuente independiente.
 - No se ejecutaron tests, retrieval, CUDA, validación ni decoder. El snapshot controlado y los tokenizers fijados no están completos en este checkout; la auditoría queda lista para ejecutarse localmente cuando esos artefactos estén disponibles.
+
+## 2026-10-01 — Qwen3-8B vuelve a ser candidato por defecto; RAGAS en pausa
+
+- **Decisión del equipo (Esteban):** Qwen3-8B se trata como elegible porque el enunciado §3.1 lo lista textualmente como opción sugerida (`Qwen/Qwen3-8B`), igual que Llama 3.1 8B. Esto deja sin efecto la etiqueta `pending_organizer_confirmation_not_competitive` del 2026-09-30.
+- `tools/run_b_gpu_4090.ps1` y `tools/kingscode_gpu_todo.ps1` corren por defecto `qwen3-8b,alia-legal-7b`, etiquetados `suggested_in_statement_3_1` y `within_8B`; `-Models` permite elegir otros. `-IncludePendingEligibility` se acepta pero ya no cambia nada.
+- El resto de la revisión sigue vigente: decoder solo sobre el freeze de A, sin planner ni retrieval en vivo, suspensión restaurada y ninguna limpieza.
+- **RAGAS:** no se ejecuta ni se gasta crédito de OpenRouter hasta que Esteban lo autorice con la llave de créditos que tiene reservada. Todas las corridas de B reportan el puntaje automático sin RAGAS.
