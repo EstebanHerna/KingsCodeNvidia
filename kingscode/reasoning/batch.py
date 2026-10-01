@@ -102,8 +102,10 @@ class BatchRunner:
                 row, trace = self.pipeline.run(question)
                 return row, trace, errors
             except Exception as exc:  # isolation is the point; KeyboardInterrupt/SystemExit still stop the run
+                # detail carries the parser reason and the raw model response (DecoderFailure).
                 errors.append({"attempt": attempt + 1, "type": type(exc).__name__, "code": getattr(exc, "code", None),
-                               "message": str(exc), "traceback": traceback.format_exc()})
+                               "message": str(exc), "detail": getattr(exc, "detail", None),
+                               "traceback": traceback.format_exc()})
                 if getattr(exc, "code", None) in DETERMINISTIC_CODES:
                     break  # temperature 0: the same input reproduces the same output
         return None, None, errors
@@ -124,7 +126,7 @@ class BatchRunner:
             status = "ok"
             if errors:
                 atomic_write_text(self.run_dir / "errors" / f"{question.id}.json",
-                                  json.dumps({"id": question.id, "attempts": errors}, ensure_ascii=False, indent=2) + "\n")
+                                  json.dumps({"id": question.id, "attempts": errors}, ensure_ascii=False, indent=2, default=str) + "\n")
             if row is None:
                 # Formal abstention only: the schema's "A" placeholder is never scored
                 # because the official score_closed requires abstencion=false.
