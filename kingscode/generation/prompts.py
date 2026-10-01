@@ -83,6 +83,26 @@ def _load_object(text: str) -> dict:
     return value
 
 
+def _load_object_v3(text: str, question: Question) -> tuple[dict, list[str]]:
+    """v3 only. On the 4090, 29/50 Qwen3-8B answers were complete objects without the
+    abstencion key (the prompt lists the per-format fields, not abstencion). An object
+    carrying every answer field of its format is an answer: abstencion=false. A string
+    "true"/"false" becomes a boolean. Anything else is still rejected."""
+    value = json.loads(text, object_pairs_hook=_unique_pairs, parse_constant=_bad_constant)
+    if not isinstance(value, dict):
+        raise ValueError("Expected one JSON object with boolean abstencion")
+    flag = value.get("abstencion")
+    if isinstance(flag, str) and flag.strip().lower() in {"true", "false"}:
+        value["abstencion"] = flag.strip().lower() == "true"
+        return value, ["coerced_string:abstencion"]
+    if "abstencion" not in value and set(ANSWER_FIELDS[question.format]) <= set(value):
+        value["abstencion"] = False
+        return value, ["inferred_abstencion_false_from_complete_answer"]
+    if type(value.get("abstencion")) is not bool:
+        raise ValueError("Expected one JSON object with boolean abstencion")
+    return value, []
+
+
 def parse_response(text: str, question: Question, passages: list[dict]) -> dict:
     """Historical (v1/v2) contract: direct JSON only, never normalized or repaired."""
     value = _load_object(text)
@@ -142,20 +162,98 @@ def parse_response_v3(raw: str, question: Question, passages: list[dict], *, max
     Returns the official row (pasajes_usados never enters it) and internal meta.
     """
     normalized, action = normalize_envelope(raw)
-    value = _load_object(normalized)
+    value, inferred = _load_object_v3(normalized, question)
     meta = {"raw_response": raw, "normalized_response": normalized, "normalization_action": action}
     if value["abstencion"]:
         if set(value) != {"abstencion"}:
             raise ValueError("Abstention must contain only abstencion=true")
         return abstention_row(question, passages, "decoder_declared_insufficient_evidence"), {
             **meta, "decoder_abstained": True, "attribution": {"status": "not_applicable", "ids": []}}
+    value, coercions = coerce_fields(value, question)
+    coercions = inferred + coercions
     required = {"abstencion", *ANSWER_FIELDS[question.format]}
     if not required <= set(value) <= required | {"pasajes_usados"}:
         raise ValueError("Unexpected/missing intermediate answer fields")
     attribution = validate_attribution(value.pop("pasajes_usados", None), passages, max_used)
+    coercions += enforce_length_limits(value, question.format)
     row = _answer_row(value, question, passages, strict_length=False)
     return row, {**meta, "decoder_abstained": False, "attribution": attribution,
-                 "format_warnings": length_warnings(row)}
+                 "format_warnings": length_warnings(row), "field_coercions": coercions}
+
+
+RESERVED_KEYS = {"id", "formato", "pasajes_recuperados"}
+_LETTER = re.compile(r"^\W*(?:opci[oó]n\s+)?([A-Da-d])(?:\W|$)")
+TEXT_FIELDS = {"justificacion", "respuesta", "referencia_legal", "marco_normativo", "analisis", "jurisprudencia", "conclusion"}
+
+
+def coerce_fields(value: dict, question: Question) -> tuple[dict, list[str]]:
+    """Mechanical shape fixes only (v3). Never adds content: a missing field or a
+    reserved key is still an error; every change is recorded in field_coercions."""
+    value, actions = dict(value), []
+    if RESERVED_KEYS & set(value):
+        raise ValueError("Model output contains reserved submission keys")
+    allowed = {"abstencion", "pasajes_usados", *ANSWER_FIELDS[question.format]}
+    for key in sorted(set(value) - allowed):
+        value.pop(key)
+        actions.append(f"dropped_extra_key:{key}")
+    for key in TEXT_FIELDS & set(value):
+        item = value[key]
+        if isinstance(item, list) and all(isinstance(x, str) for x in item):
+            value[key] = ("; " if key == "referencia_legal" else " ").join(x.strip() for x in item if x.strip())
+            actions.append(f"joined_list:{key}")
+    if isinstance(value.get("palabras_clave"), str):
+        value["palabras_clave"] = [x.strip() for x in re.split(r"[;,]", value["palabras_clave"]) if x.strip()]
+        actions.append("split_string:palabras_clave")
+    if question.format == "multiple_choice":
+        chosen = value.get("respuesta_correcta")
+        match = _LETTER.match(chosen) if isinstance(chosen, str) else None
+        if match and match.group(1).upper() != chosen:
+            value["respuesta_correcta"] = match.group(1).upper()
+            actions.append("normalized_letter:respuesta_correcta")
+        discards = value.get("descarte_opciones")
+        if isinstance(discards, dict):
+            clean = {}
+            for key, reason in discards.items():
+                letter = _LETTER.match(str(key))
+                letter = letter.group(1).upper() if letter else None
+                if letter in question.options and letter != value.get("respuesta_correcta") and letter not in clean:
+                    clean[letter] = reason if isinstance(reason, str) else json.dumps(reason, ensure_ascii=False)
+            if clean != discards:
+                actions.append("normalized:descarte_opciones")
+            value["descarte_opciones"] = clean
+    return value, actions
+
+
+def _first_sentences(text: str, max_sentences: int, max_words: int | None) -> str:
+    """Cut at sentence boundaries (same shielding as sentence_count); never mid-sentence
+    unless a single sentence alone exceeds the word limit."""
+    shielded = re.sub(r"(?<=\d)\.(?=\d)", "\x00", text)
+    shielded = re.sub(r"\b(art|arts|núm|num|no|sr|sra|c|p)\.", lambda m: m.group(1) + "\x00", shielded, flags=re.I)
+    parts = [p for p in re.split(r"(?<=[.!?])\s+", shielded.strip()) if p.strip()]
+    kept = []
+    for part in parts[:max_sentences]:
+        candidate = " ".join(kept + [part])
+        if max_words is not None and len(candidate.split()) > max_words:
+            break
+        kept.append(part)
+    if not kept and parts:
+        kept = [" ".join(parts[0].split()[:max_words]).rstrip(",;:") + "."]
+    return " ".join(kept).replace("\x00", ".")
+
+
+def enforce_length_limits(value: dict, fmt: str) -> list[str]:
+    """Statement step 3: semi_open respuesta 3-5 sentences and <=150 words; open_ended
+    analisis 5-8 sentences. Over-limit text is cut deterministically at sentence
+    boundaries (declared automatic post-processing); under-limit text is only warned."""
+    field, max_sentences, max_words = {"semi_open": ("respuesta", 5, 150), "open_ended": ("analisis", 8, None)}.get(fmt, (None, 0, None))
+    text = value.get(field) if field else None
+    if not isinstance(text, str):
+        return []
+    too_long = sentence_count(text) > max_sentences or (max_words is not None and len(text.split()) > max_words)
+    if not too_long:
+        return []
+    value[field] = _first_sentences(text, max_sentences, max_words)
+    return [f"truncated_to_limit:{field}"]
 
 
 def length_warnings(row: dict) -> list[str]:
