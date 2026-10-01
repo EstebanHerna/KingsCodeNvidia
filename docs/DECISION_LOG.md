@@ -785,3 +785,13 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
 - **A, `verify_member_a_v02` "Legacy mismatch":** desde el commit de telemetría, cada pasaje lleva `retrieval.profile.*_ms` (tiempos reales), que difieren entre llamadas idénticas. El verificador compara ahora sin esos campos; el resto de la salida debe seguir siendo idéntica.
 - **A, 8 tests rotos en `main`** (`test_neural_efficiency`, `test_retrieval_query_views`, `test_graph_budget...`): objetos construidos sin `__init__` o `Namespace` parciales frente a atributos nuevos. Arreglo aditivo, sin cambiar el comportamiento normal: `getattr` con valores por defecto (`retrieval_text_mode`, `search_texts`, `query_instruction`, `batch_size` desde `config`), `instruction` solo se pasa al encoder si existe, y `_pipeline` completa las opciones faltantes con `build_parser()`.
 
+## 2026-10-01 — Análisis por pregunta de c1 (30,41): los fallbacks eran JSON truncado; cerradas a 768 tokens
+
+Artefactos en la rama `lab/c1-30.41-20261001` (commit `18301b9`). Análisis medido con las etiquetas de `sample_50` solo fuera del pipeline.
+
+- **Los 2 fallbacks (ids 51 y 617) no eran prosa sino JSON cortado:** ambos usaron exactamente 512/512 `max_new_tokens`. El prompt v4 pone la justificación antes de la letra, y las cerradas respondidas llegaron a 476–493 tokens. **Cambio:** `config/decoder_bakeoff.json` sube `multiple_choice` a 768 (entrada máxima observada: 7.253 + 768 < 8.192; si no cabe, el ajuste de contexto omite pasajes de menor rango). Solo afecta el tiempo de las respuestas que antes se cortaban. La extracción de prosa del PR #32 sigue útil para el caso con reranker, pero no habría rescatado estos dos.
+- **Cerradas:** 8 correctas, 5 incorrectas y 2 abstenidas por el truncado. De las 5 incorrectas, en 3 la cita de referencia sí aparece en la evidencia o se cita (58, 128, 358), así que el error es de razonamiento y no de recuperación; en 748 la norma de referencia no está en la evidencia; 671 no tiene referencia parseable.
+- **Citas (41 ítems con referencia parseable):** 29 citan un cuerpo de la referencia; **7 tienen la norma fuera de los 8 pasajes** (falla de recuperación o de corpus: 51, 239, 247, 563, 617, 679, 748); **5 la tienen en la evidencia pero no la citan** (218, 358, 647, 661, 865). Este último grupo es el que puede atacar B.
+- **Abstención 218:** `citation_repair_emptied_required_field`: la reparación de citas vació un campo obligatorio aunque la norma de referencia estaba en la evidencia.
+- **Siguiente medición:** c1 con `max_new_tokens` de 768 en cerradas sobre el commit congelado (`-NoPull`).
+

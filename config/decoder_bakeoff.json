@@ -11,7 +11,7 @@
     "seed": 0
   },
   "max_new_tokens": {
-    "multiple_choice": 512,
+    "multiple_choice": 768,
     "semi_open": 512,
     "open_ended": 1024
   },
