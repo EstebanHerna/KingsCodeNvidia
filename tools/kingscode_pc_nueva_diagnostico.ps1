@@ -5,8 +5,13 @@
 #   [0] Git y Python 3.12 (los instala con winget en el usuario si faltan); GPU NVIDIA.
 #   [1] Clona o actualiza main en -Work.
 #   [2] .venv + dependencias + PyTorch CUDA segun el driver.
-#   [3] Corpus v0.1: archivo local (-CorpusArchive) o release publico; se verifica
-#       archivo por archivo ANTES de extraer y luego contra los hashes de A.
+#   [3] Corpus v0.1, en este orden: archivo local (-CorpusArchive), release publico o,
+#       si no hay ninguno, descarga de las fuentes oficiales con el acquire + build de A
+#       (config/sources.json). Compara documento por documento contra los hashes de v0.1
+#       (corpus_manifest.json) y lo registra; un corpus descargado que no sea identico
+#       sirve para diagnostico, no como freeze.
+#  [3b] Corpus combinado v0.1 + v0.2 (corpora\corpus-v0.2, 4 documentos provisionales)
+#       en corpus_v01_v02\ con tools\build_combined_corpus.py. -CorpusSet v01 lo omite.
 #   [4] Pesos fijados por lock: Qwen3-8B (decoder) + embedding/reranker 0.6B (smoke).
 #   [5] Smoke real en GPU (BF16, temperatura 0).
 #   [6] Diagnostico: sample_50 con Qwen3-8B + BM25 (k=8, grafo off) + guardas,
@@ -30,6 +35,7 @@ param(
     [string]$CorpusArchive = "",
     [string]$Model = "qwen3-8b",
     [string]$RunName = "",
+    [ValidateSet("v01+v02", "v01")] [string]$CorpusSet = "v01+v02",
     [switch]$Ragas,
     [switch]$SkipSmoke
 )
@@ -107,40 +113,67 @@ if (-not $Rt.bf16) { throw "STOP: la GPU no soporta BF16; el decoder esta fijado
 if ($Rt.vram_gb -lt 20) { Warn "menos de 20 GB de VRAM: Qwen3-8B en BF16 usa ~19 GB y puede dar OOM (queda registrado)." }
 
 # ---------------------------------------------------------------------
-Step "[3] Corpus v0.1 (verificado antes de extraer)"
+Step "[3] Corpus v0.1: archivo local > release > descarga oficial (acquire de A)"
+$CorpusOrigin = "existente"
 if (-not (Test-Path "corpus\manifest.json")) {
+    $Archive = $null
     if ($CorpusArchive) {
-        if (-not (Test-Path $CorpusArchive)) { throw "STOP: no existe $CorpusArchive" }
+        if (-not (Test-Path $CorpusArchive)) { throw "STOP: no existe $CorpusArchive (quita -CorpusArchive para descargar de las fuentes oficiales)." }
         $Archive = (Resolve-Path $CorpusArchive).Path
         $Files = Join-Path (Split-Path $Archive) "snapshot-files.sha256.json"
         if (-not (Test-Path $Files)) { throw "STOP: falta snapshot-files.sha256.json junto a $Archive (lo genera package_corpus_snapshot.py pack)." }
+        $CorpusOrigin = "archivo $Archive"
     } else {
         $Dl = "$HOME\kingscode_descargas"
         New-Item -ItemType Directory -Force $Dl | Out-Null
         $Url = "https://github.com/$GitHubRepo/releases/download/$Tag"
-        foreach ($f in @("kingscode-corpus-v0.1.tar.gz", "snapshot-files.sha256.json")) {
-            if (-not (Test-Path "$Dl\$f")) {
-                Write-Host "Descargando $f ..."
-                try { Invoke-WebRequest -UseBasicParsing -Uri "$Url/$f" -OutFile "$Dl\$f" }
-                catch {
-                    throw ("STOP: no existe el release $Tag. Opciones:`n" +
-                           "  a) En la PC que tiene corpus\ (Luis): python tools\package_corpus_snapshot.py pack`n" +
-                           "     y copia dist\corpus_snapshot\kingscode-corpus-v0.1.tar.gz + snapshot-files.sha256.json`n" +
-                           "     a esta PC (USB/Drive); luego: -CorpusArchive <ruta>\kingscode-corpus-v0.1.tar.gz`n" +
-                           "  b) Publicar el release con tools\kingscode_gpu_todo.ps1 en la PC de Luis.`n" +
-                           "  No usar member_a.py acquire/reproduce: cambiaria los hashes.")
-                }
+        try {
+            foreach ($f in @("kingscode-corpus-v0.1.tar.gz", "snapshot-files.sha256.json")) {
+                if (-not (Test-Path "$Dl\$f")) { Write-Host "Descargando $f del release ..."; Invoke-WebRequest -UseBasicParsing -Uri "$Url/$f" -OutFile "$Dl\$f" }
             }
+            $Archive, $Files = "$Dl\kingscode-corpus-v0.1.tar.gz", "$Dl\snapshot-files.sha256.json"
+            $CorpusOrigin = "release $Tag"
+        } catch {
+            Remove-Item "$Dl\kingscode-corpus-v0.1.tar.gz", "$Dl\snapshot-files.sha256.json" -ErrorAction SilentlyContinue
+            Warn "no hay release $Tag; se descarga de las fuentes oficiales con el acquire de A."
         }
-        $Archive, $Files = "$Dl\kingscode-corpus-v0.1.tar.gz", "$Dl\snapshot-files.sha256.json"
     }
-    & $Py tools\package_corpus_snapshot.py verify $Archive --files $Files; Check "verificacion del snapshot antes de extraer"
-    tar -xzf $Archive -C $Work; Check "tar -xzf"
+    if ($Archive) {
+        & $Py tools\package_corpus_snapshot.py verify $Archive --files $Files; Check "verificacion del snapshot antes de extraer"
+        tar -xzf $Archive -C $Work; Check "tar -xzf"
+    } else {
+        # Descarga oficial (config/sources.json, 163 objetivos) y reconstruccion determinista.
+        & $Py tools\member_a.py acquire --corpus corpus --workers 3 | Out-File -Encoding utf8 "$HOME\kingscode_acquire_$Stamp.json"
+        Check "acquire (descarga de fuentes oficiales)"
+        & $Py tools\member_a.py build --corpus corpus | Out-Null; Check "build (pasajes, grafo, BM25)"
+        git checkout -- corpus_manifest.json 2>$null   # build reescribe el manifest versionado de v0.1; se conserva la referencia
+        $global:LASTEXITCODE = 0
+        $CorpusOrigin = "descarga oficial (acquire + build)"
+    }
 }
-& $Py tools\verify_member_a_v02.py | Out-Null; Check "verify_member_a_v02 (corpus contra hashes de A)"
+$Cmp = (& $Py -c @"
+import hashlib, json
+from pathlib import Path
+ref = {d['doc_id']: d['source_sha256'] for d in json.loads(Path('corpus_manifest.json').read_text(encoding='utf-8'))['documentos']}
+got = {d['doc_id']: d['source_sha256'] for d in json.loads(Path('corpus/manifest.json').read_text(encoding='utf-8'))['documentos']}
+same = sorted(k for k in ref if got.get(k) == ref[k])
+print(json.dumps({'v01_docs': len(ref), 'identical_raw': len(same), 'changed': sorted(k for k in ref if k in got and got[k] != ref[k]), 'missing': sorted(set(ref) - set(got))}))
+"@) | ConvertFrom-Json
+Write-Host ("Corpus ({0}): {1}/{2} documentos con bytes identicos a v0.1; cambiados {3}; faltantes {4}" -f $CorpusOrigin, $Cmp.identical_raw, $Cmp.v01_docs, @($Cmp.changed).Count, @($Cmp.missing).Count)
+& $Py tools\verify_member_a_v02.py | Out-Null
+$CorpusExact = ($LASTEXITCODE -eq 0)
 git checkout -- reports/member_a_v02/verification.json 2>$null  # el verificador reescribe este archivo versionado
 $global:LASTEXITCODE = 0
-Write-Host "Corpus v0.1 verificado."
+if ($CorpusExact) { Write-Host "Corpus v0.1 verificado byte a byte contra los hashes de A." -ForegroundColor Green }
+elseif ($CorpusOrigin -like "descarga oficial*") { Warn "el corpus descargado NO es identico a v0.1 (las fuentes cambiaron); sirve para diagnostico, no como freeze. Queda registrado." }
+else { throw "STOP: el corpus no coincide con los hashes de A (verify_member_a_v02)." }
+
+Step "[3b] Corpus combinado v0.1 + v0.2 (corpora\corpus-v0.2, provisional)"
+if ($CorpusSet -eq "v01+v02") {
+    if (-not (Test-Path "corpus_v01_v02\manifest.json")) { & $Py tools\build_combined_corpus.py | Out-Null; Check "build_combined_corpus" }
+    $CorpusDir = "corpus_v01_v02"
+} else { $CorpusDir = "corpus" }
+Write-Host "Corpus para el diagnostico: $CorpusDir"
 
 # ---------------------------------------------------------------------
 Step "[4] Pesos fijados por lock (solo archivos del lock, verificados contra el Hub)"
@@ -174,7 +207,7 @@ $Run = "$Out\batch"
     --retriever-mode bm25 `
     --graph-policy off `
     --k 8 `
-    --corpus corpus `
+    --corpus $CorpusDir `
     --model $Model `
     --precision bf16
 Check "corrida integrada (conserva $Run)"
@@ -208,6 +241,7 @@ $Spq = [math]::Round($Br.seconds / 50, 1)
 $Summary = [ordered]@{
     main_sha = $Sha; model = $Model; gpu = $Rt.gpu; vram_gb = $Rt.vram_gb; torch = $Rt.torch
     retrieval = "bm25 k=8 graph off (diagnostico, no freeze)"
+    corpus = $CorpusDir; corpus_origin = $CorpusOrigin; corpus_v01_byte_identical = $CorpusExact; corpus_v01_comparison = $Cmp
     automatico_sin_ragas = "$($Ev.total_automatico.obtenidos) / $($Ev.total_automatico.posibles)"
     cerradas = $Ev.cerradas.puntos; citas = $Ev.citas.puntos; abstencion = $Ev.abstencion.puntos
     errores_validacion = $Ev.validacion.errores
