@@ -289,7 +289,10 @@ if ($NativeOptionFusion) { $CommonArgs += "--native-option-fusion" }
 if ($ExactLocator) { $CommonArgs += "--exact-locator" }
 if ($CitationFill) { $CommonArgs += "--citation-fill" }
 # -Resume: reuse validated checkpoints (same identity enforced by BatchRunner); never --fresh.
-$FreshArg = $(if ($Resume) { @() } else { @("--fresh") })
+# Build the array explicitly: $(if ...) unrolls a one-element array into a string, and splatting a
+# string passes it character by character ("- - f r e s h", 2026-10-01).
+$FreshArg = @()
+if (-not $Resume) { $FreshArg += "--fresh" }
 & $Py tools\member_b.py batch --run-dir $Run @FreshArg --retries 0 @CommonArgs
 Check "corrida integrada (conserva $Run; reanudar con -Resume -RunName $RunName)"
 if ($IsSample) {
@@ -311,12 +314,21 @@ if (-not $SkipVerify) {
     Step "[6b] Verificacion en vivo simulada: regenerar 3 preguntas (cerrada, semiabierta, abierta) y comparar"
     $Rows = Get-Content "$Run\submissions.jsonl" | ForEach-Object { $_ | ConvertFrom-Json }
     $Ids = @("multiple_choice", "semi_open", "open_ended") | ForEach-Object { $f = $_; ($Rows | Where-Object { $_.formato -eq $f -and -not $_.abstencion } | Select-Object -First 1).id } | Where-Object { $_ -ne $null }
-    $VerifyOut = & $Py tools\member_b.py verify --delivered "$Run\submissions.jsonl" --only ($Ids -join ",") @CommonArgs
-    $VerifyOut | Out-File -Encoding utf8 "$Out\verify_live.json"
-    $V = ($VerifyOut | Out-String | ConvertFrom-Json)
-    $Verify = [ordered]@{ ids = $Ids; all_match = $V.all_match; row_identical = @($V.results | ForEach-Object { $_.row_identical }) }
-    if ($V.all_match) { Write-Host "Reproducibilidad: normas y pasajes coinciden en $($Ids -join ', ')." -ForegroundColor Green }
-    else { Warn "REPRODUCIBILIDAD FALLA en alguna pregunta (ver $Out\verify_live.json): riesgo de descalificacion en la verificacion en vivo." }
+    try {
+        $VerifyOut = & $Py tools\member_b.py verify --delivered "$Run\submissions.jsonl" --only ($Ids -join ",") @CommonArgs
+        $VerifyOut | Out-File -Encoding utf8 "$Out\verify_live.json"
+        # member_b prints one indented JSON object last: parse from the last '{' at column 0.
+        $Text = ($VerifyOut | Out-String)
+        $At = $Text.LastIndexOf("`n{"); if ($Text.StartsWith("{")) { $At = 0 } elseif ($At -ge 0) { $At += 1 }
+        $V = $Text.Substring([math]::Max(0, $At)) | ConvertFrom-Json
+        $Verify = [ordered]@{ ids = $Ids; all_match = $V.all_match; row_identical = @($V.results | ForEach-Object { $_.row_identical }) }
+        if ($V.all_match) { Write-Host "Reproducibilidad: normas y pasajes coinciden en $($Ids -join ', ')." -ForegroundColor Green }
+        else { Warn "REPRODUCIBILIDAD FALLA en alguna pregunta (ver $Out\verify_live.json): riesgo de descalificacion en la verificacion en vivo." }
+    } catch {
+        # Never lose the run summary because the replay output could not be parsed.
+        $Verify = [ordered]@{ ids = $Ids; all_match = $null; error = "$($_.Exception.Message)"; raw = "$Out\verify_live.json" }
+        Warn "No se pudo leer la verificacion en vivo ($($_.Exception.Message)); revisa $Out\verify_live.json. El resumen se escribe igual."
+    }
 }
 
 # ---------------------------------------------------------------------
