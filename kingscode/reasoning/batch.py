@@ -158,7 +158,7 @@ class BatchRunner:
         """Aggregate rates over per-item traces (kept intact in items/<id>.json)."""
         from collections import Counter
         n = len(questions)
-        sources, attribution, normalization, actions, codes, warnings = Counter(), Counter(), Counter(), Counter(), Counter(), Counter()
+        sources, attribution, normalization, actions, codes, warnings, coercions = (Counter() for _ in range(7))
         before = after = fallbacks = tokens_in = tokens_out = 0
         gen_ms = []
         for q in questions:
@@ -172,6 +172,7 @@ class BatchRunner:
             actions.update(d.get("repair_actions") or {})
             # "semi_open_sentences_2_outside_3_5" -> "semi_open_sentences_outside_3_5"
             warnings.update(re.sub(r"_\d+_(?=outside|over)", "_", w) for w in d.get("format_warnings") or [])
+            coercions.update(d.get("field_coercions") or [])
             codes.update(trace.get("error_codes") or [])
             before += d.get("citations_before_repair") or 0
             after += d.get("citations_after_repair") or 0
@@ -183,7 +184,7 @@ class BatchRunner:
         rate = lambda c: {k: {"n": v, "rate": v / n} for k, v in sorted(c.items())}
         return {"questions": n, "abstention_source": rate(sources), "attribution_status": rate(attribution),
                 "normalization_action": rate(normalization), "repair_actions": dict(sorted(actions.items())),
-                "pipeline_error_codes": dict(sorted(codes.items())), "format_warnings": rate(warnings),
+                "pipeline_error_codes": dict(sorted(codes.items())), "format_warnings": rate(warnings), "field_coercions": rate(coercions),
                 "citations_before_repair": before, "citations_after_repair": after,
                 "citation_guard_fallback_rate": fallbacks / n if n else 0.0,
                 "input_tokens": tokens_in, "output_tokens": tokens_out,

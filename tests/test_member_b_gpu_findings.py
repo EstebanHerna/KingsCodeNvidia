@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 from kingscode.common import ROOT, read_json
-from kingscode.generation.prompts import length_warnings, parse_response, parse_response_v3
+from kingscode.generation.prompts import length_warnings, parse_response, parse_response_v3, sentence_count
 from kingscode.reasoning import Pipeline, Question
 from kingscode.reasoning.official import official_bodies
 
@@ -97,6 +97,46 @@ class QwenSmokeRegressionTests(unittest.TestCase):
         self.assertEqual(transformers.AutoModelForCausalLM.from_pretrained.call_args.kwargs["attn_implementation"], "sdpa")
         self.assertEqual(ATTN_IMPLEMENTATION, "sdpa")
         model.generate.assert_called_once()
+
+    def test_missing_abstencion_on_complete_answer_is_an_answer(self):
+        value = json.loads(QWEN_4090_RAW)
+        value.pop("abstencion")
+        row, meta = parse_response_v3(json.dumps(value, ensure_ascii=False), Q, [deepcopy(FIXTURES[1])])
+        self.assertFalse(row["abstencion"])
+        self.assertIn("inferred_abstencion_false_from_complete_answer", meta["field_coercions"])
+        value["abstencion"] = "false"
+        row, meta = parse_response_v3(json.dumps(value, ensure_ascii=False), Q, [deepcopy(FIXTURES[1])])
+        self.assertEqual(meta["field_coercions"][0], "coerced_string:abstencion")
+
+    def test_incomplete_or_reserved_objects_are_still_rejected(self):
+        value = json.loads(QWEN_4090_RAW)
+        value.pop("abstencion"); value.pop("palabras_clave")       # incomplete: never inferred
+        with self.assertRaises(ValueError):
+            parse_response_v3(json.dumps(value, ensure_ascii=False), Q, [deepcopy(FIXTURES[1])])
+        value = json.loads(QWEN_4090_RAW); value["pasajes_recuperados"] = []
+        with self.assertRaises(ValueError):
+            parse_response_v3(json.dumps(value, ensure_ascii=False), Q, [deepcopy(FIXTURES[1])])
+
+    def test_multiple_choice_shape_is_normalized_without_new_content(self):
+        q = Question(2, "¿Qué regula la Ley 1010 de 2006?", "multiple_choice", {"A": "Acoso laboral", "B": "Pensiones", "C": "Salud"})
+        raw = json.dumps({"respuesta_correcta": "A) Acoso laboral", "justificacion": ["Artículo 1 de la Ley 1010 de 2006.", "Define el acoso."],
+                          "descarte_opciones": {"A": "correcta", "B)": "No trata pensiones.", "C": 3, "E": "no existe"},
+                          "comentario": "extra"}, ensure_ascii=False)
+        row, meta = parse_response_v3(raw, q, [deepcopy(FIXTURES[1])])
+        self.assertEqual(row["respuesta_correcta"], "A")
+        self.assertEqual(row["descarte_opciones"], {"B": "No trata pensiones.", "C": "3"})
+        self.assertEqual(row["justificacion"], "Artículo 1 de la Ley 1010 de 2006. Define el acoso.")
+        self.assertNotIn("comentario", row)
+        self.assertIn("dropped_extra_key:comentario", meta["field_coercions"])
+
+    def test_over_limit_text_is_cut_at_sentence_boundaries(self):
+        long = " ".join(f"Oración número {i} sobre la Ley 1010 de 2006." for i in range(1, 9))
+        value = json.loads(QWEN_4090_RAW); value["respuesta"] = long
+        row, meta = parse_response_v3(json.dumps(value, ensure_ascii=False), Q, [deepcopy(FIXTURES[1])])
+        self.assertEqual(sentence_count(row["respuesta"]), 5)
+        self.assertTrue(row["respuesta"].endswith("Oración número 5 sobre la Ley 1010 de 2006."))
+        self.assertIn("truncated_to_limit:respuesta", meta["field_coercions"])
+        self.assertEqual(meta["format_warnings"], [])
 
     def test_length_warnings_cover_words_and_open_ended(self):
         self.assertEqual(length_warnings({"formato": "semi_open", "respuesta": "Uno. Dos. " + "x " * 160 + "."}),
