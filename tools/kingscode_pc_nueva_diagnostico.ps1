@@ -144,7 +144,8 @@ if (-not (Test-Path "corpus\manifest.json")) {
     } else {
         # Descarga oficial (config/sources.json, 163 objetivos) y reconstruccion determinista.
         $AcqReport = "$HOME\kingscode_acquire_$Stamp.json"
-        & $Py tools\member_a.py acquire --corpus corpus --workers 3 | Out-File -Encoding utf8 $AcqReport
+        # Sin --corpus: el default de A es ROOT/corpus (absoluto). Una ruta relativa rompe raw.relative_to(ROOT).
+        & $Py tools\member_a.py acquire --workers 3 | Out-File -Encoding utf8 $AcqReport
         Check "acquire (descarga de fuentes oficiales)"
         $Acq = Get-Content $AcqReport -Raw | ConvertFrom-Json
         Write-Host ("Descargados {0} de {1} objetivos oficiales." -f $Acq.downloaded, $Acq.targets)
@@ -155,7 +156,7 @@ if (-not (Test-Path "corpus\manifest.json")) {
                    "  Probar la red:  curl.exe -sS -o NUL -w ""%{http_code}"" https://www.funcionpublica.gov.co/`n" +
                    "  Alternativa exacta: copiar el corpus de Luis y correr con -CorpusArchive.")
         }
-        & $Py tools\member_a.py build --corpus corpus | Out-Null; Check "build (pasajes, grafo, BM25)"
+        & $Py tools\member_a.py build | Out-Null; Check "build (pasajes, grafo, BM25)"
         git checkout -- corpus_manifest.json 2>$null   # build reescribe el manifest versionado de v0.1; se conserva la referencia
         $global:LASTEXITCODE = 0
         $CorpusOrigin = "descarga oficial (acquire + build)"
