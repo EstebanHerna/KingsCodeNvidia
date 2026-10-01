@@ -39,6 +39,9 @@ def _doc_ids(manifest: dict) -> set:
 
 
 def combine(base: Path, addition: Path, out: Path) -> dict:
+    base = Path(base)
+    addition = Path(addition)
+    out = Path(out)
     if out.resolve() in {base.resolve(), addition.resolve()}:
         raise ValueError("Output must be a new directory; inputs are never modified")
     if (out / "manifest.json").exists():
@@ -71,10 +74,19 @@ def combine(base: Path, addition: Path, out: Path) -> dict:
     hashes = {name: file_hash(out / name) for name in FILES[:3]}
     index = BM25Index([p for p in passages if indexable(p)])
     index.save(out / "index/bm25.json", hashes["passages.jsonl"])
+    root = ROOT.resolve()
+
+    def display_path(directory: Path) -> str:
+        resolved = directory.resolve()
+        try:
+            return resolved.relative_to(root).as_posix()
+        except ValueError:
+            return str(resolved)
+
     manifest = {
         "version": "corpus-v0.1+v0.2-initial-combined",
         "status": "diagnostic_not_competitive_freeze",
-        "inputs": {str(d.relative_to(ROOT)) if d.resolve().is_relative_to(ROOT) else str(d):
+        "inputs": {display_path(d):
                    {"version": m.get("version"), "manifest_sha256": file_hash(d / "manifest.json"),
                     "passages_sha256": file_hash(d / "passages.jsonl")}
                    for d, m in ((base, base_manifest), (addition, add_manifest))},

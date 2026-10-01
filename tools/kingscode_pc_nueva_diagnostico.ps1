@@ -14,7 +14,7 @@
 #       en corpus_v01_v02\ con tools\build_combined_corpus.py. -CorpusSet v01 lo omite.
 #   [4] Pesos fijados por lock: Qwen3-8B (decoder) + embedding/reranker 0.6B (smoke).
 #   [5] Smoke real en GPU (BF16, temperatura 0).
-#   [6] Diagnostico: sample_50 con Qwen3-8B + BM25 (k=8, grafo off) + guardas,
+#   [6] Diagnostico: sample_50 con Qwen3-8B + retrieval elegido (k=8) + guardas,
 #       y evaluador oficial automatico (sin RAGAS).
 #   [7] RAGAS SOLO con -Ragas (gasta creditos de OpenRouter; la llave se pide oculta
 #       y nunca se escribe a disco).
@@ -26,6 +26,7 @@
 #   powershell -ExecutionPolicy Bypass -File kingscode_pc_nueva_diagnostico.ps1
 #   ... -CorpusArchive "D:\kingscode-corpus-v0.1.tar.gz"   (con snapshot-files.sha256.json al lado)
 #   ... -Ragas                                             (solo con autorizacion de Esteban)
+#   ... -AllowKnownLocalCorpusDrift -RetrieverMode hybrid -Rerank
 #   ... -Work "D:\KingsCode"  -RunName "qwen3_8b_bm25_prueba2"
 # =====================================================================
 param(
@@ -36,6 +37,9 @@ param(
     [string]$Model = "qwen3-8b",
     [string]$RunName = "",
     [ValidateSet("v01+v02", "v01")] [string]$CorpusSet = "v01+v02",
+    [switch]$AllowKnownLocalCorpusDrift,
+    [ValidateSet("bm25", "dense", "hybrid")] [string]$RetrieverMode = "bm25",
+    [switch]$Rerank,
     [switch]$Ragas,
     [switch]$SkipSmoke
 )
@@ -48,7 +52,7 @@ function Warn($m) { Write-Host "AVISO: $m" -ForegroundColor Yellow }
 function Check($w) { if ($LASTEXITCODE -ne 0) { throw "STOP: $w (exit $LASTEXITCODE)" } }
 function RefreshPath { $env:Path = [Environment]::GetEnvironmentVariable("Path", "User") + ";" + [Environment]::GetEnvironmentVariable("Path", "Machine") }
 $Stamp = Get-Date -Format "yyyyMMdd_HHmmss"
-if (-not $RunName) { $RunName = "${Model}_bm25_$Stamp" }
+if (-not $RunName) { $RunName = "${Model}_${RetrieverMode}_$Stamp" }
 
 # ---------------------------------------------------------------------
 Step "[0] Herramientas: Git, Python 3.12, GPU"
@@ -184,6 +188,10 @@ git checkout -- reports/member_a_v02/verification.json 2>$null  # el verificador
 $global:LASTEXITCODE = 0
 if ($CorpusExact) { Write-Host "Corpus v0.1 verificado byte a byte contra los hashes de A." -ForegroundColor Green }
 elseif ($CorpusOrigin -like "descarga oficial*") { Warn "el corpus descargado NO es identico a v0.1 (las fuentes cambiaron); sirve para diagnostico, no como freeze. Queda registrado." }
+elseif ($AllowKnownLocalCorpusDrift -and $CorpusOrigin -eq "existente" -and
+        $PassagesSha -eq "f048d30388d29235ff71a956555444f2d32b67884050f6fc4cb0f63e8d380d9f") {
+    Warn "se permite el corpus local conocido de Luis aunque difiera de v0.1; esta corrida es solo diagnostica y no competitiva."
+}
 else { throw "STOP: el corpus no coincide con los hashes de A (verify_member_a_v02)." }
 
 Step "[3b] Corpus combinado v0.1 + v0.2 (corpora\corpus-v0.2, provisional)"
@@ -192,6 +200,14 @@ if ($CorpusSet -eq "v01+v02") {
     $CorpusDir = "corpus_v01_v02"
 } else { $CorpusDir = "corpus" }
 Write-Host "Corpus para el diagnostico: $CorpusDir"
+if ($RetrieverMode -in @("dense", "hybrid")) {
+    & $Py tools\prepare_models.py --download-retrieval; Check "preparacion de modelos de retrieval"
+    & $Py tools\prepare_models.py --verify Qwen/Qwen3-Embedding-0.6B; Check "verificacion del encoder Qwen"
+    if (-not (Test-Path "$CorpusDir\index\dense.meta.json")) {
+        & $Py tools\member_a.py dense --corpus $CorpusDir; Check "construccion del indice denso combinado"
+    }
+}
+if ($Rerank) { & $Py tools\prepare_models.py --verify Qwen/Qwen3-Reranker-0.6B; Check "verificacion del reranker Qwen" }
 
 # ---------------------------------------------------------------------
 Step "[4] Pesos fijados por lock (solo archivos del lock, verificados contra el Hub)"
@@ -214,20 +230,17 @@ if (-not $SkipSmoke) {
 }
 
 # ---------------------------------------------------------------------
-Step "[6] Diagnostico sample_50: $Model + BM25 k=8, grafo off, guardas (sin seleccion)"
+Step "[6] Diagnostico sample_50: $Model + $RetrieverMode (k=8) + router, guardas (sin seleccion)"
 $Run = "$Out\batch"
-& $Py tools\member_b.py batch `
-    --input data\sample_50.jsonl `
-    --run-dir $Run `
-    --fresh `
-    --retries 0 `
-    --retrieval-mode base `
-    --retriever-mode bm25 `
-    --graph-policy off `
-    --k 8 `
-    --corpus $CorpusDir `
-    --model $Model `
-    --precision bf16
+$BatchArgs = @(
+    "batch", "--input", "data\sample_50.jsonl", "--run-dir", $Run,
+    "--fresh", "--retries", "0", "--retrieval-mode", "option",
+    "--retriever-mode", $RetrieverMode, "--graph-policy", "router",
+    "--k", "8", "--corpus", $CorpusDir, "--model", $Model,
+    "--precision", "bf16"
+)
+if ($Rerank) { $BatchArgs += "--rerank" }
+& $Py tools\member_b.py @BatchArgs
 Check "corrida integrada (conserva $Run)"
 & $Py scripts\evaluate.py --submission "$Run\submissions.jsonl" --split sample --out "$Out\evaluation_official.json"
 Check "evaluador oficial"
@@ -258,8 +271,9 @@ $Ev = Get-Content "$Out\evaluation_official.json" -Raw | ConvertFrom-Json
 $Spq = [math]::Round($Br.seconds / 50, 1)
 $Summary = [ordered]@{
     main_sha = $Sha; model = $Model; gpu = $Rt.gpu; vram_gb = $Rt.vram_gb; torch = $Rt.torch
-    retrieval = "bm25 k=8 graph off (diagnostico, no freeze)"
+    retrieval = "$RetrieverMode$(if ($Rerank) { ' + Qwen reranker' }) k=8 graph router (diagnostico, no freeze)"
     corpus = $CorpusDir; corpus_origin = $CorpusOrigin; corpus_v01_raw_identical_and_verified = $CorpusExact; corpus_v01_comparison = $Cmp
+    corpus_diagnostic_override = ($AllowKnownLocalCorpusDrift -and -not $CorpusExact)
     passages_sha256 = $PassagesSha; passages_reference = $PassagesRef
     automatico_sin_ragas = "$($Ev.total_automatico.obtenidos) / $($Ev.total_automatico.posibles)"
     cerradas = $Ev.cerradas.puntos; citas = $Ev.citas.puntos; abstencion = $Ev.abstencion.puntos

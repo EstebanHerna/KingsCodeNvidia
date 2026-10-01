@@ -95,15 +95,15 @@
     ]
   },
   "next_action": {
-    "member_a": "On the separate CUDA integration machine, restore the verified ignored CUJ profile/pool, run the pinned-tokenizer audit and Qwen GPU smoke, record reports with tools/verify_kc_col_ir_target_handoff.py, then run the frozen C0-C3 DEV matrix using --target-handoff. Preserve the validation split.",
+    "member_a": "On the RTX 4090 integration PC, run the end-to-end sample_50 diagnostic on the known local corpus plus provisional v0.2 using the fixed combined-corpus builder and tools/kingscode_pc_nueva_diagnostico.ps1 -AllowKnownLocalCorpusDrift -RetrieverMode hybrid -Rerank. Keep its results diagnostic-only because the local corpus differs from frozen v0.1.",
     "member_b": "Esteban owns B on his development PC. Integrate B after A's retrieval selection/freeze; run decoder and end-to-end evaluation on the separate CUDA integration PC.",
-    "shared": "A and B develop on separate PCs; a third RTX 4090 PC is the integration/runtime target. Use the frozen A handoff for C0-C3 first, then integrate and evaluate B without changing A's benchmark inputs."
+    "shared": "A and B develop on separate PCs; a third RTX 4090 PC is the integration/runtime target. Review the full sample_50 hybrid+decoder diagnostic and official/RAGAS evaluations there. Keep its local corpus results separate from the controlled KC-COL-IR benchmark and from any competitive freeze."
   },
   "next_actions": [
-    "KC-COL-IR-v0.1 handoff: frozen questions/gold and the controlled 190-passage CUJ profile are unchanged. Run the target token audit and GPU smoke, record the evidence report, then execute C0-C3 DEV only. The committed cuda_ready=false remains immutable; runtime readiness is report-backed.",
+    "Integrated diagnostic next: build the separate v0.1+v0.2 combined corpus, build its Qwen dense index, and run sample_50 with hybrid retrieval, Qwen reranker, router, Qwen3-8B and official evaluator. The known local corpus hash f048d303... differs from frozen v0.1 and is allowed only with an explicit diagnostic override; do not call it a competitive result.",
     "The historical ICFES intake is superseded for benchmark split purposes: retain its provenance but keep ICFES SEALED_FUTURE in KC-COL-IR-v0.1.",
     "Acquire seven cited target/modifier primary instruments and review G01 replacements; keep zero semantic edges active until verified.",
-    "After the verified handoff report exists on the separate CUDA integration machine, run C0-C3 with the same 10 accepted questions, controlled corpus, graph OFF and frozen k values; inspect per-question failures before any validation or selection.",
+    "Keep KC-COL-IR-v0.1 as a separate controlled benchmark. Do not mix its C0-C3 metrics with the full-corpus sample_50 diagnostic or alter its cuda_ready=false freeze.",
     "Run python -m unittest discover -s tests -v, python tools/benchmark_v2.py check, and python tools/verify_member_a_v02.py before pushing this branch."
   ],
   "do_not_forget": [

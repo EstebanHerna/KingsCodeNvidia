@@ -23,7 +23,7 @@ def mini_base(directory: Path) -> None:
 
 class CombinedCorpusTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = Path(tempfile.mkdtemp())
+        self.tmp = Path(tempfile.mkdtemp(dir=ROOT))
         mini_base(self.tmp / "base")
 
     def tearDown(self):
@@ -44,6 +44,18 @@ class CombinedCorpusTests(unittest.TestCase):
         combine(self.tmp / "base", V02, self.tmp / "out")
         with self.assertRaises(FileExistsError):
             combine(self.tmp / "base", V02, self.tmp / "out")
+
+    def test_relative_repo_paths_are_recorded_portably(self):
+        workspace = Path(tempfile.mkdtemp(dir=ROOT))
+        try:
+            mini_base(workspace / "base")
+            relative_workspace = workspace.relative_to(ROOT)
+            manifest = combine(relative_workspace / "base", V02.relative_to(ROOT), relative_workspace / "out")
+            runtime_manifest = read_json(workspace / "out/manifest.json")
+            self.assertEqual(manifest["status"], "diagnostic_not_competitive_freeze")
+            self.assertEqual(set(runtime_manifest["inputs"]), {relative_workspace.joinpath("base").as_posix(), "corpora/corpus-v0.2"})
+        finally:
+            shutil.rmtree(workspace, ignore_errors=True)
 
 
 if __name__ == "__main__":
