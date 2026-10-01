@@ -24,6 +24,8 @@ param(
     [string]$Work = "$HOME\KingsCodeGPU\KingsCodeNvidia"
 )
 $ErrorActionPreference = "Continue"
+# With powershell -File, "a,b,c" arrives as ONE string: split it here.
+$Variantes = @($Variantes | ForEach-Object { $_ -split "," } | ForEach-Object { $_.Trim() } | Where-Object { $_ })
 Set-Location $Work
 git pull --ff-only origin main
 $S = ".\tools\kingscode_pc_nueva_diagnostico.ps1"
