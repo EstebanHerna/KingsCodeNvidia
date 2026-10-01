@@ -71,6 +71,25 @@ $Filas = Get-ChildItem ".\reports\decoder_diagnostic" -Directory | Sort-Object L
     }
 }
 $Filas | Format-Table -AutoSize
+
+# Per run: why each fallback happened (saved since PR #22) and how often the parser had to fix shape.
+Write-Host "`nDetalle por corrida (fallbacks y correcciones del parser):" -ForegroundColor Cyan
+Get-ChildItem ".\reports\decoder_diagnostic" -Directory | Sort-Object LastWriteTime | ForEach-Object {
+    $run = $_
+    if (-not (Test-Path "$($run.FullName)\RESUMEN.json")) { return }
+    $r = Get-Content "$($run.FullName)\RESUMEN.json" -Raw | ConvertFrom-Json
+    $why = Get-ChildItem "$($run.FullName)\batch\errors" -ErrorAction SilentlyContinue | ForEach-Object {
+        $e = Get-Content $_.FullName -Raw | ConvertFrom-Json
+        $reason = $e.attempts[0].detail.reason
+        if (-not $reason) { $reason = $e.attempts[0].code }
+        "{0}: {1}" -f $e.id, $reason
+    }
+    $co = $r.diagnostics.field_coercions
+    $coText = $(if ($co) { ($co.PSObject.Properties | ForEach-Object { "$($_.Name)=$($_.Value.n)" }) -join ", " } else { "-" })
+    $fw = $r.diagnostics.format_warnings
+    $fwText = $(if ($fw) { ($fw.PSObject.Properties | ForEach-Object { "$($_.Name)=$($_.Value.n)" }) -join ", " } else { "-" })
+    Write-Host ("  {0}`n    fallbacks: {1}`n    correcciones: {2}`n    avisos de extension: {3}" -f $run.Name, $(if ($why) { $why -join " | " } else { "ninguno" }), $coText, $fwText)
+}
 Write-Host ("Total: {0:N0} min. Base de referencia: {1}/50. 'apta' = <= 20 s/pregunta (presupuesto 22 s). Solo cuentan mejoras de ~2 puntos o mas." -f ((Get-Date) - $Inicio).TotalMinutes, $Base) -ForegroundColor Green
 $Filas | Export-Csv -NoTypeInformation -Encoding UTF8 ".\reports\decoder_diagnostic\comparacion.csv"
 Write-Host "Tabla guardada en reports\decoder_diagnostic\comparacion.csv"
