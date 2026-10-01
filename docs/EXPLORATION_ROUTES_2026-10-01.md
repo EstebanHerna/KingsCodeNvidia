@@ -7,8 +7,8 @@ cambios preparados en este checkout. En esta sesión no se ejecutaron pruebas,
 retrieval, CUDA, generación ni RAGAS; tampoco se adquirieron ni incorporaron
 documentos al corpus. El corpus v0.1 y el perfil combinado quedan intactos.
 
-El checkout parte de `93f99a102608dc1cb708ae878e30571653d9c64d` (`main` y
-`origin/main` en este snapshot). Hay cambios locales para hacer seleccionable
+El cambio parte de `93f99a102608dc1cb708ae878e30571653d9c64d` y quedó publicado
+en `main` como `495248291ae8e8e3c55a318317345d546b5829ac`. Incluye un parámetro para hacer seleccionable
 el presupuesto de expansión del grafo y corregir los contadores del fan-out de
 opciones. Esos cambios necesitan revisión y validación en la máquina CUDA antes
 de usarlos para comparar calidad o declararlos listos.

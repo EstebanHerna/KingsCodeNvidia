@@ -680,7 +680,8 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
 
 ## 2026-10-01 — Optimizaciones sample50, telemetría y backlog de corpus
 
-- **Estado de medición:** el checkout integrado parte de `93f99a1`. Las salidas
+- **Estado de medición:** el cambio se construyó desde `93f99a1` y se publicó
+  en `main` como `4952482`. Las salidas
   copiadas desde la otra máquina prueban que existe una RTX 4090 y que Qwen
   cargó; no constituyen por sí mismas una corrida completa reproducible. No se
   lanzó trabajo CUDA desde este equipo ni se ejecutaron pruebas de CPU.

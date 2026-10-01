@@ -41,7 +41,7 @@ A ya tiene resultados RTX4090/Search V2 preservados en 60ebf7e. La fase vigente 
 
 ## Estado reconciliado: optimización de corrida sample50 (2026-10-01)
 
-La rama de trabajo parte del `main` actual `93f99a1`. Hay una corrida externa de
+El cambio se integró en `main` como `4952482` (padre `93f99a1`). Hay una corrida externa de
 la RTX 4090 compartida por el usuario; no lanzar otra hasta confirmar que acabó.
 El resultado de una corrida previa no sustituye sus reportes/identidad. Los
 contadores por etapa del modo legacy de opciones se estaban subestimando; véase
