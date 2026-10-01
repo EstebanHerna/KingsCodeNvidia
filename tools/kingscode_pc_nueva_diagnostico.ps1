@@ -284,7 +284,10 @@ if ($Rerank) { $CommonArgs += "--rerank" }
 if ($ExactLocator) { $CommonArgs += "--exact-locator" }
 if ($CitationFill) { $CommonArgs += "--citation-fill" }
 # -Resume: reuse validated checkpoints (same identity enforced by BatchRunner); never --fresh.
-$FreshArg = $(if ($Resume) { @() } else { @("--fresh") })
+# Build the array explicitly: $(if ...) unrolls a one-element array into a string, and splatting a
+# string passes it character by character ("- - f r e s h", 2026-10-01).
+$FreshArg = @()
+if (-not $Resume) { $FreshArg += "--fresh" }
 & $Py tools\member_b.py batch --run-dir $Run @FreshArg --retries 0 @CommonArgs
 Check "corrida integrada (conserva $Run; reanudar con -Resume -RunName $RunName)"
 if ($IsSample) {
