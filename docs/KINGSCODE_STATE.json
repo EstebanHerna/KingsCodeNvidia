@@ -29,13 +29,13 @@
     "colab_primary": false,
     "cuda_checked": true,
     "target_cuda_checked": true,
-    "checked_machine": "local Windows CPU; not the target RTX 4090",
+    "checked_machine": "RTX 4090 integration PC evidence is frozen under reports/gpu_freeze_4090; this checkout session is CPU-only",
     "local_report": "reports/hardware.json",
     "local_torch": "2.12.0+cpu",
     "local_cuda_available": false,
     "target_evidence": "reports/gpu_freeze_4090; RTX 4090 retrieval executed externally and preserved at 60ebf7e; this session is CPU only"
   },
-  "phase": "member_a_kc_col_ir_precuda_hardening",
+  "phase": "integrated_sample50_runtime_optimization",
   "architecture_version": "0.5",
   "retrieval": {
     "chunking_primary": "legal_structure_aware",
@@ -49,9 +49,9 @@
     "graph_rag": "graph_aware_from_corpus_v0_selective_query_expansion",
     "graph_fast_path": "BM25+dense+RRF; graph only when relationship/hierarchy helps",
     "active_backend": "bm25",
-    "dense_implementation": "Qwen3 0.6B real GPU retrieval measured; see member_a_v02/gpu_reconciliation.json",
+    "dense_implementation": "Historical dense index/search artifacts exist in reports/gpu_freeze_4090; full neural end-to-end and current hybrid+rereanker comparison remain unverified",
     "full_dense_index_built": true,
-    "full_neural_benchmark_completed": true,
+    "full_neural_benchmark_completed": false,
     "graph_router": "member B legal-router-v1; flat evidence OFF/AUTO/ON with boolean adapter for A",
     "controlled_legal_query_expansion_status": "implemented by B legal-query-v1; finite aliases, deterministic, references preserved",
     "dense_index_location": "GPU historical snapshot; dense bytes not available in this CPU checkout"
@@ -95,16 +95,15 @@
     ]
   },
   "next_action": {
-    "member_a": "On the RTX 4090 integration PC, paste the balanced CUDA pilot commands from the execution handoff: legacy fan-out C30/batch2, native fusion C30/batch2, native C15/batch2, and native C30/batch1. Then run the full sample_50 baseline and selected comparison(s), official evaluator, and optional single RAGAS run. Keep all combined v0.1+v0.2 results diagnostic because the local source snapshot differs from the v0.1 freeze.",
-    "member_b": "Baseline on turing: 26.63/50 without RAGAS (Qwen3-8B, BM25+router, prompt v3), 1 fallback, 15.2 s/question. Next runs, one variable each vs 26.63: -ExactLocator, -PromptVersion v4, -CitationFill, -RetrieverMode hybrid, -Rerank, -Model alia-legal-7b; every run replays 3 items to check live-verification reproducibility. One RAGAS run on the best configuration only with Esteban's authorization. Friday 17:00: one-page progress report.",
-    "shared": "A and B develop on separate PCs; a third RTX 4090 PC is the integration/runtime target. Review the full sample_50 hybrid+decoder diagnostic and official/RAGAS evaluations there. Keep its local corpus results separate from the controlled KC-COL-IR benchmark and from any competitive freeze."
+    "member_a": "Do not start another process while the external 4090 batch is active. Preserve its complete artifacts; after it finishes, synchronize one commit/corpus/model identity and compare one-variable profiles with corrected aggregate retrieval counters. Keep v0.1 immutable; acquire verified official gaps only in a separate v0.2.",
+    "member_b": "Review full-sample per-format JSON validity, official score, citations and abstention causes after the active integration run completes. Keep prompt, guard and abstention policy fixed during retrieval comparisons.",
+    "shared": "The A and B development PCs are separate from the integration RTX 4090. Run the official evaluator for complete paired profiles, then RAGAS once on one selected complete profile. Keep combined v0.1+v0.2 results diagnostic and separate from KC-COL-IR and any competitive freeze. See docs/EXPLORATION_ROUTES_2026-10-01.md."
   },
   "next_actions": [
-    "Integrated CUDA next: first run the same 12 stratified public questions on four hybrid+reranker profiles (legacy C30/batch2; native fusion C30/batch2; native C15/batch2; native C30/batch1), using public fields only. Then run full sample_50 baseline and selected comparison(s); preserve official evaluation, live replay, stage timings, reranker pair/batch counts, citations, abstentions, VRAM, and corpus hashes. Optionally run RAGAS once for one full profile. Combined v0.1+v0.2 remains diagnostic only. See docs/experiments/KC_SAMPLE50_HYBRID_FUSION_V1.md.",
+    "After the active integration-GPU run finishes, execute the paired sample50 exploration in docs/EXPLORATION_ROUTES_2026-10-01.md. Include the corrected aggregate counters and graph_budget=0/10 pair; hold other settings constant. Use the pilot for runtime screening only, then compare complete runs with official evaluation. Run RAGAS once on a selected complete profile.",
     "The historical ICFES intake is superseded for benchmark split purposes: retain its provenance but keep ICFES SEALED_FUTURE in KC-COL-IR-v0.1.",
     "Acquire seven cited target/modifier primary instruments and review G01 replacements; keep zero semantic edges active until verified.",
-    "Keep KC-COL-IR-v0.1 as a separate controlled benchmark. Do not mix its C0-C3 metrics with the full-corpus sample_50 diagnostic or alter its cuda_ready=false freeze.",
-    "Run python -m unittest discover -s tests -v, python tools/benchmark_v2.py check, and python tools/verify_member_a_v02.py before pushing this branch."
+    "Keep KC-COL-IR-v0.1 as a separate controlled benchmark. Do not mix its C0-C3 metrics with the full-corpus sample_50 diagnostic or alter its cuda_ready=false freeze."
   ],
   "do_not_forget": [
     "OpenRouter key is for evaluator, not the competitive system",

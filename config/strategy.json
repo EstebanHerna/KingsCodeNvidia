@@ -29,7 +29,7 @@
     ],
     "graph_query_policy": "B legal-router-v1 uses question and initial flat evidence to choose OFF/AUTO/ON; boolean adapter for A; A executes expansion unchanged",
     "active_backend": "bm25",
-    "full_neural_benchmark_completed": true,
+    "full_neural_benchmark_completed": false,
     "models_lock": "config/models.lock.json",
     "neural_config": "config/neural.json",
     "controlled_legal_query_expansion_status": "implemented by B legal-query-v1; finite aliases, deterministic, references preserved",
@@ -92,9 +92,9 @@
   },
   "version": "0.5",
   "next_action": {
-    "member_a": "benchmark_v2_review_and_corpus_v02_cpu_preparation",
-    "member_b": "execute_deferred_verifications_on_target_then_gpu_smoke_and_decoder_sample",
-    "shared": "GPU retrieval historical results reconciled; decoder status remains separately owned by B"
+    "member_a": "Preserve the active external 4090 sample50 run; after it finishes, use the corrected aggregate profiles and compare one-variable retrieval settings. Keep corpus v0.1 immutable and acquire identified official gaps only in v0.2.",
+    "member_b": "Review per-format generation, citation and abstention traces from a completed full sample; do not run a competing process while the integration GPU is occupied.",
+    "shared": "Synchronize one commit/corpus/model identity for paired runs, evaluate complete runs with the official evaluator, then run RAGAS once on a selected complete profile. See docs/EXPLORATION_ROUTES_2026-10-01.md."
   },
   "interfaces": {
     "retrieve": "retrieve(question, k, graph_mode=\"auto\") -> passages",

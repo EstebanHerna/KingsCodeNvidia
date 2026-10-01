@@ -11,6 +11,11 @@ class FakeBM25:
         return ([0] if query == "consulta base" else [1]), ({0: 1.0} if query == "consulta base" else {1: 1.0})
 
 
+class GraphBM25:
+    def ranking(self, query, count):
+        return [0], {0: 1.0, 1: 0.25}
+
+
 class FakeLocator:
     def __init__(self):
         self.queries = []
@@ -60,7 +65,29 @@ class QueryViewsTests(unittest.TestCase):
         profile = rows[0]["retrieval"]["profile"]
         self.assertEqual((profile["candidate_count"], profile["reranker_pairs"]), (2, 0))
         self.assertEqual(profile["candidate_k"], 2)
+        self.assertEqual(profile["graph_budget"], 0)
         self.assertTrue(all(profile[name] >= 0 for name in ("bm25_ms", "dense_ms", "fusion_ms", "locator_ms", "graph_ms", "reranker_ms", "total_ms")))
+
+    def test_zero_graph_budget_keeps_router_active_but_disables_expansion(self):
+        def make_retriever(graph_budget):
+            r = Retriever.__new__(Retriever)
+            r.mode = "bm25"; r.candidate_k = 1; r.graph_budget = graph_budget; r.corpus_hash = "fixture"
+            r.passages = [
+                {"passage_id": "p0", "text": "seed", "graph_node_ids": ["root", "seed"]},
+                {"passage_id": "p1", "text": "neighbor", "graph_node_ids": ["root", "neighbor"]},
+            ]
+            r.bm25 = GraphBM25(); r.dense = None; r.reranker = None; r.legal_locator = None
+            r.router = lambda _q: True
+            r.adjacency = defaultdict(list); r.adjacency["seed"].append(("neighbor", {"type": "related"}))
+            r.node_passages = defaultdict(set); r.node_passages["neighbor"].add(1)
+            return r
+
+        off = make_retriever(0).retrieve("consulta base", 2, "auto")
+        on = make_retriever(1).retrieve("consulta base", 2, "auto")
+        self.assertTrue(off[0]["retrieval"]["graph_active"])
+        self.assertEqual(off[0]["retrieval"]["profile"]["graph_budget"], 0)
+        self.assertEqual({p["passage_id"] for p in off}, {"p0"})
+        self.assertEqual({p["passage_id"] for p in on}, {"p0", "p1"})
 
     def test_profile_counts_reranker_pairs_and_batches(self):
         r=Retriever.__new__(Retriever)

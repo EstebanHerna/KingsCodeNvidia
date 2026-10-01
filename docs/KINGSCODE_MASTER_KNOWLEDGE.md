@@ -1,9 +1,9 @@
 # KINGSCODE MASTER KNOWLEDGE — Hackathon AI Week 2026
 
 **Fuente canónica del proyecto.**  
-**Última actualización:** 2026-09-30\
+**Última actualización:** 2026-10-01\
 **Equipo activo:** 2 integrantes  
-**Estado:** v0.5 + capa v0.6 de A (metadatos/recuperación) preparada y validada en CPU; A y Gate 1B conservados. Gate 2-Prep tiene código/configuración/runbook preparados, sin ejecutar pruebas por instrucción final del usuario. CUDA objetivo, inferencia real, benchmark neuronal completo y bakeoff siguen pendientes.
+**Estado:** v0.5 + capa v0.6 de A (metadatos/recuperación) preparada y validada; A y Gate 1B conservados. Hay artefactos históricos de búsqueda CUDA, pero no un benchmark neuronal end-to-end actual aceptado ni bakeoff de decoder versionado. El smoke/corrida en la RTX 4090 de integración se ejecuta fuera de este checkout. Estado operativo y siguientes pasos: `docs/KINGSCODE_STATE.json` y `docs/EXPLORATION_ROUTES_2026-10-01.md`.
 
 > En un chat nuevo, leer primero este archivo y luego `KINGSCODE_STATE.json`. No reconstruir decisiones desde memoria si existe una versión más reciente de estos archivos.
 
@@ -480,7 +480,7 @@ CPU de grafo/R6/R7/R8 no sustituyen sus variantes R3-based. Revisar
 
 ## 2026-09-28 — reconciliación GPU y siguiente fase A v0.2
 
-Los resultados de `origin/feat/member-a-gpu-results-4090-20260928` (60ebf7e) son evidencia medida; las menciones anteriores a GPU_BLOCKED describen estados históricos. Main sigue en a3548a1 al comenzar esta fase. `reports/member_a_v02/gpu_reconciliation.json` contrasta los artefactos: R1-QWEN/R2-QWEN/R3–R8 DEV, R2 validation, Search V2 DEV (39 configuraciones) y dos ejecuciones Search V2 validation (39 cada una).
+El archivo histórico `reports/member_a_v02/gpu_reconciliation.json` conserva métricas y hashes vinculados a `origin/feat/member-a-gpu-results-4090-20260928` (60ebf7e), incluidas corridas R1/R2 y Search V2. El estado reconciliado más reciente de `AGENTS.md` no las acepta como resultados GPU versionados actuales de R1-Qwen, R1-BGE, R2 ni R3–R8; no usar esas cifras para afirmar benchmark neuronal completo, CUDA objetivo validado para la configuración integrada o selección final. Main sigue en a3548a1 al comenzar históricamente esa fase.
 
 DEV HYB120_LOC_META_1p25: EC@8=0.9916666666666667, Recall@10=0.9958333333333333, MRR@10=1.0. En validation empatan configuraciones con locator, incluyendo HYB120_LOC_META_0p0 y BM25120_LOC_META_0p0, con 1.0 en esas tres métricas. Esto respalda candidate injection, no superioridad de metadata_scale=1.25 ni rendimiento jurídico general. La latencia de Search V2 es costo compartido de exploración. Se conservan resultados negativos.
 

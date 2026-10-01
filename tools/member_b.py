@@ -23,6 +23,16 @@ def positive_int(value):
     return parsed
 
 
+def graph_budget_int(value):
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError) as exc:
+        raise argparse.ArgumentTypeError("must be an integer from 0 to 100") from exc
+    if not 0 <= parsed <= 100:
+        raise argparse.ArgumentTypeError("must be an integer from 0 to 100")
+    return parsed
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command", choices=["smoke", "decoder-smoke", "sample", "bakeoff", "batch", "verify", "plan"])
@@ -38,6 +48,8 @@ def main(argv=None):
     parser.add_argument("--reranker-batch-size", type=positive_int, default=2,
                         help="Qwen reranker GPU forward batch size (default: 2; test 1 or 2 on 24 GB GPUs)")
     parser.add_argument("--graph-policy", choices=["router", "off", "auto", "on"], default="router")
+    parser.add_argument("--graph-budget", type=graph_budget_int, default=10,
+                        help="graph-expanded passage limit before reranking (0 disables expansion; default: 10, range: 0-100)")
     parser.add_argument("--synthetic", type=int, help="batch: rehearsal with the input repeated to N questions with new ids")
     parser.add_argument("--delivered", type=Path, help="verify: submissions.jsonl to compare against")
     parser.add_argument("--only", help="verify: comma-separated ids to regenerate")
@@ -188,7 +200,7 @@ def _pipeline(args):
         from kingscode import Retriever
         retriever = Retriever(args.corpus, mode=args.retriever_mode, rerank=args.rerank, graph_router=adapter,
                               candidate_k=args.candidate_k, reranker_batch_size=args.reranker_batch_size,
-                              exact_locator=args.exact_locator)
+                              graph_budget=args.graph_budget, exact_locator=args.exact_locator)
         if args.rerank:
             retriever = _RerankSafeRetriever(retriever)
     decoder = DummyDecoder()
@@ -201,7 +213,9 @@ def _pipeline(args):
                 "candidate_k": args.candidate_k, "reranker_batch_size": args.reranker_batch_size,
                 "native_option_fusion": args.native_option_fusion,
                 "prompt_version": getattr(decoder, "prompt_version", None), "citation_fill": args.citation_fill,
-                "retriever": {"mode": args.retriever_mode, "rerank": args.rerank, "exact_locator": args.exact_locator, "fixture_evidence": args.fixture_evidence,
+                "retriever": {"mode": args.retriever_mode, "rerank": args.rerank,
+                              "graph_budget": args.graph_budget,
+                              "exact_locator": args.exact_locator, "fixture_evidence": args.fixture_evidence,
                               "corpus_sha256": retriever.corpus_hash},
                 "graph_policy": args.graph_policy, "plans": plans.manifest["experiment_id"] if plans else None}
     return Pipeline(retriever.retrieve, adapter=adapter, decoder=decoder, k=args.k, graph_policy=args.graph_policy,

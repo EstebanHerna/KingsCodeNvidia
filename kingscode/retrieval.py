@@ -263,6 +263,7 @@ class Retriever:
         profile = {
             "mode": self.mode,
             "candidate_k": self.candidate_k,
+            "graph_budget": self.graph_budget,
             "query_view_count": len(views),
             "dense_encoded_queries": dense_query_profile["encoded_queries"],
             "dense_encode_batches": dense_query_profile["encode_batches"],

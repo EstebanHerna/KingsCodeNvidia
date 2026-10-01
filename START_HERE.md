@@ -6,8 +6,10 @@
 ## Mapa del repositorio
 `docs/MAPA_DEL_REPO.md`: qué es cada carpeta, dónde está cada corpus (`corpus/` v0.1 fuera de git vs `corpora/corpus-v0.2/` agregado provisional) y qué falta para el sábado.
 
-## Estado vigente (2026-09-29, prevalece sobre las secciones históricas de abajo)
-Todo A+B está mergeado en `main`: resultados 4090, corpus v0.2/locator y auditoría v0.7 (A); planner con replay, ejecución robusta de 992 y reparación/construcción de citas (B). Sesión en PC con GPU sin admin: `tools/kingscode_gpu_todo.ps1`. Planes vigentes: `docs/CORPUS_V02_PLAN.md` (A) y `docs/B_PLAN_POST_GPU.md` (B). Última entrada: `docs/DECISION_LOG.md`.
+## Entrada histórica (2026-09-29)
+El resumen de esa fecha registra los cambios fusionados entonces. Para estado,
+resultados y próximos pasos usar la sección reconciliada del 2026-10-01 abajo,
+`docs/KINGSCODE_STATE.json` y la última entrada de `docs/DECISION_LOG.md`.
 
 ## Para cualquier humano o agente
 1. `AGENTS.md`
@@ -36,3 +38,17 @@ A ya tiene resultados RTX4090/Search V2 preservados en 60ebf7e. La fase vigente 
 ## Estado más reciente: KC-COL-IR pre-CUDA (2026-09-30)
 
 `main` está en `e528161`. KC-COL-IR CUJ 2026 tiene 10 gold independientes y 10/10 completos en el perfil controlado de 190 pasajes; el corpus competitivo v0.1 sigue sin esas fuentes. `CUDA_READY=false`; el handoff vigente detiene la ejecución antes de C0-C3. El trabajo local de hardening está en `codex/pre-cuda-hardening`; consultar `docs/KC_COL_IR_PRE_CUDA_HARDENING.md` y `docs/experiments/KC_COL_IR_CUJ2026_SHORTLIST_V1.json`. Javeriana validation sigue sin parsear ni inspeccionar.
+
+## Estado reconciliado: optimización de corrida sample50 (2026-10-01)
+
+La rama de trabajo parte del `main` actual `93f99a1`. Hay una corrida externa de
+la RTX 4090 compartida por el usuario; no lanzar otra hasta confirmar que acabó.
+El resultado de una corrida previa no sustituye sus reportes/identidad. Los
+contadores por etapa del modo legacy de opciones se estaban subestimando; véase
+el cambio local pendiente en `kingscode/reasoning/pipeline.py`. La ruta siguiente
+y la lista de fuentes oficiales candidatas están en
+`docs/EXPLORATION_ROUTES_2026-10-01.md`.
+
+No hay en este checkout un benchmark neuronal end-to-end nuevo ni resultados de
+RAGAS asociados a esta fase. No confundir diagnóstico de una GPU, corrida de
+50 preguntas, benchmark de retrieval y freeze competitivo.

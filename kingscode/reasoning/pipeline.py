@@ -42,6 +42,11 @@ def rrf_merge(ranked_lists: list[list[dict]], k: int, constant: int = 60) -> lis
 
 RETRIEVAL_MODES = ("base", "option", "plan")
 _LOCATOR_KWARGS = ("locator", "locator_injection", "exact_locator")
+_PROFILE_SUM_FIELDS = (
+    "dense_encoded_queries", "dense_encode_batches", "candidate_count", "reranker_pairs",
+    "reranker_batches", "candidate_pairs_when_skipped", "bm25_ms", "dense_ms", "fusion_ms",
+    "locator_ms", "graph_ms", "reranker_ms", "rerank_skip_recovery_ms", "total_ms",
+)
 
 
 def locator_switch(retrieve) -> str | None:
@@ -186,16 +191,66 @@ class Pipeline:
         return self.retrieve(text, self.k, mode)
 
     def _fetch(self, views, mode: str) -> list[dict]:
+        return self._fetch_with_profiles(views, mode)[0]
+
+    @staticmethod
+    def _profiles_from(passages: list[dict]) -> list[dict]:
+        if not passages:
+            return []
+        profile = (passages[0].get("retrieval") or {}).get("profile")
+        return [profile] if isinstance(profile, dict) else []
+
+    @staticmethod
+    def _aggregate_view_profiles(profiles: list[dict]) -> list[dict]:
+        """Return one per-pass profile, summing work across sequential fan-out calls.
+
+        A's profile is repeated on every returned passage. Capture only the first
+        copy per retrieve() call; aggregate calls without touching passage objects
+        or their ranking/evidence metadata. Native fusion and single-view calls
+        retain the original profile values.
+        """
+        if not profiles:
+            return []
+        if len(profiles) == 1:
+            return [dict(profiles[0])]
+
+        result = dict(profiles[0])
+        for field in _PROFILE_SUM_FIELDS:
+            values = [p.get(field) for p in profiles]
+            numeric = [v for v in values if isinstance(v, (int, float)) and not isinstance(v, bool)]
+            if numeric:
+                total = sum(numeric)
+                result[field] = round(total, 3) if field.endswith("_ms") else int(total)
+
+        view_counts = [p.get("query_view_count", 1) for p in profiles]
+        numeric_view_counts = [v for v in view_counts if isinstance(v, int) and not isinstance(v, bool)]
+        if numeric_view_counts:
+            result["query_view_count"] = sum(numeric_view_counts)
+
+        statuses = {p.get("reranker_status") for p in profiles}
+        if any(status is not None for status in statuses):
+            result["reranker_status"] = next(iter(statuses)) if len(statuses) == 1 else "mixed"
+        return [result]
+
+    def _fetch_with_profiles(self, views, mode: str) -> tuple[list[dict], list[dict]]:
         # One view (the common case) keeps the exact call A/tests expect. Several
         # views (options or planner) fan out through A's public retrieve() and
         # are fused deterministically with RRF.
         if len(views) == 1:
-            return self._call(views[0][0], views[0][1], mode)
+            passages = self._call(views[0][0], views[0][1], mode)
+            return passages, self._aggregate_view_profiles(self._profiles_from(passages))
         if self._native(views):
             # A's own multi-view path: the exact locator, graph router and
             # reranker see only Q0; generated views only widen candidates.
-            return self.retrieve(views[0][0], self.k, mode, query_views=[text for text, _, _ in views[1:]])
-        return rrf_merge([self._call(text, trusted, mode) for text, trusted, _ in views], self.k)
+            passages = self.retrieve(views[0][0], self.k, mode, query_views=[text for text, _, _ in views[1:]])
+            return passages, self._aggregate_view_profiles(self._profiles_from(passages))
+        ranked_lists = []
+        profiles = []
+        for text, trusted, _ in views:
+            ranked = self._call(text, trusted, mode)
+            ranked_lists.append(ranked)
+            profiles.extend(self._profiles_from(ranked))
+        return rrf_merge(ranked_lists, self.k), self._aggregate_view_profiles(profiles)
 
     def _native(self, views) -> bool:
         if len(views) < 2 or not self.native_views or not views[0][1]:
@@ -219,25 +274,21 @@ class Pipeline:
         query = normalize_query(question.text)
         plan = self.plans.get(question.id, question.text) if self.retrieval_mode == "plan" else None
         variants = retrieval_views(question, query, self.retrieval_mode, plan)
-        flat = self._fetch(variants, "off")
+        flat, flat_profiles = self._fetch_with_profiles(variants, "off")
         check_passages(flat)
         decision = route_graph(query, flat) if self.graph_policy == "router" else self.graph_policy
         executed = "off"
         passages = flat
+        passage_profiles = flat_profiles
         if decision != "off":
             if self.adapter:
                 self.adapter.bind(query.retrieval_text, decision)
             # Without a bound callback, call A explicitly with ON instead of
             # silently falling back to A's question-only provisional AUTO router.
             executed = decision if decision == "on" or self.adapter else "on"
-            passages = self._fetch(variants, executed)
+            passages, passage_profiles = self._fetch_with_profiles(variants, executed)
         retrieved_ms = (perf_counter() - start) * 1000
-        retrieval_profiles = []
-        for selected in (flat, passages if executed != "off" else None):
-            if selected:
-                profile = (selected[0].get("retrieval") or {}).get("profile")
-                if isinstance(profile, dict):
-                    retrieval_profiles.append(profile)
+        retrieval_profiles = flat_profiles + (passage_profiles if executed != "off" else [])
         try:
             row, trace = _answer(question, passages, self.decoder, max_refs=self.max_refs, citation_fill=self.citation_fill)
         except CitationGuardError as exc:

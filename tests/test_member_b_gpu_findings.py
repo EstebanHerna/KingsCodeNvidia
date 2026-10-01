@@ -176,6 +176,61 @@ class QwenSmokeRegressionTests(unittest.TestCase):
         self.assertIn("--native-option-fusion", out)
         self.assertIn("--candidate-k", out)
         self.assertIn("--reranker-batch-size", out)
+        self.assertIn("--graph-budget", out)
+
+    def test_graph_budget_cli_default_zero_and_upper_bound(self):
+        import importlib.util
+        from unittest.mock import patch
+        from kingscode.common import ROOT
+        spec = importlib.util.spec_from_file_location("member_b_graph_budget_parser", ROOT / "tools/member_b.py")
+        cli = importlib.util.module_from_spec(spec); spec.loader.exec_module(cli)
+        with patch.object(cli, "run_b_command", side_effect=lambda args, parser: args.graph_budget):
+            self.assertEqual(cli.main(["batch"]), 10)
+            self.assertEqual(cli.main(["batch", "--graph-budget", "0"]), 0)
+            self.assertEqual(cli.main(["batch", "--graph-budget", "100"]), 100)
+            with self.assertRaises(SystemExit):
+                cli.main(["batch", "--graph-budget", "101"])
+
+    def test_graph_budget_is_forwarded_and_changes_run_fingerprint(self):
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        import importlib.util
+        from kingscode.common import ROOT
+        from kingscode.reasoning.experiments import fingerprint
+
+        spec = importlib.util.spec_from_file_location("member_b_graph_budget_identity", ROOT / "tools/member_b.py")
+        cli = importlib.util.module_from_spec(spec); spec.loader.exec_module(cli)
+
+        class FakeRetriever:
+            corpus_hash = "fixture-corpus-sha256"
+            def retrieve(self, question, k=8, graph_mode="auto"):
+                return []
+
+        def args_for(budget):
+            return SimpleNamespace(
+                fixture_evidence=False, corpus=None, retriever_mode="bm25", rerank=False,
+                graph_policy="router", graph_budget=budget, candidate_k=30, reranker_batch_size=2,
+                exact_locator=False, model=None, precision="bf16", allow_optional=False,
+                prompt_version="v3", plans=None, retrieval_mode="option", k=8,
+                citation_fill=False, native_option_fusion=False,
+            )
+
+        identities = []
+        for budget in (0, 4):
+            with patch("kingscode.Retriever", return_value=FakeRetriever()) as make_retriever:
+                _, identity = cli._pipeline(args_for(budget))
+            self.assertEqual(make_retriever.call_args.kwargs["graph_budget"], budget)
+            self.assertEqual(identity["retriever"]["graph_budget"], budget)
+            identities.append(identity)
+        self.assertNotEqual(fingerprint(identities[0]), fingerprint(identities[1]))
+
+    def test_diagnostic_script_forwards_and_labels_graph_budget(self):
+        from kingscode.common import ROOT
+        script = (ROOT / "tools/kingscode_pc_nueva_diagnostico.ps1").read_text(encoding="utf-8")
+        self.assertRegex(script, r'\[ValidateRange\(0, 100\)\]\s*\[int\]\$GraphBudget = 10')
+        self.assertIn('"--graph-budget", "$GraphBudget"', script)
+        self.assertIn("_gb${GraphBudget}", script)
+        self.assertIn("graph_budget=$GraphBudget", script)
 
     def test_rerank_overflow_falls_back_to_pre_rerank_order_deterministically(self):
         import importlib.util, inspect

@@ -48,6 +48,7 @@ param(
     [ValidateSet("bm25", "dense", "hybrid")] [string]$RetrieverMode = "bm25",
     [ValidateRange(1, 500)] [int]$CandidateK = 30,
     [ValidateSet("1", "2")] [int]$RerankerBatchSize = 2,
+    [ValidateRange(0, 100)] [int]$GraphBudget = 10,
     [switch]$Rerank,
     [switch]$NativeOptionFusion,
     [switch]$ExactLocator,
@@ -69,7 +70,7 @@ function Warn($m) { Write-Host "AVISO: $m" -ForegroundColor Yellow }
 function Check($w) { if ($LASTEXITCODE -ne 0) { throw "STOP: $w (exit $LASTEXITCODE)" } }
 function RefreshPath { $env:Path = [Environment]::GetEnvironmentVariable("Path", "User") + ";" + [Environment]::GetEnvironmentVariable("Path", "Machine") }
 $Stamp = Get-Date -Format "yyyyMMdd_HHmmss"
-if (-not $RunName) { $RunName = "${Model}_${RetrieverMode}_c${CandidateK}_rb${RerankerBatchSize}$(if ($Rerank) { '_rerank' })$(if ($NativeOptionFusion) { '_nativeopt' })$(if ($ExactLocator) { '_locator' })_p$PromptVersion$(if ($CitationFill) { '_fill' })_$Stamp" }
+if (-not $RunName) { $RunName = "${Model}_${RetrieverMode}_c${CandidateK}_rb${RerankerBatchSize}_gb${GraphBudget}$(if ($Rerank) { '_rerank' })$(if ($NativeOptionFusion) { '_nativeopt' })$(if ($ExactLocator) { '_locator' })_p$PromptVersion$(if ($CitationFill) { '_fill' })_$Stamp" }
 
 # ---------------------------------------------------------------------
 Step "[0] Herramientas: Git, Python 3.12, GPU"
@@ -281,7 +282,7 @@ if ($ExactLocator -and -not $Rerank) {
 $CommonArgs = @(
     "--input", $InputFile, "--retrieval-mode", "option",
     "--retriever-mode", $RetrieverMode, "--graph-policy", "router",
-    "--k", "8", "--candidate-k", "$CandidateK", "--corpus", $CorpusDir, "--model", $Model,
+    "--k", "8", "--candidate-k", "$CandidateK", "--graph-budget", "$GraphBudget", "--corpus", $CorpusDir, "--model", $Model,
     "--reranker-batch-size", "$RerankerBatchSize", "--precision", "bf16", "--prompt-version", $PromptVersion
 )
 if ($Rerank) { $CommonArgs += "--rerank" }
@@ -360,7 +361,7 @@ $Processed = [math]::Max(1, [int]$Br.rows - [int]$Br.counts.resumed)
 $Spq = [math]::Round($Br.seconds / $Processed, 1)
 $Summary = [ordered]@{
     main_sha = $Sha; model = $Model; gpu = $Rt.gpu; vram_gb = $Rt.vram_gb; torch = $Rt.torch
-    retrieval = "$RetrieverMode$(if ($Rerank) { ' + Qwen reranker' }) candidate_k=$CandidateK reranker_batch_size=$RerankerBatchSize$(if ($NativeOptionFusion) { ' + native option fusion' })$(if ($ExactLocator) { ' + locator exacto' }) k=8 graph router (diagnostico, no freeze)"
+    retrieval = "$RetrieverMode$(if ($Rerank) { ' + Qwen reranker' }) candidate_k=$CandidateK graph_budget=$GraphBudget reranker_batch_size=$RerankerBatchSize$(if ($NativeOptionFusion) { ' + native option fusion' })$(if ($ExactLocator) { ' + locator exacto' }) k=8 graph router (diagnostico, no freeze)"
     prompt_version = "grounded-formats-$PromptVersion"; citation_fill = [bool]$CitationFill; verificacion_en_vivo = $Verify
     corpus = $CorpusDir; corpus_origin = $CorpusOrigin; corpus_v01_raw_identical_and_verified = $CorpusExact; corpus_v01_comparison = $Cmp
     corpus_diagnostic_override = ($AllowKnownLocalCorpusDrift -and -not $CorpusExact)

@@ -324,6 +324,77 @@ class PipelineTests(unittest.TestCase):
         ids = {p["passage_id"] for p in row["pasajes_recuperados"]}
         self.assertEqual(ids, {p0["passage_id"], p1["passage_id"]})
 
+    def test_legacy_three_view_fanout_aggregates_all_retrieval_profiles(self):
+        calls = []
+        per_call = [
+            {"mode": "hybrid", "candidate_k": 30, "query_view_count": 1,
+             "dense_encoded_queries": 1, "dense_encode_batches": 1, "candidate_count": 3,
+             "reranker_pairs": 3, "reranker_batch_size": 2, "reranker_batches": 2,
+             "bm25_ms": 1.0, "dense_ms": 10.0, "fusion_ms": 0.5, "locator_ms": 0.0,
+             "graph_ms": 0.0, "reranker_ms": 4.0, "total_ms": 16.0},
+            {"mode": "hybrid", "candidate_k": 30, "query_view_count": 1,
+             "dense_encoded_queries": 1, "dense_encode_batches": 1, "candidate_count": 4,
+             "reranker_pairs": 4, "reranker_batch_size": 2, "reranker_batches": 2,
+             "bm25_ms": 2.0, "dense_ms": 20.0, "fusion_ms": 1.0, "locator_ms": 0.0,
+             "graph_ms": 0.0, "reranker_ms": 5.0, "total_ms": 28.0},
+            {"mode": "hybrid", "candidate_k": 30, "query_view_count": 1,
+             "dense_encoded_queries": 1, "dense_encode_batches": 1, "candidate_count": 5,
+             "reranker_pairs": 5, "reranker_batch_size": 2, "reranker_batches": 3,
+             "bm25_ms": 3.0, "dense_ms": 30.0, "fusion_ms": 1.5, "locator_ms": 0.0,
+             "graph_ms": 0.0, "reranker_ms": 6.0, "total_ms": 40.0},
+        ]
+
+        def fake_retrieve(query, k, mode):
+            profile = per_call[len(calls)]
+            calls.append(query)
+            passage = evidence()
+            passage["retrieval"] = {"profile": profile}
+            return [passage]
+
+        q = Question(79, "Constitución Política", "multiple_choice",
+                     {"A": "opcion_a", "B": "opcion_b"})
+        row, trace = Pipeline(fake_retrieve, decoder=DummyDecoder(), graph_policy="off").run(q)
+
+        self.assertEqual(len(calls), 3)  # Q0 plus two options
+        self.assertEqual([p["passage_id"] for p in row["pasajes_recuperados"]], [evidence()["passage_id"]])
+        self.assertEqual(len(trace["retrieval_profiles"]), 1)  # one profile per retrieval pass
+        aggregate = trace["retrieval_profiles"][0]
+        self.assertEqual(aggregate["query_view_count"], 3)
+        self.assertEqual(aggregate["candidate_count"], 12)
+        self.assertEqual(aggregate["reranker_pairs"], 12)
+        self.assertEqual(aggregate["reranker_batches"], 7)
+        self.assertEqual(aggregate["dense_encoded_queries"], 3)
+        self.assertEqual(aggregate["dense_encode_batches"], 3)
+        self.assertEqual(aggregate["bm25_ms"], 6.0)
+        self.assertEqual(aggregate["dense_ms"], 60.0)
+        self.assertEqual(aggregate["fusion_ms"], 3.0)
+        self.assertEqual(aggregate["reranker_ms"], 15.0)
+        self.assertEqual(aggregate["total_ms"], 84.0)
+
+    def test_single_and_native_retrieval_keep_profile_values(self):
+        profile = {"mode": "hybrid", "query_view_count": 3, "candidate_count": 9,
+                   "reranker_pairs": 9, "reranker_batches": 5, "reranker_ms": 12.5, "total_ms": 20.0}
+
+        def native_retrieve(question, k=8, graph_mode="auto", query_views=None):
+            passage = evidence()
+            passage["retrieval"] = {"profile": dict(profile)}
+            return [passage]
+
+        q = Question(79, "Constitución Política", "multiple_choice", {"A": "x", "B": "y"})
+        _, native_trace = Pipeline(native_retrieve, graph_policy="off", native_option_fusion=True).run(q)
+        self.assertEqual(native_trace["retrieval_profiles"], [profile])
+
+        single_profile = {**profile, "query_view_count": 1}
+
+        def single_retrieve(question, k=8, graph_mode="auto", query_views=None):
+            passage = evidence()
+            passage["retrieval"] = {"profile": dict(single_profile)}
+            return [passage]
+
+        _, single_trace = Pipeline(single_retrieve, graph_policy="off").run(
+            Question(80, "Consulta directa", "semi_open"))
+        self.assertEqual(single_trace["retrieval_profiles"], [single_profile])
+
     def test_native_option_fusion_is_opt_in_and_keeps_q0_as_retriever_question(self):
         calls = []
         def retrieve(question, k=8, graph_mode="auto", query_views=None):

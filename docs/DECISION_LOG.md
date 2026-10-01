@@ -678,3 +678,39 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
 - **`tools/kingscode_variantes.ps1`:** corre variantes de una sola variable sobre `sample_50` con `-SkipSmoke -SkipVerify` (ahorra ~2 min por variante), continúa si una falla e imprime y guarda (`comparacion.csv`) una tabla con delta contra la base 26,63 y la columna `apta` (≤ 20 s/pregunta). La configuración final se corre con `-Variantes final -Final "<flags>"`, con verificación en vivo.
 - **Bug corregido (PR #27):** `--fresh` se pasaba letra por letra: `$(if …)` desenvolvía el arreglo de un elemento en un string.
 
+## 2026-10-01 — Optimizaciones sample50, telemetría y backlog de corpus
+
+- **Estado de medición:** el checkout integrado parte de `93f99a1`. Las salidas
+  copiadas desde la otra máquina prueban que existe una RTX 4090 y que Qwen
+  cargó; no constituyen por sí mismas una corrida completa reproducible. No se
+  lanzó trabajo CUDA desde este equipo ni se ejecutaron pruebas de CPU.
+- **Corrección de telemetría:** en el modo legacy de opciones, B hace varias
+  recuperaciones y `rrf_merge` conserva el perfil de la primera vista. Así, el
+  tiempo total `retrieval_ms` es útil, pero pares/candidatos y tiempos por etapa
+  subestimaban el trabajo. El cambio local agrega contadores y tiempos de todas
+  las vistas legacy de cada pasada; single-view y fusión nativa conservan el
+  perfil original. No cambia la lista ni la fusión de pasajes. Revisar la
+  variante nativa por separado porque usa el API multi-vista de A.
+- **Presupuesto de grafo:** se expone `--graph-budget` / `-GraphBudget` para
+  comparar 0 y 10 sin apagar el router. El default 10 preserva la configuración
+  existente; el cambio es diagnóstico y no selecciona arquitectura.
+- **Método de comparación:** terminar el trabajo que ya ocupa la 4090; usar
+  luego un piloto equilibrado solo para costo/fallos de runtime, seguido por
+  corridas completas pareadas y evaluación oficial. Variar una dimensión por
+  comparación: fusión de opciones, candidate depth, batch del reranker,
+  presupuesto de grafo. Ejecutar RAGAS una vez después de seleccionar un perfil
+  completo, no para seleccionar hiperparámetros. No inferir calidad del piloto.
+- **Corpus:** no alterar ni reconstruir v0.1. Preparar adquisiciones separadas
+  v0.2 para fuentes oficiales asociadas a q51/q247, q453, q142, q563 y q190;
+  q168/q272 permanecen bloqueadas hasta localizar la fuente primaria exacta.
+  Revisar temporalidad de Ley 84/89 por su modificación en Ley 2455/25. Q253
+  parece un falso faltante del mapeo de referencias y debe corregirse antes de
+  descargar de nuevo.
+- **Estado documental:** el benchmark neuronal completo no está respaldado por
+  resultados GPU versionados según la reconciliación vigente; `strategy.json`
+  ahora lo marca como pendiente. Detalle de experimentos y fuentes candidatas:
+  `docs/EXPLORATION_ROUTES_2026-10-01.md`.
+- **Validación de este cambio:** se añadieron pruebas de fan-out y preservación
+  de perfiles, pero no se ejecutaron por la instrucción de reservar validación
+  para la GPU externa. Solo se hizo revisión de diff/estructura; el cambio queda
+  pendiente de smoke comparativo en la RTX 4090.
