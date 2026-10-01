@@ -300,6 +300,20 @@ class QwenSmokeRegressionTests(unittest.TestCase):
                          ["open_ended_analysis_sentences_2_outside_5_8"])
         self.assertEqual(length_warnings({"formato": "multiple_choice"}), [])
 
+    def test_v4_extracts_one_object_from_prose_v3_stays_strict(self):
+        wrapped = "Aquí está la respuesta en formato JSON:\n" + QWEN_4090_RAW + "\nEspero que sea útil."
+        with self.assertRaises(ValueError):
+            parse_response_v3(wrapped, Q, [deepcopy(FIXTURES[1])])                       # v3 default: strict
+        row, meta = parse_response_v3(wrapped, Q, [deepcopy(FIXTURES[1])], extract_embedded=True)
+        self.assertFalse(row["abstencion"])
+        self.assertEqual(meta["normalization_action"], "extracted_single_object_from_prose")
+        self.assertEqual(meta["raw_response"], wrapped)                                  # traceable
+        for bad in ["texto " + QWEN_4090_RAW + " otro " + QWEN_4090_RAW,                 # two objects
+                    "<think>x</think>" + QWEN_4090_RAW,                                  # hidden reasoning
+                    "solo prosa sin objeto", "texto {no es json} fin"]:
+            with self.assertRaises(ValueError, msg=bad[:30]):
+                parse_response_v3(bad, Q, [deepcopy(FIXTURES[1])], extract_embedded=True)
+
 
 if __name__ == "__main__":
     unittest.main()

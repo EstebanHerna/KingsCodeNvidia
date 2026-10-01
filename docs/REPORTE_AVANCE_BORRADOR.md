@@ -17,13 +17,13 @@ Resultado de `python scripts/evaluate.py --submission <corrida>/submissions.json
 | Componente | Puntos obtenidos | Puntos posibles |
 |---|---:|---:|
 | Exactitud en cerradas | 10,67 (8/15) | 20 |
-| Calidad de citación | 10,61 (recall 0,53; **0 citas sin respaldo**) | 20 |
-| Abstención calibrada | 6,40 | 10 |
-| **Total automático sin RAGAS** | **27,68** | **50** |
+| Calidad de citación | 12,65 (recall ponderado 0,63; **0 citas sin respaldo**) | 20 |
+| Abstención calibrada | 7,09 | 10 |
+| **Total automático sin RAGAS** | **30,41** | **50** |
 
 Observaciones sobre el resultado:
 
-Configuración medida: Qwen3-8B (BF16, temperatura 0) + BM25 + router de grafo, k = 8, prompt `grounded-formats-v4`. Ninguna cita queda sin respaldo en la evidencia recuperada: una guarda determinista repara o suprime toda cita no respaldada. Dos corridas completas dieron un `submissions.jsonl` idéntico byte a byte, lo que respalda la verificación en vivo. El componente RAGAS (30 pts) aún no se ha medido.
+Configuración medida: Qwen3-8B (BF16, temperatura 0) + BM25 + router de grafo, k = 8, prompt `grounded-formats-v4` y citas completadas con evidencia verificada. Partimos de 26,63; probamos reranker, locator exacto y recuperación híbrida, que en esta muestra no superaron a esta configuración en puntaje por tiempo. Ninguna cita queda sin respaldo en la evidencia recuperada: una guarda determinista repara o suprime toda cita no respaldada. Dos corridas completas dieron un `submissions.jsonl` idéntico byte a byte, lo que respalda la verificación en vivo. El componente RAGAS (30 pts) aún no se ha medido.
 
 ## 2. Estado del corpus
 
@@ -42,12 +42,12 @@ Fuentes consultadas: Función Pública – Gestor Normativo (68 documentos), rel
 |---|---|
 | Encoder | Qwen/Qwen3-Embedding-0.6B (abierto, revisión fijada); recuperación híbrida preparada y en medición |
 | Decoder | Qwen/Qwen3-8B, BF16, temperatura 0, greedy, sin "thinking"; atención SDPA |
-| Estrategia de recuperación | BM25 sobre fragmentos por artículo, locator exacto de referencias normativas, expansión por grafo normativo activada por router, consultas por opción en cerradas fusionadas por RRF; reranker Qwen3-Reranker-0.6B en evaluación |
+| Estrategia de recuperación | BM25 sobre fragmentos por artículo, expansión por grafo normativo activada por router, consultas por opción en cerradas fusionadas por RRF. Evaluados y no adoptados aún: híbrido BM25 + denso con RRF, reranker Qwen3-Reranker-0.6B y locator exacto (no superan en puntaje por tiempo en la muestra) |
 | Segmentación del corpus | Estructural jurídica: un fragmento por artículo (o unidad equivalente en sentencias), con norma, artículo y jerarquía en los metadatos |
 | Mecanismo de abstención | Política sobre la evidencia (vacía, en conflicto o no vigente) + abstención declarada por el modelo; guarda de citas que repara o suprime antes de abstenerse |
 
 ## 4. Riesgos identificados
 
 1. **RAGAS sin medir (30 pts).** Haremos una única medición con el juez oficial sobre la configuración final, antes del sábado.
-2. **Tiempo de ejecución.** Hoy son 15,4 s/pregunta (≈ 4,2 h para 992, en una ventana de 6 h). Mitigación: checkpoints por pregunta con reanudación, alarma si una configuración pasa de 20 s/pregunta, y ninguna técnica nueva sin medir su costo.
+2. **Tiempo de ejecución.** Hoy son 15,6 s/pregunta (≈ 4,3 h para 992, en una ventana de 6 h). Mitigación: checkpoints por pregunta con reanudación, alarma si una configuración pasa de 20 s/pregunta, y ninguna técnica nueva sin medir su costo.
 3. **Corpus y reproducibilidad de fuentes.** Al volver a descargar las fuentes oficiales, 67 de 163 documentos cambiaron; por eso el índice se congela como snapshot (hashes por archivo) y se publica con licencia abierta. La cobertura de procedimiento y derecho de los mercados es la más delgada.

@@ -192,6 +192,11 @@ def build_context_dense(corpus: Path, output_dir: Path) -> dict:
             "representation_id": metadata["representation_id"], "sha256": metadata["vectors_sha256"]}
 
 
+def _instruction_kwargs(index) -> dict:
+    instruction = getattr(index, "query_instruction", None)
+    return {"instruction": instruction} if instruction else {}
+
+
 class DenseIndex:
     def __init__(self, corpus: Path, passages: list[dict], corpus_sha256: str, *,
                  index_dir: str | Path | None = None, query_instruction: str | None = None,
@@ -234,7 +239,7 @@ class DenseIndex:
             self._score_cache.move_to_end(question)
             return self._score_cache[question]
         scores = np.asarray(self.vectors @ self.encoder.encode([question], query=True,
-                                                               instruction=self.query_instruction)[0])
+                                                               **_instruction_kwargs(self))[0])
         self._score_cache[question] = scores
         if len(self._score_cache) > QUERY_SCORE_CACHE_SIZE:
             self._score_cache.popitem(last=False)
@@ -258,7 +263,7 @@ class DenseIndex:
             "encode_batches": ((len(missing) + batch_size - 1) // batch_size if missing else 0),
         }
         if missing:
-            embeddings = self.encoder.encode(missing, query=True, instruction=self.query_instruction)
+            embeddings = self.encoder.encode(missing, query=True, **_instruction_kwargs(self))
             for question, embedding in zip(missing, embeddings):
                 self._score_cache[question] = np.asarray(self.vectors @ embedding)
                 if len(self._score_cache) > QUERY_SCORE_CACHE_SIZE:
@@ -281,7 +286,7 @@ class DenseIndex:
         except KeyError as exc:
             raise ValueError("Final evidence contains a passage absent from the dense index") from exc
         views = [f"{question}\nCandidate option {letter}: {text}" for letter, text in sorted(options.items())]
-        query_vectors = self.encoder.encode(views, query=True, instruction=self.query_instruction)
+        query_vectors = self.encoder.encode(views, query=True, **_instruction_kwargs(self))
         doc_vectors = np.asarray(self.vectors[indices], dtype="float32")
         scores = query_vectors @ doc_vectors.T
         result = {letter: {p["passage_id"]: float(scores[option_index, passage_index])
