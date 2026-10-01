@@ -1,0 +1,55 @@
+{
+  "protocol": "KC-COL-IR-CUJ2026-SHORTLIST-v1",
+  "status": "PREREGISTERED_PENDING_DEV_RESULTS",
+  "parent_main": "e52816145970adddc70300b1a9988c02b4cd1c8d",
+  "benchmark": "KC-COL-IR-v0.1",
+  "profile_id": "KC-COL-IR-CUJ2026-CONTROLLED-v1",
+  "profile_fingerprint": "9569be4855bc9223eb346280de21d14b080da8e9b73aa9353175d59345492056",
+  "benchmark_manifest_sha256_at_preregistration": "2dafdbfb2d863027e6c3ec7fedaa8fe86228dfcaa38197a30d9d85fd994ffe65",
+  "candidate_set": ["C0", "C1", "C2", "C3"],
+  "fixed_comparison": {
+    "question_split": "DEV",
+    "candidate_k": 30,
+    "evidence_k": 8,
+    "metrics_k": 10,
+    "graph_mode": "off",
+    "query_transform": "none; exact source wording only",
+    "rrf_constant": 60,
+    "seed": 0
+  },
+  "shortlist_limit": 2,
+  "dev_ranking_order": [
+    "Complete Evidence Set@8 descending",
+    "Evidence Completeness@8 descending",
+    "Candidate Complete Evidence Set@30 descending",
+    "Candidate Recall@30 descending",
+    "fixed simplicity order C0, C1, C2, C3"
+  ],
+  "required_sensitivity_report": [
+    "paired per-question outcomes for all frozen accepted DEV IDs",
+    "descriptive source/topic groups with group denominators",
+    "leave-one-question-out range for the primary metric",
+    "Candidate@30 and duplicate diagnostics",
+    "no candidate, gold, evidence-set, or temporal-status changes based on ranking output"
+  ],
+  "validation": {
+    "must_be_independent_source_family": true,
+    "must_be_acquired_and_human_reviewed_before_scoring": true,
+    "performance_must_remain_uninspected_until_shortlist_frozen": true,
+    "winner_metric_order": [
+      "Complete Evidence Set@8 descending",
+      "Evidence Completeness@8 descending",
+      "Candidate Complete Evidence Set@30 descending",
+      "Candidate Recall@30 descending",
+      "simpler component"
+    ],
+    "if_validation_not_ready": "no_selected_retrieval; keep the freeze gate closed"
+  },
+  "not_authorized_by_this_protocol": [
+    "CUDA initialization or GPU benchmark execution",
+    "decoder bakeoff",
+    "validation parsing or scoring before DEV shortlist freeze",
+    "holdout use",
+    "question resampling or gold edits based on retrieval results"
+  ]
+}

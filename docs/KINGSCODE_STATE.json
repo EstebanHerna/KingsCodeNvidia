@@ -1,6 +1,6 @@
 {
   "project": "KingsCode - Hackathon AI Week 2026",
-  "last_updated": "2026-09-29",
+  "last_updated": "2026-09-30",
   "source_of_truth": "KINGSCODE_MASTER_KNOWLEDGE.md",
   "team": {
     "size": 2,
@@ -35,7 +35,7 @@
     "local_cuda_available": false,
     "target_evidence": "reports/gpu_freeze_4090; RTX 4090 retrieval executed externally and preserved at 60ebf7e; this session is CPU only"
   },
-  "phase": "member_a_v02_independent_benchmark_source_gate_and_corpus_remediation",
+  "phase": "member_a_kc_col_ir_precuda_hardening",
   "architecture_version": "0.5",
   "retrieval": {
     "chunking_primary": "legal_structure_aware",
@@ -95,11 +95,12 @@
     ]
   },
   "next_action": {
-    "member_a": "Preexperimental retrieval metric definitions are frozen. Preserve the 10-gold controlled corpus and complete the target-runtime handoff before the first empirical C0-C3 run.",
-    "member_b": "On the target GPU run the two prepared verifications, prepare exact model snapshots, GPU smoke, freeze retrieval evidence and execute D1-D3. No new tests were run in Gate 2-Prep by user instruction.",
+    "member_a": "On the target machine, restore the frozen controlled profile and pinned tokenizers, run tools/audit_kc_col_ir_tokens.py, and complete target-runtime handoff. Keep C0-C3 unexecuted until a separate empirical-ranking phase is authorized.",
+    "member_b": "On the 4090 run tools/run_b_gpu_4090.ps1 -Phase prep (env, corpus, dense status, ALIA weights). -Phase decoder only after A selects a retrieval configuration (KC-COL-IR shortlist rule, docs/KC_COL_IR_PRE_CUDA_HARDENING.md) and writes artifacts/retrieval_freeze.json (runbook sec. 8); Qwen3-8B only with -IncludePendingEligibility, not competitive until organizer confirmation.",
     "shared": "Use feat/member-a-corpus-v02-locator, based on 60ebf7e GPU freeze. No merge to main. B continues its own decoder work; do not infer decoder success from retrieval results."
   },
   "next_actions": [
+    "Pre-CUDA hardening: audit pinned-tokenizer input lengths, record execution identity, report Candidate@30 and duplicate diagnostics, correct timing semantics, enforce unique passage_id for RRF identity, and keep the <=2 DEV shortlist rule preregistered. No retrieval or CUDA was run.",
     "KC-COL-IR-v0.1: original 30-item CUJ batch and deterministic 10-item expansion are frozen; 10 accepted gold unlock GOLD_GATE and RANKING_GATE. All 10 remain missing from competitive corpus-v0.1; the separate controlled 190-passage corpus and BM25 index are materialized and verified. Retrieval benchmark is ready; CUDA_READY=false pending target-runtime handoff. Do not run C0-C3 in this freeze.",
     "The historical ICFES intake is superseded for benchmark split purposes: retain its provenance but keep ICFES SEALED_FUTURE in KC-COL-IR-v0.1.",
     "Acquire seven cited target/modifier primary instruments and review G01 replacements; keep zero semantic edges active until verified.",

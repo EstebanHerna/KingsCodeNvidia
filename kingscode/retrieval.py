@@ -121,6 +121,11 @@ class Retriever:
         self.directory = Path(corpus_dir) if corpus_dir else ROOT / "corpus"
         self.corpus_hash = file_hash(self.directory / "passages.jsonl")
         self.passages = [p for p in read_jsonl(self.directory / "passages.jsonl") if indexable(p)]
+        passage_ids = [p.get("passage_id") for p in self.passages]
+        if any(not isinstance(passage_id, str) or not passage_id for passage_id in passage_ids):
+            raise ValueError("Every indexed passage must have a nonempty string passage_id")
+        if len(passage_ids) != len(set(passage_ids)):
+            raise ValueError("Duplicate passage_id values make RRF identity ambiguous")
         self.bm25 = BM25Index.load(self.directory / "index/bm25.json", self.passages, self.corpus_hash)
         self.mode, self.candidate_k, self.graph_budget = mode, candidate_k, graph_budget
         from .legal_locator import LegalLocator
