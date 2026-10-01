@@ -110,6 +110,7 @@ retrieval ni CUDA desde este checkout.
 | Soporte condicionado por opción | Implementado como señal auxiliar Qwen-dense `Q + opción` vs top-evidencia final; los scores y tiempo quedan trazados. La opción no se elige automáticamente. | Requiere modo dense/hybrid. Comparar fusión nativa sola vs fusión + señal con la misma corrida/prompt, medir tiempo y revisar cerradas manualmente. Coseno no es entailment. |
 | IDs de evidencia | Ya existía en v3: `pasajes_usados` y su validación por IDs; no se duplicó. | Seguir midiendo atribución, sin tratarla como prueba de soporte semántico. |
 | JSON restringido | Añadida ruta optativa XGrammar 0.2.8 para Transformers; el proyecto oficial documenta compatibilidad Windows/Python y uso con `LogitsProcessor` ([instalación](https://github.com/mlc-ai/xgrammar/blob/main/docs/start/installation.md), [guía Transformers](https://github.com/mlc-ai/xgrammar/blob/main/docs/start/quick_start.md)). La salida aún pasa el parser v3 y citation guard. La forma/tipos no prueban corrección legal. Cada respuesta usa un procesador nuevo porque la integración HF es stateful/single-use ([código oficial](https://github.com/mlc-ai/xgrammar/blob/main/python/xgrammar/contrib/hf.py)). | `--constrained-json`, dependencia opcional aislada. Primero probar una por formato en Windows/4090; confirmar overhead y salida antes de sample50. |
+| Cache exacto de pares reranker | Añadido, apagado por defecto y opt-in con `--reranker-score-cache`. Cache LRU acotado a 8.192 pares, aislado por revisión/modelo/precisión/instrucción y con clave de pregunta+texto de búsqueda. Reutiliza únicamente puntuaciones idénticas dentro del mismo proceso; se reportan pares solicitados, calculados, hits, tokenización y forward GPU. | Comparar apagado vs encendido con mismo corpus y configuración, especialmente router en dos pasadas. Si no hay solapamiento de candidatos, no habrá mejora; no se presupone mejora hasta verla en `batch_report.json`. |
 | Hard-negative reranker FT | **Bloqueado por gate de datos.** | No crear trainer hasta tener baseline/freeze, positivos primarios completos, negativos difíciles adjudicados, separación por fuente y test sellado independiente. Nunca entrenar con `sample_50`. |
 | RAFT/QLoRA decoder | **Bloqueado por retrieval/data gate.** | Considerar solo con retrieval congelado y fallos generativos residuales demostrados; requiere dataset independiente con evidencia, distractores y evaluación sellada. |
 
@@ -127,6 +128,12 @@ ambos flags es el mismo control congelado. Después de confirmar que cada perfil
 arranca, comparar corridas completas con el evaluador oficial; el piloto solo
 sirve para detectar fallos de runtime/costo. `late chunking` sigue fuera del
 código y no debe confundirse con `retrieval_text_mode=context`.
+
+La cache exacta del reranker es otra ablation optativa: añade
+`--reranker-score-cache` y reporta sus hits por pasada. El control mantiene la
+cache apagada. Su mayor oportunidad de ahorro es el solapamiento entre la
+primera recuperación OFF y la segunda recuperación del router; no se presupone
+que exista ni se contabiliza como mejora hasta verlo en `batch_report.json`.
 
 ## Corpus: adquisiciones oficiales candidatas
 

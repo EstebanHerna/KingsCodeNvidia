@@ -203,7 +203,7 @@ class BatchRunner:
         rate = lambda c: {k: {"n": v, "rate": v / n} for k, v in sorted(c.items())}
         pct = lambda xs, q: sorted(xs)[min(len(xs) - 1, int(q * len(xs)))] if xs else None
         profile_stages = ("bm25_ms", "dense_ms", "fusion_ms", "locator_ms", "graph_ms", "reranker_ms",
-                          "rerank_skip_recovery_ms", "total_ms")
+                          "reranker_tokenization_ms", "reranker_forward_ms", "rerank_skip_recovery_ms", "total_ms")
         stage_timings = {}
         for stage in profile_stages:
             samples = [float(p[stage]) for p in retrieval_profiles if isinstance(p.get(stage), (int, float))]
@@ -227,6 +227,9 @@ class BatchRunner:
                 "dense_query_encodes": sum(int(p.get("dense_encoded_queries") or 0) for p in retrieval_profiles),
                 "dense_encode_batches": sum(int(p.get("dense_encode_batches") or 0) for p in retrieval_profiles),
                 "reranker_pairs": sum(int(p.get("reranker_pairs") or 0) for p in retrieval_profiles),
+                "reranker_computed_pairs": sum(int(p.get("reranker_computed_pairs") or 0) for p in retrieval_profiles),
+                "reranker_cache_hits": sum(int(p.get("reranker_cache_hits") or 0) for p in retrieval_profiles),
+                "reranker_duplicate_pairs": sum(int(p.get("reranker_duplicate_pairs") or 0) for p in retrieval_profiles),
                 "reranker_batches": sum(int(p.get("reranker_batches") or 0) for p in retrieval_profiles),
                 "native_option_fusion_questions": fusion_questions,
                 "note": "Label-free diagnostics; no thresholds derived from the official 50."}

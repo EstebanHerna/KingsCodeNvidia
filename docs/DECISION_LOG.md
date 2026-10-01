@@ -749,3 +749,18 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
   en esta fase.
 - Sin pruebas locales ni corridas GPU; validar las opciones en la 4090. Véase
   `docs/EXPLORATION_ROUTES_2026-10-01.md`.
+
+## 2026-10-01 — Cache exacta y métricas reales del reranker
+
+- Se implementó una cache LRU acotada a 8.192 puntuaciones por instancia del
+  reranker, habilitable con `--reranker-score-cache`; el default conserva el
+  cálculo anterior. La clave incluye revisión del modelo, precisión, kernel,
+  instrucción, pregunta y texto de búsqueda, para impedir reusar scores entre
+  pares o configuraciones diferentes.
+- El perfil informa pares solicitados/calculados, hits, duplicados, batches y
+  tiempos de tokenización/forward. `batch_report.json` agrega estas métricas.
+  Su oportunidad principal es la intersección de candidatos entre las pasadas
+  OFF y router; si no hay intersección, no habrá ahorro.
+- Se añadió prueba unitaria de la LRU y de identidad de claves; no se ejecutaron
+  tests ni GPU en este equipo. Validación pendiente en 4090 comparando cache
+  OFF/ON, manteniendo todo lo demás fijo.

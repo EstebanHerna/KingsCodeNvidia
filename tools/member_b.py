@@ -56,6 +56,8 @@ def main(argv=None):
     parser.add_argument("--exact-locator", action="store_true", help="A's exact locator (resolves only the original question)")
     parser.add_argument("--retriever-mode", choices=["bm25", "dense", "hybrid"], default="bm25")
     parser.add_argument("--rerank", action="store_true")
+    parser.add_argument("--reranker-score-cache", action="store_true",
+                        help="opt-in exact LRU reuse of repeated Qwen reranker question/passage scores within one run")
     parser.add_argument("--corpus", type=Path)
     parser.add_argument("--fixture-evidence", action="store_true",
                         help="batch/verify: official fixture passages instead of a corpus (reproducibility smoke only, not a score)")
@@ -222,7 +224,8 @@ def _pipeline(args):
                               graph_budget=args.graph_budget, exact_locator=args.exact_locator,
                               retrieval_text_mode=args.retrieval_text_mode, dense_index_dir=args.dense_index_dir,
                               embedding_instruction=(embedding_instruction if args.embedding_instruction_profile != "baseline" else None),
-                              reranker_instruction=(reranker_instruction if args.reranker_instruction_profile != "baseline" else None))
+                              reranker_instruction=(reranker_instruction if args.reranker_instruction_profile != "baseline" else None),
+                              reranker_score_cache=args.reranker_score_cache)
         retriever = base_retriever
         if args.rerank:
             retriever = _RerankSafeRetriever(retriever)
@@ -248,6 +251,7 @@ def _pipeline(args):
                 "embedding_instruction": embedding_instruction,
                 "reranker_instruction_profile": args.reranker_instruction_profile,
                 "reranker_instruction": reranker_instruction,
+                "reranker_score_cache": args.reranker_score_cache,
                 "option_support": args.option_support, "constrained_json": args.constrained_json,
                 "plan_roles": list(plan_roles) if plan_roles else None,
                 "prompt_version": getattr(decoder, "prompt_version", None), "citation_fill": args.citation_fill,

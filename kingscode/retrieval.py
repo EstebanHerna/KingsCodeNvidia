@@ -123,7 +123,7 @@ class Retriever:
                  graph_router=None, candidate_k: int = 30, graph_budget: int = 10, exact_locator: bool = False,
                  reranker_batch_size: int = 2, retrieval_text_mode: str = "literal",
                  dense_index_dir: str | Path | None = None, embedding_instruction: str | None = None,
-                 reranker_instruction: str | None = None):
+                 reranker_instruction: str | None = None, reranker_score_cache: bool = False):
         if mode not in {"bm25", "dense", "hybrid"}:
             raise ValueError("mode must be bm25, dense or hybrid")
         if candidate_k < 1 or graph_budget < 0 or reranker_batch_size < 1:
@@ -172,7 +172,8 @@ class Retriever:
                                                       else "source_text_v1"))
         if rerank:
             from .neural import QwenReranker
-            self.reranker = QwenReranker(batch_size=reranker_batch_size, instruction=reranker_instruction)
+            self.reranker = QwenReranker(batch_size=reranker_batch_size, instruction=reranker_instruction,
+                                         cache_scores=reranker_score_cache)
 
     def retrieve(self, question: str, k: int = 8, graph_mode: str = "auto",
                  query_views: Sequence[str] | None = None) -> list[dict]:
@@ -274,10 +275,12 @@ class Retriever:
         order = sorted(candidates, key=lambda i: (-scores.get(i, 0), self.passages[i]["passage_id"]))
         candidate_count = len(order)
         rerank_scores = {}
+        reranker_profile = {}
         if self.reranker and order:
             stage = perf_counter()
             values = self.reranker.score(question, [self.search_texts[i] for i in order])
             reranker_ms = (perf_counter() - stage) * 1000
+            reranker_profile = dict(getattr(self.reranker, "last_score_profile", {}) or {})
             rerank_scores = dict(zip(order, values))
             order.sort(key=lambda i: (-rerank_scores[i], self.passages[i]["passage_id"]))
         reranker_batch_size = getattr(self.reranker, "batch_size", None) if self.reranker else None
@@ -293,9 +296,16 @@ class Retriever:
             "candidate_count": candidate_count,
             "reranker_pairs": reranker_pairs,
             "reranker_batch_size": reranker_batch_size,
-            "reranker_batches": ((reranker_pairs + reranker_batch_size - 1) // reranker_batch_size
-                                 if reranker_pairs and isinstance(reranker_batch_size, int) and reranker_batch_size > 0
-                                 else None),
+            "reranker_batches": reranker_profile.get("computed_batches", (
+                (reranker_pairs + reranker_batch_size - 1) // reranker_batch_size
+                if reranker_pairs and isinstance(reranker_batch_size, int) and reranker_batch_size > 0 else None)),
+            "reranker_computed_pairs": reranker_profile.get("computed_pairs", reranker_pairs),
+            "reranker_cache_hits": reranker_profile.get("cache_hits", 0),
+            "reranker_duplicate_pairs": reranker_profile.get("duplicate_pairs", 0),
+            "reranker_tokenization_ms": reranker_profile.get("tokenization_ms"),
+            "reranker_forward_ms": reranker_profile.get("forward_ms"),
+            "reranker_cache_entries": reranker_profile.get("cache_entries"),
+            "reranker_cache_enabled": reranker_profile.get("cache_enabled", False),
             "bm25_ms": round(bm25_ms, 3),
             "dense_ms": round(dense_ms, 3),
             "fusion_ms": round(fusion_ms, 3),

@@ -5,6 +5,7 @@ import numpy as np
 
 from kingscode.generation.structured_json import response_schema
 from kingscode.metadata import embedding_representation
+from kingscode.neural import _LRUScoreCache, _reranker_pair_key
 from kingscode.neural import DenseIndex
 from kingscode.reasoning.contracts import Question
 from kingscode.reasoning.pipeline import retrieval_views
@@ -13,6 +14,21 @@ from kingscode.retrieval import BM25Index
 
 
 class RetrievalDesignExperimentsTests(unittest.TestCase):
+    def test_reranker_score_cache_is_bounded_lru_and_keys_full_pair_identity(self):
+        cache = _LRUScoreCache(capacity=2)
+        cache.put("a", 0.25)
+        cache.put("b", 0.5)
+        self.assertEqual(cache.get("a"), 0.25)  # a becomes most-recently used
+        cache.put("c", 0.75)
+        self.assertIsNone(cache.get("b"))
+        self.assertEqual(cache.get("a"), 0.25)
+        self.assertNotEqual(_reranker_pair_key("model", "q", "doc"),
+                            _reranker_pair_key("model", "q2", "doc"))
+        self.assertNotEqual(_reranker_pair_key("model", "q", "doc"),
+                            _reranker_pair_key("model", "q", "doc2"))
+        self.assertNotEqual(_reranker_pair_key("model", "q", "doc"),
+                            _reranker_pair_key("model2", "q", "doc"))
+
     def test_context_representation_is_search_only_and_bm25_uses_it(self):
         passage = {"passage_id": "p1", "text": "Texto normativo literal", "norm_name": "Ley 100 de 1993",
                    "article": "14", "hierarchy_path": ["Ley 100 de 1993", "CAPÍTULO II"]}

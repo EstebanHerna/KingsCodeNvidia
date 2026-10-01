@@ -18,6 +18,39 @@ from .metadata import embedding_representation
 
 ALLOWED = {"Qwen/Qwen3-Embedding-0.6B", "Qwen/Qwen3-Reranker-0.6B"}
 QUERY_SCORE_CACHE_SIZE = 32
+RERANK_SCORE_CACHE_SIZE = 8192
+
+
+class _LRUScoreCache:
+    """Small exact cache for deterministic reranker pair scores within one run."""
+
+    def __init__(self, capacity: int = RERANK_SCORE_CACHE_SIZE):
+        if type(capacity) is not int or capacity < 1:
+            raise ValueError("score-cache capacity must be a positive integer")
+        self.capacity = capacity
+        self.values: OrderedDict[str, float] = OrderedDict()
+
+    def get(self, key: str) -> float | None:
+        if key not in self.values:
+            return None
+        value = self.values.pop(key)
+        self.values[key] = value
+        return value
+
+    def put(self, key: str, value: float) -> None:
+        self.values.pop(key, None)
+        self.values[key] = float(value)
+        while len(self.values) > self.capacity:
+            self.values.popitem(last=False)
+
+
+def _reranker_pair_key(scope: str, question: str, document: str) -> str:
+    digest = hashlib.sha256()
+    for part in (scope, question, document):
+        encoded = part.encode("utf-8")
+        digest.update(len(encoded).to_bytes(8, "big"))
+        digest.update(encoded)
+    return digest.hexdigest()
 
 
 def configuration():
@@ -259,7 +292,8 @@ class DenseIndex:
 
 
 class QwenReranker:
-    def __init__(self, config=None, *, batch_size: int | None = None, instruction: str | None = None):
+    def __init__(self, config=None, *, batch_size: int | None = None, instruction: str | None = None,
+                 cache_scores: bool = False):
         self.config = dict(config or configuration())
         if instruction is not None:
             if not isinstance(instruction, str) or not instruction.strip():
@@ -272,6 +306,11 @@ class QwenReranker:
         from transformers import AutoModelForCausalLM, AutoTokenizer
         name = self.config["reranker_model"]
         kwargs = model_args(name, self.config)
+        self._cache_scope = f"{name}@{kwargs['revision']}:{self.config['dtype']}:{ATTN_IMPLEMENTATION}:" + (
+            self.config.get("reranker_instruction") or self.config.get("instruction", ""))
+        self.cache_scores = bool(cache_scores)
+        self._score_cache = _LRUScoreCache()
+        self.last_score_profile = {}
         self.tokenizer = AutoTokenizer.from_pretrained(name, padding_side="left", **kwargs)
         self.model = AutoModelForCausalLM.from_pretrained(name, dtype=getattr(self.torch, self.config["dtype"]),
                                                          attn_implementation=ATTN_IMPLEMENTATION, **kwargs).to(self.config["device"]).eval()
@@ -281,16 +320,69 @@ class QwenReranker:
         self.suffix = self.tokenizer.encode('<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n', add_special_tokens=False)
 
     def score(self, question: str, documents: list[str]) -> list[float]:
-        output = []
-        ids = _prepare_reranker_input_ids(self.tokenizer, question, documents, self.config,
-                                          self.prefix, self.suffix)
-        for start in range(0, len(documents), self.batch_size):
-            batch_ids = ids[start:start + self.batch_size]
-            inputs = self.tokenizer.pad({"input_ids": batch_ids}, padding=True, return_tensors="pt").to(self.model.device)
-            with self.torch.inference_mode():
-                logits = self.model(**inputs, logits_to_keep=1).logits[:, -1, [self.no, self.yes]].float()
-                output.extend(self.torch.softmax(logits, dim=1)[:, 1].cpu().tolist())
-        return output
+        if not isinstance(question, str) or any(not isinstance(doc, str) for doc in documents):
+            raise TypeError("reranker question and documents must be plain text")
+        started = perf_counter()
+        output: list[float | None] = [None] * len(documents)
+        pending: dict[str, tuple[str, list[int]]] = {}
+        cache_hits = duplicates = 0
+        for index, document in enumerate(documents):
+            key = _reranker_pair_key(self._cache_scope, question, document)
+            if not self.cache_scores:
+                # Preserve the historical one-request/one-forward behavior unless
+                # the caller explicitly opts into exact pair-score reuse.
+                key = f"{key}:{index}"
+            cached = self._score_cache.get(key) if self.cache_scores else None
+            if cached is not None:
+                output[index] = cached
+                cache_hits += 1
+            elif key in pending:
+                pending[key][1].append(index)
+                duplicates += 1
+            else:
+                pending[key] = (document, [index])
+
+        tokenization_ms = forward_ms = 0.0
+        computed_batches = 0
+        if pending:
+            pending_items = list(pending.items())
+            tokenization_started = perf_counter()
+            input_ids = _prepare_reranker_input_ids(
+                self.tokenizer, question, [doc for _, (doc, _) in pending_items], self.config,
+                self.prefix, self.suffix)
+            tokenization_ms = (perf_counter() - tokenization_started) * 1000
+            forward_started = perf_counter()
+            for start in range(0, len(input_ids), self.batch_size):
+                batch_ids = input_ids[start:start + self.batch_size]
+                inputs = self.tokenizer.pad({"input_ids": batch_ids}, padding=True, return_tensors="pt").to(self.model.device)
+                with self.torch.inference_mode():
+                    logits = self.model(**inputs, logits_to_keep=1).logits[:, -1, [self.no, self.yes]].float()
+                    values = self.torch.softmax(logits, dim=1)[:, 1].cpu().tolist()
+                computed_batches += 1
+                for offset, value in enumerate(values):
+                    key, (_, positions) = pending_items[start + offset]
+                    score = float(value)
+                    if self.cache_scores:
+                        self._score_cache.put(key, score)
+                    for position in positions:
+                        output[position] = score
+            forward_ms = (perf_counter() - forward_started) * 1000
+
+        if any(value is None for value in output):
+            raise RuntimeError("Internal reranker score accounting error")
+        self.last_score_profile = {
+            "requested_pairs": len(documents),
+            "computed_pairs": len(pending),
+            "cache_hits": cache_hits,
+            "duplicate_pairs": duplicates,
+            "computed_batches": computed_batches,
+            "tokenization_ms": round(tokenization_ms, 3),
+            "forward_ms": round(forward_ms, 3),
+            "cache_entries": len(self._score_cache.values),
+            "cache_enabled": self.cache_scores,
+            "total_ms": round((perf_counter() - started) * 1000, 3),
+        }
+        return [float(value) for value in output]
 
 
 def _prepare_reranker_input_ids(tokenizer, question: str, documents: list[str], config: dict,

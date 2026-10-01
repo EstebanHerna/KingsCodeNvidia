@@ -95,12 +95,12 @@
     ]
   },
   "next_action": {
-    "member_a": "Do not start another process while the external 4090 batch is active. Preserve its complete artifacts; after it finishes, synchronize one commit/corpus/model identity and compare one-variable profiles with corrected aggregate retrieval counters. Keep v0.1 immutable; acquire verified official gaps only in a separate v0.2.",
+    "member_a": "Do not start another process while the external 4090 batch is active. Preserve its complete artifacts; after it finishes, synchronize one commit/corpus/model identity and compare one-variable profiles with corrected aggregate retrieval counters, native option fusion, and reranker-score-cache OFF/ON. Keep v0.1 immutable; acquire verified official gaps only in a separate v0.2.",
     "member_b": "Review full-sample per-format JSON validity, official score, citations and abstention causes after the active integration run completes. Keep prompt, guard and abstention policy fixed during retrieval comparisons.",
     "shared": "The A and B development PCs are separate from the integration RTX 4090. Run the official evaluator for complete paired profiles, then RAGAS once on one selected complete profile. Keep combined v0.1+v0.2 results diagnostic and separate from KC-COL-IR and any competitive freeze. See docs/EXPLORATION_ROUTES_2026-10-01.md."
   },
   "next_actions": [
-    "After the active integration-GPU run finishes, execute the paired sample50 exploration in docs/EXPLORATION_ROUTES_2026-10-01.md. Include the corrected aggregate counters and graph_budget=0/10 pair; hold other settings constant. Use the pilot for runtime screening only, then compare complete runs with official evaluation. Run RAGAS once on a selected complete profile.",
+    "After the active integration-GPU run finishes, execute the paired sample50 exploration in docs/EXPLORATION_ROUTES_2026-10-01.md. Include native option fusion, reranker-score-cache OFF/ON, exact encoder/reranker instruction profiles, and graph_budget=0/10 as separate ablations; hold other settings constant. Use the pilot for runtime screening only, then compare complete runs with official evaluation. Run RAGAS once on a selected complete profile.",
     "The historical ICFES intake is superseded for benchmark split purposes: retain its provenance but keep ICFES SEALED_FUTURE in KC-COL-IR-v0.1.",
     "Acquire seven cited target/modifier primary instruments and review G01 replacements; keep zero semantic edges active until verified.",
     "Keep KC-COL-IR-v0.1 as a separate controlled benchmark. Do not mix its C0-C3 metrics with the full-corpus sample_50 diagnostic or alter its cuda_ready=false freeze."
