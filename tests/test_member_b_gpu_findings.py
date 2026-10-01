@@ -173,6 +173,9 @@ class QwenSmokeRegressionTests(unittest.TestCase):
         out = subprocess.run([sys.executable, "tools/member_b.py", "--help"], cwd=ROOT, capture_output=True, text=True).stdout
         self.assertIn("--prompt-version", out)
         self.assertIn("--citation-fill", out)
+        self.assertIn("--native-option-fusion", out)
+        self.assertIn("--candidate-k", out)
+        self.assertIn("--reranker-batch-size", out)
 
     def test_rerank_overflow_falls_back_to_pre_rerank_order_deterministically(self):
         import importlib.util, inspect
@@ -187,12 +190,15 @@ class QwenSmokeRegressionTests(unittest.TestCase):
                 self.calls.append(self.reranker)
                 if self.reranker:
                     raise ValueError("Reranker input exceeds max_length; no silent truncation")
-                return [{"passage_id": "p1", "retrieval": {}}]
+                return [{"passage_id": "p1", "retrieval": {"profile": {"candidate_count": 5, "total_ms": 0}}}]
 
         inner = Inner()
         safe = cli._RerankSafeRetriever(inner)
         out = safe.retrieve("pregunta", 8, "off", query_views=["opcion"])
         self.assertEqual(out[0]["retrieval"]["rerank_skipped"], "input_over_max_length")
+        self.assertEqual(out[0]["retrieval"]["profile"]["reranker_status"], "skipped_input_over_max_length")
+        self.assertEqual(out[0]["retrieval"]["profile"]["candidate_pairs_when_skipped"], 5)
+        self.assertGreaterEqual(out[0]["retrieval"]["profile"]["rerank_skip_recovery_ms"], 0)
         self.assertEqual(inner.calls, ["reranker", None])
         self.assertEqual(inner.reranker, "reranker")                     # restored for the next question
         self.assertTrue(supports_query_views(safe.retrieve))             # pipeline still uses native views

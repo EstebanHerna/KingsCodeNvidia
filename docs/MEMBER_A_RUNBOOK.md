@@ -68,6 +68,8 @@ No hay fallback silencioso si faltan pesos, revisión o índice. El índice dens
 
 Referencias de implementación: [Qwen3 Embedding](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B) y [Qwen3 Reranker](https://huggingface.co/Qwen/Qwen3-Reranker-0.6B).
 
+La ruta integrada de sample_50 añade `--candidate-k` (default 30) y `--native-option-fusion` (apagado por defecto). La fusión experimental recoge Q0 y las opciones del enunciado, combina rankings en A y rerankea el pool una vez contra Q0. Los query views densos sin cachear también se codifican juntos dentro del batch configurado. No sustituye el fan-out actual hasta comparar score y tiempo en el mismo hardware. `retrieval.profile` y `batch_report.json` registran tiempos por etapa, consultas densas codificadas y número de pares/batches del reranker. Una caché LRU acotada evita recodificar las mismas vistas si el router solicita una segunda recuperación; no cambia los scores.
+
 ## Límites y tareas de B
 
 - Las fechas y textos son snapshots de la institución; `is_current_text=null` significa vigencia no certificada. Paneles históricos ocultos se conservan en raw, se omiten de clean; bloques explícitos `TEXTO ANTERIOR` quedan marcados y excluidos del índice.

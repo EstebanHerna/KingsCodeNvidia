@@ -12,6 +12,7 @@ from functools import lru_cache
 import math
 from pathlib import Path
 import re
+from time import perf_counter
 from typing import Sequence
 
 from .common import ROOT, file_hash, indexable, normalize, read_json, read_jsonl, write_json
@@ -113,11 +114,12 @@ def default_graph_route(question: str) -> bool:
 
 class Retriever:
     def __init__(self, corpus_dir: str | Path | None = None, *, mode: str = "bm25", rerank: bool = False,
-                 graph_router=None, candidate_k: int = 30, graph_budget: int = 10, exact_locator: bool = False):
+                 graph_router=None, candidate_k: int = 30, graph_budget: int = 10, exact_locator: bool = False,
+                 reranker_batch_size: int = 2):
         if mode not in {"bm25", "dense", "hybrid"}:
             raise ValueError("mode must be bm25, dense or hybrid")
-        if candidate_k < 1 or graph_budget < 0:
-            raise ValueError("candidate_k must be positive and graph_budget nonnegative")
+        if candidate_k < 1 or graph_budget < 0 or reranker_batch_size < 1:
+            raise ValueError("candidate_k and reranker_batch_size must be positive; graph_budget nonnegative")
         self.directory = Path(corpus_dir) if corpus_dir else ROOT / "corpus"
         self.corpus_hash = file_hash(self.directory / "passages.jsonl")
         self.passages = [p for p in read_jsonl(self.directory / "passages.jsonl") if indexable(p)]
@@ -148,10 +150,11 @@ class Retriever:
             self.dense = DenseIndex(self.directory, self.passages, self.corpus_hash)
         if rerank:
             from .neural import QwenReranker
-            self.reranker = QwenReranker()
+            self.reranker = QwenReranker(batch_size=reranker_batch_size)
 
     def retrieve(self, question: str, k: int = 8, graph_mode: str = "auto",
                  query_views: Sequence[str] | None = None) -> list[dict]:
+        started = perf_counter()
         if not isinstance(question, str):
             raise TypeError("question must be plain text, never a sample/answer record")
         views = normalize_query_views(question, query_views)
@@ -164,16 +167,24 @@ class Retriever:
         count = max(k, self.candidate_k)
         sparse_rankings, dense_rankings = [], []
         bm_scores, dense_scores = {}, {}
+        bm25_ms = dense_ms = fusion_ms = locator_ms = graph_ms = reranker_ms = 0.0
+        dense_query_profile = {"encoded_queries": 0, "encode_batches": 0}
         for view_index, view in enumerate(views):
+            stage = perf_counter()
             sparse, view_bm_scores = self.bm25.ranking(view, count)
+            bm25_ms += (perf_counter() - stage) * 1000
             sparse_rankings.append(sparse)
             if view_index == 0:
                 bm_scores = view_bm_scores
-            if self.dense is not None:
-                dense, view_dense_scores = self.dense.ranking(view, count)
-                dense_rankings.append(dense)
-                if view_index == 0:
-                    dense_scores = view_dense_scores
+        if self.dense is not None:
+            stage = perf_counter()
+            dense_results = self.dense.ranking_many(views, count)
+            dense_ms += (perf_counter() - stage) * 1000
+            dense_rankings = [ranking for ranking, _ in dense_results]
+            if dense_results:
+                dense_scores = dense_results[0][1]
+            dense_query_profile = dict(getattr(self.dense, "last_query_profile", dense_query_profile))
+        stage = perf_counter()
         if self.mode == "bm25":
             ranks = sparse_rankings
             fused = reciprocal_rank_fusion(ranks)
@@ -189,14 +200,19 @@ class Retriever:
         candidates = set(i for ranking in ranks for i in ranking)
         base = sorted(candidates, key=lambda i: (-scores.get(i, 0), self.passages[i]["passage_id"]))[:count]
         candidates = set(base)
+        fusion_ms += (perf_counter() - stage) * 1000
         locator_result = None
         if getattr(self, "legal_locator", None) is not None:
+            stage = perf_counter()
             from .legal_locator import candidate_union
             locator_result = self.legal_locator.resolve(question)
             candidates = set(candidate_union(base, locator_result["indices"]))
+            locator_ms += (perf_counter() - stage) * 1000
         graph_scores, graph_evidence = {}, defaultdict(list)
         active = graph_mode == "on" or graph_mode == "auto" and bool(self.router(question))
         if active and base and self.graph_budget:
+            stage = perf_counter()
+            graph_dense_ms = 0.0
             for seed_rank, i in enumerate(base[:5], 1):
                 # Skip the norm root: a query about one article must not fan out
                 # through every article or every citation in the whole statute.
@@ -221,18 +237,49 @@ class Retriever:
                     scores[i] = scores.get(i, 0) + 0.25 * graph_scores[i]
             else:
                 # Dense scores must be computed for added candidates too.
+                dense_stage = perf_counter()
                 extra = self.dense.score_indices(question, expansion)
+                graph_dense_ms = (perf_counter() - dense_stage) * 1000
+                dense_ms += graph_dense_ms
                 dense_scores.update(extra)
                 for i in expansion:
                     scores[i] = extra[i] + 0.05 * graph_scores[i] * 61
+            graph_ms += max(0.0, (perf_counter() - stage) * 1000 - graph_dense_ms)
         if self.dense:
+            stage = perf_counter()
             dense_scores.update(self.dense.score_indices(question, candidates))
+            dense_ms += (perf_counter() - stage) * 1000
         order = sorted(candidates, key=lambda i: (-scores.get(i, 0), self.passages[i]["passage_id"]))
+        candidate_count = len(order)
         rerank_scores = {}
         if self.reranker and order:
+            stage = perf_counter()
             values = self.reranker.score(question, [self.passages[i]["text"] for i in order])
+            reranker_ms = (perf_counter() - stage) * 1000
             rerank_scores = dict(zip(order, values))
             order.sort(key=lambda i: (-rerank_scores[i], self.passages[i]["passage_id"]))
+        reranker_batch_size = getattr(self.reranker, "batch_size", None) if self.reranker else None
+        reranker_pairs = candidate_count if self.reranker else 0
+        profile = {
+            "mode": self.mode,
+            "candidate_k": self.candidate_k,
+            "query_view_count": len(views),
+            "dense_encoded_queries": dense_query_profile["encoded_queries"],
+            "dense_encode_batches": dense_query_profile["encode_batches"],
+            "candidate_count": candidate_count,
+            "reranker_pairs": reranker_pairs,
+            "reranker_batch_size": reranker_batch_size,
+            "reranker_batches": ((reranker_pairs + reranker_batch_size - 1) // reranker_batch_size
+                                 if reranker_pairs and isinstance(reranker_batch_size, int) and reranker_batch_size > 0
+                                 else None),
+            "bm25_ms": round(bm25_ms, 3),
+            "dense_ms": round(dense_ms, 3),
+            "fusion_ms": round(fusion_ms, 3),
+            "locator_ms": round(locator_ms, 3),
+            "graph_ms": round(graph_ms, 3),
+            "reranker_ms": round(reranker_ms, 3),
+            "total_ms": round((perf_counter() - started) * 1000, 3),
+        }
         output = []
         for rank, i in enumerate(order[:k], 1):
             p = deepcopy(self.passages[i])
@@ -242,6 +289,7 @@ class Retriever:
             p["retrieval"] = {"rank": rank, "mode": self.mode, "graph_mode": graph_mode,
                               "graph_active": active, "corpus_sha256": self.corpus_hash,
                               "query_view_count": len(views),
+                              "profile": profile,
                               "graph_evidence": graph_evidence.get(i, [])}
             if locator_result is not None:
                 p["locator"] = {"version": locator_result["version"], "hit": i in locator_result["hits"],

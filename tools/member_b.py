@@ -6,10 +6,21 @@ import os
 import sys
 import subprocess
 from datetime import datetime, timezone
+from time import perf_counter
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from kingscode.common import ROOT
 from kingscode.reasoning.experiments import run_experiment
+
+
+def positive_int(value):
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError) as exc:
+        raise argparse.ArgumentTypeError("must be a positive integer") from exc
+    if parsed < 1:
+        raise argparse.ArgumentTypeError("must be a positive integer")
+    return parsed
 
 
 def main(argv=None):
@@ -22,6 +33,10 @@ def main(argv=None):
     parser.add_argument("--retrieval-mode", choices=["base", "option", "plan"], default="option")
     parser.add_argument("--plans", type=Path, help="plan mode: frozen reports/query_plans/<id> directory (replay)")
     parser.add_argument("--k", type=int, default=8)
+    parser.add_argument("--candidate-k", type=positive_int, default=30,
+                        help="retrieval candidate depth before reranking (default: 30)")
+    parser.add_argument("--reranker-batch-size", type=positive_int, default=2,
+                        help="Qwen reranker GPU forward batch size (default: 2; test 1 or 2 on 24 GB GPUs)")
     parser.add_argument("--graph-policy", choices=["router", "off", "auto", "on"], default="router")
     parser.add_argument("--synthetic", type=int, help="batch: rehearsal with the input repeated to N questions with new ids")
     parser.add_argument("--delivered", type=Path, help="verify: submissions.jsonl to compare against")
@@ -43,6 +58,8 @@ def main(argv=None):
                         help="batch/verify: grounded-formats-v3 (default) or v4 (abstencion listed, minimum lengths, MC justification first)")
     parser.add_argument("--citation-fill", action="store_true",
                         help="batch/verify: complete up to 5 verified citations with top-ranked evidence (semi_open/multiple_choice only)")
+    parser.add_argument("--native-option-fusion", action="store_true",
+                        help="batch/verify: fuse MC option views inside A before one Q0-based rerank; experimental and opt-in")
     parser.add_argument("--dry-run", action="store_true", help="Print the plan only; no CUDA, weights or evaluation")
     args = parser.parse_args(argv)
     if args.command == "smoke":
@@ -130,6 +147,7 @@ class _RerankSafeRetriever:
         self.inner, self.corpus_hash = retriever, retriever.corpus_hash
 
     def retrieve(self, question, k=8, graph_mode="auto", query_views=None):
+        started = perf_counter()
         try:
             return self.inner.retrieve(question, k, graph_mode, query_views=query_views)
         except ValueError as exc:
@@ -140,8 +158,15 @@ class _RerankSafeRetriever:
                 passages = self.inner.retrieve(question, k, graph_mode, query_views=query_views)
             finally:
                 self.inner.reranker = reranker
+            recovery_ms = round((perf_counter() - started) * 1000, 3)
             for p in passages:
                 p.setdefault("retrieval", {})["rerank_skipped"] = "input_over_max_length"
+                profile = p["retrieval"].get("profile")
+                if isinstance(profile, dict):
+                    profile["reranker_status"] = "skipped_input_over_max_length"
+                    profile["rerank_skip_recovery_ms"] = recovery_ms
+                    profile["total_ms"] = recovery_ms
+                    profile["candidate_pairs_when_skipped"] = profile.get("candidate_count")
             return passages
 
 
@@ -162,6 +187,7 @@ def _pipeline(args):
     else:
         from kingscode import Retriever
         retriever = Retriever(args.corpus, mode=args.retriever_mode, rerank=args.rerank, graph_router=adapter,
+                              candidate_k=args.candidate_k, reranker_batch_size=args.reranker_batch_size,
                               exact_locator=args.exact_locator)
         if args.rerank:
             retriever = _RerankSafeRetriever(retriever)
@@ -172,13 +198,15 @@ def _pipeline(args):
                             prompt_version=f"grounded-formats-{args.prompt_version}")
     plans = PlanStore(args.plans) if args.plans else None
     identity = {"decoder": [decoder.name, decoder.version], "retrieval_mode": args.retrieval_mode, "k": args.k,
+                "candidate_k": args.candidate_k, "reranker_batch_size": args.reranker_batch_size,
+                "native_option_fusion": args.native_option_fusion,
                 "prompt_version": getattr(decoder, "prompt_version", None), "citation_fill": args.citation_fill,
                 "retriever": {"mode": args.retriever_mode, "rerank": args.rerank, "exact_locator": args.exact_locator, "fixture_evidence": args.fixture_evidence,
                               "corpus_sha256": retriever.corpus_hash},
                 "graph_policy": args.graph_policy, "plans": plans.manifest["experiment_id"] if plans else None}
     return Pipeline(retriever.retrieve, adapter=adapter, decoder=decoder, k=args.k, graph_policy=args.graph_policy,
                     retrieval_mode=args.retrieval_mode, plans=plans, max_refs=5 if args.citation_fill else 3,
-                    citation_fill=args.citation_fill), identity
+                    citation_fill=args.citation_fill, native_option_fusion=args.native_option_fusion), identity
 
 
 def run_b_command(args, parser) -> int:

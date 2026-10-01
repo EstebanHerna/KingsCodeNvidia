@@ -163,17 +163,20 @@ def answer(question: Question | str, passages: list[dict], format: str, *, quest
 class Pipeline:
     def __init__(self, retrieve, *, adapter: RetrieverGraphRouter | None = None, decoder: Decoder | None = None,
                  k: int = 8, graph_policy: str = "router", retrieval_mode: str = "option", plans=None,
-                 max_refs: int = 3, citation_fill: bool = False):
+                 max_refs: int = 3, citation_fill: bool = False, native_option_fusion: bool = False):
         if type(k) is not int or not 1 <= k <= 10 or graph_policy not in {"router", "off", "auto", "on"}:
             raise ValueError("Invalid evidence count/graph policy")
         if retrieval_mode not in RETRIEVAL_MODES:
             raise ValueError(f"retrieval_mode must be one of {RETRIEVAL_MODES}; plan+option stays disabled until measured")
         if retrieval_mode == "plan" and plans is None:
             raise ValueError("plan mode replays frozen plans: pass plans=PlanStore(...)")
+        if type(native_option_fusion) is not bool:
+            raise ValueError("native_option_fusion must be a boolean")
         self.retrieve, self.adapter = retrieve, adapter
         self.decoder, self.k, self.graph_policy = decoder or DummyDecoder(), k, graph_policy
         self.retrieval_mode, self.plans, self.max_refs = retrieval_mode, plans, max_refs
         self.citation_fill = citation_fill
+        self.native_option_fusion = native_option_fusion
         self.locator_kwarg = locator_switch(retrieve)
         self.native_views = supports_query_views(retrieve)
 
@@ -195,13 +198,18 @@ class Pipeline:
         return rrf_merge([self._call(text, trusted, mode) for text, trusted, _ in views], self.k)
 
     def _native(self, views) -> bool:
-        return self.native_views and views[0][1] and all(not trusted for _, trusted, _ in views[1:])
+        if len(views) < 2 or not self.native_views or not views[0][1]:
+            return False
+        if all(not trusted for _, trusted, _ in views[1:]):
+            return True
+        return (self.native_option_fusion and self.retrieval_mode == "option"
+                and all(trusted and role == "option" for _, trusted, role in views[1:]))
 
     def _locator_control(self, views) -> str | None:
-        if all(trusted for _, trusted, _ in views):
-            return None
         if self._native(views):
             return "a_query_views_locator_on_q0_only"
+        if all(trusted for _, trusted, _ in views):
+            return None
         return "disabled_for_generated_views" if self.locator_kwarg else "retrieve_has_no_locator_switch"
 
     def run(self, question: Question):
@@ -224,6 +232,12 @@ class Pipeline:
             executed = decision if decision == "on" or self.adapter else "on"
             passages = self._fetch(variants, executed)
         retrieved_ms = (perf_counter() - start) * 1000
+        retrieval_profiles = []
+        for selected in (flat, passages if executed != "off" else None):
+            if selected:
+                profile = (selected[0].get("retrieval") or {}).get("profile")
+                if isinstance(profile, dict):
+                    retrieval_profiles.append(profile)
         try:
             row, trace = _answer(question, passages, self.decoder, max_refs=self.max_refs, citation_fill=self.citation_fill)
         except CitationGuardError as exc:
@@ -243,6 +257,9 @@ class Pipeline:
         trace.update(retrieval_mode=self.retrieval_mode,
                      views=[{"role": role, "trusted": trusted, "text": text} for text, trusted, role in variants],
                      locator_control=self._locator_control(variants),
+                     native_option_fusion=bool(self.native_option_fusion and self.retrieval_mode == "option"
+                                               and len(variants) > 1 and self._native(variants)),
+                     retrieval_profiles=retrieval_profiles,
                      plan=None if plan is None else {"status": plan.status,
                                                      "generated_references": [list(map(str, r)) for r in plan.generated_references]})
         trace.update(id=question.id, query=query.record(), graph_decision=decision, graph_execution=executed,

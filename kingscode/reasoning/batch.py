@@ -162,10 +162,15 @@ class BatchRunner:
         n = len(questions)
         sources, attribution, normalization, actions, codes, warnings, coercions = (Counter() for _ in range(7))
         before = after = fallbacks = tokens_in = tokens_out = peak = rerank_skipped = 0
+        abstentions = supported_citations = unsupported_citations = fusion_questions = 0
         gen_ms, ret_ms = [], []
+        abstention_reasons, abstention_formats = Counter(), Counter()
+        retrieval_profiles = []
         for q in questions:
             item = json.loads((self.run_dir / "items" / f"{q.id}.json").read_text(encoding="utf-8"))
             trace = item.get("trace") or {}
+            row = item.get("row") or {}
+            fusion_questions += bool(trace.get("native_option_fusion"))
             d = trace.get("diagnostics") or {}
             sources[trace.get("abstention_source", "none")] += 1
             attribution[d.get("attribution_status", "none")] += 1
@@ -179,6 +184,13 @@ class BatchRunner:
             before += d.get("citations_before_repair") or 0
             after += d.get("citations_after_repair") or 0
             fallbacks += bool(trace.get("citation_guard_fallback"))
+            if row.get("abstencion"):
+                abstentions += 1
+                abstention_reasons[trace.get("abstention_reason") or "unspecified"] += 1
+                abstention_formats[q.format] += 1
+            guard = trace.get("citation_guard") or {}
+            supported_citations += sum(bool(c.get("supported")) for c in guard.get("citations", []))
+            unsupported_citations += int(guard.get("unsupported_count") or 0)
             tokens_in += d.get("input_tokens") or 0
             tokens_out += d.get("output_tokens") or 0
             if d.get("generation_ms") is not None:
@@ -187,17 +199,36 @@ class BatchRunner:
                 ret_ms.append(trace["retrieval_ms"])
             peak = max(peak, d.get("peak_reserved_vram_bytes") or 0)
             rerank_skipped += bool(trace.get("rerank_skipped"))
+            retrieval_profiles.extend(p for p in trace.get("retrieval_profiles", []) if isinstance(p, dict))
         rate = lambda c: {k: {"n": v, "rate": v / n} for k, v in sorted(c.items())}
         pct = lambda xs, q: sorted(xs)[min(len(xs) - 1, int(q * len(xs)))] if xs else None
+        profile_stages = ("bm25_ms", "dense_ms", "fusion_ms", "locator_ms", "graph_ms", "reranker_ms",
+                          "rerank_skip_recovery_ms", "total_ms")
+        stage_timings = {}
+        for stage in profile_stages:
+            samples = [float(p[stage]) for p in retrieval_profiles if isinstance(p.get(stage), (int, float))]
+            stage_timings[stage] = {"p50": pct(samples, 0.5), "p95": pct(samples, 0.95),
+                                    "sum": round(sum(samples), 3) if samples else None}
+        citation_total = supported_citations + unsupported_citations
         return {"questions": n, "abstention_source": rate(sources), "attribution_status": rate(attribution),
+                "abstentions": abstentions, "abstention_reasons": dict(sorted(abstention_reasons.items())),
+                "abstentions_by_format": dict(sorted(abstention_formats.items())),
                 "normalization_action": rate(normalization), "repair_actions": dict(sorted(actions.items())),
                 "pipeline_error_codes": dict(sorted(codes.items())), "format_warnings": rate(warnings), "field_coercions": rate(coercions),
                 "citations_before_repair": before, "citations_after_repair": after,
                 "citation_guard_fallback_rate": fallbacks / n if n else 0.0,
+                "supported_citations": supported_citations, "unsupported_citations": unsupported_citations,
+                "citation_support_rate": supported_citations / citation_total if citation_total else None,
                 "input_tokens": tokens_in, "output_tokens": tokens_out,
                 "generation_ms_p50": sorted(gen_ms)[len(gen_ms) // 2] if gen_ms else None,
                 "generation_ms_p95": pct(gen_ms, 0.95), "retrieval_ms_p50": pct(ret_ms, 0.5), "retrieval_ms_p95": pct(ret_ms, 0.95),
                 "peak_reserved_vram_gb": round(peak / 2**30, 1) if peak else None, "rerank_skipped": rerank_skipped,
+                "retrieval_profile_samples": len(retrieval_profiles), "retrieval_stage_ms": stage_timings,
+                "dense_query_encodes": sum(int(p.get("dense_encoded_queries") or 0) for p in retrieval_profiles),
+                "dense_encode_batches": sum(int(p.get("dense_encode_batches") or 0) for p in retrieval_profiles),
+                "reranker_pairs": sum(int(p.get("reranker_pairs") or 0) for p in retrieval_profiles),
+                "reranker_batches": sum(int(p.get("reranker_batches") or 0) for p in retrieval_profiles),
+                "native_option_fusion_questions": fusion_questions,
                 "note": "Label-free diagnostics; no thresholds derived from the official 50."}
 
     def assemble(self, questions: list[Question]) -> dict:

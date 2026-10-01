@@ -6,6 +6,7 @@ and download the two allowlisted models. No hosted model APIs are used.
 from __future__ import annotations
 
 import os
+from collections import OrderedDict
 from pathlib import Path
 
 import numpy as np
@@ -13,6 +14,7 @@ import numpy as np
 from .common import ROOT, file_hash, indexable, read_json, read_jsonl, write_json
 
 ALLOWED = {"Qwen/Qwen3-Embedding-0.6B", "Qwen/Qwen3-Reranker-0.6B"}
+QUERY_SCORE_CACHE_SIZE = 32
 
 
 def configuration():
@@ -116,18 +118,46 @@ class DenseIndex:
             raise ValueError("Dense vectors invalid")
         self.encoder = QwenEncoder(meta["config"])
         self.passages = passages
-        self._query, self._scores = None, None
+        # A router-enabled pipeline may retrieve OFF and then ON for the same
+        # query/views. Keep a small score cache so the second pass does not
+        # encode those exact queries again; the cache is bounded for larger corpora.
+        self._score_cache = OrderedDict()
+        self.last_query_profile = {"encoded_queries": 0, "encode_batches": 0}
 
     def all_scores(self, question):
-        if self._query != question:
-            self._scores = np.asarray(self.vectors @ self.encoder.encode([question], query=True)[0])
-            self._query = question
-        return self._scores
+        if question in self._score_cache:
+            self._score_cache.move_to_end(question)
+            return self._score_cache[question]
+        scores = np.asarray(self.vectors @ self.encoder.encode([question], query=True)[0])
+        self._score_cache[question] = scores
+        if len(self._score_cache) > QUERY_SCORE_CACHE_SIZE:
+            self._score_cache.popitem(last=False)
+        return scores
 
     def ranking(self, question, k):
         scores = self.all_scores(question)
         order = sorted(range(len(scores)), key=lambda i: (-float(scores[i]), self.passages[i]["passage_id"]))[:k]
         return order, {i: float(scores[i]) for i in order}
+
+    def ranking_many(self, questions: list[str], k: int):
+        """Encode uncached query views together, then rank each against the index."""
+        missing, seen = [], set()
+        for question in questions:
+            if question not in self._score_cache and question not in seen:
+                missing.append(question)
+                seen.add(question)
+        batch_size = self.encoder.config["batch_size"]
+        self.last_query_profile = {
+            "encoded_queries": len(missing),
+            "encode_batches": ((len(missing) + batch_size - 1) // batch_size if missing else 0),
+        }
+        if missing:
+            embeddings = self.encoder.encode(missing, query=True)
+            for question, embedding in zip(missing, embeddings):
+                self._score_cache[question] = np.asarray(self.vectors @ embedding)
+                if len(self._score_cache) > QUERY_SCORE_CACHE_SIZE:
+                    self._score_cache.popitem(last=False)
+        return [self.ranking(question, k) for question in questions]
 
     def score_indices(self, question, indices):
         scores = self.all_scores(question)
@@ -135,8 +165,11 @@ class DenseIndex:
 
 
 class QwenReranker:
-    def __init__(self, config=None):
+    def __init__(self, config=None, *, batch_size: int | None = None):
         self.config = config or configuration()
+        self.batch_size = int(batch_size or self.config["batch_size"])
+        if self.batch_size < 1:
+            raise ValueError("reranker batch_size must be positive")
         self.torch = setup(self.config)
         from transformers import AutoModelForCausalLM, AutoTokenizer
         name = self.config["reranker_model"]
@@ -151,15 +184,29 @@ class QwenReranker:
 
     def score(self, question: str, documents: list[str]) -> list[float]:
         output = []
-        for start in range(0, len(documents), self.config["batch_size"]):
-            docs = documents[start:start + self.config["batch_size"]]
-            texts = [f"<Instruct>: {self.config['instruction']}\n<Query>: {question}\n<Document>: {doc}" for doc in docs]
-            ids = self.tokenizer(texts, add_special_tokens=False, truncation=False)["input_ids"]
-            ids = [self.prefix + row + self.suffix for row in ids]
-            if any(len(row) > self.config["max_length"] for row in ids):
-                raise ValueError("Reranker input exceeds max_length; no silent truncation")
-            inputs = self.tokenizer.pad({"input_ids": ids}, padding=True, return_tensors="pt").to(self.model.device)
+        ids = _prepare_reranker_input_ids(self.tokenizer, question, documents, self.config,
+                                          self.prefix, self.suffix)
+        for start in range(0, len(documents), self.batch_size):
+            batch_ids = ids[start:start + self.batch_size]
+            inputs = self.tokenizer.pad({"input_ids": batch_ids}, padding=True, return_tensors="pt").to(self.model.device)
             with self.torch.inference_mode():
                 logits = self.model(**inputs, logits_to_keep=1).logits[:, -1, [self.no, self.yes]].float()
                 output.extend(self.torch.softmax(logits, dim=1)[:, 1].cpu().tolist())
         return output
+
+
+def _prepare_reranker_input_ids(tokenizer, question: str, documents: list[str], config: dict,
+                                prefix: list[int], suffix: list[int]) -> list[list[int]]:
+    """Tokenize and validate every pair before any reranker forward pass.
+
+    This avoids scoring early mini-batches only to discover an overlength pair
+    near the end, after which the safe retrieval wrapper must rerun without the
+    reranker. Tokenization is also issued once per candidate set instead of once
+    per GPU mini-batch; model forwards remain bounded by config.batch_size.
+    """
+    texts = [f"<Instruct>: {config['instruction']}\n<Query>: {question}\n<Document>: {doc}" for doc in documents]
+    rows = tokenizer(texts, add_special_tokens=False, truncation=False)["input_ids"]
+    ids = [prefix + row + suffix for row in rows]
+    if any(len(row) > config["max_length"] for row in ids):
+        raise ValueError("Reranker input exceeds max_length; no silent truncation")
+    return ids

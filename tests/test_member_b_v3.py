@@ -135,6 +135,11 @@ class DiagnosticsTests(unittest.TestCase):
         self.assertEqual(agg["attribution_status"]["explicit"]["n"], 3)
         self.assertEqual(agg["normalization_action"]["removed_json_fence"]["rate"], 1.0)
         self.assertEqual(agg["input_tokens"], 300)
+        self.assertEqual(agg["abstentions"], 0)
+        self.assertGreater(agg["supported_citations"], 0)
+        self.assertEqual(agg["unsupported_citations"], 0)
+        self.assertEqual(agg["citation_support_rate"], 1.0)
+        self.assertEqual(agg["retrieval_profile_samples"], 0)  # fixture retriever has no A profile
         self.assertTrue(read_json(run_dir / "items" / "1.json")["trace"]["diagnostics"])  # per-question kept
 
 

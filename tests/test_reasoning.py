@@ -324,6 +324,19 @@ class PipelineTests(unittest.TestCase):
         ids = {p["passage_id"] for p in row["pasajes_recuperados"]}
         self.assertEqual(ids, {p0["passage_id"], p1["passage_id"]})
 
+    def test_native_option_fusion_is_opt_in_and_keeps_q0_as_retriever_question(self):
+        calls = []
+        def retrieve(question, k=8, graph_mode="auto", query_views=None):
+            calls.append((question, k, graph_mode, query_views))
+            return [evidence()]
+        q = Question(79, "Constitución Política", "multiple_choice", {"B": "opcion_b", "A": "opcion_a"})
+        _, trace = Pipeline(retrieve, graph_policy="off", native_option_fusion=True).run(q)
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0][0], trace["query"]["retrieval_text"])
+        self.assertEqual(calls[0][3], [f"{calls[0][0]} opcion_a", f"{calls[0][0]} opcion_b"])
+        self.assertEqual(trace["locator_control"], "a_query_views_locator_on_q0_only")
+        self.assertTrue(trace["native_option_fusion"])
+
     def test_only_question_text_reaches_retrieval(self):
         q = public_question({"id": 79, "formato": "semi_open", "pregunta": "Artículo 1 de la Ley 1010 de 2006", "legal_basis": "DO_NOT_LEAK", "expected_answer": "DO_NOT_LEAK"})
         retrieve = Mock(side_effect=lambda *args: [evidence()])
