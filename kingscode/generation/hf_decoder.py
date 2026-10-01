@@ -14,6 +14,9 @@ from .config import PROMPT_VERSION, load_bakeoff, select_decoder
 from .prompts import LEGACY_PROMPT_VERSIONS, build_messages, parse_response, parse_response_v3, prompt_sha256
 
 
+ATTN_IMPLEMENTATION = "sdpa"
+
+
 class DecoderFailure(RuntimeError):
     def __init__(self, code: str, detail: dict):
         self.code, self.detail = code, detail
@@ -86,8 +89,12 @@ class HFDecoder:
             self.tokenizer = self.transformers.AutoTokenizer.from_pretrained(self.entry["repo_id"], **kwargs)
             if not self.tokenizer.chat_template:
                 raise ValueError("Locked tokenizer has no chat template; no template substitution allowed")
+            # SDPA, not eager: eager materializes heads x seq x seq attention per layer; with
+            # 6-7k evidence tokens on the 4090 that reserved ~46 GB and Windows silently
+            # spilled to system RAM (93 s/question). use_deterministic_algorithms(True)
+            # above still rejects any nondeterministic kernel instead of changing outputs.
             load_kwargs = {**kwargs, "dtype": self.torch.bfloat16, "device_map": {"": 0},
-                           "attn_implementation": "eager", "use_safetensors": True}
+                           "attn_implementation": ATTN_IMPLEMENTATION, "use_safetensors": True}
             if self.precision != "bf16":
                 load_kwargs["quantization_config"] = self.transformers.BitsAndBytesConfig(
                     load_in_8bit=self.precision == "int8", load_in_4bit=self.precision == "int4",
@@ -113,13 +120,23 @@ class HFDecoder:
         self.load()
         started = perf_counter()
         try:
-            messages = build_messages(question, passages, prompt, max_used=max_used)
-            text = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True,
-                                                      **self.candidate["chat_template_kwargs"])
-            inputs = self.tokenizer([text], return_tensors="pt", truncation=False, add_special_tokens=False)
-            count = int(inputs["input_ids"].shape[-1])
             budget = self.last_usage["max_new_tokens"]
-            self.last_usage["input_tokens"] = count
+            # Fit the evidence to the context: drop the lowest-ranked passages from the
+            # prompt only (never truncate text, never reorder). The official row still
+            # carries every retrieved passage in pasajes_recuperados.
+            shown = list(passages)
+            while True:
+                messages = build_messages(question, shown, prompt, max_used=max_used)
+                text = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True,
+                                                          **self.candidate["chat_template_kwargs"])
+                inputs = self.tokenizer([text], return_tensors="pt", truncation=False, add_special_tokens=False)
+                count = int(inputs["input_ids"].shape[-1])
+                if count + budget <= self.candidate["max_context_tokens"] or len(shown) <= 1:
+                    break
+                shown = shown[:-1]
+            self.last_usage.update(input_tokens=count, attn_implementation=ATTN_IMPLEMENTATION,
+                                   evidence_in_prompt=len(shown),
+                                   evidence_dropped_for_context=[p.get("passage_id") for p in passages[len(shown):]])
             if count + budget > self.candidate["max_context_tokens"]:
                 raise DecoderFailure("CONTEXT_LIMIT_EXCEEDED", {"usage": dict(self.last_usage),
                                       "context_limit": self.candidate["max_context_tokens"]})
