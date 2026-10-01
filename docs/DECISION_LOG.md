@@ -764,3 +764,24 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
 - Se añadió prueba unitaria de la LRU y de identidad de claves; no se ejecutaron
   tests ni GPU en este equipo. Validación pendiente en 4090 comparando cache
   OFF/ON, manteniendo todo lo demás fijo.
+
+## 2026-10-01 — Resultados de variantes en `turing` y configuración candidata
+
+`sample_50`, Qwen3-8B BF16, corpus descargado + v0.2 (diagnóstico, no freeze), puntaje automático sin RAGAS (máx. 50):
+
+| Corrida | Total | Δ | Cerradas | Citas | Abst. | Fallbacks | s/preg | Retrieval p95 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Base (v3, BM25 + router) | 26,63 | — | 9,33 | 11,02 | 6,28 | 1 | 15,2 | — |
+| + locator sin reranker | 26,63 | 0 | idéntico byte a byte | | | 1 | 15,2 | — |
+| v4 | 27,68 | +1,05 | 10,67 | 10,61 | 6,40 | 2 | 15,4 | 80 ms |
+| **v4 + citation-fill (c1)** | **30,41** | **+3,78** | 10,67 | 12,65 | 7,09 | 2 | 15,6 | 104 ms |
+| v4 + fill + reranker + locator (c2) | 27,69 | +1,06 | 8,00 | 13,06 | 6,63 | 3 | 18,5 | 10,96 s |
+| híbrido solo (c3) | 23,74 | −2,89 | 6,67 | 11,02 | 6,05 | 2 | 15,2 | 410 ms |
+| todo + híbrido (c4) | 30,82 | +4,19 | 9,33 | 13,47 | 8,02 | 7 | 18,7 | 10,90 s |
+
+- **Candidata: c1 (prompt v4 + citation-fill, BM25 + router).** Mejora las tres componentes sin costo de tiempo (4,3 h proyectadas para 992). c4 está a +0,41 (ruido en 50 ítems), cuesta 3 s/pregunta más (5,15 h de 6), tiene un retrieval p95 de 11 s (reranker) y 7 fallbacks. El híbrido solo empeora y el reranker no mejora las cerradas. Ninguna corrida tiene citas sin respaldo; la verificación en vivo de c4 coincidió en 3/3.
+- **Comparabilidad:** el script hacía `git pull` en cada corrida y `main` recibió 7 commits de A durante la tanda, así que c2–c4 corrieron con otro código que c1 y la base. Desde ahora `kingscode_variantes.ps1` congela el commit (`-NoPull` en cada corrida; `-Pull` para actualizar antes) y el diagnóstico acepta `-NoPull`. El sábado se corre con `-NoPull`.
+- **Fallbacks restantes:** todos son prosa alrededor del JSON (2 en c1, 7 con reranker). Con prompt v4 o superior, `extract_single_object` acepta exactamente un objeto JSON de nivel superior y descarta la prosa (`normalization_action = extracted_single_object_from_prose`, respuesta cruda conservada). Rechaza `<think>`, cercas Markdown, cero o varios objetos. v3 sigue estricto, así que el test de 2026-09-29 se mantiene.
+- **A, `verify_member_a_v02` "Legacy mismatch":** desde el commit de telemetría, cada pasaje lleva `retrieval.profile.*_ms` (tiempos reales), que difieren entre llamadas idénticas. El verificador compara ahora sin esos campos; el resto de la salida debe seguir siendo idéntica.
+- **A, 8 tests rotos en `main`** (`test_neural_efficiency`, `test_retrieval_query_views`, `test_graph_budget...`): objetos construidos sin `__init__` o `Namespace` parciales frente a atributos nuevos. Arreglo aditivo, sin cambiar el comportamiento normal: `getattr` con valores por defecto (`retrieval_text_mode`, `search_texts`, `query_instruction`, `batch_size` desde `config`), `instruction` solo se pasa al encoder si existe, y `_pipeline` completa las opciones faltantes con `build_parser()`.
+

@@ -278,16 +278,22 @@ class Retriever:
         reranker_profile = {}
         if self.reranker and order:
             stage = perf_counter()
-            values = self.reranker.score(question, [self.search_texts[i] for i in order])
+            search_texts = getattr(self, "search_texts", None) or [p["text"] for p in self.passages]
+            values = self.reranker.score(question, [search_texts[i] for i in order])
             reranker_ms = (perf_counter() - stage) * 1000
-            reranker_profile = dict(getattr(self.reranker, "last_score_profile", {}) or {})
+            raw_profile = getattr(self.reranker, "last_score_profile", None)
+            reranker_profile = dict(raw_profile) if isinstance(raw_profile, dict) else {}
             rerank_scores = dict(zip(order, values))
             order.sort(key=lambda i: (-rerank_scores[i], self.passages[i]["passage_id"]))
-        reranker_batch_size = getattr(self.reranker, "batch_size", None) if self.reranker else None
+        reranker_batch_size = None
+        if self.reranker:
+            size = getattr(self.reranker, "batch_size", None)
+            config = getattr(self.reranker, "config", None)
+            reranker_batch_size = size if isinstance(size, int) else (config.get("batch_size") if isinstance(config, dict) else None)
         reranker_pairs = candidate_count if self.reranker else 0
         profile = {
             "mode": self.mode,
-            "retrieval_text_mode": self.retrieval_text_mode,
+            "retrieval_text_mode": getattr(self, "retrieval_text_mode", "literal"),
             "candidate_k": self.candidate_k,
             "graph_budget": self.graph_budget,
             "query_view_count": len(views),
@@ -321,7 +327,7 @@ class Retriever:
                            "rrf": fused.get(i), "graph": graph_scores.get(i), "reranker": rerank_scores.get(i)}
             p["score"] = rerank_scores.get(i, scores.get(i, 0))
             p["retrieval"] = {"rank": rank, "mode": self.mode, "graph_mode": graph_mode,
-                              "retrieval_text_mode": self.retrieval_text_mode,
+                              "retrieval_text_mode": getattr(self, "retrieval_text_mode", "literal"),
                               "graph_active": active, "corpus_sha256": self.corpus_hash,
                               "query_view_count": len(views),
                               "profile": profile,

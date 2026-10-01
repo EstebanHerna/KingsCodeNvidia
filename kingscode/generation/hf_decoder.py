@@ -188,7 +188,9 @@ class HFDecoder:
                 if self.prompt_version in LEGACY_PROMPT_VERSIONS:
                     row = parse_response(raw, question, passages)
                 else:
-                    row, meta = parse_response_v3(raw, question, passages, max_used=max_used)
+                    # v4+: a single JSON object wrapped in prose is extracted (v3 stays strict).
+                    row, meta = parse_response_v3(raw, question, passages, max_used=max_used,
+                                                  extract_embedded=self.prompt_version not in {PROMPT_VERSION})
                     self.last_usage.update(meta)
             except (ValueError, TypeError) as exc:
                 raise DecoderFailure("INVALID_MODEL_OUTPUT", {"error_type": type(exc).__name__, "reason": str(exc)[:200],

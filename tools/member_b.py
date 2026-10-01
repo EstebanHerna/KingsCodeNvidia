@@ -33,7 +33,7 @@ def graph_budget_int(value):
     return parsed
 
 
-def main(argv=None):
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command", choices=["smoke", "decoder-smoke", "sample", "bakeoff", "batch", "verify", "plan"])
     parser.add_argument("--input", type=Path, help="batch/verify/plan: questions JSONL (public fields only are read)")
@@ -86,6 +86,11 @@ def main(argv=None):
     parser.add_argument("--constrained-json", action="store_true",
                         help="optional XGrammar JSON syntax/type constraints; strict parser and citation guard remain")
     parser.add_argument("--dry-run", action="store_true", help="Print the plan only; no CUDA, weights or evaluation")
+    return parser
+
+
+def main(argv=None):
+    parser = build_parser()
     args = parser.parse_args(argv)
     if args.command == "smoke":
         if args.model or args.precision != "bf16" or args.oom_record or args.retrieval_freeze or args.allow_optional or args.dry_run:
@@ -196,9 +201,14 @@ class _RerankSafeRetriever:
 
 
 def _pipeline(args):
+    # Callers (tests, other tools) may pass a partial Namespace: fill every missing option
+    # with its parser default so new flags never break older call sites.
+    for name, value in vars(build_parser().parse_args(["batch"])).items():
+        if not hasattr(args, name):
+            setattr(args, name, value)
     from kingscode.reasoning import DummyDecoder, Pipeline, RetrieverGraphRouter
     from kingscode.reasoning.plan_store import PlanStore
-    if args.plan_roles and args.retrieval_mode != "plan":
+    if getattr(args, "plan_roles", None) and args.retrieval_mode != "plan":
         raise ValueError("--plan-roles requires --retrieval-mode plan")
     if args.option_support and args.fixture_evidence:
         raise ValueError("--option-support needs the real dense corpus index; fixture evidence is incompatible")
@@ -239,7 +249,7 @@ def _pipeline(args):
         decoder = HFDecoder(args.model, precision=args.precision, allow_optional=args.allow_optional,
                             prompt_version=selected_prompt, constrained_json=args.constrained_json)
     plans = PlanStore(args.plans) if args.plans else None
-    plan_roles = tuple(part.strip() for part in args.plan_roles.split(",") if part.strip()) if args.plan_roles else None
+    plan_roles = tuple(part.strip() for part in getattr(args, "plan_roles", None).split(",") if part.strip()) if getattr(args, "plan_roles", None) else None
     option_supporter = (base_retriever.dense.option_support
                         if base_retriever is not None and args.option_support else None)
     identity = {"decoder": [decoder.name, decoder.version], "retrieval_mode": args.retrieval_mode, "k": args.k,

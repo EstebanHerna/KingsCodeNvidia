@@ -21,13 +21,15 @@
 param(
     [string[]]$Variantes = @("prompt_v4", "citas", "rerank_locator", "rerank", "hybrid", "alia"),
     [string]$Final = "",
-    [string]$Work = "$HOME\KingsCodeGPU\KingsCodeNvidia"
+    [string]$Work = "$HOME\KingsCodeGPU\KingsCodeNvidia",
+    [switch]$Pull   # por defecto NO actualiza durante la tanda: todas las variantes usan el mismo commit
 )
 $ErrorActionPreference = "Continue"
 # With powershell -File, "a,b,c" arrives as ONE string: split it here.
 $Variantes = @($Variantes | ForEach-Object { $_ -split "," } | ForEach-Object { $_.Trim() } | Where-Object { $_ })
 Set-Location $Work
-git pull --ff-only origin main
+if ($Pull) { git pull --ff-only origin main }
+Write-Host "Commit congelado para toda la tanda: $((git rev-parse --short HEAD).Trim())" -ForegroundColor Cyan
 $S = ".\tools\kingscode_pc_nueva_diagnostico.ps1"
 $Catalogo = [ordered]@{
     "prompt_v4"      = @("-PromptVersion", "v4")
@@ -43,11 +45,11 @@ foreach ($v in $Variantes) {
         if (-not $Final) { Write-Host "final requiere -Final '<flags>'" -ForegroundColor Yellow; continue }
         $a = @($Final -split "\s+" | Where-Object { $_ })
         Write-Host "`n################ CONFIGURACION FINAL (con verificacion en vivo): $Final ################" -ForegroundColor Magenta
-        powershell -ExecutionPolicy Bypass -File $S -SkipSmoke @a
+        powershell -ExecutionPolicy Bypass -File $S -SkipSmoke -NoPull @a
         continue
     }
     if (-not $Catalogo.Contains($v)) { Write-Host "Variante desconocida: $v" -ForegroundColor Yellow; continue }
-    $a = @($Catalogo[$v]) + @("-SkipSmoke", "-SkipVerify")
+    $a = @($Catalogo[$v]) + @("-SkipSmoke", "-SkipVerify", "-NoPull")
     $t0 = Get-Date
     Write-Host "`n################ VARIANTE: $v ($($Catalogo[$v] -join ' ')) ################" -ForegroundColor Magenta
     powershell -ExecutionPolicy Bypass -File $S @a

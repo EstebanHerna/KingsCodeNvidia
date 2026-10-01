@@ -59,7 +59,8 @@ param(
     [switch]$SkipVerify,
     [switch]$Ragas,
     [switch]$SkipSmoke,
-    [switch]$PilotRun
+    [switch]$PilotRun,
+    [switch]$NoPull   # congela el codigo actual (comparaciones y sabado): no hace git pull
 )
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
@@ -110,8 +111,8 @@ if (-not (Test-Path "$Work\.git")) {
 }
 Set-Location $Work
 if (git status --porcelain --untracked-files=no) { git status --short; throw "STOP: $Work tiene cambios locales en archivos versionados; revisalos (no se descartan solos)." }
-git checkout main; Check "checkout main"
-git pull --ff-only origin main; Check "pull main"
+if ($NoPull) { Write-Host "-NoPull: se usa el commit local sin actualizar." -ForegroundColor Yellow }
+else { git checkout main; Check "checkout main"; git pull --ff-only origin main; Check "pull main" }
 $Sha = (git rev-parse HEAD).Trim()
 Write-Host "main @ $Sha"
 # Si esta copia (p. ej. bajada de raw.githubusercontent, que cachea minutos) difiere de la del
@@ -305,7 +306,7 @@ if ($IsSample) {
         Copy-Item "$Run\submissions.jsonl" "$Work\submissions.jsonl" -Force
         Write-Host ("Entrega: $Work\submissions.jsonl  sha256 {0}" -f (Get-FileHash "$Run\submissions.jsonl" -Algorithm SHA256).Hash.ToLower()) -ForegroundColor Green
     } else {
-        Write-Host "Piloto diagnóstico: no se copia una entrega a la raíz del repositorio." -ForegroundColor Yellow
+        Write-Host "Piloto diagnostico: no se copia una entrega a la raiz del repositorio." -ForegroundColor Yellow
     }
 }
 

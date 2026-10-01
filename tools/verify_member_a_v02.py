@@ -1,5 +1,6 @@
 """Read-only snapshot/integration verification. No rebuild, labels or GPU."""
 from pathlib import Path
+import copy
 import json
 import re
 import subprocess
@@ -61,6 +62,18 @@ def verify_g01_d01_reviews():
             "d01_cross_document_content_collapses": 0}
 
 
+def _timing_free(rows):
+    """Copy of retrieve() rows without wall-clock *_ms profile telemetry."""
+    out=[]
+    for row in rows:
+        row=copy.deepcopy(row)
+        profile=(row.get('retrieval') or {}).get('profile')
+        if isinstance(profile,dict):
+            for key in [k for k in profile if k.endswith('_ms')]:profile.pop(key)
+        out.append(row)
+    return out
+
+
 def verify():
     review_checks = verify_g01_d01_reviews()
     official={}
@@ -90,10 +103,12 @@ def verify():
     legacy=Retriever()
     explicit_legacy=Retriever(exact_locator=False)
     legacy_rows=legacy.retrieve(query,8,'off')
-    if legacy_rows!=explicit_legacy.retrieve(query,8,'off'):raise ValueError('Legacy mismatch')
+    # retrieval.profile carries wall-clock *_ms telemetry (2026-10-01); timings differ between
+    # identical calls, so determinism is checked on everything except those fields.
+    if _timing_free(legacy_rows)!=_timing_free(explicit_legacy.retrieve(query,8,'off')):raise ValueError('Legacy mismatch')
     public=retrieve(query,8,'off')
     replay=retrieve(query,8,'off')
-    if public!=replay:raise ValueError('Public locator replay differs')
+    if _timing_free(public)!=_timing_free(replay):raise ValueError('Public locator replay differs')
     if not public or not all('locator' in p for p in public):raise ValueError('Public locator profile missing')
     required={'passage_id','doc_id','text','norm_name','source_url','hierarchy_path','graph_node_ids','scores'}
     if any(not required<=p.keys() for p in public):raise ValueError('A/B passage contract incomplete')

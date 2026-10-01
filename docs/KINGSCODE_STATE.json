@@ -96,7 +96,7 @@
   },
   "next_action": {
     "member_a": "Do not start another process while the external 4090 batch is active. Preserve its complete artifacts; after it finishes, synchronize one commit/corpus/model identity and compare one-variable profiles with corrected aggregate retrieval counters, native option fusion, and reranker-score-cache OFF/ON. Keep v0.1 immutable; acquire verified official gaps only in a separate v0.2.",
-    "member_b": "Review full-sample per-format JSON validity, official score, citations and abstention causes after the active integration run completes. Keep prompt, guard and abstention policy fixed during retrieval comparisons.",
+    "member_b": "Candidate config c1 on turing: Qwen3-8B BF16 + BM25 + router, prompt v4, --citation-fill: 30.41/50 without RAGAS, 15.6 s/question (992 in 4.3 h). Next: one run of c1 with v4 prose-extraction (fallbacks), then a single RAGAS run with Esteban's authorization; Friday 17:00 progress report from docs/REPORTE_AVANCE_BORRADOR.md. Saturday: same config with -NoPull, -InputFile <992>, -Resume if interrupted.",
     "shared": "The A and B development PCs are separate from the integration RTX 4090. Run the official evaluator for complete paired profiles, then RAGAS once on one selected complete profile. Keep combined v0.1+v0.2 results diagnostic and separate from KC-COL-IR and any competitive freeze. See docs/EXPLORATION_ROUTES_2026-10-01.md."
   },
   "next_actions": [
