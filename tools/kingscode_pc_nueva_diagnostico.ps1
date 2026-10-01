@@ -96,6 +96,14 @@ git checkout main; Check "checkout main"
 git pull --ff-only origin main; Check "pull main"
 $Sha = (git rev-parse HEAD).Trim()
 Write-Host "main @ $Sha"
+# Si esta copia (p. ej. bajada de raw.githubusercontent, que cachea minutos) difiere de la del
+# repo recien actualizado, se relanza la del repo con los mismos parametros.
+$RepoScript = "$Work\tools\kingscode_pc_nueva_diagnostico.ps1"
+if ((Test-Path $RepoScript) -and ((Get-FileHash $PSCommandPath).Hash -ne (Get-FileHash $RepoScript).Hash)) {
+    Write-Host "Esta copia del script es distinta de la de main; se usa $RepoScript" -ForegroundColor Yellow
+    & $RepoScript @PSBoundParameters
+    exit $LASTEXITCODE
+}
 
 # ---------------------------------------------------------------------
 Step "[2] Entorno Python (.venv) y PyTorch CUDA"
