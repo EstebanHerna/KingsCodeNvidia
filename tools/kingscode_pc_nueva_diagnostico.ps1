@@ -165,6 +165,10 @@ if (-not (Test-Path "corpus\manifest.json")) {
         $global:LASTEXITCODE = 0
         $CorpusOrigin = "descarga oficial (acquire + build)"
     }
+    # Marcador fuera de corpus\ (no versionado): las corridas siguientes recuerdan el origen.
+    $CorpusOrigin | Out-File -Encoding ascii "$Work\.kingscode_corpus_origin.txt"
+} elseif (Test-Path "$Work\.kingscode_corpus_origin.txt") {
+    $CorpusOrigin = (Get-Content "$Work\.kingscode_corpus_origin.txt" -Raw).Trim()
 }
 $Cmp = (& $Py -c @"
 import hashlib, json
@@ -172,8 +176,16 @@ from pathlib import Path
 ref = {d['doc_id']: d['source_sha256'] for d in json.loads(Path('corpus_manifest.json').read_text(encoding='utf-8'))['documentos']}
 got = {d['doc_id']: d['source_sha256'] for d in json.loads(Path('corpus/manifest.json').read_text(encoding='utf-8'))['documentos']}
 same = sorted(k for k in ref if got.get(k) == ref[k])
-print(json.dumps({'v01_docs': len(ref), 'identical_raw': len(same), 'changed': sorted(k for k in ref if k in got and got[k] != ref[k]), 'missing': sorted(set(ref) - set(got))}))
+ref_at = {d['doc_id']: d.get('retrieved_at') for d in json.loads(Path('corpus_manifest.json').read_text(encoding='utf-8'))['documentos']}
+got_at = {d['doc_id']: d.get('retrieved_at') for d in json.loads(Path('corpus/manifest.json').read_text(encoding='utf-8'))['documentos']}
+print(json.dumps({'v01_docs': len(ref), 'identical_raw': len(same), 'changed': sorted(k for k in ref if k in got and got[k] != ref[k]), 'missing': sorted(set(ref) - set(got)),
+                  'same_retrieved_at': sum(1 for k in ref_at if got_at.get(k) == ref_at[k])}))
 "@) | ConvertFrom-Json
+# Corpus construido antes del marcador: si ninguna fecha de descarga coincide con v0.1, se descargo en esta PC.
+if ($CorpusOrigin -eq "existente" -and $Cmp.same_retrieved_at -eq 0) {
+    $CorpusOrigin = "descarga oficial (acquire + build, detectada por fechas)"
+    $CorpusOrigin | Out-File -Encoding ascii "$Work\.kingscode_corpus_origin.txt"
+}
 Write-Host ("Corpus ({0}): {1}/{2} documentos con bytes identicos a v0.1; cambiados {3}; faltantes {4}" -f $CorpusOrigin, $Cmp.identical_raw, $Cmp.v01_docs, @($Cmp.changed).Count, @($Cmp.missing).Count)
 # verify_member_a_v02 compara contra corpus\manifest.json (el propio); un corpus reconstruido
 # lo pasaria aunque difiera de v0.1. "Exacto" exige ademas los 163 documentos identicos a v0.1.
