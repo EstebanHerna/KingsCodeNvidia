@@ -1,6 +1,6 @@
 {
   "project": "KingsCode - Hackathon AI Week 2026",
-  "last_updated": "2026-09-30",
+  "last_updated": "2026-10-01",
   "source_of_truth": "KINGSCODE_MASTER_KNOWLEDGE.md",
   "team": {
     "size": 2,
@@ -96,7 +96,7 @@
   },
   "next_action": {
     "member_a": "On the RTX 4090 integration PC, run the end-to-end sample_50 diagnostic on the known local corpus plus provisional v0.2 using the fixed combined-corpus builder and tools/kingscode_pc_nueva_diagnostico.ps1 -AllowKnownLocalCorpusDrift -RetrieverMode hybrid -Rerank. Keep its results diagnostic-only because the local corpus differs from frozen v0.1.",
-    "member_b": "Esteban owns B on his development PC. Integrate B after A's retrieval selection/freeze; run decoder and end-to-end evaluation on the separate CUDA integration PC.",
+    "member_b": "On the turing RTX 4090 PC run tools/kingscode_pc_nueva_diagnostico.ps1 from the repo copy (sample_50, Qwen3-8B BF16, SDPA attention, evidence fitted to context, BM25 + router). Then repeat changing one variable: -ExactLocator. Record s/question, projection for 992 (window 6 h), abstentions and official score without RAGAS. Decoder bakeoff on A's frozen evidence remains blocked until A's selection; no RAGAS spend until Esteban authorizes.",
     "shared": "A and B develop on separate PCs; a third RTX 4090 PC is the integration/runtime target. Review the full sample_50 hybrid+decoder diagnostic and official/RAGAS evaluations there. Keep its local corpus results separate from the controlled KC-COL-IR benchmark and from any competitive freeze."
   },
   "next_actions": [

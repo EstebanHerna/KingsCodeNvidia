@@ -623,3 +623,9 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
 - **Cambio 1 (capa generation, requiere revisión de Luis):** `attn_implementation="sdpa"` (constante `ATTN_IMPLEMENTATION`, registrada en `last_usage`). `torch.use_deterministic_algorithms(True)` se mantiene: si un kernel no es determinista, PyTorch falla en vez de cambiar la salida. El smoke en la 4090 debe repetirse para confirmarlo. Las salidas pueden diferir en el último bit respecto a eager, así que cualquier comparación anterior con eager no es comparable.
 - **Cambio 2:** si la evidencia no cabe en `max_context_tokens` junto con `max_new_tokens`, el **prompt** omite los pasajes de menor rango, uno a uno desde el final. No se trunca texto ni se reordena. La fila oficial conserva los 8 en `pasajes_recuperados` (respaldo de citas) y la traza registra `evidence_in_prompt` y `evidence_dropped_for_context`. Si ni un solo pasaje cabe, sigue el `CONTEXT_LIMIT_EXCEEDED` de antes (test intacto).
 - **Pendiente de medir:** repetir `sample_50` en `turing` con este cambio, comparando s/pregunta, abstenciones y puntaje automático sin RAGAS.
+
+## 2026-10-01 — Diagnóstico en `turing`: `-ExactLocator` como segunda variable
+
+- `tools/kingscode_pc_nueva_diagnostico.ps1` agrega `-ExactLocator` (apagado por defecto). Primero se mide la corrida base (BM25 + router, Qwen3-8B con SDPA) y luego se repite cambiando solo el locator exacto de A, para atribuir su efecto en el puntaje end-to-end. El nombre de la corrida y `RESUMEN.json` registran la variante.
+- El script se relanza desde la copia del repo si la copia ejecutada difiere (la caché de `raw.githubusercontent.com` sirvió una versión vieja) y recuerda el origen del corpus entre corridas.
+

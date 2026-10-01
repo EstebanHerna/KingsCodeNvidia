@@ -194,3 +194,19 @@ Leer `legal_basis` solo en el script de medición, nunca en el pipeline (mismo p
 | Elegibilidad del decoder | ALIA (7.768.117.248) por defecto; Qwen3-8B (8.190.735.360) solo con `-IncludePendingEligibility`, marcado no competitivo hasta confirmación escrita (correo B5 pendiente) |
 | Elegibilidad del decoder (2026-10-01) | Qwen3-8B elegible por decisión del equipo (sugerido en enunciado §3.1); por defecto `qwen3-8b,alia-legal-7b`. Sustituye la fila anterior |
 | RAGAS | EN PAUSA: sin gastar crédito hasta autorización de Esteban |
+
+## 8. Estado al 2026-10-01 (primer decoder real)
+
+| Elemento | Estado |
+|---|---|
+| Smoke Qwen3-8B en la 4090 (Luis y `turing`) | PASSED en `turing` tras el arreglo de longitud (PR #11); BF16, 18,9 GB, ~27 tok/s |
+| Longitud de oraciones/palabras | Advertencia (`format_warnings`), no rechazo, en v3 (PR #11) |
+| Reintentos deterministas | Eliminados para `INVALID_MODEL_OUTPUT`/`CONTEXT_LIMIT_EXCEEDED` (PR #11) |
+| Atención del decoder | `sdpa` (antes `eager`: 46 GB reservados, desborde a RAM, 93 s/pregunta) (PR #18) |
+| Evidencia que no cabe en 8192 | El prompt omite los pasajes de menor rango; la fila conserva los 8 (PR #18) |
+| Progreso del batch | Una línea por pregunta en stderr (PR #17) |
+| PC nueva | `tools/kingscode_pc_nueva_diagnostico.ps1`: instala, obtiene corpus (archivo/release/descarga oficial), combina v0.1+v0.2, smoke, `sample_50`, evaluador; `-ExactLocator`, `-RetrieverMode`, `-Rerank`, `-Ragas` |
+| Corpus de `turing` | Descarga oficial: 163/191 objetivos, 96/163 idénticos a v0.1 — solo diagnóstico |
+| `sample_50` con SDPA | PENDIENTE de medir: s/pregunta, proyección 992, abstenciones, puntaje sin RAGAS |
+| Freeze de A y bakeoff | BLOCKED_ON_A_FREEZE |
+| RAGAS | EN PAUSA hasta autorización |
