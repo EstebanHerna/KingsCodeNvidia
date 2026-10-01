@@ -260,6 +260,12 @@ if (-not $SkipSmoke) {
 # ---------------------------------------------------------------------
 Step "[6] Diagnostico sample_50: $Model + $RetrieverMode (k=8) + router, guardas (sin seleccion)"
 $Run = "$Out\batch"
+if ($ExactLocator -and -not $Rerank) {
+    # A's Retriever adds locator candidates to the pool but orders by BM25/fused score: a locator-only
+    # hit scores 0 and never reaches the top k. Only the reranker can promote it (2026-10-01: an
+    # -ExactLocator run without -Rerank produced a byte-identical submissions.jsonl).
+    Warn "-ExactLocator sin -Rerank no cambia el resultado (el locator agrega candidatos que solo el reranker puede subir). Usa -Rerank -ExactLocator."
+}
 # Same configuration for the batch and for the live-verification replay below.
 $CommonArgs = @(
     "--input", "data\sample_50.jsonl", "--retrieval-mode", "option",

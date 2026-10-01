@@ -645,3 +645,11 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
 - **`--citation-fill` (opt-in):** completa hasta 5 citas con la evidencia siguiente en rango, después de los pasajes declarados. Solo en `referencia_legal` (semiabiertas) y `justificacion` (cerradas), que RAGAS no lee. Cada cita pasa la misma verificación de respaldo. Base: según el enunciado §6.1, una cita respaldada que no coincide con el fundamento de referencia vale 0 sin penalización, así que solo puede subir el recall. Las abiertas no se rellenan (`marco_normativo` lo lee RAGAS).
 - **Verificación en vivo simulada:** el script regenera 3 preguntas entregadas (una por formato) con la misma configuración y compara normas y pasajes, igual que hará el jurado (§7; un fallo descalifica). Deja `verify_live.json` y lo resume en `RESUMEN.json`.
 - **Plan de corridas** (cada una contra 26,63, un cambio por vez): `-ExactLocator`, `-PromptVersion v4`, `-CitationFill`, `-RetrieverMode hybrid`, `-Rerank` y `-Model alia-legal-7b`. RAGAS una sola vez sobre la mejor configuración, con autorización.
+
+## 2026-10-01 — `-ExactLocator` sin reranker no cambia nada (y el pipeline es determinista)
+
+- **Evidencia:** la corrida `qwen3-8b_bm25_locator_20261001_121024` dio `submissions.jsonl` byte a byte idéntico a la base `qwen3-8b_bm25_20261001_115247` (sha256 `3ec5651a…` en ambas; 26,63/50).
+- **Causa (diseño de A, no un bug):** `Retriever.retrieve` une los candidatos del locator al pool (`candidate_union`), pero ordena por el puntaje BM25/fusionado. Un acierto que solo encontró el locator tiene puntaje 0 y nunca llega al top-k; solo el reranker puede subirlo ("Add exact legal candidates before reranking"). Los resultados del locator en la 4090 corresponden a esa combinación.
+- **Consecuencia:** el script avisa si se usa `-ExactLocator` sin `-Rerank`. La comparación válida es `-Rerank` contra `-Rerank -ExactLocator`.
+- **De paso:** dos corridas completas de 50 preguntas dieron el mismo archivo, lo que es evidencia directa de determinismo para la verificación en vivo (§7).
+
