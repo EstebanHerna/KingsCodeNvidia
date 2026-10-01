@@ -76,8 +76,8 @@ def main(argv=None):
                         help="context uses structural metadata only for search; evidence/citations remain literal")
     parser.add_argument("--dense-index-dir", type=Path,
                         help="isolated dense-index directory; required for dense/hybrid context mode")
-    parser.add_argument("--embedding-instruction-profile", choices=["baseline", "direct_primary_source", "exact_rule_and_article", "minimal_evidence"], default="baseline")
-    parser.add_argument("--reranker-instruction-profile", choices=["baseline", "direct_support", "rule_exception_holding", "source_and_article"], default="baseline")
+    parser.add_argument("--embedding-instruction-profile", choices=["baseline", "smallest_authoritative_primary_source", "direct_primary_source", "exact_rule_and_article", "minimal_evidence"], default="baseline")
+    parser.add_argument("--reranker-instruction-profile", choices=["baseline", "direct_primary_law_support", "direct_support", "rule_exception_holding", "source_and_article"], default="baseline")
     parser.add_argument("--plan-roles", help="plan: comma-separated Q1,Q2,Q3 subset; replay frozen plans")
     parser.add_argument("--option-support", action="store_true",
                         help="MC-only auxiliary Q+option cosine scores on final evidence; never chooses the answer")

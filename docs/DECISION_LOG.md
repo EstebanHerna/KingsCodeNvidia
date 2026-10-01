@@ -734,3 +734,18 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
   Validar en la 4090 después de que termine la corrida externa activa y conservar
   identidad, artefactos, evaluador oficial y trazas. Ver
   `docs/EXPLORATION_ROUTES_2026-10-01.md`.
+
+## 2026-10-01 — Instrucciones Qwen recomendadas por el equipo
+
+- Se añadieron dos perfiles experimentales con el texto exacto propuesto por el
+  equipo: `smallest_authoritative_primary_source` para el encoder y
+  `direct_primary_law_support` para el reranker. Siguen siendo optativos; el
+  baseline/lock no cambia. La primera comparación debe variar una instrucción
+  por vez sobre la misma configuración e identidad.
+- La representación `context` del proyecto es cabecera estructural determinista
+  solo para búsqueda. No es SAC, que añade un resumen sintético documental, ni
+  Late Chunking, que contextualiza embeddings de chunks mediante representación
+  token-level del documento antes del pooling. Late Chunking no se implementa
+  en esta fase.
+- Sin pruebas locales ni corridas GPU; validar las opciones en la 4090. Véase
+  `docs/EXPLORATION_ROUTES_2026-10-01.md`.
