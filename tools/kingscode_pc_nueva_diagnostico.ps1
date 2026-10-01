@@ -28,6 +28,9 @@
 #   ... -Ragas                                             (solo con autorizacion de Esteban)
 #   ... -AllowKnownLocalCorpusDrift -RetrieverMode hybrid -Rerank
 #   ... -ExactLocator                                      (locator exacto de A; cambiar una variable por corrida)
+#   ... -PromptVersion v4                                  (prompt v4: abstencion listada, minimos de extension, justificacion primero)
+#   ... -CitationFill                                      (hasta 5 citas verificadas en referencia_legal/justificacion)
+#   ... -SkipVerify                                        (omite regenerar 3 preguntas para comprobar reproducibilidad)
 #   ... -Work "D:\KingsCode"  -RunName "qwen3_8b_bm25_prueba2"
 # =====================================================================
 param(
@@ -42,6 +45,9 @@ param(
     [ValidateSet("bm25", "dense", "hybrid")] [string]$RetrieverMode = "bm25",
     [switch]$Rerank,
     [switch]$ExactLocator,
+    [ValidateSet("v3", "v4")] [string]$PromptVersion = "v3",
+    [switch]$CitationFill,
+    [switch]$SkipVerify,
     [switch]$Ragas,
     [switch]$SkipSmoke
 )
@@ -54,7 +60,7 @@ function Warn($m) { Write-Host "AVISO: $m" -ForegroundColor Yellow }
 function Check($w) { if ($LASTEXITCODE -ne 0) { throw "STOP: $w (exit $LASTEXITCODE)" } }
 function RefreshPath { $env:Path = [Environment]::GetEnvironmentVariable("Path", "User") + ";" + [Environment]::GetEnvironmentVariable("Path", "Machine") }
 $Stamp = Get-Date -Format "yyyyMMdd_HHmmss"
-if (-not $RunName) { $RunName = "${Model}_${RetrieverMode}$(if ($ExactLocator) { '_locator' })$(if ($Rerank) { '_rerank' })_$Stamp" }
+if (-not $RunName) { $RunName = "${Model}_${RetrieverMode}$(if ($ExactLocator) { '_locator' })$(if ($Rerank) { '_rerank' })_p$PromptVersion$(if ($CitationFill) { '_fill' })_$Stamp" }
 
 # ---------------------------------------------------------------------
 Step "[0] Herramientas: Git, Python 3.12, GPU"
@@ -254,19 +260,34 @@ if (-not $SkipSmoke) {
 # ---------------------------------------------------------------------
 Step "[6] Diagnostico sample_50: $Model + $RetrieverMode (k=8) + router, guardas (sin seleccion)"
 $Run = "$Out\batch"
-$BatchArgs = @(
-    "batch", "--input", "data\sample_50.jsonl", "--run-dir", $Run,
-    "--fresh", "--retries", "0", "--retrieval-mode", "option",
+# Same configuration for the batch and for the live-verification replay below.
+$CommonArgs = @(
+    "--input", "data\sample_50.jsonl", "--retrieval-mode", "option",
     "--retriever-mode", $RetrieverMode, "--graph-policy", "router",
     "--k", "8", "--corpus", $CorpusDir, "--model", $Model,
-    "--precision", "bf16"
+    "--precision", "bf16", "--prompt-version", $PromptVersion
 )
-if ($Rerank) { $BatchArgs += "--rerank" }
-if ($ExactLocator) { $BatchArgs += "--exact-locator" }
-& $Py tools\member_b.py @BatchArgs
+if ($Rerank) { $CommonArgs += "--rerank" }
+if ($ExactLocator) { $CommonArgs += "--exact-locator" }
+if ($CitationFill) { $CommonArgs += "--citation-fill" }
+& $Py tools\member_b.py batch --run-dir $Run --fresh --retries 0 @CommonArgs
 Check "corrida integrada (conserva $Run)"
 & $Py scripts\evaluate.py --submission "$Run\submissions.jsonl" --split sample --out "$Out\evaluation_official.json"
 Check "evaluador oficial"
+
+# ---------------------------------------------------------------------
+$Verify = "omitida (-SkipVerify)"
+if (-not $SkipVerify) {
+    Step "[6b] Verificacion en vivo simulada: regenerar 3 preguntas (cerrada, semiabierta, abierta) y comparar"
+    $Rows = Get-Content "$Run\submissions.jsonl" | ForEach-Object { $_ | ConvertFrom-Json }
+    $Ids = @("multiple_choice", "semi_open", "open_ended") | ForEach-Object { $f = $_; ($Rows | Where-Object { $_.formato -eq $f -and -not $_.abstencion } | Select-Object -First 1).id } | Where-Object { $_ -ne $null }
+    $VerifyOut = & $Py tools\member_b.py verify --delivered "$Run\submissions.jsonl" --only ($Ids -join ",") @CommonArgs
+    $VerifyOut | Out-File -Encoding utf8 "$Out\verify_live.json"
+    $V = ($VerifyOut | Out-String | ConvertFrom-Json)
+    $Verify = [ordered]@{ ids = $Ids; all_match = $V.all_match; row_identical = @($V.results | ForEach-Object { $_.row_identical }) }
+    if ($V.all_match) { Write-Host "Reproducibilidad: normas y pasajes coinciden en $($Ids -join ', ')." -ForegroundColor Green }
+    else { Warn "REPRODUCIBILIDAD FALLA en alguna pregunta (ver $Out\verify_live.json): riesgo de descalificacion en la verificacion en vivo." }
+}
 
 # ---------------------------------------------------------------------
 if ($Ragas) {
@@ -295,6 +316,7 @@ $Spq = [math]::Round($Br.seconds / 50, 1)
 $Summary = [ordered]@{
     main_sha = $Sha; model = $Model; gpu = $Rt.gpu; vram_gb = $Rt.vram_gb; torch = $Rt.torch
     retrieval = "$RetrieverMode$(if ($ExactLocator) { ' + locator exacto' })$(if ($Rerank) { ' + Qwen reranker' }) k=8 graph router (diagnostico, no freeze)"
+    prompt_version = "grounded-formats-$PromptVersion"; citation_fill = [bool]$CitationFill; verificacion_en_vivo = $Verify
     corpus = $CorpusDir; corpus_origin = $CorpusOrigin; corpus_v01_raw_identical_and_verified = $CorpusExact; corpus_v01_comparison = $Cmp
     corpus_diagnostic_override = ($AllowKnownLocalCorpusDrift -and -not $CorpusExact)
     passages_sha256 = $PassagesSha; passages_reference = $PassagesRef

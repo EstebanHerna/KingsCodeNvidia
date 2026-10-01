@@ -11,7 +11,7 @@ from ..common import ROOT
 from ..model_assets import resolve_model, verify_snapshot
 from ..reasoning.decoder import GENERATION_CONFIG
 from .config import PROMPT_VERSION, load_bakeoff, select_decoder
-from .prompts import LEGACY_PROMPT_VERSIONS, build_messages, parse_response, parse_response_v3, prompt_sha256
+from .prompts import ACTIVE_PROMPT_VERSIONS, LEGACY_PROMPT_VERSIONS, build_messages, parse_response, parse_response_v3, prompt_sha256
 
 
 ATTN_IMPLEMENTATION = "sdpa"
@@ -27,8 +27,13 @@ class HFDecoder:
     prompt_version = PROMPT_VERSION
 
     def __init__(self, alias: str, *, config: dict | None = None, precision: str = "bf16",
-                 allow_optional: bool = False, torch_module=None, transformers_module=None):
+                 allow_optional: bool = False, torch_module=None, transformers_module=None,
+                 prompt_version: str | None = None):
         self.config = deepcopy(config) if config is not None else load_bakeoff()
+        if prompt_version is not None:
+            if prompt_version not in ACTIVE_PROMPT_VERSIONS:
+                raise ValueError(f"prompt_version must be one of {sorted(ACTIVE_PROMPT_VERSIONS)}")
+            self.prompt_version = prompt_version
         self.candidate = select_decoder(alias, self.config, allow_optional=allow_optional)
         self.entry = resolve_model(alias)
         if self.entry["revision"] != self.candidate["revision"]:
@@ -42,6 +47,10 @@ class HFDecoder:
         self.assets = None
         self.last_usage = {}
         self.load_ms = None
+
+    def _system_version(self) -> str:
+        # Legacy v1/v2 contracts keep the system text they always had (the v3 one).
+        return self.prompt_version if self.prompt_version in ACTIVE_PROMPT_VERSIONS else PROMPT_VERSION
 
     def _peak(self):
         try:
@@ -115,7 +124,7 @@ class HFDecoder:
         max_used = self.config.get("max_used_passages", 5)
         self.last_usage = {"input_tokens": 0, "output_tokens": 0, "json_valid": False, "model": self.alias,
                            "revision": self.version, "prompt_version": self.prompt_version,
-                           "prompt_sha256": prompt_sha256(max_used),
+                           "prompt_sha256": prompt_sha256(max_used, self._system_version()),
                            "max_new_tokens": self.config["max_new_tokens"][question.format]}
         self.load()
         started = perf_counter()
@@ -126,7 +135,7 @@ class HFDecoder:
             # carries every retrieved passage in pasajes_recuperados.
             shown = list(passages)
             while True:
-                messages = build_messages(question, shown, prompt, max_used=max_used)
+                messages = build_messages(question, shown, prompt, max_used=max_used, version=self._system_version())
                 text = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True,
                                                           **self.candidate["chat_template_kwargs"])
                 inputs = self.tokenizer([text], return_tensors="pt", truncation=False, add_special_tokens=False)

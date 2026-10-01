@@ -94,7 +94,8 @@ def attribution_source(attribution: dict | None) -> str:
     return "explicit" if attribution.get("status") == "explicit" else "none"
 
 
-def attach_references(row: dict, evidence: list[dict], attribution: dict | None = None, max_refs: int = 3) -> tuple[dict, list[str]]:
+def attach_references(row: dict, evidence: list[dict], attribution: dict | None = None, max_refs: int = 3,
+                      *, fill_ranked: bool = False) -> tuple[dict, list[str]]:
     """Write builder citations into the format's citation slot (mutates and returns row).
 
     attribution None/legacy_fallback (dummy, v1/v2 prompts): first passages, as before.
@@ -110,7 +111,13 @@ def attach_references(row: dict, evidence: list[dict], attribution: dict | None 
     if source == "none":
         return row, []
     used = attribution["ids"] if source == "explicit" else None
-    refs = build_references(evidence, used, 3 if fmt == "open_ended" else max_refs, allow_fallback=source == "legacy_fallback")
+    # fill_ranked (opt-in): after the declared passages, complete up to max_refs with the
+    # next-ranked evidence. Only for fields RAGAS does not read (semi_open referencia_legal,
+    # multiple_choice justificacion): a supported citation outside the reference basis
+    # scores 0 without penalty, a supported match raises recall. open_ended never fills.
+    fill = fill_ranked and fmt in {"semi_open", "multiple_choice"}
+    refs = build_references(evidence, used, 3 if fmt == "open_ended" else max_refs,
+                            allow_fallback=source == "legacy_fallback", fill_ranked=fill)
     if not refs:
         return row, refs
     if fmt == "semi_open":
@@ -130,12 +137,15 @@ def attach_references(row: dict, evidence: list[dict], attribution: dict | None 
 
 
 def build_references(passages: list[dict], used_ids: list[str] | None = None, max_refs: int = 3, *,
-                     allow_fallback: bool = True) -> list[str]:
+                     allow_fallback: bool = True, fill_ranked: bool = False) -> list[str]:
     """Citations for the passages the decoder declared it used; the first max_refs
-    only when fallback is allowed (legacy contracts without attribution)."""
+    only when fallback is allowed (legacy contracts without attribution). fill_ranked
+    appends the remaining top-10 evidence in rank order after the declared passages."""
     by_id = {p["passage_id"]: p for p in passages[:10]}
     if used_ids:
         chosen = [by_id[i] for i in used_ids if i in by_id]
+        if fill_ranked:
+            chosen += [p for p in passages[:10] if p["passage_id"] not in used_ids]
     else:
         chosen = passages[:max_refs] if allow_fallback else []
     refs: list[str] = []

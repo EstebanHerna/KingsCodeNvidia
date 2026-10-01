@@ -39,6 +39,10 @@ def main(argv=None):
     parser.add_argument("--precision", choices=["bf16", "int8", "int4"], default="bf16")
     parser.add_argument("--oom-record", type=Path)
     parser.add_argument("--allow-optional", action="store_true")
+    parser.add_argument("--prompt-version", choices=["v3", "v4"], default="v3",
+                        help="batch/verify: grounded-formats-v3 (default) or v4 (abstencion listed, minimum lengths, MC justification first)")
+    parser.add_argument("--citation-fill", action="store_true",
+                        help="batch/verify: complete up to 5 verified citations with top-ranked evidence (semi_open/multiple_choice only)")
     parser.add_argument("--dry-run", action="store_true", help="Print the plan only; no CUDA, weights or evaluation")
     args = parser.parse_args(argv)
     if args.command == "smoke":
@@ -136,14 +140,17 @@ def _pipeline(args):
     decoder = DummyDecoder()
     if args.model:
         from kingscode.generation.hf_decoder import HFDecoder
-        decoder = HFDecoder(args.model, precision=args.precision, allow_optional=args.allow_optional)
+        decoder = HFDecoder(args.model, precision=args.precision, allow_optional=args.allow_optional,
+                            prompt_version=f"grounded-formats-{args.prompt_version}")
     plans = PlanStore(args.plans) if args.plans else None
     identity = {"decoder": [decoder.name, decoder.version], "retrieval_mode": args.retrieval_mode, "k": args.k,
+                "prompt_version": getattr(decoder, "prompt_version", None), "citation_fill": args.citation_fill,
                 "retriever": {"mode": args.retriever_mode, "rerank": args.rerank, "exact_locator": args.exact_locator, "fixture_evidence": args.fixture_evidence,
                               "corpus_sha256": retriever.corpus_hash},
                 "graph_policy": args.graph_policy, "plans": plans.manifest["experiment_id"] if plans else None}
     return Pipeline(retriever.retrieve, adapter=adapter, decoder=decoder, k=args.k, graph_policy=args.graph_policy,
-                    retrieval_mode=args.retrieval_mode, plans=plans), identity
+                    retrieval_mode=args.retrieval_mode, plans=plans, max_refs=5 if args.citation_fill else 3,
+                    citation_fill=args.citation_fill), identity
 
 
 def run_b_command(args, parser) -> int:
