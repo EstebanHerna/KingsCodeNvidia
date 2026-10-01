@@ -74,6 +74,30 @@ class QwenSmokeRegressionTests(unittest.TestCase):
         self.assertEqual(calls, [Q.id])
         self.assertEqual(report["counts"]["fallback"], 1)
 
+    def test_long_evidence_drops_lowest_ranked_passages_from_prompt_only(self):
+        from unittest.mock import patch
+        from kingscode.generation.hf_decoder import ATTN_IMPLEMENTATION, HFDecoder
+        from kingscode.reasoning.decoder import GENERATION_CONFIG, PromptSpec
+        from test_gpu_preparation import FakeInputs, FakeTokenizer, fake_torch, fake_transformers
+
+        class LengthTokenizer(FakeTokenizer):
+            """3000 tokens per passage in the prompt: 8 passages never fit 8192."""
+            def __call__(self, text, **kwargs):
+                user = json.loads(json.loads(text[0])[1]["content"])
+                return FakeInputs(500 + 3000 * len(user["evidencia"]))
+
+        evidence = [dict(deepcopy(FIXTURES[i % 5]), passage_id=f"p{i}") for i in range(8)]
+        transformers, model = fake_transformers(LengthTokenizer())
+        decoder = HFDecoder("qwen3-8b", torch_module=fake_torch(), transformers_module=transformers)
+        with patch("kingscode.generation.hf_decoder.verify_snapshot", return_value={}):
+            row = decoder.generate(Q, evidence, PromptSpec("semi_open"), dict(GENERATION_CONFIG))
+        self.assertEqual(decoder.last_usage["evidence_in_prompt"], 2)        # 500 + 2*3000 + 512 <= 8192
+        self.assertEqual(decoder.last_usage["evidence_dropped_for_context"], [f"p{i}" for i in range(2, 8)])
+        self.assertEqual(len(row["pasajes_recuperados"]), 8)                  # the official row keeps all
+        self.assertEqual(transformers.AutoModelForCausalLM.from_pretrained.call_args.kwargs["attn_implementation"], "sdpa")
+        self.assertEqual(ATTN_IMPLEMENTATION, "sdpa")
+        model.generate.assert_called_once()
+
     def test_length_warnings_cover_words_and_open_ended(self):
         self.assertEqual(length_warnings({"formato": "semi_open", "respuesta": "Uno. Dos. " + "x " * 160 + "."}),
                          ["semi_open_words_163_over_150"])
