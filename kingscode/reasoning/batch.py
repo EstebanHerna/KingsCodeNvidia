@@ -19,6 +19,7 @@ import json
 import os
 from pathlib import Path
 import re
+import sys
 from time import perf_counter
 import traceback
 
@@ -138,6 +139,12 @@ class BatchRunner:
             validate_submission(row)
             atomic_write_text(item_path, _dumps({"row": row, "status": status, "attempts": len(errors) + (status == "ok"),
                                                   "trace": trace}) + "\n")
+            done = sum(counts.values())
+            elapsed = perf_counter() - started
+            # Progress goes to stderr so stdout stays a single JSON report.
+            print(f"[batch] {done}/{len(questions)} id={question.id} {question.format} {status}"
+                  f"{' abstencion' if row.get('abstencion') else ''} | {elapsed:.0f} s, {elapsed / done:.1f} s/pregunta",
+                  file=sys.stderr, flush=True)
         report = self.assemble(questions)
         report.update(counts=counts, identity=identity, diagnostics=self.diagnostics(questions),
                       seconds=perf_counter() - started,
