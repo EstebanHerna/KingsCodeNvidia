@@ -143,8 +143,18 @@ if (-not (Test-Path "corpus\manifest.json")) {
         tar -xzf $Archive -C $Work; Check "tar -xzf"
     } else {
         # Descarga oficial (config/sources.json, 163 objetivos) y reconstruccion determinista.
-        & $Py tools\member_a.py acquire --corpus corpus --workers 3 | Out-File -Encoding utf8 "$HOME\kingscode_acquire_$Stamp.json"
+        $AcqReport = "$HOME\kingscode_acquire_$Stamp.json"
+        & $Py tools\member_a.py acquire --corpus corpus --workers 3 | Out-File -Encoding utf8 $AcqReport
         Check "acquire (descarga de fuentes oficiales)"
+        $Acq = Get-Content $AcqReport -Raw | ConvertFrom-Json
+        Write-Host ("Descargados {0} de {1} objetivos oficiales." -f $Acq.downloaded, $Acq.targets)
+        if ($Acq.downloaded -lt 1) {
+            $Acq.failed | Group-Object { ($_.error -split "`n")[0].Substring(0, [Math]::Min(120, ($_.error -split "`n")[0].Length)) } |
+                Sort-Object Count -Descending | Select-Object -First 5 | ForEach-Object { Write-Host ("  {0,3} x {1}" -f $_.Count, $_.Name) -ForegroundColor Yellow }
+            throw ("STOP: no se descargo ningun documento oficial (errores arriba; reporte en $AcqReport).`n" +
+                   "  Probar la red:  curl.exe -sS -o NUL -w ""%{http_code}"" https://www.funcionpublica.gov.co/`n" +
+                   "  Alternativa exacta: copiar el corpus de Luis y correr con -CorpusArchive.")
+        }
         & $Py tools\member_a.py build --corpus corpus | Out-Null; Check "build (pasajes, grafo, BM25)"
         git checkout -- corpus_manifest.json 2>$null   # build reescribe el manifest versionado de v0.1; se conserva la referencia
         $global:LASTEXITCODE = 0
