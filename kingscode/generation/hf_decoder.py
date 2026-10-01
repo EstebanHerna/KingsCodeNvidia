@@ -152,7 +152,8 @@ class HFDecoder:
                     row, meta = parse_response_v3(raw, question, passages, max_used=max_used)
                     self.last_usage.update(meta)
             except (ValueError, TypeError) as exc:
-                raise DecoderFailure("INVALID_MODEL_OUTPUT", {"error_type": type(exc).__name__, "usage": dict(self.last_usage)}) from exc
+                raise DecoderFailure("INVALID_MODEL_OUTPUT", {"error_type": type(exc).__name__, "reason": str(exc)[:200],
+                                                              "usage": dict(self.last_usage)}) from exc
             self.last_usage["json_valid"] = True
             # Caller (the original answer/Pipeline) must run citation_guard again.
             return row

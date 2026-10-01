@@ -13,3 +13,4 @@ models/
 runs/
 dist/
 *.tar.gz
+corpus_v01_v02/

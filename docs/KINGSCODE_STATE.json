@@ -515,7 +515,12 @@
         "AMBIGUOUS": 0
       },
       "competitive_corpus_missing_rate": 1.0,
-      "controlled_corpus_coverage": {"COMPLETE": 10, "PARTIAL": 0, "MISSING": 0, "AMBIGUOUS": 0},
+      "controlled_corpus_coverage": {
+        "COMPLETE": 10,
+        "PARTIAL": 0,
+        "MISSING": 0,
+        "AMBIGUOUS": 0
+      },
       "minimal_evidence_packets_created": 10,
       "ranking_eligible_gold": 10,
       "next_action_kc_col_ir_v01": "Carry this frozen profile to the target-runtime preflight; run C0-C3 only in a later authorized empirical-ranking phase.",

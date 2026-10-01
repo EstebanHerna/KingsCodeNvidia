@@ -143,7 +143,7 @@ def generation_diagnostics(decoder, usage, attribution, before, guard, repair, e
             "peak_reserved_vram_bytes": usage.get("peak_reserved_vram_bytes"),
             "normalization_action": usage.get("normalization_action"), "decoder_abstained": usage.get("decoder_abstained"),
             "attribution_status": attribution.get("status"), "attribution_count": len(attribution.get("ids", [])),
-            "attribution_reason": attribution.get("reason"),
+            "attribution_reason": attribution.get("reason"), "format_warnings": list(usage.get("format_warnings") or []),
             "citations_before_repair": before, "citations_after_repair": guard["citation_count"],
             "repair_actions": actions, "evidence_passages": len(evidence),
             "evidence_ids_delivered": [p.get("passage_id") for p in row["pasajes_recuperados"]],
