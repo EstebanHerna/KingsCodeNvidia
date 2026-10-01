@@ -64,11 +64,11 @@ class QwenEncoder:
         self.model = AutoModel.from_pretrained(name, dtype=getattr(self.torch, self.config["dtype"]),
                                               attn_implementation=ATTN_IMPLEMENTATION, **kwargs).to(self.config["device"]).eval()
 
-    def encode(self, texts: list[str], *, query: bool = False) -> np.ndarray:
+    def encode(self, texts: list[str], *, query: bool = False, batch_size: int | None = None) -> np.ndarray:
         if query:
             texts = [f"Instruct: {self.config['instruction']}\nQuery: {t}" for t in texts]
         outputs = []
-        batch = self.config["batch_size"]
+        batch = batch_size or self.config["batch_size"]
         for offset in range(0, len(texts), batch):
             inputs = self.tokenizer(texts[offset:offset + batch], padding=True, truncation=False, return_tensors="pt")
             if inputs["input_ids"].shape[1] > self.config["max_length"]:
@@ -81,11 +81,40 @@ class QwenEncoder:
         return np.concatenate(outputs).astype("float32") if outputs else np.empty((0, self.model.config.hidden_size), dtype="float32")
 
 
+BUILD_TOKEN_BUDGET = 32768   # tokens per batch when building the index (padding included)
+BUILD_MAX_BATCH = 64
+
+
+def encode_length_sorted(encoder, texts: list[str]) -> np.ndarray:
+    """Index build only (queries are still encoded one by one). The config batch of 2 in
+    corpus order spends most compute on padding (~13k tiny batches for 26.7k passages,
+    ~1 h on a 4090). Sort by token length, fill batches up to a token budget, then restore
+    the original order: same vectors up to float rounding, deterministic for a corpus."""
+    lengths = [len(ids) for ids in encoder.tokenizer(texts, add_special_tokens=True, truncation=False)["input_ids"]]
+    if any(n > encoder.config["max_length"] for n in lengths):
+        raise ValueError("Embedding input exceeds max_length; rechunk or increase it explicitly")
+    order = sorted(range(len(texts)), key=lambda i: (lengths[i], i))
+    vectors, batch = [None] * len(texts), []
+
+    def flush():
+        if batch:
+            out = encoder.encode([texts[i] for i in batch], batch_size=len(batch))
+            for i, row in zip(batch, out):
+                vectors[i] = row
+            batch.clear()
+    for i in order:
+        if batch and ((len(batch) + 1) * lengths[i] > BUILD_TOKEN_BUDGET or len(batch) >= BUILD_MAX_BATCH):
+            flush()
+        batch.append(i)
+    flush()
+    return np.stack(vectors).astype("float32") if vectors else np.empty((0, encoder.model.config.hidden_size), dtype="float32")
+
+
 def build_dense(corpus: Path) -> dict:
     cfg = configuration()
     passages = [p for p in read_jsonl(corpus / "passages.jsonl") if indexable(p)]
     encoder = QwenEncoder(cfg)
-    vectors = encoder.encode([p["text"] for p in passages])
+    vectors = encode_length_sorted(encoder, [p["text"] for p in passages])
     path = corpus / "index/dense.npy"
     path.parent.mkdir(parents=True, exist_ok=True)
     np.save(path, vectors, allow_pickle=False)

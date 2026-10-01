@@ -203,6 +203,35 @@ class QwenSmokeRegressionTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             cli._RerankSafeRetriever(Broken()).retrieve("q")             # unrelated errors are not hidden
 
+    def test_dense_build_batches_by_length_and_restores_corpus_order(self):
+        import numpy as np
+        from types import SimpleNamespace
+        from kingscode import neural
+
+        calls = []
+
+        class FakeEncoder:
+            config = {"max_length": 4096}
+            model = SimpleNamespace(config=SimpleNamespace(hidden_size=2))
+            def tokenizer(self, texts, **kwargs):
+                return {"input_ids": [[0] * len(t) for t in texts]}
+            def encode(self, texts, batch_size=None):
+                calls.append([len(t) for t in texts])
+                return np.array([[len(t), 0.0] for t in texts], dtype="float32")
+
+        texts = ["x" * n for n in (900, 5, 300, 5, 1200, 40)]
+        old = neural.BUILD_TOKEN_BUDGET
+        neural.BUILD_TOKEN_BUDGET = 1300
+        try:
+            vectors = neural.encode_length_sorted(FakeEncoder(), texts)
+        finally:
+            neural.BUILD_TOKEN_BUDGET = old
+        self.assertEqual(vectors[:, 0].tolist(), [900, 5, 300, 5, 1200, 40])     # corpus order restored
+        self.assertTrue(all(len(b) * max(b) <= 1300 for b in calls))           # padded batch within budget
+        self.assertEqual(calls[0], [5, 5, 40, 300])                             # shortest first, batched together
+        with self.assertRaises(ValueError):
+            neural.encode_length_sorted(FakeEncoder(), ["x" * 5000])            # over max_length still fails loudly
+
     def test_length_warnings_cover_words_and_open_ended(self):
         self.assertEqual(length_warnings({"formato": "semi_open", "respuesta": "Uno. Dos. " + "x " * 160 + "."}),
                          ["semi_open_words_163_over_150"])
