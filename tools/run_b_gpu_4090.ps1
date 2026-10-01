@@ -9,10 +9,9 @@
 #                   (8 evidencias por pregunta), hash del freeze verificado antes
 #                   y despues de cada decoder. Sin retrieval en vivo, sin planner.
 #
-# Elegibilidad (limite 8.000 millones de parametros, sec. 3.1 del enunciado):
-#   por defecto solo alia-legal-7b (~7,77B). Qwen3-8B reporta 8.190.735.360
-#   parametros: solo entra con -IncludePendingEligibility y queda marcado como
-#   no elegible para entrega competitiva hasta confirmacion escrita de la organizacion.
+# Decoders por defecto: qwen3-8b (opcion sugerida textualmente en el enunciado sec. 3.1)
+#   y alia-legal-7b (~7,77B). Salamandra se agrega si hay HF_TOKEN.
+#   -IncludePendingEligibility se conserva solo por compatibilidad; ya no cambia nada.
 #
 # No modifica el repo ni la rama de Luis (worktree de main aparte; corpus\ y
 # models\ enlazados). No borra nada. Restaura la suspension al terminar.
@@ -21,22 +20,21 @@
 # Uso:
 #   powershell -ExecutionPolicy Bypass -File run_b_gpu_4090.ps1 -Phase prep
 #   powershell -ExecutionPolicy Bypass -File run_b_gpu_4090.ps1 -Phase decoder
-#   ... -IncludePendingEligibility   (agrega qwen3-8b, marcado como pendiente)
+#   ... -Models alia-legal-7b         (un solo decoder)
 # ============================================================
 param(
     [ValidateSet("prep", "decoder")] [string]$Phase = "prep",
     [string]$Repo = "C:\Users\ls.contreras\KingsCodeGPU\KingsCodeNvidia",
     [string]$Work = "C:\Users\ls.contreras\KingsCodeGPU\KingsCodeRun",
     [string]$Freeze = "",
+    [string]$Models = "qwen3-8b,alia-legal-7b",
     [switch]$IncludePendingEligibility
 )
 
 $Py      = "$Repo\.venv\Scripts\python.exe"
 $Script  = Join-Path (Split-Path $Work) "kingscode_b_gpu_run.py"
 $LogRoot = "$Work\reports\lab_session"
-$Models  = "alia-legal-7b"
 $Pending = ""
-if ($IncludePendingEligibility) { $Models = "alia-legal-7b,qwen3-8b"; $Pending = "qwen3-8b" }
 if ($env:HF_TOKEN) { $Models = "$Models,salamandra-7b" }   # Salamandra requiere acceso aprobado en HF
 
 # ------------------------------------------------------------
@@ -104,7 +102,7 @@ OUT = WORK / "reports" / "lab_session" / f"{STAMP}_{PHASE}"
 OUT.mkdir(parents=True, exist_ok=True)
 (WORK / "reports" / "lab_session" / "LATEST.txt").write_text(str(OUT), encoding="utf-8")
 summary = {"run": str(OUT), "phase": PHASE, "models": MODELS,
-           "eligibility": {m: ("pending_organizer_confirmation_not_competitive" if m in PENDING else "within_8B") for m in MODELS},
+           "eligibility": {m: ("suggested_in_statement_3_1" if m in ("qwen3-8b", "llama31-8b") else "within_8B") for m in MODELS},
            "steps": []}
 
 
@@ -250,7 +248,6 @@ $p.Id | Set-Content "$LogRoot\B_GPU_$Phase.pid"
 Write-Host ""
 Write-Host "============================================================"
 Write-Host "B GPU RUN [$Phase] INICIADO  PID: $($p.Id)  MODELOS: $Models"
-if ($Pending) { Write-Host "AVISO: $Pending tiene elegibilidad PENDIENTE (8.190.735.360 parametros); sus resultados no son competitivos hasta la confirmacion." }
 Write-Host "STDOUT: $stdout"
 Write-Host "============================================================"
 Start-Sleep -Seconds 5
