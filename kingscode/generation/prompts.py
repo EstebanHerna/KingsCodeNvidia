@@ -153,10 +153,26 @@ def parse_response_v3(raw: str, question: Question, passages: list[dict], *, max
     if not required <= set(value) <= required | {"pasajes_usados"}:
         raise ValueError("Unexpected/missing intermediate answer fields")
     attribution = validate_attribution(value.pop("pasajes_usados", None), passages, max_used)
-    return _answer_row(value, question, passages), {**meta, "decoder_abstained": False, "attribution": attribution}
+    row = _answer_row(value, question, passages, strict_length=False)
+    return row, {**meta, "decoder_abstained": False, "attribution": attribution,
+                 "format_warnings": length_warnings(row)}
 
 
-def _answer_row(value: dict, question: Question, passages: list[dict]) -> dict:
+def length_warnings(row: dict) -> list[str]:
+    """Sentence/word ranges from the schema descriptions. The official validator and
+    evaluator do not enforce them, so v3 records them instead of discarding a grounded
+    answer (at temperature 0 a retry repeats it and the item would end abstained)."""
+    if row["formato"] == "semi_open":
+        sentences, words = sentence_count(row["respuesta"]), len(row["respuesta"].split())
+        return ([f"semi_open_sentences_{sentences}_outside_3_5"] if not 3 <= sentences <= 5 else []) + \
+               ([f"semi_open_words_{words}_over_150"] if words > 150 else [])
+    if row["formato"] == "open_ended":
+        sentences = sentence_count(row["analisis"])
+        return [f"open_ended_analysis_sentences_{sentences}_outside_5_8"] if not 5 <= sentences <= 8 else []
+    return []
+
+
+def _answer_row(value: dict, question: Question, passages: list[dict], *, strict_length: bool = True) -> dict:
     row = {"id": question.id, "formato": question.format, **value,
            "pasajes_recuperados": [evidence_record(p) for p in passages]}
     validate_submission(row)
@@ -166,6 +182,8 @@ def _answer_row(value: dict, question: Question, passages: list[dict]) -> dict:
         if any(k not in question.options or k == row["respuesta_correcta"] or not isinstance(v, str)
                for k, v in row["descarte_opciones"].items()):
             raise ValueError("Invalid discarded options")
+    elif not strict_length:
+        pass
     elif question.format == "semi_open":
         if len(row["respuesta"].split()) > 150 or not 3 <= sentence_count(row["respuesta"]) <= 5:
             raise ValueError("semi_open requires 3-5 sentences and at most 150 words")

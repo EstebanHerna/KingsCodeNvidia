@@ -18,6 +18,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 from time import perf_counter
 import traceback
 
@@ -27,6 +28,8 @@ from .guards import validate_submission
 from .official import official_bodies
 
 FALLBACK_REASON = "pipeline_error"
+# Decoder failures that a deterministic retry reproduces; retrying only costs GPU time.
+DETERMINISTIC_CODES = {"INVALID_MODEL_OUTPUT", "CONTEXT_LIMIT_EXCEEDED"}
 
 
 def _dumps(obj) -> str:
@@ -100,6 +103,8 @@ class BatchRunner:
             except Exception as exc:  # isolation is the point; KeyboardInterrupt/SystemExit still stop the run
                 errors.append({"attempt": attempt + 1, "type": type(exc).__name__, "code": getattr(exc, "code", None),
                                "message": str(exc), "traceback": traceback.format_exc()})
+                if getattr(exc, "code", None) in DETERMINISTIC_CODES:
+                    break  # temperature 0: the same input reproduces the same output
         return None, None, errors
 
     def run(self, questions: list[Question], *, resume: bool = True) -> dict:
@@ -144,7 +149,7 @@ class BatchRunner:
         """Aggregate rates over per-item traces (kept intact in items/<id>.json)."""
         from collections import Counter
         n = len(questions)
-        sources, attribution, normalization, actions, codes = Counter(), Counter(), Counter(), Counter(), Counter()
+        sources, attribution, normalization, actions, codes, warnings = Counter(), Counter(), Counter(), Counter(), Counter(), Counter()
         before = after = fallbacks = tokens_in = tokens_out = 0
         gen_ms = []
         for q in questions:
@@ -156,6 +161,8 @@ class BatchRunner:
             if d.get("normalization_action"):
                 normalization[d["normalization_action"]] += 1
             actions.update(d.get("repair_actions") or {})
+            # "semi_open_sentences_2_outside_3_5" -> "semi_open_sentences_outside_3_5"
+            warnings.update(re.sub(r"_\d+_(?=outside|over)", "_", w) for w in d.get("format_warnings") or [])
             codes.update(trace.get("error_codes") or [])
             before += d.get("citations_before_repair") or 0
             after += d.get("citations_after_repair") or 0
@@ -167,7 +174,7 @@ class BatchRunner:
         rate = lambda c: {k: {"n": v, "rate": v / n} for k, v in sorted(c.items())}
         return {"questions": n, "abstention_source": rate(sources), "attribution_status": rate(attribution),
                 "normalization_action": rate(normalization), "repair_actions": dict(sorted(actions.items())),
-                "pipeline_error_codes": dict(sorted(codes.items())),
+                "pipeline_error_codes": dict(sorted(codes.items())), "format_warnings": rate(warnings),
                 "citations_before_repair": before, "citations_after_repair": after,
                 "citation_guard_fallback_rate": fallbacks / n if n else 0.0,
                 "input_tokens": tokens_in, "output_tokens": tokens_out,

@@ -52,7 +52,16 @@ if (-not (Test-Path -LiteralPath '.\corpus\manifest.json')) {
 
 ## 3. Preflight y dos verificaciones pendientes
 
-Estos comandos se dejan preparados; **no se ejecutaron en esta entrega**. Ejecutarlos antes de cargar modelos:
+> **Actualización 2026-10-01:** `tools/verify_gate2_prep.py` quedó **histórico**. Compara byte a byte `kingscode/*.py`, `kingscode/reasoning/*.py` y `tests/test_reasoning.py` contra `254fa3a` (Gate 2-Prep, 28-sep), y esos archivos cambiaron a propósito con la integración A+B. En la 4090 falló con `Baseline implementation changed: tests/test_reasoning.py`, que es lo esperado y no indica daño. Usar en su lugar:
+>
+> ```powershell
+> python tools/preflight.py                      # 11/11 archivos oficiales, sample, schema
+> python tools/verify_member_a_v02.py            # corpus v0.1 contra los hashes de A
+> python -m unittest discover -s tests           # suite completa (los tests KC-COL-IR requieren tmp/ local)
+> python tools/member_b.py smoke                 # dummy Gate 1B
+> ```
+
+Comandos originales (históricos, fallan desde la integración A+B):
 
 ```powershell
 python tools/preflight.py
