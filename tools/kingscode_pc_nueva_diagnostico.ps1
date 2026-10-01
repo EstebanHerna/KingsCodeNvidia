@@ -160,8 +160,15 @@ same = sorted(k for k in ref if got.get(k) == ref[k])
 print(json.dumps({'v01_docs': len(ref), 'identical_raw': len(same), 'changed': sorted(k for k in ref if k in got and got[k] != ref[k]), 'missing': sorted(set(ref) - set(got))}))
 "@) | ConvertFrom-Json
 Write-Host ("Corpus ({0}): {1}/{2} documentos con bytes identicos a v0.1; cambiados {3}; faltantes {4}" -f $CorpusOrigin, $Cmp.identical_raw, $Cmp.v01_docs, @($Cmp.changed).Count, @($Cmp.missing).Count)
+# verify_member_a_v02 compara contra corpus\manifest.json (el propio); un corpus reconstruido
+# lo pasaria aunque difiera de v0.1. "Exacto" exige ademas los 163 documentos identicos a v0.1.
 & $Py tools\verify_member_a_v02.py | Out-Null
-$CorpusExact = ($LASTEXITCODE -eq 0)
+$CorpusExact = ($LASTEXITCODE -eq 0) -and ($Cmp.identical_raw -eq $Cmp.v01_docs)
+# Referencias conocidas de passages.jsonl: 3b2b7a7b... (corpus_manifest.json versionado = tmp\benchmark_corpus_v1
+# del freeze 4090) y f048d303... (corpus\ de la 4090 de Luis, 2026-10-01). Se registra, no se decide aqui.
+$PassagesSha = (Get-FileHash corpus\passages.jsonl -Algorithm SHA256).Hash.ToLower()
+$PassagesRef = $(if ($PassagesSha -like "3b2b7a7b*") { "igual a corpus_manifest.json (benchmark_corpus_v1)" } elseif ($PassagesSha -like "f048d303*") { "igual al corpus de la 4090 de Luis" } else { "distinto de ambas referencias" })
+Write-Host "passages.jsonl $($PassagesSha.Substring(0,12))... : $PassagesRef"
 git checkout -- reports/member_a_v02/verification.json 2>$null  # el verificador reescribe este archivo versionado
 $global:LASTEXITCODE = 0
 if ($CorpusExact) { Write-Host "Corpus v0.1 verificado byte a byte contra los hashes de A." -ForegroundColor Green }
@@ -241,7 +248,8 @@ $Spq = [math]::Round($Br.seconds / 50, 1)
 $Summary = [ordered]@{
     main_sha = $Sha; model = $Model; gpu = $Rt.gpu; vram_gb = $Rt.vram_gb; torch = $Rt.torch
     retrieval = "bm25 k=8 graph off (diagnostico, no freeze)"
-    corpus = $CorpusDir; corpus_origin = $CorpusOrigin; corpus_v01_byte_identical = $CorpusExact; corpus_v01_comparison = $Cmp
+    corpus = $CorpusDir; corpus_origin = $CorpusOrigin; corpus_v01_raw_identical_and_verified = $CorpusExact; corpus_v01_comparison = $Cmp
+    passages_sha256 = $PassagesSha; passages_reference = $PassagesRef
     automatico_sin_ragas = "$($Ev.total_automatico.obtenidos) / $($Ev.total_automatico.posibles)"
     cerradas = $Ev.cerradas.puntos; citas = $Ev.citas.puntos; abstencion = $Ev.abstencion.puntos
     errores_validacion = $Ev.validacion.errores
