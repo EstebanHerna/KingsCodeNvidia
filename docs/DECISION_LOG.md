@@ -715,3 +715,22 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
   de perfiles, pero no se ejecutaron por la instrucción de reservar validación
   para la GPU externa. Solo se hizo revisión de diff/estructura; el cambio queda
   pendiente de smoke comparativo en la RTX 4090.
+
+## 2026-10-01 — Nuevas rutas de retrieval y JSON (optativas, sin selección)
+
+- Añadidas ablations detrás de flags para representación estructural de búsqueda,
+  instrucciones Qwen separadas, selección de roles de planes congelados, soporte
+  auxiliar Q+opción con Qwen dense y constrained JSON con XGrammar. El baseline,
+  texto de evidencia, corpus v0.1 y citation guard no cambian por defecto.
+- `pasajes_usados` ya existía y no se duplicó. Los scores de soporte de opción
+  son cosenos, no probabilidades ni entailment, y nunca seleccionan la letra.
+- BGE-M3 se deja sin loader porque el snapshot oficial encontrado ofrece
+  `pytorch_model.bin` y el preparador del repo solo acepta pesos Safetensors;
+  no se relajó la verificación ni se cambió el lock.
+- No crear entrenamiento hard-negative ni RAFT/QLoRA hasta completar gates de
+  evidencia independiente, baseline de retrieval congelado, revisión de negativos
+  y evaluación sellada. `sample_50` no es train ni selector de retrieval.
+- Ninguna prueba local, retrieval, CUDA, generación o RAGAS fue ejecutada.
+  Validar en la 4090 después de que termine la corrida externa activa y conservar
+  identidad, artefactos, evaluador oficial y trazas. Ver
+  `docs/EXPLORATION_ROUTES_2026-10-01.md`.

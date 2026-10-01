@@ -1,0 +1,2 @@
+# Optional, isolated structured-decoding ablation; primary venv is unchanged by default.
+xgrammar==0.2.8

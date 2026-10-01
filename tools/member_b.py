@@ -72,6 +72,17 @@ def main(argv=None):
                         help="batch/verify: complete up to 5 verified citations with top-ranked evidence (semi_open/multiple_choice only)")
     parser.add_argument("--native-option-fusion", action="store_true",
                         help="batch/verify: fuse MC option views inside A before one Q0-based rerank; experimental and opt-in")
+    parser.add_argument("--retrieval-text-mode", choices=["literal", "context"], default="literal",
+                        help="context uses structural metadata only for search; evidence/citations remain literal")
+    parser.add_argument("--dense-index-dir", type=Path,
+                        help="isolated dense-index directory; required for dense/hybrid context mode")
+    parser.add_argument("--embedding-instruction-profile", choices=["baseline", "direct_primary_source", "exact_rule_and_article", "minimal_evidence"], default="baseline")
+    parser.add_argument("--reranker-instruction-profile", choices=["baseline", "direct_support", "rule_exception_holding", "source_and_article"], default="baseline")
+    parser.add_argument("--plan-roles", help="plan: comma-separated Q1,Q2,Q3 subset; replay frozen plans")
+    parser.add_argument("--option-support", action="store_true",
+                        help="MC-only auxiliary Q+option cosine scores on final evidence; never chooses the answer")
+    parser.add_argument("--constrained-json", action="store_true",
+                        help="optional XGrammar JSON syntax/type constraints; strict parser and citation guard remain")
     parser.add_argument("--dry-run", action="store_true", help="Print the plan only; no CUDA, weights or evaluation")
     args = parser.parse_args(argv)
     if args.command == "smoke":
@@ -185,7 +196,15 @@ class _RerankSafeRetriever:
 def _pipeline(args):
     from kingscode.reasoning import DummyDecoder, Pipeline, RetrieverGraphRouter
     from kingscode.reasoning.plan_store import PlanStore
+    if args.plan_roles and args.retrieval_mode != "plan":
+        raise ValueError("--plan-roles requires --retrieval-mode plan")
+    if args.option_support and args.fixture_evidence:
+        raise ValueError("--option-support needs the real dense corpus index; fixture evidence is incompatible")
+    instruction_profiles = json.loads((ROOT / "config/retrieval_instruction_profiles.json").read_text(encoding="utf-8"))
+    embedding_instruction = instruction_profiles["embedding"][args.embedding_instruction_profile]
+    reranker_instruction = instruction_profiles["reranker"][args.reranker_instruction_profile]
     adapter = RetrieverGraphRouter()
+    base_retriever = None
     if args.fixture_evidence:
         from copy import deepcopy
         fixtures = json.loads((ROOT / "tests/fixtures/member_b_official_passages.json").read_text(encoding="utf-8"))
@@ -198,20 +217,39 @@ def _pipeline(args):
         retriever = _FixtureRetriever()
     else:
         from kingscode import Retriever
-        retriever = Retriever(args.corpus, mode=args.retriever_mode, rerank=args.rerank, graph_router=adapter,
+        base_retriever = Retriever(args.corpus, mode=args.retriever_mode, rerank=args.rerank, graph_router=adapter,
                               candidate_k=args.candidate_k, reranker_batch_size=args.reranker_batch_size,
-                              graph_budget=args.graph_budget, exact_locator=args.exact_locator)
+                              graph_budget=args.graph_budget, exact_locator=args.exact_locator,
+                              retrieval_text_mode=args.retrieval_text_mode, dense_index_dir=args.dense_index_dir,
+                              embedding_instruction=(embedding_instruction if args.embedding_instruction_profile != "baseline" else None),
+                              reranker_instruction=(reranker_instruction if args.reranker_instruction_profile != "baseline" else None))
+        retriever = base_retriever
         if args.rerank:
             retriever = _RerankSafeRetriever(retriever)
+        if args.option_support and base_retriever.dense is None:
+            raise ValueError("--option-support requires --retriever-mode dense or hybrid")
     decoder = DummyDecoder()
     if args.model:
         from kingscode.generation.hf_decoder import HFDecoder
+        selected_prompt = ("grounded-formats-v5-option-support" if args.option_support
+                           else f"grounded-formats-{args.prompt_version}")
         decoder = HFDecoder(args.model, precision=args.precision, allow_optional=args.allow_optional,
-                            prompt_version=f"grounded-formats-{args.prompt_version}")
+                            prompt_version=selected_prompt, constrained_json=args.constrained_json)
     plans = PlanStore(args.plans) if args.plans else None
+    plan_roles = tuple(part.strip() for part in args.plan_roles.split(",") if part.strip()) if args.plan_roles else None
+    option_supporter = (base_retriever.dense.option_support
+                        if base_retriever is not None and args.option_support else None)
     identity = {"decoder": [decoder.name, decoder.version], "retrieval_mode": args.retrieval_mode, "k": args.k,
                 "candidate_k": args.candidate_k, "reranker_batch_size": args.reranker_batch_size,
                 "native_option_fusion": args.native_option_fusion,
+                "retrieval_text_mode": args.retrieval_text_mode,
+                "dense_index_dir": str(args.dense_index_dir) if args.dense_index_dir else None,
+                "embedding_instruction_profile": args.embedding_instruction_profile,
+                "embedding_instruction": embedding_instruction,
+                "reranker_instruction_profile": args.reranker_instruction_profile,
+                "reranker_instruction": reranker_instruction,
+                "option_support": args.option_support, "constrained_json": args.constrained_json,
+                "plan_roles": list(plan_roles) if plan_roles else None,
                 "prompt_version": getattr(decoder, "prompt_version", None), "citation_fill": args.citation_fill,
                 "retriever": {"mode": args.retriever_mode, "rerank": args.rerank,
                               "graph_budget": args.graph_budget,
@@ -220,7 +258,8 @@ def _pipeline(args):
                 "graph_policy": args.graph_policy, "plans": plans.manifest["experiment_id"] if plans else None}
     return Pipeline(retriever.retrieve, adapter=adapter, decoder=decoder, k=args.k, graph_policy=args.graph_policy,
                     retrieval_mode=args.retrieval_mode, plans=plans, max_refs=5 if args.citation_fill else 3,
-                    citation_fill=args.citation_fill, native_option_fusion=args.native_option_fusion), identity
+                    citation_fill=args.citation_fill, native_option_fusion=args.native_option_fusion,
+                    plan_roles=plan_roles, option_supporter=option_supporter), identity
 
 
 def run_b_command(args, parser) -> int:

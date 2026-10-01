@@ -3,7 +3,10 @@ from __future__ import annotations
 
 from copy import deepcopy
 import gc
+import hashlib
+import json
 import os
+from collections import OrderedDict
 from pathlib import Path
 from time import perf_counter
 
@@ -28,7 +31,7 @@ class HFDecoder:
 
     def __init__(self, alias: str, *, config: dict | None = None, precision: str = "bf16",
                  allow_optional: bool = False, torch_module=None, transformers_module=None,
-                 prompt_version: str | None = None):
+                 prompt_version: str | None = None, constrained_json: bool = False):
         self.config = deepcopy(config) if config is not None else load_bakeoff()
         if prompt_version is not None:
             if prompt_version not in ACTIVE_PROMPT_VERSIONS:
@@ -41,12 +44,14 @@ class HFDecoder:
         if precision not in {"bf16", "int8", "int4"}:
             raise ValueError("Unsupported precision; no automatic fallback")
         self.alias, self.precision = alias, precision
+        self.constrained_json = bool(constrained_json)
         self.name, self.version = "transformers:" + alias, self.entry["revision"]
         self.torch, self.transformers = torch_module, transformers_module
         self.model = self.tokenizer = None
         self.assets = None
         self.last_usage = {}
         self.load_ms = None
+        self._grammar_cache = OrderedDict()
 
     def _system_version(self) -> str:
         # Legacy v1/v2 contracts keep the system text they always had (the v3 one).
@@ -125,7 +130,8 @@ class HFDecoder:
         self.last_usage = {"input_tokens": 0, "output_tokens": 0, "json_valid": False, "model": self.alias,
                            "revision": self.version, "prompt_version": self.prompt_version,
                            "prompt_sha256": prompt_sha256(max_used, self._system_version()),
-                           "max_new_tokens": self.config["max_new_tokens"][question.format]}
+                           "max_new_tokens": self.config["max_new_tokens"][question.format],
+                           "constrained_json": self.constrained_json}
         self.load()
         started = perf_counter()
         try:
@@ -164,8 +170,15 @@ class HFDecoder:
                                                   "max_new_tokens", "repetition_penalty", "no_repeat_ngram_size",
                                                   "bos_token_id", "eos_token_id", "pad_token_id")}
             self.torch.manual_seed(generation["seed"])
+            generate_kwargs = {}
+            if self.constrained_json:
+                processor, grammar_identity, xgrammar_version = self._json_logits_processor(question, shown, max_used)
+                generate_kwargs["logits_processor"] = [processor]
+                self.last_usage.update(json_grammar="xgrammar_json_schema_v1",
+                                       json_grammar_sha256=grammar_identity,
+                                       xgrammar_version=xgrammar_version)
             with self.torch.inference_mode():
-                output = self.model.generate(**inputs, generation_config=cfg)
+                output = self.model.generate(**inputs, generation_config=cfg, **generate_kwargs)
             self.torch.cuda.synchronize()
             tokens = output[0][count:]
             raw = self.tokenizer.decode(tokens, skip_special_tokens=True)
@@ -187,6 +200,31 @@ class HFDecoder:
             raise
         except Exception as exc:
             raise self._failure(exc, "generate") from exc
+
+    def _json_logits_processor(self, question, passages, max_used):
+        try:
+            import xgrammar as xgr
+        except ImportError as exc:
+            raise RuntimeError("XGrammar is optional; install requirements-gpu-experiments.txt") from exc
+        from .structured_json import response_schema
+        schema = response_schema(question.format, question.options,
+                                 [p.get("passage_id", "") for p in passages], max_used)
+        schema_text = json.dumps(schema, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        identity = hashlib.sha256(schema_text.encode("utf-8")).hexdigest()
+        if identity not in self._grammar_cache:
+            vocab_size = getattr(self.model.config, "vocab_size", None)
+            tokenizer_info = xgr.TokenizerInfo.from_huggingface(self.tokenizer, vocab_size=vocab_size)
+            compiler = xgr.GrammarCompiler(tokenizer_info)
+            grammar = compiler.compile_json_schema(schema_text)
+            self._grammar_cache[identity] = grammar
+            if len(self._grammar_cache) > 8:
+                self._grammar_cache.popitem(last=False)
+        else:
+            self._grammar_cache.move_to_end(identity)
+        # XGrammar's HF LogitsProcessor is stateful and single-use: create a new
+        # processor for each generate() call while reusing the compiled grammar.
+        processor = xgr.contrib.hf.LogitsProcessor(self._grammar_cache[identity])
+        return processor, identity, getattr(xgr, "__version__", "unknown")
 
     def close(self):
         self.model = self.tokenizer = None

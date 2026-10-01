@@ -1,0 +1,21 @@
+{
+  "version": "qwen-legal-instructions-v1",
+  "status": "experimental_not_selected",
+  "embedding": {
+    "baseline": "Given a question about Colombian law, retrieve official legal passages that provide the evidence needed to answer it.",
+    "direct_primary_source": "Given a Colombian legal question, retrieve the official primary-source passage that directly states the applicable rule, exception, procedure, or holding.",
+    "exact_rule_and_article": "For this question about Colombian law, find official passages that establish the exact legal rule and article needed to resolve it.",
+    "minimal_evidence": "Retrieve the smallest official Colombian-law passage or set of passages that directly supports an answer to this legal question."
+  },
+  "reranker": {
+    "baseline": "Given a question about Colombian law, retrieve official legal passages that provide the evidence needed to answer it.",
+    "direct_support": "Judge whether this official Colombian-law passage directly provides evidence needed to answer the legal question.",
+    "rule_exception_holding": "Rank this Colombian legal passage by whether it states the rule, exception, procedure, or holding requested in the question.",
+    "source_and_article": "Assess how directly this official source and article support the specific Colombian-law question."
+  },
+  "notes": [
+    "Keep current instructions as the control; change one model instruction at a time.",
+    "Embedding instruction affects query vectors only; passage vectors and their index identity stay fixed.",
+    "Reranker instruction changes pair scoring only. Do not infer a legal-quality gain from a paper's aggregate percentage."
+  ]
+}

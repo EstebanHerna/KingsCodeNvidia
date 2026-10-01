@@ -39,6 +39,7 @@ Si falta evidencia necesaria para resolver la pregunta, abstente.""",
 # statement's minimum lengths stated explicitly (9/50 were short), and for closed
 # questions the justification is written before the chosen letter.
 PROMPT_V4 = "grounded-formats-v4"
+PROMPT_V5_OPTION_SUPPORT = "grounded-formats-v5-option-support"
 FORMAT_INSTRUCTIONS_V4 = {
     "multiple_choice": """Campos, en este orden: abstencion (false), justificacion (string), respuesta_correcta (A/B/C/D), descarte_opciones (objeto).
 Escribe primero la justificación: analiza la evidencia frente a cada opción y cita la norma verificable que la resuelve. Después elige respuesta_correcta, que debe ser la opción que esa justificación sostiene.
@@ -52,7 +53,7 @@ analisis debe tener entre 5 y 8 oraciones completas (mínimo 5, máximo 8) que a
 En jurisprudencia cita solo decisiones aportadas; si no las hay, indica que no se aportó jurisprudencia, sin inventarla.
 Si falta evidencia necesaria para resolver la pregunta, abstente.""",
 }
-ACTIVE_PROMPT_VERSIONS = {PROMPT_VERSION, PROMPT_V4}
+ACTIVE_PROMPT_VERSIONS = {PROMPT_VERSION, PROMPT_V4, PROMPT_V5_OPTION_SUPPORT}
 
 MAX_USED_PASSAGES = 5
 ATTRIBUTION_INSTRUCTION = """Si respondes, añade también el campo "pasajes_usados": lista con los passage_id (como máximo {max_used}) de los pasajes de la evidencia en que realmente te basaste. Usa solo passage_id que aparezcan en la evidencia; no inventes identificadores.
@@ -62,7 +63,10 @@ LEGACY_PROMPT_VERSIONS = {"grounded-formats-v1", "grounded-formats-v2"}
 
 def system_prompt(fmt: str, max_used: int = MAX_USED_PASSAGES, version: str = PROMPT_VERSION) -> str:
     instructions = FORMAT_INSTRUCTIONS_V4 if version == PROMPT_V4 else FORMAT_INSTRUCTIONS
-    return COMMON + "\n" + instructions[fmt] + "\n" + ATTRIBUTION_INSTRUCTION.format(max_used=max_used)
+    extra = ("\nLa evidencia puede incluir option_support: cosenos auxiliares de Q+opción frente a cada pasaje. "
+             "No son probabilidades, no prueban implicación jurídica y no eligen la respuesta; contrasta cada opción "
+             "con el texto literal de la evidencia.") if (version == PROMPT_V5_OPTION_SUPPORT and fmt == "multiple_choice") else ""
+    return COMMON + "\n" + instructions[fmt] + extra + "\n" + ATTRIBUTION_INSTRUCTION.format(max_used=max_used)
 
 
 def prompt_sha256(max_used: int = MAX_USED_PASSAGES, version: str = PROMPT_VERSION) -> str:
@@ -78,6 +82,10 @@ def build_messages(question: Question, passages: list[dict], prompt: PromptSpec,
     if prompt.version not in LEGACY_PROMPT_VERSIONS | {PROMPT_VERSION} or version not in ACTIVE_PROMPT_VERSIONS:
         raise ValueError("Unknown prompt version")
     evidence = [{k: p.get(k) for k in ("passage_id", "doc_id", "norm_name", "article", "source_url", "text")} for p in passages]
+    if version == PROMPT_V5_OPTION_SUPPORT and question.format == "multiple_choice":
+        for entry, passage in zip(evidence, passages):
+            if passage.get("option_support") is not None:
+                entry["option_support"] = passage["option_support"]
     # The existing Protocol provides the generic v1 descriptor. The real backend
     # explicitly materializes v2; the dummy's prompt/config remain untouched.
     # Question, options and evidence always travel as JSON data inside the user

@@ -66,7 +66,8 @@ def supports_query_views(retrieve) -> bool:
         return False
 
 
-def retrieval_views(question: Question, query: NormalizedQuery, mode: str, plan=None) -> tuple[tuple[str, bool, str], ...]:
+def retrieval_views(question: Question, query: NormalizedQuery, mode: str, plan=None,
+                   plan_roles: tuple[str, ...] | None = None) -> tuple[tuple[str, bool, str], ...]:
     """(text, trusted, role) per retrieval call. Q0 is always first and trusted.
 
     Options are organizer text (trusted). Planner views are model-generated:
@@ -80,7 +81,9 @@ def retrieval_views(question: Question, query: NormalizedQuery, mode: str, plan=
     if mode == "plan":
         if plan is None:
             raise ValueError("plan mode needs a frozen plan (replay); plans are never generated inside the pipeline")
-        return (q0,) + tuple((v, False, role) for v, role in zip(plan.views, plan.view_roles))
+        allowed = set(plan_roles) if plan_roles else {"Q1", "Q2", "Q3"}
+        selected = [(v, role) for v, role in zip(plan.views, plan.view_roles) if role in allowed]
+        return (q0,) + tuple((v, False, role) for v, role in selected)
     raise ValueError(f"Unknown retrieval mode {mode}; plan+option is disabled until PLAN and OPTION are measured separately")
 
 
@@ -150,6 +153,10 @@ def generation_diagnostics(decoder, usage, attribution, before, guard, repair, e
             "attribution_status": attribution.get("status"), "attribution_count": len(attribution.get("ids", [])),
             "attribution_reason": attribution.get("reason"), "format_warnings": list(usage.get("format_warnings") or []),
             "field_coercions": list(usage.get("field_coercions") or []), "evidence_in_prompt": usage.get("evidence_in_prompt"),
+            "constrained_json": usage.get("constrained_json", False),
+            "json_grammar": usage.get("json_grammar"),
+            "json_grammar_sha256": usage.get("json_grammar_sha256"),
+            "xgrammar_version": usage.get("xgrammar_version"),
             "evidence_dropped_for_context": list(usage.get("evidence_dropped_for_context") or []),
             "citations_before_repair": before, "citations_after_repair": guard["citation_count"],
             "repair_actions": actions, "evidence_passages": len(evidence),
@@ -168,7 +175,8 @@ def answer(question: Question | str, passages: list[dict], format: str, *, quest
 class Pipeline:
     def __init__(self, retrieve, *, adapter: RetrieverGraphRouter | None = None, decoder: Decoder | None = None,
                  k: int = 8, graph_policy: str = "router", retrieval_mode: str = "option", plans=None,
-                 max_refs: int = 3, citation_fill: bool = False, native_option_fusion: bool = False):
+                 max_refs: int = 3, citation_fill: bool = False, native_option_fusion: bool = False,
+                 plan_roles: tuple[str, ...] | None = None, option_supporter=None):
         if type(k) is not int or not 1 <= k <= 10 or graph_policy not in {"router", "off", "auto", "on"}:
             raise ValueError("Invalid evidence count/graph policy")
         if retrieval_mode not in RETRIEVAL_MODES:
@@ -177,11 +185,14 @@ class Pipeline:
             raise ValueError("plan mode replays frozen plans: pass plans=PlanStore(...)")
         if type(native_option_fusion) is not bool:
             raise ValueError("native_option_fusion must be a boolean")
+        if plan_roles is not None and (not plan_roles or set(plan_roles) - {"Q1", "Q2", "Q3"}):
+            raise ValueError("plan_roles must be a nonempty subset of Q1/Q2/Q3")
         self.retrieve, self.adapter = retrieve, adapter
         self.decoder, self.k, self.graph_policy = decoder or DummyDecoder(), k, graph_policy
         self.retrieval_mode, self.plans, self.max_refs = retrieval_mode, plans, max_refs
         self.citation_fill = citation_fill
         self.native_option_fusion = native_option_fusion
+        self.plan_roles, self.option_supporter = plan_roles, option_supporter
         self.locator_kwarg = locator_switch(retrieve)
         self.native_views = supports_query_views(retrieve)
 
@@ -273,7 +284,7 @@ class Pipeline:
         start = perf_counter()
         query = normalize_query(question.text)
         plan = self.plans.get(question.id, question.text) if self.retrieval_mode == "plan" else None
-        variants = retrieval_views(question, query, self.retrieval_mode, plan)
+        variants = retrieval_views(question, query, self.retrieval_mode, plan, self.plan_roles)
         flat, flat_profiles = self._fetch_with_profiles(variants, "off")
         check_passages(flat)
         decision = route_graph(query, flat) if self.graph_policy == "router" else self.graph_policy
@@ -287,6 +298,12 @@ class Pipeline:
             # silently falling back to A's question-only provisional AUTO router.
             executed = decision if decision == "on" or self.adapter else "on"
             passages, passage_profiles = self._fetch_with_profiles(variants, executed)
+        option_support = None
+        if self.option_supporter and question.format == "multiple_choice" and passages:
+            option_support = self.option_supporter(question.text, question.options, passages)
+            for passage in passages:
+                passage["option_support"] = {letter: round(float(scores.get(passage["passage_id"], 0.0)), 6)
+                                              for letter, scores in option_support.items()}
         retrieved_ms = (perf_counter() - start) * 1000
         retrieval_profiles = flat_profiles + (passage_profiles if executed != "off" else [])
         try:
@@ -310,6 +327,11 @@ class Pipeline:
                      locator_control=self._locator_control(variants),
                      native_option_fusion=bool(self.native_option_fusion and self.retrieval_mode == "option"
                                                and len(variants) > 1 and self._native(variants)),
+                     plan_roles=list(self.plan_roles or ("Q1", "Q2", "Q3")),
+                     option_support_enabled=option_support is not None,
+                     option_support_ms=getattr(getattr(self.option_supporter, "__self__", None),
+                                               "last_option_support_ms", None),
+                     option_support=option_support,
                      retrieval_profiles=retrieval_profiles,
                      plan=None if plan is None else {"status": plan.status,
                                                      "generated_references": [list(map(str, r)) for r in plan.generated_references]})

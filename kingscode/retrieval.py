@@ -16,6 +16,7 @@ from time import perf_counter
 from typing import Sequence
 
 from .common import ROOT, file_hash, indexable, normalize, read_json, read_jsonl, write_json
+from .metadata import embedding_representation
 
 STOP = set("a al algo ante bajo con contra cual cuando de del desde donde el ella ellas ellos en entre era es esa ese eso esta este esto estos estas fue ha han hasta hay la las le les lo los mas me mi muy ni no nos o para pero por que quien se ser si sin sobre son su sus un una unas uno unos y ya e u".split())
 TOKENIZER_VERSION = "accent-fold-unicode-words-1"
@@ -26,13 +27,17 @@ def tokenize(text: str) -> list[str]:
 
 
 class BM25Index:
-    def __init__(self, passages: list[dict], k1: float = 1.2, b: float = 0.75):
+    def __init__(self, passages: list[dict], k1: float = 1.2, b: float = 0.75,
+                 texts: list[str] | None = None):
         self.passages = passages
+        self.texts = texts if texts is not None else [p["text"] for p in passages]
+        if len(self.texts) != len(passages) or any(not isinstance(t, str) for t in self.texts):
+            raise ValueError("BM25 text view must have one plain-text entry per passage")
         self.k1, self.b = k1, b
         self.lengths = []
         self.postings = defaultdict(list)
         for i, passage in enumerate(passages):
-            tokens = tokenize(passage["text"])
+            tokens = tokenize(self.texts[i])
             self.lengths.append(len(tokens))
             for term, count in sorted(Counter(tokens).items()):
                 self.postings[term].append([i, count])
@@ -71,6 +76,7 @@ class BM25Index:
             raise ValueError("BM25 passage ordering mismatch")
         obj = cls.__new__(cls)
         obj.passages = passages
+        obj.texts = [p["text"] for p in passages]
         for name in ["k1", "b", "avgdl", "lengths", "postings"]:
             setattr(obj, name, state[name])
         return obj
@@ -115,7 +121,9 @@ def default_graph_route(question: str) -> bool:
 class Retriever:
     def __init__(self, corpus_dir: str | Path | None = None, *, mode: str = "bm25", rerank: bool = False,
                  graph_router=None, candidate_k: int = 30, graph_budget: int = 10, exact_locator: bool = False,
-                 reranker_batch_size: int = 2):
+                 reranker_batch_size: int = 2, retrieval_text_mode: str = "literal",
+                 dense_index_dir: str | Path | None = None, embedding_instruction: str | None = None,
+                 reranker_instruction: str | None = None):
         if mode not in {"bm25", "dense", "hybrid"}:
             raise ValueError("mode must be bm25, dense or hybrid")
         if candidate_k < 1 or graph_budget < 0 or reranker_batch_size < 1:
@@ -128,7 +136,16 @@ class Retriever:
             raise ValueError("Every indexed passage must have a nonempty string passage_id")
         if len(passage_ids) != len(set(passage_ids)):
             raise ValueError("Duplicate passage_id values make RRF identity ambiguous")
-        self.bm25 = BM25Index.load(self.directory / "index/bm25.json", self.passages, self.corpus_hash)
+        if retrieval_text_mode not in {"literal", "context"}:
+            raise ValueError("retrieval_text_mode must be literal or context")
+        self.retrieval_text_mode = retrieval_text_mode
+        self.search_texts = ([p["text"] for p in self.passages] if retrieval_text_mode == "literal"
+                             else [embedding_representation(p) for p in self.passages])
+        if retrieval_text_mode == "literal":
+            self.bm25 = BM25Index.load(self.directory / "index/bm25.json", self.passages, self.corpus_hash)
+        else:
+            # Search-only metadata view: neither frozen passages nor evidence text changes.
+            self.bm25 = BM25Index(self.passages, texts=self.search_texts)
         self.mode, self.candidate_k, self.graph_budget = mode, candidate_k, graph_budget
         from .legal_locator import LegalLocator
         self.legal_locator = LegalLocator(self.passages) if exact_locator else None
@@ -147,10 +164,15 @@ class Retriever:
         self.dense = self.reranker = None
         if mode in {"dense", "hybrid"}:
             from .neural import DenseIndex
-            self.dense = DenseIndex(self.directory, self.passages, self.corpus_hash)
+            if retrieval_text_mode == "context" and dense_index_dir is None:
+                raise ValueError("context dense retrieval needs a separately built --dense-index-dir")
+            self.dense = DenseIndex(self.directory, self.passages, self.corpus_hash,
+                                    index_dir=dense_index_dir, query_instruction=embedding_instruction,
+                                    representation_id=("context_metadata_v1" if retrieval_text_mode == "context"
+                                                      else "source_text_v1"))
         if rerank:
             from .neural import QwenReranker
-            self.reranker = QwenReranker(batch_size=reranker_batch_size)
+            self.reranker = QwenReranker(batch_size=reranker_batch_size, instruction=reranker_instruction)
 
     def retrieve(self, question: str, k: int = 8, graph_mode: str = "auto",
                  query_views: Sequence[str] | None = None) -> list[dict]:
@@ -254,7 +276,7 @@ class Retriever:
         rerank_scores = {}
         if self.reranker and order:
             stage = perf_counter()
-            values = self.reranker.score(question, [self.passages[i]["text"] for i in order])
+            values = self.reranker.score(question, [self.search_texts[i] for i in order])
             reranker_ms = (perf_counter() - stage) * 1000
             rerank_scores = dict(zip(order, values))
             order.sort(key=lambda i: (-rerank_scores[i], self.passages[i]["passage_id"]))
@@ -262,6 +284,7 @@ class Retriever:
         reranker_pairs = candidate_count if self.reranker else 0
         profile = {
             "mode": self.mode,
+            "retrieval_text_mode": self.retrieval_text_mode,
             "candidate_k": self.candidate_k,
             "graph_budget": self.graph_budget,
             "query_view_count": len(views),
@@ -288,6 +311,7 @@ class Retriever:
                            "rrf": fused.get(i), "graph": graph_scores.get(i), "reranker": rerank_scores.get(i)}
             p["score"] = rerank_scores.get(i, scores.get(i, 0))
             p["retrieval"] = {"rank": rank, "mode": self.mode, "graph_mode": graph_mode,
+                              "retrieval_text_mode": self.retrieval_text_mode,
                               "graph_active": active, "corpus_sha256": self.corpus_hash,
                               "query_view_count": len(views),
                               "profile": profile,

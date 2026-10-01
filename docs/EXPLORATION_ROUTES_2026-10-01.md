@@ -93,6 +93,32 @@ El perfil combinado `v01+v02` sigue siendo diagnóstico cuando sus fuentes v0.1
 locales no coinciden byte a byte con el freeze. No usar sus resultados para un
 freeze competitivo. No lanzar GPU desde este checkout.
 
+## Propuestas bibliográficas: decisión e implementación optativa
+
+La literatura citada orienta ablations; no anticipa resultados de KingsCode.
+Todo lo siguiente conserva las rutas y corpus por defecto. Estas modificaciones
+se prepararon para una futura sesión RTX 4090; todavía no se ejecutaron pruebas,
+retrieval ni CUDA desde este checkout.
+
+| Propuesta | Estado en KingsCode | Cómo probar / límite |
+|---|---|---|
+| Contexto estructural tipo SAC-lite | Implementado como `retrieval_text_mode=context`: usa `embedding_representation()` solo en BM25/reranker y un índice denso separado bajo `reports/`. `passage.text`, offsets, citas y corpus v0.1 no cambian. SAC estudió resúmenes por documento, no estas cabeceras deterministas ([paper ACL 2025](https://aclanthology.org/2025.nllp-1.3/)). | Comparar `literal` vs `context` con el mismo corpus, instrucción y preguntas. Es metadata determinista, no una réplica del resumen sintético estudiado por SAC. |
+| Instrucciones Qwen separadas | Implementados perfiles optativos distintos para encoder y reranker; el baseline sigue idéntico al lock existente. Instrucción de encoder solo cambia Q, no requiere regenerar vectores de pasaje. Los modelos están diseñados para recibir instrucciones ([encoder](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B), [reranker](https://huggingface.co/Qwen/Qwen3-Reranker-0.6B)). | Cambiar una instrucción por corrida. Los porcentajes generales del model card no implican ganancia entre dos instrucciones legales concretas. |
+| Legal-element query views | La interfaz y el plan congelado ya existían. Se añadió `--plan-roles Q2` para aislar elementos, además de `Q1` hechos y `Q3` vocabulario. Los trabajos relacionados estudian tareas/corpus jurídicos distintos ([KELLER](https://aclanthology.org/2024.emnlp-main.73/), [Elem4LCR](https://aclanthology.org/2024.findings-acl.139/), [LegalSearchLM](https://aclanthology.org/2025.emnlp-main.225/)). | Crear planes una vez solo desde preguntas, guardar hash y replay; las referencias generadas siguen sin privilegios del locator. |
+| BGE-M3 denso/sparse/ColBERT | **Pendiente de una preparación segura del modelo.** El snapshot oficial inspeccionado publica `pytorch_model.bin`, mientras el preparador de modelos del repo exige pesos Safetensors y rechaza pickle ([metadata oficial del snapshot](https://huggingface.co/api/models/BAAI/bge-m3); [paper](https://arxiv.org/abs/2402.03216)). No se debilitó esa garantía ni se alteró el lock Qwen. | Primero resolver el artefacto seguro y lock inmutable; luego denso con índice propio, sparse como ablation y ColBERT solo si el costo cabe. No instalar FlagEmbedding en el entorno primario todavía. |
+| Soporte condicionado por opción | Implementado como señal auxiliar Qwen-dense `Q + opción` vs top-evidencia final; los scores y tiempo quedan trazados. La opción no se elige automáticamente. | Requiere modo dense/hybrid. Comparar fusión nativa sola vs fusión + señal con la misma corrida/prompt, medir tiempo y revisar cerradas manualmente. Coseno no es entailment. |
+| IDs de evidencia | Ya existía en v3: `pasajes_usados` y su validación por IDs; no se duplicó. | Seguir midiendo atribución, sin tratarla como prueba de soporte semántico. |
+| JSON restringido | Añadida ruta optativa XGrammar 0.2.8 para Transformers; el proyecto oficial documenta compatibilidad Windows/Python y uso con `LogitsProcessor` ([instalación](https://github.com/mlc-ai/xgrammar/blob/main/docs/start/installation.md), [guía Transformers](https://github.com/mlc-ai/xgrammar/blob/main/docs/start/quick_start.md)). La salida aún pasa el parser v3 y citation guard. La forma/tipos no prueban corrección legal. Cada respuesta usa un procesador nuevo porque la integración HF es stateful/single-use ([código oficial](https://github.com/mlc-ai/xgrammar/blob/main/python/xgrammar/contrib/hf.py)). | `--constrained-json`, dependencia opcional aislada. Primero probar una por formato en Windows/4090; confirmar overhead y salida antes de sample50. |
+| Hard-negative reranker FT | **Bloqueado por gate de datos.** | No crear trainer hasta tener baseline/freeze, positivos primarios completos, negativos difíciles adjudicados, separación por fuente y test sellado independiente. Nunca entrenar con `sample_50`. |
+| RAFT/QLoRA decoder | **Bloqueado por retrieval/data gate.** | Considerar solo con retrieval congelado y fallos generativos residuales demostrados; requiere dataset independiente con evidencia, distractores y evaluación sellada. |
+
+Las implementaciones 1, 2, 3, 5 y 7 son flags/perfiles nuevos y no cambian el
+comportamiento por defecto. #4 queda pendiente porque el artefacto oficial no
+pasa el contrato seguro de pesos del repo; #6 ya estaba implementado; #8 y #9
+siguen pospuestos según los gates. No publicar mejora ni hacer freeze sin la
+misma prueba comparativa, reporte versionado, evaluación oficial y revisión de
+citas/abstención.
+
 ## Corpus: adquisiciones oficiales candidatas
 
 El siguiente backlog proviene de la comparación entre referencias del banco y

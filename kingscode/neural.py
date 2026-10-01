@@ -6,12 +6,15 @@ and download the two allowlisted models. No hosted model APIs are used.
 from __future__ import annotations
 
 import os
+import hashlib
 from collections import OrderedDict
 from pathlib import Path
+from time import perf_counter
 
 import numpy as np
 
 from .common import ROOT, file_hash, indexable, read_json, read_jsonl, write_json
+from .metadata import embedding_representation
 
 ALLOWED = {"Qwen/Qwen3-Embedding-0.6B", "Qwen/Qwen3-Reranker-0.6B"}
 QUERY_SCORE_CACHE_SIZE = 32
@@ -66,9 +69,11 @@ class QwenEncoder:
         self.model = AutoModel.from_pretrained(name, dtype=getattr(self.torch, self.config["dtype"]),
                                               attn_implementation=ATTN_IMPLEMENTATION, **kwargs).to(self.config["device"]).eval()
 
-    def encode(self, texts: list[str], *, query: bool = False, batch_size: int | None = None) -> np.ndarray:
+    def encode(self, texts: list[str], *, query: bool = False, batch_size: int | None = None,
+               instruction: str | None = None) -> np.ndarray:
         if query:
-            texts = [f"Instruct: {self.config['instruction']}\nQuery: {t}" for t in texts]
+            task = instruction or self.config.get("embedding_instruction") or self.config["instruction"]
+            texts = [f"Instruct: {task}\nQuery: {t}" for t in texts]
         outputs = []
         batch = batch_size or self.config["batch_size"]
         for offset in range(0, len(texts), batch):
@@ -128,24 +133,62 @@ def build_dense(corpus: Path) -> dict:
     return {"vectors": len(vectors), "dimension": vectors.shape[1], "sha256": metadata["vectors_sha256"]}
 
 
+def build_context_dense(corpus: Path, output_dir: Path) -> dict:
+    """Build an isolated dense index over structural search text, never corpus evidence.
+
+    The index is tied to the literal corpus hash and stable passage order. It lives
+    outside corpus/index and therefore cannot silently replace the frozen baseline.
+    """
+    cfg = configuration()
+    passages = [p for p in read_jsonl(corpus / "passages.jsonl") if indexable(p)]
+    texts = [embedding_representation(p) for p in passages]
+    encoder = QwenEncoder(cfg)
+    vectors = encode_length_sorted(encoder, texts)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    vector_path = output_dir / "dense.npy"
+    np.save(vector_path, vectors, allow_pickle=False)
+    metadata = {"representation_id": "context_metadata_v1",
+                "corpus_sha256": file_hash(corpus / "passages.jsonl"),
+                "passage_ids": [p["passage_id"] for p in passages],
+                "dimension": vectors.shape[1], "vectors_sha256": file_hash(vector_path),
+                "search_text_sha256": hashlib.sha256("\n".join(texts).encode("utf-8")).hexdigest(),
+                "config": cfg,
+                "model_lock": read_json(ROOT / "config/models.lock.json")[cfg["embedding_model"]]}
+    write_json(output_dir / "dense.meta.json", metadata)
+    return {"vectors": len(vectors), "dimension": vectors.shape[1],
+            "representation_id": metadata["representation_id"], "sha256": metadata["vectors_sha256"]}
+
+
 class DenseIndex:
-    def __init__(self, corpus: Path, passages: list[dict], corpus_sha256: str):
-        path = corpus / "index/dense.meta.json"
+    def __init__(self, corpus: Path, passages: list[dict], corpus_sha256: str, *,
+                 index_dir: str | Path | None = None, query_instruction: str | None = None,
+                 representation_id: str = "source_text_v1"):
+        index_dir = Path(index_dir) if index_dir else corpus / "index"
+        path = index_dir / "dense.meta.json"
         if not path.exists():
             raise RuntimeError("Dense index is missing; run tools/member_a.py dense")
         meta = read_json(path)
+        stored_representation = meta.get("representation_id", "source_text_v1")
+        if stored_representation != representation_id:
+            raise ValueError("Dense index representation does not match retrieval_text_mode")
         if meta["corpus_sha256"] != corpus_sha256 or meta["passage_ids"] != [p["passage_id"] for p in passages]:
             raise ValueError("Dense index is stale or reordered")
-        if meta["vectors_sha256"] != file_hash(corpus / "index/dense.npy"):
+        if meta["vectors_sha256"] != file_hash(index_dir / "dense.npy"):
             raise ValueError("Dense vector hash mismatch")
         if meta["config"] != configuration():
             raise ValueError("Dense configuration changed; rebuild to avoid mismatched embeddings")
+        if representation_id == "context_metadata_v1":
+            context_texts = [embedding_representation(p) for p in passages]
+            context_hash = hashlib.sha256("\n".join(context_texts).encode("utf-8")).hexdigest()
+            if meta.get("search_text_sha256") != context_hash:
+                raise ValueError("Context dense index was built from a different structural search view")
         if meta["model_lock"] != read_json(ROOT / "config/models.lock.json")[meta["config"]["embedding_model"]]:
             raise ValueError("Embedding revision changed; rebuild")
-        self.vectors = np.load(corpus / "index/dense.npy", mmap_mode="r", allow_pickle=False)
+        self.vectors = np.load(index_dir / "dense.npy", mmap_mode="r", allow_pickle=False)
         if self.vectors.shape != (len(passages), meta["dimension"]) or not np.isfinite(self.vectors).all():
             raise ValueError("Dense vectors invalid")
         self.encoder = QwenEncoder(meta["config"])
+        self.query_instruction = query_instruction
         self.passages = passages
         # A router-enabled pipeline may retrieve OFF and then ON for the same
         # query/views. Keep a small score cache so the second pass does not
@@ -157,7 +200,8 @@ class DenseIndex:
         if question in self._score_cache:
             self._score_cache.move_to_end(question)
             return self._score_cache[question]
-        scores = np.asarray(self.vectors @ self.encoder.encode([question], query=True)[0])
+        scores = np.asarray(self.vectors @ self.encoder.encode([question], query=True,
+                                                               instruction=self.query_instruction)[0])
         self._score_cache[question] = scores
         if len(self._score_cache) > QUERY_SCORE_CACHE_SIZE:
             self._score_cache.popitem(last=False)
@@ -181,7 +225,7 @@ class DenseIndex:
             "encode_batches": ((len(missing) + batch_size - 1) // batch_size if missing else 0),
         }
         if missing:
-            embeddings = self.encoder.encode(missing, query=True)
+            embeddings = self.encoder.encode(missing, query=True, instruction=self.query_instruction)
             for question, embedding in zip(missing, embeddings):
                 self._score_cache[question] = np.asarray(self.vectors @ embedding)
                 if len(self._score_cache) > QUERY_SCORE_CACHE_SIZE:
@@ -192,10 +236,35 @@ class DenseIndex:
         scores = self.all_scores(question)
         return {i: float(scores[i]) for i in indices}
 
+    def option_support(self, question: str, options: dict[str, str], passages: list[dict]) -> dict[str, dict[str, float]]:
+        """Auxiliary cosine scores for Q+option against final evidence (never a selector)."""
+        started = perf_counter()
+        if not isinstance(options, dict) or any(not isinstance(k, str) or not isinstance(v, str)
+                                                for k, v in options.items()):
+            raise ValueError("option support requires a plain option mapping")
+        positions = {p["passage_id"]: i for i, p in enumerate(self.passages)}
+        try:
+            indices = [positions[p["passage_id"]] for p in passages]
+        except KeyError as exc:
+            raise ValueError("Final evidence contains a passage absent from the dense index") from exc
+        views = [f"{question}\nCandidate option {letter}: {text}" for letter, text in sorted(options.items())]
+        query_vectors = self.encoder.encode(views, query=True, instruction=self.query_instruction)
+        doc_vectors = np.asarray(self.vectors[indices], dtype="float32")
+        scores = query_vectors @ doc_vectors.T
+        result = {letter: {p["passage_id"]: float(scores[option_index, passage_index])
+                           for passage_index, p in enumerate(passages)}
+                  for option_index, (letter, _) in enumerate(sorted(options.items()))}
+        self.last_option_support_ms = round((perf_counter() - started) * 1000, 3)
+        return result
+
 
 class QwenReranker:
-    def __init__(self, config=None, *, batch_size: int | None = None):
-        self.config = config or configuration()
+    def __init__(self, config=None, *, batch_size: int | None = None, instruction: str | None = None):
+        self.config = dict(config or configuration())
+        if instruction is not None:
+            if not isinstance(instruction, str) or not instruction.strip():
+                raise ValueError("reranker instruction must be nonempty plain text")
+            self.config["reranker_instruction"] = instruction.strip()
         self.batch_size = int(batch_size or self.config["batch_size"])
         if self.batch_size < 1:
             raise ValueError("reranker batch_size must be positive")
@@ -233,7 +302,8 @@ def _prepare_reranker_input_ids(tokenizer, question: str, documents: list[str], 
     reranker. Tokenization is also issued once per candidate set instead of once
     per GPU mini-batch; model forwards remain bounded by config.batch_size.
     """
-    texts = [f"<Instruct>: {config['instruction']}\n<Query>: {question}\n<Document>: {doc}" for doc in documents]
+    instruction = config.get("reranker_instruction") or config.get("instruction")
+    texts = [f"<Instruct>: {instruction}\n<Query>: {question}\n<Document>: {doc}" for doc in documents]
     rows = tokenizer(texts, add_special_tokens=False, truncation=False)["input_ids"]
     ids = [prefix + row + suffix for row in rows]
     if any(len(row) > config["max_length"] for row in ids):
