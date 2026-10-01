@@ -661,3 +661,10 @@ Se preserva corpus-v0.1 byte a byte; corpus-v0.2 será un árbol separado. Bench
 - **Modo sábado:** el mismo script acepta `-InputFile` (set ciego) y `-Resume`. Sin etiquetas no se evalúa; `BatchRunner` ya comprueba ids, duplicados y esquema, y el resultado se copia a `submissions.jsonl` en la raíz con su sha256. `-Resume` reutiliza los checkpoints de la misma identidad (probado: 48 reanudadas y 2 regeneradas).
 - **Sin cambio:** la prosa alrededor del JSON sigue rechazada (test explícito del 29-sep; 1/50 en la muestra).
 
+## 2026-10-01 — Índice denso ~1 h → minutos; script de variantes rápidas
+
+- **Causa de la lentitud del híbrido:** `build_dense` codificaba los ~26,7k pasajes en el orden del corpus, en lotes de 2 (`config/neural.json`), rellenando cada lote hasta el pasaje más largo: unos 13k lotes pequeños, casi todo relleno.
+- **Cambio (capa A, autorizado):** `encode_length_sorted` ordena por largo de tokens, arma lotes hasta 32.768 tokens con relleno incluido (máximo 64 textos), codifica y restaura el orden del corpus. Mismos vectores salvo redondeo y determinista para un corpus dado. Las consultas siguen codificándose de a una. `config/neural.json` no cambia, así que un índice existente sigue siendo válido para `DenseIndex`. Un pasaje sobre `max_length` sigue fallando de forma visible.
+- **`tools/kingscode_variantes.ps1`:** corre variantes de una sola variable sobre `sample_50` con `-SkipSmoke -SkipVerify` (ahorra ~2 min por variante), continúa si una falla e imprime y guarda (`comparacion.csv`) una tabla con delta contra la base 26,63 y la columna `apta` (≤ 20 s/pregunta). La configuración final se corre con `-Variantes final -Final "<flags>"`, con verificación en vivo.
+- **Bug corregido (PR #27):** `--fresh` se pasaba letra por letra: `$(if …)` desenvolvía el arreglo de un elemento en un string.
+
