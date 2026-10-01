@@ -119,6 +119,32 @@ def _read_items(path: Path) -> list[tuple]:
     return items
 
 
+class _RerankSafeRetriever:
+    """A's QwenReranker raises on any query+passage pair over max_length (no silent
+    truncation). Without this, that single question would fall back to abstention.
+    Here that query is answered with A's own pre-rerank order instead: deterministic
+    (same input -> same path) and marked in every passage's retrieval metadata.
+    Same retrieve() signature as A's, so the pipeline still detects query_views."""
+
+    def __init__(self, retriever):
+        self.inner, self.corpus_hash = retriever, retriever.corpus_hash
+
+    def retrieve(self, question, k=8, graph_mode="auto", query_views=None):
+        try:
+            return self.inner.retrieve(question, k, graph_mode, query_views=query_views)
+        except ValueError as exc:
+            if "exceeds max_length" not in str(exc):
+                raise
+            reranker, self.inner.reranker = self.inner.reranker, None
+            try:
+                passages = self.inner.retrieve(question, k, graph_mode, query_views=query_views)
+            finally:
+                self.inner.reranker = reranker
+            for p in passages:
+                p.setdefault("retrieval", {})["rerank_skipped"] = "input_over_max_length"
+            return passages
+
+
 def _pipeline(args):
     from kingscode.reasoning import DummyDecoder, Pipeline, RetrieverGraphRouter
     from kingscode.reasoning.plan_store import PlanStore
@@ -137,6 +163,8 @@ def _pipeline(args):
         from kingscode import Retriever
         retriever = Retriever(args.corpus, mode=args.retriever_mode, rerank=args.rerank, graph_router=adapter,
                               exact_locator=args.exact_locator)
+        if args.rerank:
+            retriever = _RerankSafeRetriever(retriever)
     decoder = DummyDecoder()
     if args.model:
         from kingscode.generation.hf_decoder import HFDecoder

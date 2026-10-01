@@ -45,6 +45,14 @@ def model_args(model_id: str, config: dict) -> dict:
             "local_files_only": config["local_files_only"], "trust_remote_code": False}
 
 
+# SDPA instead of eager (2026-10-01): eager materializes heads x seq x seq per layer; with
+# 4096-token reranker pairs next to the resident Qwen3-8B decoder (16.4 GB) on a 24 GB card that
+# pushes Windows into silent system-RAM fallback (the decoder showed 46 GB reserved and 93 s/question
+# with eager). Same math; differences are float rounding only. A dense index is still validated
+# by config/model lock; rebuild it with this code before a freeze so documents and queries share kernels.
+ATTN_IMPLEMENTATION = "sdpa"
+
+
 class QwenEncoder:
     def __init__(self, config: dict | None = None):
         self.config = config or configuration()
@@ -54,7 +62,7 @@ class QwenEncoder:
         kwargs = model_args(name, self.config)
         self.tokenizer = AutoTokenizer.from_pretrained(name, padding_side="left", **kwargs)
         self.model = AutoModel.from_pretrained(name, dtype=getattr(self.torch, self.config["dtype"]),
-                                              attn_implementation="eager", **kwargs).to(self.config["device"]).eval()
+                                              attn_implementation=ATTN_IMPLEMENTATION, **kwargs).to(self.config["device"]).eval()
 
     def encode(self, texts: list[str], *, query: bool = False) -> np.ndarray:
         if query:
@@ -135,7 +143,7 @@ class QwenReranker:
         kwargs = model_args(name, self.config)
         self.tokenizer = AutoTokenizer.from_pretrained(name, padding_side="left", **kwargs)
         self.model = AutoModelForCausalLM.from_pretrained(name, dtype=getattr(self.torch, self.config["dtype"]),
-                                                         attn_implementation="eager", **kwargs).to(self.config["device"]).eval()
+                                                         attn_implementation=ATTN_IMPLEMENTATION, **kwargs).to(self.config["device"]).eval()
         self.yes = self.tokenizer.convert_tokens_to_ids("yes")
         self.no = self.tokenizer.convert_tokens_to_ids("no")
         self.prefix = self.tokenizer.encode('<|im_start|>system\nJudge whether the Document meets the requirements based on the Query and the Instruct provided. Note that the answer can only be "yes" or "no".<|im_end|>\n<|im_start|>user\n', add_special_tokens=False)
