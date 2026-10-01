@@ -174,6 +174,35 @@ class QwenSmokeRegressionTests(unittest.TestCase):
         self.assertIn("--prompt-version", out)
         self.assertIn("--citation-fill", out)
 
+    def test_rerank_overflow_falls_back_to_pre_rerank_order_deterministically(self):
+        import importlib.util, inspect
+        from kingscode.common import ROOT
+        from kingscode.reasoning.pipeline import supports_query_views
+        spec = importlib.util.spec_from_file_location("member_b_cli", ROOT / "tools/member_b.py")
+        cli = importlib.util.module_from_spec(spec); spec.loader.exec_module(cli)
+
+        class Inner:
+            corpus_hash, reranker, calls = "x", "reranker", []
+            def retrieve(self, question, k=8, graph_mode="auto", query_views=None):
+                self.calls.append(self.reranker)
+                if self.reranker:
+                    raise ValueError("Reranker input exceeds max_length; no silent truncation")
+                return [{"passage_id": "p1", "retrieval": {}}]
+
+        inner = Inner()
+        safe = cli._RerankSafeRetriever(inner)
+        out = safe.retrieve("pregunta", 8, "off", query_views=["opcion"])
+        self.assertEqual(out[0]["retrieval"]["rerank_skipped"], "input_over_max_length")
+        self.assertEqual(inner.calls, ["reranker", None])
+        self.assertEqual(inner.reranker, "reranker")                     # restored for the next question
+        self.assertTrue(supports_query_views(safe.retrieve))             # pipeline still uses native views
+
+        class Broken(Inner):
+            def retrieve(self, *a, **k):
+                raise ValueError("other failure")
+        with self.assertRaises(ValueError):
+            cli._RerankSafeRetriever(Broken()).retrieve("q")             # unrelated errors are not hidden
+
     def test_length_warnings_cover_words_and_open_ended(self):
         self.assertEqual(length_warnings({"formato": "semi_open", "respuesta": "Uno. Dos. " + "x " * 160 + "."}),
                          ["semi_open_words_163_over_150"])

@@ -247,5 +247,6 @@ class Pipeline:
                                                      "generated_references": [list(map(str, r)) for r in plan.generated_references]})
         trace.update(id=question.id, query=query.record(), graph_decision=decision, graph_execution=executed,
                      flat_passage_ids=[p["passage_id"] for p in flat], final_passage_ids=[p["passage_id"] for p in passages],
-                     latency_ms=(perf_counter() - start) * 1000, retrieval_ms=retrieved_ms)
+                     latency_ms=(perf_counter() - start) * 1000, retrieval_ms=retrieved_ms,
+                     rerank_skipped=any((p.get("retrieval") or {}).get("rerank_skipped") for p in passages))
         return row, trace

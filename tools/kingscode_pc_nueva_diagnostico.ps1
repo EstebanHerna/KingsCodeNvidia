@@ -31,6 +31,9 @@
 #   ... -PromptVersion v4                                  (prompt v4: abstencion listada, minimos de extension, justificacion primero)
 #   ... -CitationFill                                      (hasta 5 citas verificadas en referencia_legal/justificacion)
 #   ... -SkipVerify                                        (omite regenerar 3 preguntas para comprobar reproducibilidad)
+#   SABADO (set ciego, misma configuracion elegida):
+#   ... -InputFile data\test_992.jsonl -RunName final_992 <flags elegidos>      -> copia submissions.jsonl a la raiz
+#   ... -InputFile data\test_992.jsonl -RunName final_992 -Resume <mismos flags> (si se corta: reanuda sin repetir)
 #   ... -Work "D:\KingsCode"  -RunName "qwen3_8b_bm25_prueba2"
 # =====================================================================
 param(
@@ -46,6 +49,8 @@ param(
     [switch]$Rerank,
     [switch]$ExactLocator,
     [ValidateSet("v3", "v4")] [string]$PromptVersion = "v3",
+    [string]$InputFile = "data\sample_50.jsonl",
+    [switch]$Resume,
     [switch]$CitationFill,
     [switch]$SkipVerify,
     [switch]$Ragas,
@@ -249,7 +254,9 @@ $env:HF_HUB_OFFLINE = "1"   # desde aqui todo es local: ninguna llamada a la red
 
 # ---------------------------------------------------------------------
 $Out = "reports\decoder_diagnostic\$RunName"
-if (Test-Path $Out) { throw "STOP: ya existe $Out; usa otro -RunName para conservar la corrida anterior." }
+$IsSample = ((Split-Path $InputFile -Leaf) -eq "sample_50.jsonl")
+if (-not (Test-Path $InputFile)) { throw "STOP: no existe el archivo de preguntas $InputFile" }
+if ((Test-Path $Out) -and -not $Resume) { throw "STOP: ya existe $Out; usa otro -RunName, o -Resume -RunName $RunName para continuar esa corrida." }
 New-Item -ItemType Directory -Force $Out | Out-Null
 if (-not $SkipSmoke) {
     Step "[5] Smoke real en GPU ($Model, BF16, temperatura 0)"
@@ -268,7 +275,7 @@ if ($ExactLocator -and -not $Rerank) {
 }
 # Same configuration for the batch and for the live-verification replay below.
 $CommonArgs = @(
-    "--input", "data\sample_50.jsonl", "--retrieval-mode", "option",
+    "--input", $InputFile, "--retrieval-mode", "option",
     "--retriever-mode", $RetrieverMode, "--graph-policy", "router",
     "--k", "8", "--corpus", $CorpusDir, "--model", $Model,
     "--precision", "bf16", "--prompt-version", $PromptVersion
@@ -276,10 +283,18 @@ $CommonArgs = @(
 if ($Rerank) { $CommonArgs += "--rerank" }
 if ($ExactLocator) { $CommonArgs += "--exact-locator" }
 if ($CitationFill) { $CommonArgs += "--citation-fill" }
-& $Py tools\member_b.py batch --run-dir $Run --fresh --retries 0 @CommonArgs
-Check "corrida integrada (conserva $Run)"
-& $Py scripts\evaluate.py --submission "$Run\submissions.jsonl" --split sample --out "$Out\evaluation_official.json"
-Check "evaluador oficial"
+# -Resume: reuse validated checkpoints (same identity enforced by BatchRunner); never --fresh.
+$FreshArg = $(if ($Resume) { @() } else { @("--fresh") })
+& $Py tools\member_b.py batch --run-dir $Run @FreshArg --retries 0 @CommonArgs
+Check "corrida integrada (conserva $Run; reanudar con -Resume -RunName $RunName)"
+if ($IsSample) {
+    & $Py scripts\evaluate.py --submission "$Run\submissions.jsonl" --split sample --out "$Out\evaluation_official.json"
+    Check "evaluador oficial"
+} else {
+    # Blind set: no labels. BatchRunner already checked every id, no duplicates and the schema.
+    Copy-Item "$Run\submissions.jsonl" "$Work\submissions.jsonl" -Force
+    Write-Host ("Entrega: $Work\submissions.jsonl  sha256 {0}" -f (Get-FileHash "$Work\submissions.jsonl" -Algorithm SHA256).Hash.ToLower()) -ForegroundColor Green
+}
 
 # ---------------------------------------------------------------------
 $Verify = "omitida (-SkipVerify)"
@@ -296,7 +311,8 @@ if (-not $SkipVerify) {
 }
 
 # ---------------------------------------------------------------------
-if ($Ragas) {
+if ($Ragas -and -not $IsSample) { Warn "RAGAS solo aplica a sample_50 (el set ciego no tiene respuestas esperadas); se omite." }
+if ($Ragas -and $IsSample) {
     Step "[7] RAGAS (gasta creditos de OpenRouter)"
     & $Py -m pip install -r scripts\requirements-evaluador.txt --quiet; Check "dependencias del juez RAGAS"
     $JudgeKey = Read-Host "Pega la llave autorizada de OpenRouter" -AsSecureString
@@ -317,8 +333,10 @@ if ($Ragas) {
 # ---------------------------------------------------------------------
 Step "Resumen"
 $Br = Get-Content "$Run\batch_report.json" -Raw | ConvertFrom-Json
-$Ev = Get-Content "$Out\evaluation_official.json" -Raw | ConvertFrom-Json
-$Spq = [math]::Round($Br.seconds / 50, 1)
+$Ev = $(if ($IsSample) { Get-Content "$Out\evaluation_official.json" -Raw | ConvertFrom-Json } else { $null })
+# Seconds of this session over the items generated in it (resumed items are not re-timed).
+$Processed = [math]::Max(1, [int]$Br.rows - [int]$Br.counts.resumed)
+$Spq = [math]::Round($Br.seconds / $Processed, 1)
 $Summary = [ordered]@{
     main_sha = $Sha; model = $Model; gpu = $Rt.gpu; vram_gb = $Rt.vram_gb; torch = $Rt.torch
     retrieval = "$RetrieverMode$(if ($ExactLocator) { ' + locator exacto' })$(if ($Rerank) { ' + Qwen reranker' }) k=8 graph router (diagnostico, no freeze)"
@@ -326,7 +344,8 @@ $Summary = [ordered]@{
     corpus = $CorpusDir; corpus_origin = $CorpusOrigin; corpus_v01_raw_identical_and_verified = $CorpusExact; corpus_v01_comparison = $Cmp
     corpus_diagnostic_override = ($AllowKnownLocalCorpusDrift -and -not $CorpusExact)
     passages_sha256 = $PassagesSha; passages_reference = $PassagesRef
-    automatico_sin_ragas = "$($Ev.total_automatico.obtenidos) / $($Ev.total_automatico.posibles)"
+    input = $InputFile; filas = $Br.rows; completo = $Br.complete; reanudadas = $Br.counts.resumed
+    automatico_sin_ragas = $(if ($Ev) { "$($Ev.total_automatico.obtenidos) / $($Ev.total_automatico.posibles)" } else { "n/a (set ciego)" })
     cerradas = $Ev.cerradas.puntos; citas = $Ev.citas.puntos; abstencion = $Ev.abstencion.puntos
     errores_validacion = $Ev.validacion.errores
     fallbacks_pipeline_error = @($Br.fallback_ids).Count
@@ -338,4 +357,12 @@ $Summary | ConvertTo-Json -Depth 8 | Out-File -Encoding utf8 "$Out\RESUMEN.json"
 Write-Host ("{0}: {1} automatico sin RAGAS | cerradas {2}, citas {3}, abstencion {4} | {5} s/pregunta -> 992 en {6} h | fallbacks {7}" -f `
     $Model, $Summary.automatico_sin_ragas, $Summary.cerradas, $Summary.citas, $Summary.abstencion, $Spq, $Summary.proyeccion_992_horas, $Summary.fallbacks_pipeline_error) -ForegroundColor Green
 if ($Summary.proyeccion_992_horas -gt 5) { Warn "la proyeccion para 992 supera 5 h: la ventana del sabado es de 6 h." }
+# Presupuesto del enunciado (B.5): ~22 s/pregunta para 992 en 6 h. Margen de seguridad: 20 s.
+if ($Spq -gt 20) { Warn "$Spq s/pregunta supera el margen de 20 s (presupuesto 22 s): esta configuracion NO es apta para el sabado." }
+$D = $Br.diagnostics
+Write-Host ("Tiempos: generacion p50 {0} ms / p95 {1} ms | retrieval p50 {2} ms / p95 {3} ms | VRAM pico reservado {4} GB | reranker omitido {5}" -f `
+    [math]::Round([double]$D.generation_ms_p50), [math]::Round([double]$D.generation_ms_p95), [math]::Round([double]$D.retrieval_ms_p50),
+    [math]::Round([double]$D.retrieval_ms_p95), $D.peak_reserved_vram_gb, $D.rerank_skipped)
+if ($D.peak_reserved_vram_gb -gt 22) { Warn "VRAM pico $($D.peak_reserved_vram_gb) GB (tarjeta 24 GB): riesgo de desborde a RAM del sistema y caida de velocidad." }
+if ($D.rerank_skipped -gt 0) { Warn "$($D.rerank_skipped) preguntas usaron el orden previo al reranker (pasaje mas largo que max_length del reranker)." }
 Write-Host "Envia a Esteban: $Work\$Out\RESUMEN.json, $Out\evaluation_official.json y $Run\batch_report.json"

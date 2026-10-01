@@ -141,12 +141,14 @@ class BatchRunner:
             validate_submission(row)
             atomic_write_text(item_path, _dumps({"row": row, "status": status, "attempts": len(errors) + (status == "ok"),
                                                   "trace": trace}) + "\n")
-            done = sum(counts.values())
+            done = sum(counts.values())                      # includes items resumed from checkpoints
+            processed = done - counts["resumed"]             # generated in this session (>= 1 here)
             elapsed = perf_counter() - started
+            per_item = elapsed / processed
             # Progress goes to stderr so stdout stays a single JSON report.
             print(f"[batch] {done}/{len(questions)} id={question.id} {question.format} {status}"
-                  f"{' abstencion' if row.get('abstencion') else ''} | {elapsed:.0f} s, {elapsed / done:.1f} s/pregunta",
-                  file=sys.stderr, flush=True)
+                  f"{' abstencion' if row.get('abstencion') else ''} | {elapsed:.0f} s, {per_item:.1f} s/pregunta"
+                  f" | faltan ~{(len(questions) - done) * per_item / 60:.0f} min", file=sys.stderr, flush=True)
         report = self.assemble(questions)
         report.update(counts=counts, identity=identity, diagnostics=self.diagnostics(questions),
                       seconds=perf_counter() - started,
@@ -159,8 +161,8 @@ class BatchRunner:
         from collections import Counter
         n = len(questions)
         sources, attribution, normalization, actions, codes, warnings, coercions = (Counter() for _ in range(7))
-        before = after = fallbacks = tokens_in = tokens_out = 0
-        gen_ms = []
+        before = after = fallbacks = tokens_in = tokens_out = peak = rerank_skipped = 0
+        gen_ms, ret_ms = [], []
         for q in questions:
             item = json.loads((self.run_dir / "items" / f"{q.id}.json").read_text(encoding="utf-8"))
             trace = item.get("trace") or {}
@@ -181,7 +183,12 @@ class BatchRunner:
             tokens_out += d.get("output_tokens") or 0
             if d.get("generation_ms") is not None:
                 gen_ms.append(d["generation_ms"])
+            if trace.get("retrieval_ms") is not None:
+                ret_ms.append(trace["retrieval_ms"])
+            peak = max(peak, d.get("peak_reserved_vram_bytes") or 0)
+            rerank_skipped += bool(trace.get("rerank_skipped"))
         rate = lambda c: {k: {"n": v, "rate": v / n} for k, v in sorted(c.items())}
+        pct = lambda xs, q: sorted(xs)[min(len(xs) - 1, int(q * len(xs)))] if xs else None
         return {"questions": n, "abstention_source": rate(sources), "attribution_status": rate(attribution),
                 "normalization_action": rate(normalization), "repair_actions": dict(sorted(actions.items())),
                 "pipeline_error_codes": dict(sorted(codes.items())), "format_warnings": rate(warnings), "field_coercions": rate(coercions),
@@ -189,6 +196,8 @@ class BatchRunner:
                 "citation_guard_fallback_rate": fallbacks / n if n else 0.0,
                 "input_tokens": tokens_in, "output_tokens": tokens_out,
                 "generation_ms_p50": sorted(gen_ms)[len(gen_ms) // 2] if gen_ms else None,
+                "generation_ms_p95": pct(gen_ms, 0.95), "retrieval_ms_p50": pct(ret_ms, 0.5), "retrieval_ms_p95": pct(ret_ms, 0.95),
+                "peak_reserved_vram_gb": round(peak / 2**30, 1) if peak else None, "rerank_skipped": rerank_skipped,
                 "note": "Label-free diagnostics; no thresholds derived from the official 50."}
 
     def assemble(self, questions: list[Question]) -> dict:
