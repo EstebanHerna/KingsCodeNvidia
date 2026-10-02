@@ -36,7 +36,7 @@
    Cambiar retrieval o prompt mueve pocas preguntas; el límite está en la evidencia y en el razonamiento de 8B.
 3. **Normas de referencia que ninguna configuración recupera** (51, 247, 563, 679, 748): falta en el corpus o falla de recuperación. Es trabajo de A y del corpus, no del decoder.
 4. **Normas "en la evidencia pero no citadas"** (661, 1073, 647, 358 y, según la corrida, 58, 60, 218, 490, 865): en todos los casos revisados, la norma de referencia **no es el documento del pasaje**. Está **mencionada dentro** del texto de otro (p. ej. la Constitución dentro de la Sentencia C-891 de 2012; el Código Civil dentro de la C-985 de 2010). El constructor de citas solo cita el cuerpo propio de cada pasaje, y la guarda (`reference_support`) rechaza las normas solo mencionadas, por diseño: "una mención no prueba el contenido". El evaluador oficial sí cuenta como respaldada cualquier norma que aparezca en el texto de los 10 primeros pasajes.
-   - **Propuesta para revisión de Luis, no implementada:** con `--citation-fill`, agregar a nivel de cuerpo (sin artículo) las normas mencionadas en los pasajes que el modelo declaró usar, solo en `referencia_legal`/`justificacion` (RAGAS no los lee). Implica relajar la guarda para menciones a nivel de cuerpo.
+   - **Implementado como opción (`--cite-mentions`), pendiente de revisión de Luis:** con `--citation-fill`, agregar a nivel de cuerpo (sin artículo) las normas mencionadas en los pasajes que el modelo declaró usar, solo en `referencia_legal`/`justificacion` (RAGAS no los lee). Implica relajar la guarda para menciones a nivel de cuerpo.
    - **Impacto estimado:** unos 4–6 ítems más con cita correcta sobre 41, es decir +1,5 a +2,5 puntos de citas.
    - **Riesgo:** citar cuerpos que el pasaje solo nombra. Según el enunciado §6.1, una cita "incorrecta pero respaldada" vale 0, sin penalización.
 5. **Reranker y locator** suben las citas (+1 o 2 ítems), pero bajan las cerradas y agregan 3 s por pregunta. El retrieval p95 de c2/c4 es de unos 11 s, y en esas corridas aparecen más truncamientos.
@@ -66,3 +66,8 @@ python tools/analyze_run.py C:\tmp\runs\reports\decoder_diagnostic\<corrida>\bat
 ```
 
 `revision.md` muestra cada pregunta: respuesta final, error y salida cruda si hubo, correcciones del parser, reparación de citas, pasajes declarados por el modelo, evidencia con norma y artículo, tokens y tiempos.
+
+## 5. Re-puntuación offline (sin GPU)
+
+`python tools/rescore_run.py <run>/batch --cite-mentions 3` vuelve a construir las citas sobre las mismas respuestas y evidencia y corre el evaluador oficial. Sobre c1: **30,41 → 32,92/50 sin RAGAS**, con 0 citas sin respaldo. Detalle en DECISION_LOG.
+

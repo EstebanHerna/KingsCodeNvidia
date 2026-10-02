@@ -107,7 +107,17 @@ def reference_support(ref, emitted: list[dict]) -> list[dict]:
         and any(r.article == ref.article for r in references(p["text"])))]
 
 
-def citation_guard(row: dict, passages: list[dict]) -> dict:
+def mention_support(ref, emitted: list[dict]) -> list[dict]:
+    """Opt-in (--cite-mentions): a BODY-LEVEL reference (no article) is backed by a delivered
+    passage whose literal text names that same body. Mirrors the official support rule
+    (scripts/citations.py: cited body present in the text of the first 10 passages).
+    Article-level references keep the strict rule above."""
+    if ref.article is not None or ref.body is None or not ref.complete or ref.kind == "unresolved":
+        return []
+    return [p for p in emitted[:10] if any(r.body == ref.body for r in references(p["text"]))]
+
+
+def citation_guard(row: dict, passages: list[dict], *, allow_body_mentions: bool = False) -> dict:
     """Never repair/mutate row; reject any unsupported reference/evidence record."""
     validate_submission(row)
     check_passages(passages)
@@ -130,6 +140,8 @@ def citation_guard(row: dict, passages: list[dict]) -> dict:
     for field, text in _strings({k: v for k, v in row.items() if k not in {"pasajes_recuperados", "id", "formato", "abstencion", "latencia_ms"}}):
         for ref in references(text):
             support = reference_support(ref, emitted)
+            if not support and allow_body_mentions:
+                support = mention_support(ref, emitted)
             if not support:
                 unsupported += 1
             claims.append({"field": field, "reference": ref.record(), "supported": bool(support),
