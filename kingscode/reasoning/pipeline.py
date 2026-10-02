@@ -116,7 +116,7 @@ def _answer(question: Question, passages: list[dict], decoder: Decoder, *, max_r
             # Decoder reasons; citations are repaired against the evidence, then
             # final citation strings come from the deterministic builder (B2/B3).
             source, before = "none", count_citations(row)
-            row, repair = repair_citations(row, evidence)
+            row, repair = repair_citations(row, evidence, allow_body_mentions=bool(cite_mentions))
             row, refs = attach_references(row, evidence, usage.get("attribution"), max_refs, fill_ranked=citation_fill,
                                           mentions=cite_mentions)
             if question.format != "multiple_choice" and any(
