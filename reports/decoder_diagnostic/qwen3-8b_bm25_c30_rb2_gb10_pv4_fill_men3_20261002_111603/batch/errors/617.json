@@ -1,0 +1,50 @@
+{
+  "id": 617,
+  "attempts": [
+    {
+      "attempt": 1,
+      "type": "DecoderFailure",
+      "code": "INVALID_MODEL_OUTPUT",
+      "message": "INVALID_MODEL_OUTPUT",
+      "detail": {
+        "error_type": "ValueError",
+        "reason": "Output must be exactly one JSON object, without prose around it",
+        "usage": {
+          "input_tokens": 7253,
+          "output_tokens": 768,
+          "json_valid": false,
+          "model": "qwen3-8b",
+          "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+          "prompt_version": "grounded-formats-v4",
+          "prompt_sha256": "6f5f9424e32e72deb73abc934ed1ad5a84168f5e19847f8e7f578ddfeddfe628",
+          "max_new_tokens": 768,
+          "constrained_json": false,
+          "attn_implementation": "sdpa",
+          "evidence_in_prompt": 8,
+          "evidence_dropped_for_context": [],
+          "effective_generation_config": {
+            "do_sample": false,
+            "temperature": 0.0,
+            "num_beams": 1,
+            "top_p": 1.0,
+            "top_k": 0,
+            "max_new_tokens": 768,
+            "repetition_penalty": 1.0,
+            "no_repeat_ngram_size": 0,
+            "bos_token_id": 151643,
+            "eos_token_id": [
+              151645,
+              151643
+            ],
+            "pad_token_id": 151643
+          },
+          "raw_response": "{\"abstencion\":false,\"justificacion\":\"La norma que establece las clases de fueros sindicales es el artículo 406 del Código Sustantivo del Trabajo, modificado por el artículo 57 de la Ley 50 de 1990. Según este artículo, los trabajadores amparados por el fuero sindical incluyen: los fundadores de un sindicato, los trabajadores que ingresen al sindicato antes de su inscripción, los miembros de la junta directiva y subdirectivas, los miembros de los comités seccionales, y dos de los miembros de la comisión estatutaria de reclamos. Estos son los tipos de fueros mencionados en la norma. La opción B menciona los mismos elementos: fuero de fundadores, adherentes, directivos, comisión de reclamos, circunstancial y convencional. Sin embargo, el término 'circunstancial' y 'convencional' no están explícitamente mencionados en el artículo 406. Por lo tanto, la opción B no es correcta. La opción A menciona 'fuero convencional, circunstanciales, comisión de reclamos, directivos, fundadores y adherentes', lo cual incluye términos que no están explícitamente mencionados en el artículo 406. La opción C menciona 'fuero de Comisión de Reclamos, adherentes, fundadores y asalariados', lo cual tampoco está explícitamente mencionado en el artículo 406. La opción D menciona 'fuero de fundadores, cooperativos, convencional, comisión de juntas, directivos y adherentes', lo cual tampoco está explícitamente mencionado en el artículo 406. Por lo tanto, la opción correcta es la que menciona los tipos de fueros que están explícitamente mencionados en el artículo 406, que son: fundadores, adherentes, directivos, comisión de reclamos, y los términos 'circunstancial' y 'convencional' no están explícitamente mencionados en el artículo 406. Por lo tanto, la opción correcta es la que menciona los tipos de fueros que están explícitamente mencionados en el artículo 406, que son: fundadores, adherentes, directivos, comisión de reclamos, y los términos 'circunstancial' y 'convencional' no están explícitamente mencionados en el artículo 406. Por lo tanto, la opción correcta es la que menciona los tipos de fueros que están explícitamente mencionados en el artículo 406, que son: fundadores, adherentes, directivos, comisión de reclamos, y los términos 'circunstancial' y 'convencional' no están explícitamente mencionados en el artículo 406. Por lo tanto, la opción correcta es la que menciona los tipos de fueros que están explícitamente mencionados en el artículo 406, que son: fundadores, adherentes, directivos, comisión de reclamos, y los términos 'circunstancial' y 'convencional' no están explícitamente mencionados en el artículo 406. Por lo tanto, la opción correcta es la que menciona los tipos",
+          "generation_ms": 32952.96350000717,
+          "peak_vram_bytes": 18870809600,
+          "peak_reserved_vram_bytes": 19144900608
+        }
+      },
+      "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\ea.hernandezs1\\KingsCodeGPU\\KingsCodeNvidia\\kingscode\\generation\\prompts.py\", line 220, in parse_response_v3\n    normalized, action = normalize_envelope(raw)\n                         ~~~~~~~~~~~~~~~~~~^^^^^\n  File \"C:\\Users\\ea.hernandezs1\\KingsCodeGPU\\KingsCodeNvidia\\kingscode\\generation\\prompts.py\", line 167, in normalize_envelope\n    raise ValueError(\"Output must be exactly one JSON object, without prose around it\")\nValueError: Output must be exactly one JSON object, without prose around it\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\ea.hernandezs1\\KingsCodeGPU\\KingsCodeNvidia\\kingscode\\generation\\hf_decoder.py\", line 192, in generate\n    row, meta = parse_response_v3(raw, question, passages, max_used=max_used,\n                ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n                                  extract_embedded=self.prompt_version not in {PROMPT_VERSION})\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\ea.hernandezs1\\KingsCodeGPU\\KingsCodeNvidia\\kingscode\\generation\\prompts.py\", line 224, in parse_response_v3\n    normalized, action = extract_single_object(raw), \"extracted_single_object_from_prose\"\n                         ~~~~~~~~~~~~~~~~~~~~~^^^^^\n  File \"C:\\Users\\ea.hernandezs1\\KingsCodeGPU\\KingsCodeNvidia\\kingscode\\generation\\prompts.py\", line 208, in extract_single_object\n    raise ValueError(\"Output must be exactly one JSON object, without prose around it\")\nValueError: Output must be exactly one JSON object, without prose around it\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\ea.hernandezs1\\KingsCodeGPU\\KingsCodeNvidia\\kingscode\\reasoning\\batch.py\", line 102, in _attempt\n    row, trace = self.pipeline.run(question)\n                 ~~~~~~~~~~~~~~~~~^^^^^^^^^^\n  File \"C:\\Users\\ea.hernandezs1\\KingsCodeGPU\\KingsCodeNvidia\\kingscode\\reasoning\\pipeline.py\", line 316, in run\n    row, trace = _answer(question, passages, self.decoder, max_refs=self.max_refs, citation_fill=self.citation_fill,\n                 ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n                         cite_mentions=getattr(self, \"cite_mentions\", 0))\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\ea.hernandezs1\\KingsCodeGPU\\KingsCodeNvidia\\kingscode\\reasoning\\pipeline.py\", line 109, in _answer\n    row = decoder.generate(question, deepcopy(evidence), PromptSpec(question.format), dict(GENERATION_CONFIG))\n  File \"C:\\Users\\ea.hernandezs1\\KingsCodeGPU\\KingsCodeNvidia\\kingscode\\generation\\hf_decoder.py\", line 196, in generate\n    raise DecoderFailure(\"INVALID_MODEL_OUTPUT\", {\"error_type\": type(exc).__name__, \"reason\": str(exc)[:200],\n                                                  \"usage\": dict(self.last_usage)}) from exc\nkingscode.generation.hf_decoder.DecoderFailure: INVALID_MODEL_OUTPUT\n"
+    }
+  ]
+}
