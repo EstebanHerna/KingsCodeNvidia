@@ -1,0 +1,27 @@
+{
+  "doc_id": "sentencia_su_16_de_2020",
+  "norm_name": "Sentencia SU-16 de 2020",
+  "canonical_body": [
+    "jurisprudencia",
+    "SU-16",
+    "2020"
+  ],
+  "areas": [
+    "Derecho constitucional"
+  ],
+  "priority": 1,
+  "source_type": "decision",
+  "norm_number": "SU-16",
+  "year": 2020,
+  "requested_url": "https://www.corteconstitucional.gov.co/relatoria/2020/SU016-20.htm",
+  "source_url": "https://www.corteconstitucional.gov.co/relatoria/2020/SU016-20.htm",
+  "http_status": 200,
+  "content_type": "text/html",
+  "bytes": 1076220,
+  "source_sha256": "63e7fa1ec3027ae062d50b93c4059d5a8435ff1ebc026b4711435c9693d0a98a",
+  "retrieved_at": "2026-10-02T16:48:24.883367+00:00",
+  "tls_verified": true,
+  "status": "downloaded",
+  "raw_path": "corpora/corpus-additions-v1/raw/sentencia_su_16_de_2020.html",
+  "source_title": ""
+}

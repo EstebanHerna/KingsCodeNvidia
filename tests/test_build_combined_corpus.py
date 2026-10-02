@@ -58,5 +58,16 @@ class CombinedCorpusTests(unittest.TestCase):
             shutil.rmtree(workspace, ignore_errors=True)
 
 
+    def test_multiple_additions_include_ley_472(self):
+        additions = ROOT / "corpora/corpus-additions-v1"
+        if not (additions / "manifest.json").exists():
+            self.skipTest("corpus-additions-v1 not present")
+        manifest = combine(self.tmp / "base", [V02, additions], self.tmp / "out3")
+        self.assertIn("additions", manifest["version"])
+        from kingscode.retrieval import Retriever
+        rows = Retriever(self.tmp / "out3").retrieve("acciones populares y de grupo Ley 472 de 1998", 8, "off")
+        self.assertTrue(any(r["doc_id"] == "ley_472_de_1998" for r in rows))
+
+
 if __name__ == "__main__":
     unittest.main()

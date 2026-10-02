@@ -240,8 +240,9 @@ else { throw "STOP: el corpus no coincide con los hashes de A (verify_member_a_v
 
 Step "[3b] Corpus combinado v0.1 + v0.2 (corpora\corpus-v0.2, provisional)"
 if ($CorpusSet -eq "v01+v02") {
-    if (-not (Test-Path "corpus_v01_v02\manifest.json")) { & $Py tools\build_combined_corpus.py | Out-Null; Check "build_combined_corpus" }
-    $CorpusDir = "corpus_v01_v02"
+    # Con corpora\corpus-additions-v1 (normas faltantes en v0.1, 2026-10-02) se usa un directorio propio.
+    $CorpusDir = $(if (Test-Path "corpora\corpus-additions-v1\manifest.json") { "corpus_v01_v02_a1" } else { "corpus_v01_v02" })
+    if (-not (Test-Path "$CorpusDir\manifest.json")) { & $Py tools\build_combined_corpus.py --out $CorpusDir | Out-Null; Check "build_combined_corpus" }
 } else { $CorpusDir = "corpus" }
 Write-Host "Corpus para el diagnostico: $CorpusDir"
 if ($RetrieverMode -in @("dense", "hybrid")) {

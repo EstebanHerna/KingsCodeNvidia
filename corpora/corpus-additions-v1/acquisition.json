@@ -1,0 +1,115 @@
+{
+  "targets": 4,
+  "downloaded": 4,
+  "documents": [
+    {
+      "doc_id": "ley_472_de_1998",
+      "norm_name": "Ley 472 de 1998",
+      "canonical_body": [
+        "ley",
+        "472",
+        "1998"
+      ],
+      "areas": [
+        "Derecho constitucional",
+        "Derecho administrativo"
+      ],
+      "priority": 2,
+      "source_type": "law",
+      "norm_number": "472",
+      "year": 1998,
+      "requested_url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=188",
+      "source_url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=188",
+      "http_status": 200,
+      "content_type": "text/html; charset=UTF-8",
+      "bytes": 130792,
+      "source_sha256": "e4e74cb43e1b1aa94ddbc604052cd4137471f9bbf3cf85331af4c39d04f6730d",
+      "retrieved_at": "2026-10-02T16:48:19.959277+00:00",
+      "tls_verified": true,
+      "status": "downloaded",
+      "raw_path": "corpora/corpus-additions-v1/raw/ley_472_de_1998.html",
+      "source_title": "Ley 472 de 1998 - Gestor Normativo - Función Pública"
+    },
+    {
+      "doc_id": "sentencia_c_468_de_2024",
+      "norm_name": "Sentencia C-468 de 2024",
+      "canonical_body": [
+        "jurisprudencia",
+        "C-468",
+        "2024"
+      ],
+      "areas": [
+        "Derecho constitucional"
+      ],
+      "priority": 1,
+      "source_type": "decision",
+      "norm_number": "C-468",
+      "year": 2024,
+      "requested_url": "https://www.corteconstitucional.gov.co/relatoria/2024/C-468-24.htm",
+      "source_url": "https://www.corteconstitucional.gov.co/relatoria/2024/C-468-24.htm",
+      "http_status": 200,
+      "content_type": "text/html",
+      "bytes": 404345,
+      "source_sha256": "64f26cd9139e227a2d20dd2de61c7aca5eac5b7af84a84f7b5df0030acbd0862",
+      "retrieved_at": "2026-10-02T16:48:26.761346+00:00",
+      "tls_verified": true,
+      "status": "downloaded",
+      "raw_path": "corpora/corpus-additions-v1/raw/sentencia_c_468_de_2024.html",
+      "source_title": ""
+    },
+    {
+      "doc_id": "sentencia_su_16_de_2020",
+      "norm_name": "Sentencia SU-16 de 2020",
+      "canonical_body": [
+        "jurisprudencia",
+        "SU-16",
+        "2020"
+      ],
+      "areas": [
+        "Derecho constitucional"
+      ],
+      "priority": 1,
+      "source_type": "decision",
+      "norm_number": "SU-16",
+      "year": 2020,
+      "requested_url": "https://www.corteconstitucional.gov.co/relatoria/2020/SU016-20.htm",
+      "source_url": "https://www.corteconstitucional.gov.co/relatoria/2020/SU016-20.htm",
+      "http_status": 200,
+      "content_type": "text/html",
+      "bytes": 1076220,
+      "source_sha256": "63e7fa1ec3027ae062d50b93c4059d5a8435ff1ebc026b4711435c9693d0a98a",
+      "retrieved_at": "2026-10-02T16:48:24.883367+00:00",
+      "tls_verified": true,
+      "status": "downloaded",
+      "raw_path": "corpora/corpus-additions-v1/raw/sentencia_su_16_de_2020.html",
+      "source_title": ""
+    },
+    {
+      "doc_id": "sentencia_su_277_de_2025",
+      "norm_name": "Sentencia SU-277 de 2025",
+      "canonical_body": [
+        "jurisprudencia",
+        "SU-277",
+        "2025"
+      ],
+      "areas": [
+        "Derecho administrativo"
+      ],
+      "priority": 1,
+      "source_type": "decision",
+      "norm_number": "SU-277",
+      "year": 2025,
+      "requested_url": "https://www.corteconstitucional.gov.co/relatoria/2025/SU277-25.htm",
+      "source_url": "https://www.corteconstitucional.gov.co/relatoria/2025/SU277-25.htm",
+      "http_status": 200,
+      "content_type": "text/html",
+      "bytes": 741538,
+      "source_sha256": "7a41f87c5d62693684a32183a58591fc1c35badeaf36efed33fdb9e5251a25be",
+      "retrieved_at": "2026-10-02T16:48:23.553804+00:00",
+      "tls_verified": true,
+      "status": "downloaded",
+      "raw_path": "corpora/corpus-additions-v1/raw/sentencia_su_277_de_2025.html",
+      "source_title": ""
+    }
+  ]
+}
