@@ -20,7 +20,7 @@ from dataclasses import replace
 import re
 
 from .citation_builder import _names, body_of, verified
-from .guards import reference_support
+from .guards import mention_support, reference_support
 from .legal import fold, references
 from .official import evidence_bodies, official_bodies
 
@@ -36,8 +36,15 @@ def split_sentences(text: str) -> list[str]:
     return [s.replace(_SHIELD, ".") for s in re.split(r"(?<=[.!?])\s+", shielded.strip()) if s.strip()]
 
 
+# Opt-in (--cite-mentions): body-level references to norms NAMED in a delivered passage are
+# supported, exactly as in citation_guard(allow_body_mentions=True). Set per call by repair_citations.
+_MENTIONS = {"on": False}
+
+
 def _supported(ref, emitted) -> bool:
-    return ref.complete and ref.kind != "unresolved" and bool(reference_support(ref, emitted))
+    if not ref.complete or ref.kind == "unresolved":
+        return False
+    return bool(reference_support(ref, emitted)) or (_MENTIONS["on"] and bool(mention_support(ref, emitted)))
 
 
 _DETERMINER = {"de la": {"el": "la", "del": "de la", "al": "a la"}, "del": {}, "de": {}}
@@ -146,8 +153,16 @@ def count_citations(row: dict) -> int:
     return sum(len(references(s)) for k, v in row.items() if k not in SKIP_KEYS for s in strings(v))
 
 
-def repair_citations(row: dict, evidence: list[dict]) -> tuple[dict, dict]:
+def repair_citations(row: dict, evidence: list[dict], *, allow_body_mentions: bool = False) -> tuple[dict, dict]:
     """Return a repaired copy of row and a report. Touches only answer strings."""
+    _MENTIONS["on"] = allow_body_mentions
+    try:
+        return _repair(row, evidence)
+    finally:
+        _MENTIONS["on"] = False
+
+
+def _repair(row: dict, evidence: list[dict]) -> tuple[dict, dict]:
     fixed = deepcopy(row)
     emitted = evidence[:10]
     supported = evidence_bodies(emitted)

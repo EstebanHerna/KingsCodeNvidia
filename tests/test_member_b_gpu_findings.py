@@ -346,5 +346,20 @@ class QwenSmokeRegressionTests(unittest.TestCase):
         self.assertNotIn("Ley 1010 de 2006", refs)                        # own document body
 
 
+    def test_repair_rewrites_mentioned_norm_instead_of_dropping_only_with_mentions(self):
+        from kingscode.reasoning.citation_repair import repair_citations
+        passage = deepcopy(FIXTURES[1])
+        passage["text"] = passage["text"] + " La Ley 2294 de 2023 modifica esta materia."
+        row = {"id": 1, "formato": "semi_open", "abstencion": False,
+               "respuesta": "El artículo 32 de la Ley 2294 de 2023 regula el tema. Otra oración.",
+               "palabras_clave": ["x"], "referencia_legal": "Ley 1010 de 2006"}
+        strict, _ = repair_citations(row, [passage])
+        self.assertNotIn("2294", strict["respuesta"])                       # default: sentence dropped
+        relaxed, report = repair_citations(row, [passage], allow_body_mentions=True)
+        self.assertIn("Ley 2294 de 2023", relaxed["respuesta"])             # kept at body level
+        self.assertNotIn("artículo 32", relaxed["respuesta"])
+        self.assertIn("rewritten_to_body", [a["action"] for a in report["actions"]])
+
+
 if __name__ == "__main__":
     unittest.main()
