@@ -150,6 +150,9 @@ def generation_diagnostics(decoder, usage, attribution, before, guard, repair, e
             "generation_ms": usage.get("generation_ms"), "peak_vram_bytes": usage.get("peak_vram_bytes"),
             "peak_reserved_vram_bytes": usage.get("peak_reserved_vram_bytes"),
             "normalization_action": usage.get("normalization_action"), "decoder_abstained": usage.get("decoder_abstained"),
+            # Exact decoder text before citation repair/builder, for offline review only: it never
+            # enters the official row, and presentation.view_model never shows it.
+            "raw_response": usage.get("raw_response"),
             "attribution_status": attribution.get("status"), "attribution_count": len(attribution.get("ids", [])),
             "attribution_reason": attribution.get("reason"), "format_warnings": list(usage.get("format_warnings") or []),
             "field_coercions": list(usage.get("field_coercions") or []), "evidence_in_prompt": usage.get("evidence_in_prompt"),
