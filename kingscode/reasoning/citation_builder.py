@@ -95,7 +95,7 @@ def attribution_source(attribution: dict | None) -> str:
 
 
 def attach_references(row: dict, evidence: list[dict], attribution: dict | None = None, max_refs: int = 3,
-                      *, fill_ranked: bool = False) -> tuple[dict, list[str]]:
+                      *, fill_ranked: bool = False, mentions: int = 0) -> tuple[dict, list[str]]:
     """Write builder citations into the format's citation slot (mutates and returns row).
 
     attribution None/legacy_fallback (dummy, v1/v2 prompts): first passages, as before.
@@ -118,6 +118,9 @@ def attach_references(row: dict, evidence: list[dict], attribution: dict | None 
     fill = fill_ranked and fmt in {"semi_open", "multiple_choice"}
     refs = build_references(evidence, used, 3 if fmt == "open_ended" else max_refs,
                             allow_fallback=source == "legacy_fallback", fill_ranked=fill)
+    if mentions and fmt in {"semi_open", "multiple_choice"}:
+        current = " ".join([*refs, row.get("justificacion") or "", row.get("respuesta") or ""])
+        refs += mentioned_references(evidence, used, current, mentions)
     if not refs:
         return row, refs
     if fmt == "semi_open":
@@ -134,6 +137,50 @@ def attach_references(row: dict, evidence: list[dict], attribution: dict | None 
         if not official_bodies(marco):
             row["marco_normativo"] = (marco + " " if marco else "") + "Normas aplicables: " + "; ".join(refs) + "."
     return row, refs
+
+
+def body_name(body: tuple) -> str | None:
+    """Body-level citation text (no article) for a canonical (kind, number, year) body."""
+    kind, number, year = body
+    if kind in CODE_NAMES:
+        return CODE_NAMES[kind]
+    if kind == "jurisprudencia" and number and year:
+        return f"Sentencia {number} de {year}"
+    if kind in KIND_NAMES and number and year:
+        return f"{KIND_NAMES[kind]} {number} de {year}"
+    return None
+
+
+def mentioned_references(passages: list[dict], used_ids: list[str] | None, already_cited: str,
+                         limit: int) -> list[str]:
+    """Bodies NAMED inside the text of retrieved passages (not their own document), cited
+    at body level only. Opt-in (--cite-mentions). This is exactly the official support rule:
+    a cited norm is backed when it appears in the text of one of the first 10 passages.
+    Declared passages are scanned first, then the remaining top-10 in rank order."""
+    top = passages[:10]
+    order = [p for p in top if used_ids and p["passage_id"] in used_ids] + \
+            [p for p in top if not (used_ids and p["passage_id"] in used_ids)]
+    cited = official_bodies(already_cited or "")
+    out: list[str] = []
+    for passage in order:
+        own = passage_bodies(passage)
+        text_bodies = official_bodies(passage.get("text") or "")
+        for ref in references(passage.get("text") or ""):
+            if not ref.complete or ref.kind == "unresolved" or ref.body is None or ref.body in own:
+                continue
+            name = body_name(ref.body)
+            if not name or name in out:
+                continue
+            bodies = official_bodies(name)
+            if not bodies or not bodies <= text_bodies or bodies <= cited:
+                continue
+            if any(r.body != ref.body for r in references(name)):
+                continue
+            out.append(name)
+            cited |= bodies
+            if len(out) >= limit:
+                return out
+    return out
 
 
 def build_references(passages: list[dict], used_ids: list[str] | None = None, max_refs: int = 3, *,

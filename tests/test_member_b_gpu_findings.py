@@ -315,5 +315,36 @@ class QwenSmokeRegressionTests(unittest.TestCase):
                 parse_response_v3(bad, Q, [deepcopy(FIXTURES[1])], extract_embedded=True)
 
 
+    def test_cite_mentions_adds_body_level_named_norm_and_guard_accepts_only_opt_in(self):
+        from kingscode.reasoning.citation_builder import mentioned_references
+        from kingscode.reasoning.guards import CitationGuardError, citation_guard
+        from kingscode.reasoning.guards import evidence_record
+        passage = deepcopy(FIXTURES[1])                                   # Ley 1010 de 2006, art. 1
+        passage["text"] = passage["text"] + " Ver el artículo 113 del Código Civil."
+        refs = mentioned_references([passage], [passage["passage_id"]], "", 3)
+        self.assertIn("Código Civil", refs)                               # body level, never the article
+        self.assertFalse(any("artículo" in r for r in refs))
+        row = {"id": 1, "formato": "semi_open", "abstencion": False, "respuesta": "Una. Dos. Tres.",
+               "palabras_clave": ["x"], "referencia_legal": "Ley 1010 de 2006; Código Civil",
+               "pasajes_recuperados": [evidence_record(passage)]}
+        with self.assertRaises(CitationGuardError):
+            citation_guard(row, [passage])                                # strict default unchanged
+        self.assertTrue(citation_guard(row, [passage], allow_body_mentions=True)["ok"])
+        row["referencia_legal"] = "artículo 113 del Código Civil"         # article-level: still strict
+        with self.assertRaises(CitationGuardError):
+            citation_guard(row, [passage], allow_body_mentions=True)
+        row["referencia_legal"] = "Código de Comercio"                     # not named anywhere
+        with self.assertRaises(CitationGuardError):
+            citation_guard(row, [passage], allow_body_mentions=True)
+
+    def test_cite_mentions_skips_own_body_and_already_cited(self):
+        from kingscode.reasoning.citation_builder import mentioned_references
+        passage = deepcopy(FIXTURES[1])
+        passage["text"] = passage["text"] + " Ley 1010 de 2006 y Código Civil."
+        refs = mentioned_references([passage], None, "Código Civil", 3)
+        self.assertNotIn("Código Civil", refs)                            # already cited
+        self.assertNotIn("Ley 1010 de 2006", refs)                        # own document body
+
+
 if __name__ == "__main__":
     unittest.main()

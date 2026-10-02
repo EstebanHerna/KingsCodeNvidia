@@ -805,3 +805,19 @@ Detalle en `docs/ANALISIS_CORRIDAS_2026-10-01.md`.
 - La PC de Luis desborda la VRAM (43–53 GB reservados, 88–252 s de generación): sus tiempos no sirven para presupuestar.
 - `tools/analyze_run.py` exporta una revisión por pregunta, y `diagnostics.raw_response` guarda la salida exacta del decoder (fuera de la fila oficial; la interfaz la oculta).
 
+## 2026-10-01 — Citas de normas nombradas en la evidencia (`--cite-mentions`) y re-puntuación offline
+
+- **Por qué no fine-tuning ("gradiente"):** no hay datos de entrenamiento válidos. `sample_50` es el único material etiquetado y entrenar con él es sobreajuste; el enunciado prohíbe datos sintéticos de modelos cerrados, y AGENTS.md pide no ajustar el decoder antes de que el retrieval sea alto. La mejora se busca optimizando contra la regla exacta del evaluador y midiendo sin GPU.
+- **`--cite-mentions N` (opt-in):** el constructor agrega hasta N citas **a nivel de cuerpo, sin artículo**, de normas **nombradas en el texto** de los 10 primeros pasajes (primero los declarados por el modelo). Excluye el documento propio del pasaje y los cuerpos ya citados. Solo en `referencia_legal` (semiabiertas) y `justificacion` (cerradas), que el juez RAGAS no lee. La guarda acepta esas citas **solo** con la opción activa (`citation_guard(..., allow_body_mentions=True)` → `mention_support`): es exactamente la regla oficial (`scripts/citations.py`: el cuerpo citado aparece en el texto de los 10 primeros pasajes). Las citas con artículo siguen bajo la regla estricta y, sin la opción, la guarda no cambia. **Requiere revisión de Luis:** relaja la guarda solo para menciones a nivel de cuerpo y solo en modo opt-in.
+- **`tools/rescore_run.py`:** re-aplica el post-proceso de citas a una corrida guardada (mismas respuestas del modelo, misma evidencia) y la pasa por el evaluador oficial, sin GPU. Con `--cite-mentions 0` reproduce exactamente el puntaje original (verificado en 3 corridas).
+- **Resultado offline** (real, sobre salidas guardadas; sin RAGAS; 0 citas sin respaldo en todos los casos):
+
+| Corrida | Original | Menciones 3 | Menciones 5 |
+|---|---:|---:|---:|
+| c1 (v4 + fill, BM25) | 30,41 | **32,92** (citas 12,65 → 14,69) | 32,92 |
+| Base v3 BM25 | 26,63 | 30,42 | 30,83 |
+| c4 (híbrido + rerank) | 30,82 | 31,47 | 31,47 |
+
+- **Regla anti-overfitting:** la regla es genérica (la definición oficial de respaldo) y no se ajustó por ítem. N = 3 se elige por ser el mínimo que satura c1. Según el enunciado §6.1, una cita respaldada que no coincide con la referencia vale 0 sin penalización; el riesgo que queda es citar normas que el pasaje solo nombra de paso, y eso no resta puntos.
+- **Configuración recomendada:** `-Recomendada` en `kingscode_pc_nueva_diagnostico.ps1` (prompt v4, `--citation-fill`, `--cite-mentions 3`, BM25 + router, cerradas 768 y abiertas 1.280 tokens). Falta confirmarla con una corrida real en GPU.
+

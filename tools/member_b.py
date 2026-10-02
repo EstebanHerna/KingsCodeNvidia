@@ -72,6 +72,8 @@ def build_parser() -> argparse.ArgumentParser:
                         help="batch/verify: grounded-formats-v3 (default) or v4 (abstencion listed, minimum lengths, MC justification first)")
     parser.add_argument("--citation-fill", action="store_true",
                         help="batch/verify: complete up to 5 verified citations with top-ranked evidence (semi_open/multiple_choice only)")
+    parser.add_argument("--cite-mentions", type=int, default=0, metavar="N",
+                        help="batch/verify: up to N body-level citations of norms NAMED in retrieved passages (official support rule); semi_open/MC only")
     parser.add_argument("--native-option-fusion", action="store_true",
                         help="batch/verify: fuse MC option views inside A before one Q0-based rerank; experimental and opt-in")
     parser.add_argument("--retrieval-text-mode", choices=["literal", "context"], default="literal",
@@ -264,7 +266,7 @@ def _pipeline(args):
                 "reranker_score_cache": args.reranker_score_cache,
                 "option_support": args.option_support, "constrained_json": args.constrained_json,
                 "plan_roles": list(plan_roles) if plan_roles else None,
-                "prompt_version": getattr(decoder, "prompt_version", None), "citation_fill": args.citation_fill,
+                "prompt_version": getattr(decoder, "prompt_version", None), "citation_fill": args.citation_fill, "cite_mentions": args.cite_mentions,
                 "retriever": {"mode": args.retriever_mode, "rerank": args.rerank,
                               "graph_budget": args.graph_budget,
                               "exact_locator": args.exact_locator, "fixture_evidence": args.fixture_evidence,
@@ -272,7 +274,7 @@ def _pipeline(args):
                 "graph_policy": args.graph_policy, "plans": plans.manifest["experiment_id"] if plans else None}
     return Pipeline(retriever.retrieve, adapter=adapter, decoder=decoder, k=args.k, graph_policy=args.graph_policy,
                     retrieval_mode=args.retrieval_mode, plans=plans, max_refs=5 if args.citation_fill else 3,
-                    citation_fill=args.citation_fill, native_option_fusion=args.native_option_fusion,
+                    citation_fill=args.citation_fill, cite_mentions=args.cite_mentions, native_option_fusion=args.native_option_fusion,
                     plan_roles=plan_roles, option_supporter=option_supporter), identity
 
 

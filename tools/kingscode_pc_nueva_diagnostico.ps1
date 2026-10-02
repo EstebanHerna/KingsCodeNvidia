@@ -30,6 +30,8 @@
 #   ... -ExactLocator                                      (locator exacto de A; cambiar una variable por corrida)
 #   ... -PromptVersion v4                                  (prompt v4: abstencion listada, minimos de extension, justificacion primero)
 #   ... -CitationFill                                      (hasta 5 citas verificadas en referencia_legal/justificacion)
+#   ... -CiteMentions 3                                    (citas a nivel de cuerpo de normas NOMBRADAS en la evidencia)
+#   ... -Recomendada                                       (configuracion recomendada: v4 + CitationFill + CiteMentions 3)
 #   ... -SkipVerify                                        (omite regenerar 3 preguntas para comprobar reproducibilidad)
 #   SABADO (set ciego, misma configuracion elegida):
 #   ... -InputFile data\test_992.jsonl -RunName final_992 <flags elegidos>      -> copia submissions.jsonl a la raiz
@@ -56,6 +58,8 @@ param(
     [string]$InputFile = "data\sample_50.jsonl",
     [switch]$Resume,
     [switch]$CitationFill,
+    [int]$CiteMentions = 0,
+    [switch]$Recomendada,
     [switch]$SkipVerify,
     [switch]$Ragas,
     [switch]$SkipSmoke,
@@ -71,7 +75,8 @@ function Warn($m) { Write-Host "AVISO: $m" -ForegroundColor Yellow }
 function Check($w) { if ($LASTEXITCODE -ne 0) { throw "STOP: $w (exit $LASTEXITCODE)" } }
 function RefreshPath { $env:Path = [Environment]::GetEnvironmentVariable("Path", "User") + ";" + [Environment]::GetEnvironmentVariable("Path", "Machine") }
 $Stamp = Get-Date -Format "yyyyMMdd_HHmmss"
-if (-not $RunName) { $RunName = "${Model}_${RetrieverMode}_c${CandidateK}_rb${RerankerBatchSize}_gb${GraphBudget}$(if ($Rerank) { '_rerank' })$(if ($NativeOptionFusion) { '_nativeopt' })$(if ($ExactLocator) { '_locator' })_p$PromptVersion$(if ($CitationFill) { '_fill' })_$Stamp" }
+if ($Recomendada) { $PromptVersion = "v4"; $CitationFill = [switch]::new($true); if ($CiteMentions -eq 0) { $CiteMentions = 3 } }
+if (-not $RunName) { $RunName = "${Model}_${RetrieverMode}_c${CandidateK}_rb${RerankerBatchSize}_gb${GraphBudget}$(if ($Rerank) { '_rerank' })$(if ($NativeOptionFusion) { '_nativeopt' })$(if ($ExactLocator) { '_locator' })_p$PromptVersion$(if ($CitationFill) { '_fill' })$(if ($CiteMentions -gt 0) { "_men$CiteMentions" })_$Stamp" }
 
 # ---------------------------------------------------------------------
 Step "[0] Herramientas: Git, Python 3.12, GPU"
@@ -290,6 +295,7 @@ if ($Rerank) { $CommonArgs += "--rerank" }
 if ($NativeOptionFusion) { $CommonArgs += "--native-option-fusion" }
 if ($ExactLocator) { $CommonArgs += "--exact-locator" }
 if ($CitationFill) { $CommonArgs += "--citation-fill" }
+if ($CiteMentions -gt 0) { $CommonArgs += @("--cite-mentions", [string]$CiteMentions) }
 # -Resume: reuse validated checkpoints (same identity enforced by BatchRunner); never --fresh.
 # Build the array explicitly: $(if ...) unrolls a one-element array into a string, and splatting a
 # string passes it character by character ("- - f r e s h", 2026-10-01).
@@ -363,7 +369,7 @@ $Spq = [math]::Round($Br.seconds / $Processed, 1)
 $Summary = [ordered]@{
     main_sha = $Sha; model = $Model; gpu = $Rt.gpu; vram_gb = $Rt.vram_gb; torch = $Rt.torch
     retrieval = "$RetrieverMode$(if ($Rerank) { ' + Qwen reranker' }) candidate_k=$CandidateK graph_budget=$GraphBudget reranker_batch_size=$RerankerBatchSize$(if ($NativeOptionFusion) { ' + native option fusion' })$(if ($ExactLocator) { ' + locator exacto' }) k=8 graph router (diagnostico, no freeze)"
-    prompt_version = "grounded-formats-$PromptVersion"; citation_fill = [bool]$CitationFill; verificacion_en_vivo = $Verify
+    prompt_version = "grounded-formats-$PromptVersion"; citation_fill = [bool]$CitationFill; cite_mentions = $CiteMentions; verificacion_en_vivo = $Verify
     corpus = $CorpusDir; corpus_origin = $CorpusOrigin; corpus_v01_raw_identical_and_verified = $CorpusExact; corpus_v01_comparison = $Cmp
     corpus_diagnostic_override = ($AllowKnownLocalCorpusDrift -and -not $CorpusExact)
     passages_sha256 = $PassagesSha; passages_reference = $PassagesRef
