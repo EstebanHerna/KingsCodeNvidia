@@ -6,7 +6,7 @@
 
 **Equipo:** KingsCode
 **Integrantes:** Esteban Alejandro Hernández · Luis Sebastián Contreras Díaz
-**Fecha de la medición:** 2026-10-01 (RTX 4090, sala Turing)
+**Fecha de la medición:** 2026-10-02 (RTX 4090, sala Turing)
 
 ---
 
@@ -16,14 +16,16 @@ Resultado de `python scripts/evaluate.py --submission <corrida>/submissions.json
 
 | Componente | Puntos obtenidos | Puntos posibles |
 |---|---:|---:|
-| Exactitud en cerradas | 10,67 (8/15) | 20 |
-| Calidad de citación | 12,65 (recall ponderado 0,63; **0 citas sin respaldo**) | 20 |
-| Abstención calibrada | 7,09 | 10 |
-| **Total automático sin RAGAS** | **30,41** | **50** |
+| Exactitud en cerradas | 12,00 (9/15) | 20 |
+| Calidad de citación | 17,14 (recall ponderado 0,86; **0 citas sin respaldo**) | 20 |
+| Abstención calibrada | 7,79 | 10 |
+| **Total automático sin RAGAS** | **36,93** | **50** |
+| Corrección RAGAS (juez oficial, medida una vez) | 12,82 (correctness 0,4275) | 30 |
+| **Total automático con RAGAS** | **≈ 49,75** (48,00 medido en la corrida anterior) | **80** |
 
 Observaciones sobre el resultado:
 
-Configuración medida: Qwen3-8B (BF16, temperatura 0) + BM25 + router de grafo, k = 8, prompt `grounded-formats-v4` y citas completadas con evidencia verificada. Partimos de 26,63; probamos reranker, locator exacto y recuperación híbrida, que en esta muestra no superaron a esta configuración en puntaje por tiempo. Ninguna cita queda sin respaldo en la evidencia recuperada: una guarda determinista repara o suprime toda cita no respaldada. Dos corridas completas dieron un `submissions.jsonl` idéntico byte a byte, lo que respalda la verificación en vivo. El componente RAGAS (30 pts) aún no se ha medido.
+Configuración medida: Qwen3-8B (BF16, temperatura 0) + BM25 + router de grafo, k = 8, prompt `grounded-formats-v4`, citas completadas con evidencia verificada y citas a nivel de norma para normas mencionadas en los pasajes recuperados. Partimos de 26,63 el 1 de octubre. RAGAS se midió una sola vez con el juez oficial sobre la corrida anterior (35,18 sin RAGAS → 48,00/80); la corrida actual solo cambió citas y corpus, que RAGAS no lee directamente, por lo que el total con RAGAS es una estimación. Probamos además híbrido BM25 + denso con reranker y locator exacto: 36,59/50 a 19,1 s/pregunta, sin mejora y más lento, así que no se adopta. Ninguna cita queda sin respaldo en la evidencia recuperada: una guarda determinista repara o suprime toda cita no respaldada. Dos corridas completas dieron un `submissions.jsonl` idéntico byte a byte, lo que respalda la verificación en vivo.
 
 ## 2. Estado del corpus
 
@@ -48,6 +50,6 @@ Fuentes consultadas: Función Pública – Gestor Normativo (68 documentos), rel
 
 ## 4. Riesgos identificados
 
-1. **RAGAS sin medir (30 pts).** Haremos una única medición con el juez oficial sobre la configuración final, antes del sábado.
-2. **Tiempo de ejecución.** Hoy son 15,6 s/pregunta (≈ 4,3 h para 992, en una ventana de 6 h). Mitigación: checkpoints por pregunta con reanudación, alarma si una configuración pasa de 20 s/pregunta, y ninguna técnica nueva sin medir su costo.
+1. **RAGAS es el componente más bajo (0,43 frente a 0,45 de referencia).** Las respuestas semiabiertas deben ser más directas y las abiertas más completas en conclusión y análisis; lo mejoramos con un proxy local gratuito (mismo encoder del evaluador) y volveremos a medir con el juez solo la configuración final.
+2. **Tiempo de ejecución.** Hoy son 15,9 s/pregunta (≈ 4,4 h para 992, en una ventana de 6 h). Mitigación: checkpoints por pregunta con reanudación, alarma si una configuración pasa de 20 s/pregunta, y ninguna técnica nueva sin medir su costo.
 3. **Corpus y reproducibilidad de fuentes.** Al volver a descargar las fuentes oficiales, 67 de 163 documentos cambiaron; por eso el índice se congela como snapshot (hashes por archivo) y se publica con licencia abierta. La cobertura de procedimiento y derecho de los mercados es la más delgada.

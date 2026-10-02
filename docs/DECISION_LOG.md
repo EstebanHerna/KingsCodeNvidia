@@ -837,3 +837,9 @@ Detalle en `docs/ANALISIS_CORRIDAS_2026-10-01.md`.
 - **Reparación consciente de menciones** (solo con `--cite-mentions`): una cita a una norma nombrada en la evidencia se reescribe a nivel de cuerpo en vez de borrar la oración (antes la 218 se abstenía porque la reparación vaciaba `respuesta`). Replay: 36,81 frente a 36,93 (ruido), pero responde 35/35 de texto libre en vez de 34/35 y conserva oraciones en `respuesta`, que es lo que lee RAGAS.
 - **`tools/analyze_ragas_proxy.py`:** proxy gratuito de RAGAS. Reproduce la parte de similitud semántica con el mismo encoder local del evaluador (`intfloat/multilingual-e5-large`), el mismo texto por formato, abstención = 0 y el mismo denominador, y agrega un token-F1 como proxy factual. Calibración: la corrida `111603` tiene RAGAS oficial 0,4275 y token-F1 0,2665. Sirve para ordenar variantes, no para reportar puntaje.
 
+
+## 2026-10-02 — Híbrido + reranker + locator (PC #2) no se adopta; BM25 queda como configuración final candidata
+
+- Corrida `qwen3-8b_hybrid_c30_rb2_gb10_rerank_locator_pv4_fill_men3_20261002_115712` (PC #2, `5994024`, `corpus_v01_v02_a1`, índice denso de 26.447 vectores): **36,59/50 sin RAGAS** (cerradas 12,00; citas 16,33, recall 0,816, 0 sin respaldo; abstención 8,26), 1 fallback (528), **19,1 s/pregunta → 5,26 h para 992** (retrieval p95 12,2 s, VRAM reservada 20,2 GB). Verificación en vivo simulada: coincide.
+- Frente a BM25 (`..._115609`, mismo commit y corpus): 36,93/50 a 15,9 s/pregunta (4,38 h). El híbrido no gana puntaje y cuesta casi 1 h más en la ventana de 6 h: **no se adopta**. Configuración candidata final: `-Recomendada` con BM25.
+- `docs/REPORTE_AVANCE_BORRADOR.md` actualizado con 36,93/50 y RAGAS 0,4275 (medido una vez sobre `111603`; el total con RAGAS de `115609` es estimación y así se declara).
