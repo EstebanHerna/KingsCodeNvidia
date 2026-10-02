@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="es" class="no-js">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>Gestor Normativo</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="shortcut icon" href="/dafpIndexerBGN/assets/favicon-49590fbc002f678b0b150e37e6276d71.ico" type="image/x-icon">
+		<link rel="apple-touch-icon" href="/dafpIndexerBGN/assets/apple-touch-icon-5e23ba04083fe9fa76cf75944bf11334.png">
+		<link rel="apple-touch-icon" sizes="114x114" href="/dafpIndexerBGN/assets/apple-touch-icon-retina-878e578c6c13acbaa1ef3b94f127b6bf.png">
+  		<link rel="stylesheet" href="/dafpIndexerBGN/assets/application-94135428ca8ef9ef9652b4c16442b5d1.css" />
+		<link rel="stylesheet" href="/dafpIndexerBGN/assets/general-f863eb980fd2378c8ee272bb3ce28eaa.css" />
+		<script type="text/javascript" src="/dafpIndexerBGN/assets/application-f56cb6a1827f92dea2b8bb8fa1478ba6.js" ></script>
+		
+		<meta name="layout" content="mainSinLogos">
+		
+		
+		
+		
+		<link rel="stylesheet" href="/dafpIndexerBGN/assets/buscadorNorma-0c46e147b8b871a8c065343e5274c5f3.css" />
+		<link rel="stylesheet" href="/dafpIndexerBGN/assets/jquery-ui-1.12.1/jquery-ui-b848e086160a1f572d592c8ef23a798b.css" />
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+		<script type="text/javascript" src="/dafpIndexerBGN/assets/jquery-ui-1.12.1/jquery-ui-f192be11e49bf52462a73e0d12dcbb36.js" ></script>
+		<script type="text/javascript" src="/dafpIndexerBGN/assets/special-char-folding-utils-f2c02895508ec3b67683eb540f091b92.js" ></script>
+	
+	</head>
+	<body>
+		<div class="container"> 
+			<div role="main">
+		<div id="list-norma-buscador" class="content scaffold-list div-caja-busqueda">
+			
+			
+			<!--<div>
+				<h1>Buscador</h1>
+			</div>-->
+			<form action="/dafpIndexerBGN/norma/index" method="post" name="busquedaForm" id="busquedaForm" ><fieldset class="search-fieldset">
+				<legend></legend>
+				<input type="hidden" id="bloquearFiltroTipoDocumento" name="bloquearFiltroTipoDocumento" value="">
+				<input type="hidden" id="bloquearFiltroNumero" name="bloquearFiltroNumero" value="">
+				<input type="hidden" id="bloquearFiltroAnio" name="bloquearFiltroAnio" value="">
+				<input type="hidden" id="bloquearFiltroEntidad" name="bloquearFiltroEntidad" value="">
+				<input type="hidden" id="bloquearFiltroTema" name="bloquearFiltroTema" value="">
+				<input type="hidden" id="bloquearFiltroSubtema" name="bloquearFiltroSubtema" value="">
+				
+				
+				
+				
+				
+				
+				<div class="form-group menor-margin-bottom">
+					<div class="input-group-custom mb-3">
+						<input id="query" name="query" type="text" value="" class="cuadro-busqueda" maxlength="256" aria-label="Buscar" />
+						<div class="input-group-append">
+							<button id="find" name="find" class="btn btn-lg btn-search margin-zero" form="busquedaForm" value="FindNext">
+								<i class="fas fa-search"></i> Buscar
+							</button>
+						</div>
+					</div>
+				</div>
+			</fieldset></form>
+		</div>
+		<br/>
+		<div id="div-resultados-busqueda">
+			
+				
+				
+					<div class="div-filtros-busqueda">
+						
+							<h1 class="div-resultados-busqueda-titulo div-filtros-titulo">Filtros de búsqueda</h1>
+						
+						
+						<div id="filtroTipoDocumento" class="filtro-div">
+							<label for="inputFiltroTipoDocumento" class="filtro-titulo">Tipo de Documento</label>
+							<input id="inputFiltroTipoDocumento" type="text" class="filtro-input" placeholder="Buscar...">
+							<ul id="listFiltroTipoDocumento" class="filtro-list">
+								
+								<input type="hidden" id="codTipoDocumento_Ley" value="Ley">
+								<li class="filtro-list-item">
+									
+										Ley (1) <a href="/dafpIndexerBGN/norma/index?find=FindNext&amp;query=&amp;filtroTipoDocumento=&amp;filtroNumero=472&amp;filtroAnio=1998&amp;filtroEntidad=&amp;filtroTema=&amp;filtroSubtema=&amp;bloquearFiltroTipoDocumento=&amp;bloquearFiltroNumero=&amp;bloquearFiltroAnio=&amp;bloquearFiltroEntidad=&amp;bloquearFiltroTema=&amp;bloquearFiltroSubtema=&amp;ordenarPor=" alt="Quitar filtro" title="Quitar este filtro de búsqueda">[X]</a>
+									
+								</li>
+								
+							</ul>
+							<div id="showLessFiltroTipoDocumento" tabindex="0"><i class="fas fa-angle-double-up"></i> Menos</div>
+							<div id="loadMoreFiltroTipoDocumento" tabindex="0">Más</div>
+						</div>
+						
+						
+						<div id="filtroNumero" class="filtro-div">
+							<label for="inputFiltroNumero" class="filtro-titulo">Número documento</label>
+							<input id="inputFiltroNumero" type="text" class="filtro-input" placeholder="Buscar...">
+							<ul id="listFiltroNumero" class="filtro-list">
+								
+								<input type="hidden" id="codNumero_472" value="472">
+								<li class="filtro-list-item">
+									
+										472 (1) <a href="/dafpIndexerBGN/norma/index?find=FindNext&amp;query=&amp;filtroTipoDocumento=Ley&amp;filtroNumero=&amp;filtroAnio=1998&amp;filtroEntidad=&amp;filtroTema=&amp;filtroSubtema=&amp;bloquearFiltroTipoDocumento=&amp;bloquearFiltroNumero=&amp;bloquearFiltroAnio=&amp;bloquearFiltroEntidad=&amp;bloquearFiltroTema=&amp;bloquearFiltroSubtema=&amp;ordenarPor=" alt="Quitar filtro" title="Quitar este filtro de búsqueda">[X]</a>
+									
+								</li>
+								
+							</ul>
+							<div id="showLessFiltroNumero" tabindex="0"><i class="fas fa-angle-double-up"></i> Menos</div>
+							<div id="loadMoreFiltroNumero" tabindex="0">Más</div>
+						</div>
+						
+						
+						<div id="filtroAnio" class="filtro-div">
+							<label for="inputFiltroAnio" class="filtro-titulo">Año</label>
+							<input id="inputFiltroAnio" type="text" class="filtro-input" placeholder="Buscar...">
+							<ul id="listFiltroAnio" class="filtro-list">
+								
+								<input type="hidden" id="codAnio_1998" value="1998">
+								<li class="filtro-list-item">
+									
+										1998 (1) <a href="/dafpIndexerBGN/norma/index?find=FindNext&amp;query=&amp;filtroTipoDocumento=Ley&amp;filtroNumero=472&amp;filtroAnio=&amp;filtroEntidad=&amp;filtroTema=&amp;filtroSubtema=&amp;bloquearFiltroTipoDocumento=&amp;bloquearFiltroNumero=&amp;bloquearFiltroAnio=&amp;bloquearFiltroEntidad=&amp;bloquearFiltroTema=&amp;bloquearFiltroSubtema=&amp;ordenarPor=" alt="Quitar filtro" title="Quitar este filtro de búsqueda">[X]</a>
+									
+								</li>
+								
+							</ul>
+							<div id="showLessFiltroAnio" tabindex="0"><i class="fas fa-angle-double-up"></i> Menos</div>
+							<div id="loadMoreFiltroAnio" tabindex="0">Más</div>
+						</div>
+						
+						
+						<div id="filtroEntidad" class="filtro-div">
+							<label for="inputFiltroEntidad" class="filtro-titulo">Entidad</label>
+							<input id="inputFiltroEntidad" type="text" class="filtro-input" placeholder="Buscar...">
+							<ul id="listFiltroEntidad" class="filtro-list">
+								
+								<input type="hidden" id="codEntidad_NivelNacional" value="Nivel Nacional">
+								<li class="filtro-list-item">
+									
+										<a href="/dafpIndexerBGN/norma/index?find=FindNext&amp;query=&amp;filtroTipoDocumento=Ley&amp;filtroNumero=472&amp;filtroAnio=1998&amp;filtroEntidad=Nivel+Nacional&amp;filtroTema=&amp;filtroSubtema=&amp;bloquearFiltroTipoDocumento=&amp;bloquearFiltroNumero=&amp;bloquearFiltroAnio=&amp;bloquearFiltroEntidad=&amp;bloquearFiltroTema=&amp;bloquearFiltroSubtema=&amp;ordenarPor=">Nivel Nacional (1)</a>
+									
+								</li>
+								
+							</ul>
+							<div id="showLessFiltroEntidad" tabindex="0"><i class="fas fa-angle-double-up"></i> Menos</div>
+							<div id="loadMoreFiltroEntidad" tabindex="0">Más</div>
+						</div>
+						
+						
+						
+					</div>
+				
+				<div class="div-resultados">
+					
+						<h1 class="div-resultados-busqueda-titulo div-resultados-titulo" style="display:none;">Resultados</h1>
+						<div>
+							La búsqueda devuelve <strong>1</strong> resultados
+							
+						</div>
+						
+							<div class="div-order-options">
+								Ordenar por:
+								
+									Relevancia | <a href="/dafpIndexerBGN/norma/index?find=FindNext&amp;query=&amp;filtroTipoDocumento=Ley&amp;filtroNumero=472&amp;filtroAnio=1998&amp;filtroEntidad=&amp;filtroTema=&amp;filtroSubtema=&amp;bloquearFiltroTipoDocumento=&amp;bloquearFiltroNumero=&amp;bloquearFiltroAnio=&amp;bloquearFiltroEntidad=&amp;bloquearFiltroTema=&amp;bloquearFiltroSubtema=&amp;ordenarPor=FECHA_EXPEDICION">Fecha de expedición </a>
+								
+							</div>
+						
+					
+					
+	<div class="pagination">
+		
+	</div>
+	<table class="table table-hover">
+		<tbody>
+		
+			<tr class="odd">
+				<td>
+					<p class="norma-titulo"><a href="https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=188" target="_blank">
+						Ley 472 de 1998 - Nivel Nacional
+					</a></p>
+					<p class="norma-resumen">Objeto, definiciones, principios generales y finalidades, art. 1 a 8. Procedencia, agotamiento opcional de la Vía Gubernativa, Caducidad, Legitimación, art. 9 a 14. jurisdicción y competencia, art. 15 y 16. Presentación de la demanda o petición, art. 17 a 19. Admisión, notificación y traslado, art. 20 a23. Coadyuvancia y medidas cautelares, art. 24 a 26. Pacto de cumplimiento, art. 27. Período probatorio, art. 28 a 32. Sentencia, art. 33 a 35. Recursos y costas, art. 36 a 38. Incentivos art. 39 y 40. Medidas coercitivas y otras disposiciones art. 41 a 45. Disposiciones comunes a acciones populares y de grupo, en materia probatoria, art. 74 a 79. Disposiciones finales, art. 80 a 85. Vigencia, art. 86.</p>
+				</td>
+			</tr>
+		
+		</tbody>
+	</table>
+	<div class="pagination">
+		
+	</div>
+
+					
+						<script type="text/javascript">
+							$(document).ready(function () {
+								cantidadFiltrosInicial = 5;
+								var optionsFiltroTipoDocumento = $("#listFiltroTipoDocumento li").map(function() {
+									return $(this).text().trim();
+								}).get();
+								var optionsFiltroNumero = $("#listFiltroNumero li").map(function() {
+									return $(this).text().trim();
+								}).get();
+								var optionsFiltroAnio = $("#listFiltroAnio li").map(function() {
+									return $(this).text().trim();
+								}).get();
+								var optionsFiltroEntidad = $("#listFiltroEntidad li").map(function() {
+									return $(this).text().trim();
+								}).get();
+								var optionsFiltroTema = $("#listFiltroTema li").map(function() {
+									return $(this).text().trim();
+								}).get();
+								var optionsFiltroSubtema = $("#listFiltroSubtema li").map(function() {
+									return $(this).text().trim();
+								}).get();
+								$("#inputFiltroTipoDocumento").autocomplete({
+									delay: 500,
+									source: function(request, response) {
+										var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+										response($.grep(optionsFiltroTipoDocumento, function(value) {
+											value = value.label || value.value || value;
+											return matcher.test(value) || matcher.test(normalize(value));
+										}));
+									},
+									select: function (event, ui) {
+										//console.log(JSON.stringify(ui));
+										if (ui.item) {
+											var nombreFiltro = formatNombreFiltro(ui.item.value);
+											var codigo = $("#codTipoDocumento_" + nombreFiltro).val();
+											var url = getUrlForFiltro("1", codigo);
+											window.location = url;
+										}
+									}
+								});
+								$("#inputFiltroNumero").autocomplete({
+									delay: 500,
+									source: function(request, response) {
+										var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+										response($.grep(optionsFiltroNumero, function(value) {
+											value = value.label || value.value || value;
+											return matcher.test(value) || matcher.test(normalize(value));
+										}));
+									},
+									select: function (event, ui) {
+										//console.log(JSON.stringify(ui));
+										if (ui.item) {
+											var nombreFiltro = formatNombreFiltro(ui.item.value);
+											var codigo = $("#codNumero_" + nombreFiltro).val();
+											var url = getUrlForFiltro("2", codigo);
+											window.location = url;
+										}
+									}
+								});
+								$("#inputFiltroAnio").autocomplete({
+									delay: 500,
+									source: function(request, response) {
+										var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+										response($.grep(optionsFiltroAnio, function(value) {
+											value = value.label || value.value || value;
+											return matcher.test(value) || matcher.test(normalize(value));
+										}));
+									},
+									select: function (event, ui) {
+										//console.log(JSON.stringify(ui));
+										if (ui.item) {
+											var nombreFiltro = formatNombreFiltro(ui.item.value);
+											var codigo = $("#codAnio_" + nombreFiltro).val();
+											var url = getUrlForFiltro("3", codigo);
+											window.location = url;
+										}
+									}
+								});
+								$("#inputFiltroEntidad").autocomplete({
+									delay: 500,
+									source: function(request, response) {
+										var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+										response($.grep(optionsFiltroEntidad, function(value) {
+											value = value.label || value.value || value;
+											return matcher.test(value) || matcher.test(normalize(value));
+										}));
+									},
+									select: function (event, ui) {
+										//console.log(JSON.stringify(ui));
+										if (ui.item) {
+											var nombreFiltro = formatNombreFiltro(ui.item.value);
+											var codigo = $("#codEntidad_" + nombreFiltro).val();
+											var url = getUrlForFiltro("4", codigo);
+											window.location = url;
+										}
+									}
+								});
+								$("#inputFiltroTema").autocomplete({
+									delay: 500,
+									source: function(request, response) {
+										var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+										response($.grep(optionsFiltroTema, function(value) {
+											value = value.label || value.value || value;
+											return matcher.test(value) || matcher.test(normalize(value));
+										}));
+									},
+									select: function (event, ui) {
+										//console.log(JSON.stringify(ui));
+										if (ui.item) {
+											var nombreFiltro = formatNombreFiltro(ui.item.value);
+											var codigo = $("#codTema_" + nombreFiltro).val();
+											var url = getUrlForFiltro("5", codigo);
+											window.location = url;
+										}
+									}
+								});
+								$("#inputFiltroSubtema").autocomplete({
+									delay: 500,
+									source: function(request, response) {
+										var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
+										response($.grep(optionsFiltroSubtema, function(value) {
+											value = value.label || value.value || value;
+											return matcher.test(value) || matcher.test(normalize(value));
+										}));
+									},
+									select: function (event, ui) {
+										//console.log(JSON.stringify(ui));
+										if (ui.item) {
+											var nombreFiltro = formatNombreFiltro(ui.item.value);
+											var codigo = $("#codSubtema_" + nombreFiltro).val();
+											var url = getUrlForFiltro("6", codigo);
+											window.location = url;
+										}
+									}
+								});
+
+								sizeLiFiltroTipoDocumento = $("#listFiltroTipoDocumento li").length;
+								xFiltroTipoDocumento = cantidadFiltrosInicial;
+								itemsNotShownFiltroTipoDocumento = sizeLiFiltroTipoDocumento - xFiltroTipoDocumento;
+								$('#loadMoreFiltroTipoDocumento').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroTipoDocumento + ")");
+								$('#listFiltroTipoDocumento li:lt(' + xFiltroTipoDocumento + ')').show();
+								if (sizeLiFiltroTipoDocumento < cantidadFiltrosInicial) {
+									$('#loadMoreFiltroTipoDocumento').hide();
+								}
+								$('#loadMoreFiltroTipoDocumento').click(function () {
+									loadMoreFiltroTipoDocumento();
+								});
+								$('#loadMoreFiltroTipoDocumento').keypress(function (event) {
+									if (event.which == 13) {
+										loadMoreFiltroTipoDocumento();
+									}
+								});
+								$('#showLessFiltroTipoDocumento').click(function () {
+									showLessFiltroTipoDocumento();
+								});
+								$('#showLessFiltroTipoDocumento').keypress(function (event) {
+									if (event.which == 13) {
+										showLessFiltroTipoDocumento();
+									}
+								});
+
+								sizeLiFiltroNumero = $("#listFiltroNumero li").length;
+								xFiltroNumero = cantidadFiltrosInicial;
+								itemsNotShownFiltroNumero = sizeLiFiltroNumero - xFiltroNumero;
+								$('#loadMoreFiltroNumero').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroNumero + ")");
+								$('#listFiltroNumero li:lt(' + xFiltroNumero + ')').show();
+								if (sizeLiFiltroNumero < cantidadFiltrosInicial) {
+									$('#loadMoreFiltroNumero').hide();
+								}
+								$('#loadMoreFiltroNumero').click(function () {
+									loadMoreFiltroNumero();
+								});
+								$('#loadMoreFiltroNumero').keypress(function (event) {
+									if (event.which == 13) {
+										loadMoreFiltroNumero();
+									}
+								});
+								$('#showLessFiltroNumero').click(function () {
+									showLessFiltroNumero();
+								});
+								$('#showLessFiltroNumero').keypress(function (event) {
+									if (event.which == 13) {
+										showLessFiltroNumero();
+									}
+								});
+
+								sizeLiFiltroAnio = $("#listFiltroAnio li").length;
+								xFiltroAnio = cantidadFiltrosInicial;
+								itemsNotShownFiltroAnio = sizeLiFiltroAnio - xFiltroAnio;
+								$('#loadMoreFiltroAnio').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroAnio + ")");
+								$('#listFiltroAnio li:lt(' + xFiltroAnio + ')').show();
+								if (sizeLiFiltroAnio < cantidadFiltrosInicial) {
+									$('#loadMoreFiltroAnio').hide();
+								}
+								$('#loadMoreFiltroAnio').click(function () {
+									loadMoreFiltroAnio();
+								});
+								$('#loadMoreFiltroAnio').keypress(function (event) {
+									if (event.which == 13) {
+										loadMoreFiltroAnio();
+									}
+								});
+								$('#showLessFiltroAnio').click(function () {
+									showLessFiltroAnio();
+								});
+								$('#showLessFiltroAnio').keypress(function (event) {
+									if (event.which == 13) {
+										showLessFiltroAnio();
+									}
+								});
+
+								sizeLiFiltroEntidad = $("#listFiltroEntidad li").length;
+								xFiltroEntidad = cantidadFiltrosInicial;
+								itemsNotShownFiltroEntidad = sizeLiFiltroEntidad - xFiltroEntidad;
+								$('#loadMoreFiltroEntidad').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroEntidad + ")");
+								$('#listFiltroEntidad li:lt(' + xFiltroEntidad + ')').show();
+								if (sizeLiFiltroEntidad < cantidadFiltrosInicial) {
+									$('#loadMoreFiltroEntidad').hide();
+								}
+								$('#loadMoreFiltroEntidad').click(function () {
+									loadMoreFiltroEntidad();
+								});
+								$('#loadMoreFiltroEntidad').keypress(function (event) {
+									if (event.which == 13) {
+										loadMoreFiltroEntidad();
+									}
+								});
+								$('#showLessFiltroEntidad').click(function () {
+									showLessFiltroEntidad();
+								});
+								$('#showLessFiltroEntidad').keypress(function (event) {
+									if (event.which == 13) {
+										showLessFiltroEntidad();
+									}
+								});
+
+								sizeLiFiltroTema = $("#listFiltroTema li").length;
+								xFiltroTema = cantidadFiltrosInicial;
+								itemsNotShownFiltroTema = sizeLiFiltroTema - xFiltroTema;
+								$('#loadMoreFiltroTema').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroTema + ")");
+								$('#listFiltroTema li:lt(' + xFiltroTema + ')').show();
+								if (sizeLiFiltroTema < cantidadFiltrosInicial) {
+									$('#loadMoreFiltroTema').hide();
+								}
+								$('#loadMoreFiltroTema').click(function () {
+									loadMoreFiltroTema();
+								});
+								$('#loadMoreFiltroTema').keypress(function (event) {
+									if (event.which == 13) {
+										loadMoreFiltroTema();
+									}
+								});
+								$('#showLessFiltroTema').click(function () {
+									showLessFiltroTema();
+								});
+								$('#showLessFiltroTema').keypress(function (event) {
+									if (event.which == 13) {
+										showLessFiltroTema();
+									}
+								});
+
+								sizeLiFiltroSubtema = $("#listFiltroSubtema li").length;
+								xFiltroSubtema = cantidadFiltrosInicial;
+								itemsNotShownFiltroSubtema = sizeLiFiltroSubtema - xFiltroSubtema;
+								$('#loadMoreFiltroSubtema').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroSubtema + ")");
+								$('#listFiltroSubtema li:lt(' + xFiltroSubtema + ')').show();
+								if (sizeLiFiltroSubtema < cantidadFiltrosInicial) {
+									$('#loadMoreFiltroSubtema').hide();
+								}
+								$('#loadMoreFiltroSubtema').click(function () {
+									loadMoreFiltroSubtema();
+								});
+								$('#loadMoreFiltroSubtema').keypress(function (event) {
+									if (event.which == 13) {
+										loadMoreFiltroSubtema();
+									}
+								});
+								$('#showLessFiltroSubtema').click(function () {
+									showLessFiltroSubtema();
+								});
+								$('#showLessFiltroSubtema').keypress(function (event) {
+									if (event.which == 13) {
+										showLessFiltroSubtema();
+									}
+								});
+							});
+
+							function loadMoreFiltroTipoDocumento() {
+								xFiltroTipoDocumento = (xFiltroTipoDocumento + cantidadFiltrosInicial <= sizeLiFiltroTipoDocumento) ? xFiltroTipoDocumento + cantidadFiltrosInicial : sizeLiFiltroTipoDocumento;
+								itemsNotShownFiltroTipoDocumento = sizeLiFiltroTipoDocumento - xFiltroTipoDocumento;
+								$('#listFiltroTipoDocumento li:lt(' + xFiltroTipoDocumento + ')').show();
+								$('#loadMoreFiltroTipoDocumento').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroTipoDocumento + ")");
+								$('#showLessFiltroTipoDocumento').show();
+								if (xFiltroTipoDocumento == sizeLiFiltroTipoDocumento) {
+									$('#loadMoreFiltroTipoDocumento').hide();
+								}
+							}
+
+							function showLessFiltroTipoDocumento() {
+								xFiltroTipoDocumento = (xFiltroTipoDocumento - cantidadFiltrosInicial < cantidadFiltrosInicial) ? cantidadFiltrosInicial : xFiltroTipoDocumento - cantidadFiltrosInicial;
+								itemsNotShownFiltroTipoDocumento = sizeLiFiltroTipoDocumento - xFiltroTipoDocumento;
+								$('#listFiltroTipoDocumento li').not(':lt(' + xFiltroTipoDocumento + ')').hide();
+								$('#loadMoreFiltroTipoDocumento').show();
+								$('#loadMoreFiltroTipoDocumento').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroTipoDocumento + ")");
+								$('#showLessFiltroTipoDocumento').show();
+								if (xFiltroTipoDocumento == cantidadFiltrosInicial){
+									$('#showLessFiltroTipoDocumento').hide();
+								}
+							}
+
+							function loadMoreFiltroNumero() {
+								xFiltroNumero = (xFiltroNumero + cantidadFiltrosInicial <= sizeLiFiltroNumero) ? xFiltroNumero + cantidadFiltrosInicial : sizeLiFiltroNumero;
+								itemsNotShownFiltroNumero = sizeLiFiltroNumero - xFiltroNumero;
+								$('#listFiltroNumero li:lt(' + xFiltroNumero + ')').show();
+								$('#loadMoreFiltroNumero').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroNumero + ")");
+								$('#showLessFiltroNumero').show();
+								if (xFiltroNumero == sizeLiFiltroNumero) {
+									$('#loadMoreFiltroNumero').hide();
+								}
+							}
+
+							function showLessFiltroNumero() {
+								xFiltroNumero = (xFiltroNumero - cantidadFiltrosInicial < cantidadFiltrosInicial) ? cantidadFiltrosInicial : xFiltroNumero - cantidadFiltrosInicial;
+								itemsNotShownFiltroNumero = sizeLiFiltroNumero - xFiltroNumero;
+								$('#listFiltroNumero li').not(':lt(' + xFiltroNumero + ')').hide();
+								$('#loadMoreFiltroNumero').show();
+								$('#loadMoreFiltroNumero').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroNumero + ")");
+								$('#showLessFiltroNumero').show();
+								if (xFiltroNumero == cantidadFiltrosInicial){
+									$('#showLessFiltroNumero').hide();
+								}
+							}
+
+							function loadMoreFiltroAnio() {
+								xFiltroAnio = (xFiltroAnio + cantidadFiltrosInicial <= sizeLiFiltroAnio) ? xFiltroAnio + cantidadFiltrosInicial : sizeLiFiltroAnio;
+								itemsNotShownFiltroAnio = sizeLiFiltroAnio - xFiltroAnio;
+								$('#listFiltroAnio li:lt(' + xFiltroAnio + ')').show();
+								$('#loadMoreFiltroAnio').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroAnio + ")");
+								$('#showLessFiltroAnio').show();
+								if (xFiltroAnio == sizeLiFiltroAnio) {
+									$('#loadMoreFiltroAnio').hide();
+								}
+							}
+
+							function showLessFiltroAnio() {
+								xFiltroAnio = (xFiltroAnio - cantidadFiltrosInicial < cantidadFiltrosInicial) ? cantidadFiltrosInicial : xFiltroAnio - cantidadFiltrosInicial;
+								itemsNotShownFiltroAnio = sizeLiFiltroAnio - xFiltroAnio;
+								$('#listFiltroAnio li').not(':lt(' + xFiltroAnio + ')').hide();
+								$('#loadMoreFiltroAnio').show();
+								$('#loadMoreFiltroAnio').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroAnio + ")");
+								$('#showLessFiltroAnio').show();
+								if (xFiltroAnio == cantidadFiltrosInicial){
+									$('#showLessFiltroAnio').hide();
+								}
+							}
+
+							function loadMoreFiltroEntidad() {
+								xFiltroEntidad = (xFiltroEntidad + cantidadFiltrosInicial <= sizeLiFiltroEntidad) ? xFiltroEntidad + cantidadFiltrosInicial : sizeLiFiltroEntidad;
+								itemsNotShownFiltroEntidad = sizeLiFiltroEntidad - xFiltroEntidad;
+								$('#listFiltroEntidad li:lt(' + xFiltroEntidad + ')').show();
+								$('#loadMoreFiltroEntidad').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroEntidad + ")");
+								$('#showLessFiltroEntidad').show();
+								if (xFiltroEntidad == sizeLiFiltroEntidad) {
+									$('#loadMoreFiltroEntidad').hide();
+								}
+							}
+
+							function showLessFiltroEntidad() {
+								xFiltroEntidad = (xFiltroEntidad - cantidadFiltrosInicial < cantidadFiltrosInicial) ? cantidadFiltrosInicial : xFiltroEntidad - cantidadFiltrosInicial;
+								itemsNotShownFiltroEntidad = sizeLiFiltroEntidad - xFiltroEntidad;
+								$('#listFiltroEntidad li').not(':lt(' + xFiltroEntidad + ')').hide();
+								$('#loadMoreFiltroEntidad').show();
+								$('#loadMoreFiltroEntidad').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroEntidad + ")");
+								$('#showLessFiltroEntidad').show();
+								if (xFiltroEntidad == cantidadFiltrosInicial){
+									$('#showLessFiltroEntidad').hide();
+								}
+							}
+
+							function loadMoreFiltroTema() {
+								xFiltroTema = (xFiltroTema + cantidadFiltrosInicial <= sizeLiFiltroTema) ? xFiltroTema + cantidadFiltrosInicial : sizeLiFiltroTema;
+								itemsNotShownFiltroTema = sizeLiFiltroTema - xFiltroTema;
+								$('#listFiltroTema li:lt(' + xFiltroTema + ')').show();
+								$('#loadMoreFiltroTema').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroTema + ")");
+								$('#showLessFiltroTema').show();
+								if (xFiltroTema == sizeLiFiltroTema) {
+									$('#loadMoreFiltroTema').hide();
+								}
+							}
+
+							function showLessFiltroTema() {
+								xFiltroTema = (xFiltroTema - cantidadFiltrosInicial < cantidadFiltrosInicial) ? cantidadFiltrosInicial : xFiltroTema - cantidadFiltrosInicial;
+								itemsNotShownFiltroTema = sizeLiFiltroTema - xFiltroTema;
+								$('#listFiltroTema li').not(':lt(' + xFiltroTema + ')').hide();
+								$('#loadMoreFiltroTema').show();
+								$('#loadMoreFiltroTema').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroTema + ")");
+								$('#showLessFiltroTema').show();
+								if (xFiltroTema == cantidadFiltrosInicial){
+									$('#showLessFiltroTema').hide();
+								}
+							}
+
+							function loadMoreFiltroSubtema() {
+								xFiltroSubtema = (xFiltroSubtema + cantidadFiltrosInicial <= sizeLiFiltroSubtema) ? xFiltroSubtema + cantidadFiltrosInicial : sizeLiFiltroSubtema;
+								itemsNotShownFiltroSubtema = sizeLiFiltroSubtema - xFiltroSubtema;
+								$('#listFiltroSubtema li:lt(' + xFiltroSubtema + ')').show();
+								$('#loadMoreFiltroSubtema').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroSubtema + ")");
+								$('#showLessFiltroSubtema').show();
+								if (xFiltroSubtema == sizeLiFiltroSubtema) {
+									$('#loadMoreFiltroSubtema').hide();
+								}
+							}
+
+							function showLessFiltroSubtema() {
+								xFiltroSubtema = (xFiltroSubtema - cantidadFiltrosInicial < cantidadFiltrosInicial) ? cantidadFiltrosInicial : xFiltroSubtema - cantidadFiltrosInicial;
+								itemsNotShownFiltroSubtema = sizeLiFiltroSubtema - xFiltroSubtema;
+								$('#listFiltroSubtema li').not(':lt(' + xFiltroSubtema + ')').hide();
+								$('#loadMoreFiltroSubtema').show();
+								$('#loadMoreFiltroSubtema').html("<i class=\"fas fa-angle-double-down\"></i> Más (" + itemsNotShownFiltroSubtema + ")");
+								$('#showLessFiltroSubtema').show();
+								if (xFiltroSubtema == cantidadFiltrosInicial){
+									$('#showLessFiltroSubtema').hide();
+								}
+							}
+
+							function getUrlForFiltro(tipoFiltro, value) {
+								//console.log("value " + value)
+								var url = null;
+								if (tipoFiltro === "1") {
+									url = "/dafpIndexerBGN/norma/index?find=FindNext&amp;query=&amp;filtroTipoDocumento=VALOR_REEMPLAZAR&amp;filtroNumero=472&amp;filtroAnio=1998&amp;filtroEntidad=&amp;filtroTema=&amp;filtroSubtema=&amp;bloquearFiltroTipoDocumento=&amp;bloquearFiltroNumero=&amp;bloquearFiltroAnio=&amp;bloquearFiltroEntidad=&amp;bloquearFiltroTema=&amp;bloquearFiltroSubtema=&amp;ordenarPor=";
+								}
+								else if (tipoFiltro === "2") {
+									url = "/dafpIndexerBGN/norma/index?find=FindNext&amp;query=&amp;filtroTipoDocumento=Ley&amp;filtroNumero=VALOR_REEMPLAZAR&amp;filtroAnio=1998&amp;filtroEntidad=&amp;filtroTema=&amp;filtroSubtema=&amp;bloquearFiltroTipoDocumento=&amp;bloquearFiltroNumero=&amp;bloquearFiltroAnio=&amp;bloquearFiltroEntidad=&amp;bloquearFiltroTema=&amp;bloquearFiltroSubtema=&amp;ordenarPor=";
+								}
+								else if (tipoFiltro === "3") {
+									url = "/dafpIndexerBGN/norma/index?find=FindNext&amp;query=&amp;filtroTipoDocumento=Ley&amp;filtroNumero=472&amp;filtroAnio=VALOR_REEMPLAZAR&amp;filtroEntidad=&amp;filtroTema=&amp;filtroSubtema=&amp;bloquearFiltroTipoDocumento=&amp;bloquearFiltroNumero=&amp;bloquearFiltroAnio=&amp;bloquearFiltroEntidad=&amp;bloquearFiltroTema=&amp;bloquearFiltroSubtema=&amp;ordenarPor=";
+								}
+								else if (tipoFiltro === "4") {
+									url = "/dafpIndexerBGN/norma/index?find=FindNext&amp;query=&amp;filtroTipoDocumento=Ley&amp;filtroNumero=472&amp;filtroAnio=1998&amp;filtroEntidad=VALOR_REEMPLAZAR&amp;filtroTema=&amp;filtroSubtema=&amp;bloquearFiltroTipoDocumento=&amp;bloquearFiltroNumero=&amp;bloquearFiltroAnio=&amp;bloquearFiltroEntidad=&amp;bloquearFiltroTema=&amp;bloquearFiltroSubtema=&amp;ordenarPor=";
+								}
+								else if (tipoFiltro === "5") {
+									url = "/dafpIndexerBGN/norma/index?find=FindNext&amp;query=&amp;filtroTipoDocumento=Ley&amp;filtroNumero=472&amp;filtroAnio=1998&amp;filtroEntidad=&amp;filtroTema=VALOR_REEMPLAZAR&amp;filtroSubtema=&amp;bloquearFiltroTipoDocumento=&amp;bloquearFiltroNumero=&amp;bloquearFiltroAnio=&amp;bloquearFiltroEntidad=&amp;bloquearFiltroTema=&amp;bloquearFiltroSubtema=&amp;ordenarPor=";
+								}
+								else if (tipoFiltro === "6") {
+									url = "/dafpIndexerBGN/norma/index?find=FindNext&amp;query=&amp;filtroTipoDocumento=Ley&amp;filtroNumero=472&amp;filtroAnio=1998&amp;filtroEntidad=&amp;filtroTema=&amp;filtroSubtema=VALOR_REEMPLAZAR&amp;bloquearFiltroTipoDocumento=&amp;bloquearFiltroNumero=&amp;bloquearFiltroAnio=&amp;bloquearFiltroEntidad=&amp;bloquearFiltroTema=&amp;bloquearFiltroSubtema=&amp;ordenarPor=";
+								}
+								url = url.replace("VALOR_REEMPLAZAR", value);
+								var re = new RegExp("&amp;", 'g');
+								url = url.replace(re, "&");
+								//console.log("url " + url)
+								return url;
+							}
+
+							function formatNombreFiltro(value) {
+								var parentesisIndex = value.indexOf("(");
+								value = value.substring(0, parentesisIndex).trim();
+								value = value.split(' ').join('');
+								return value;
+							}
+						</script>
+					
+				</div>
+			
+		</div>
+	</div>
+			<!--<div class="footer" role="contentinfo"><div id="footerMsgDiv">
+				<div>
+					<p>DAFP-INDEXER</p>
+					<p>BGN 2.0.6</p>
+				</div>
+			</div></div>-->
+			<div id="spinner" class="spinner" style="display:none;">Loading&hellip;</div>
+		</div>
+	</body>
+</html>

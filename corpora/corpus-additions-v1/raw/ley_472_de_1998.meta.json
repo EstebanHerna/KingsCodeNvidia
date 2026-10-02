@@ -1,0 +1,28 @@
+{
+  "doc_id": "ley_472_de_1998",
+  "norm_name": "Ley 472 de 1998",
+  "canonical_body": [
+    "ley",
+    "472",
+    "1998"
+  ],
+  "areas": [
+    "Derecho constitucional",
+    "Derecho administrativo"
+  ],
+  "priority": 2,
+  "source_type": "law",
+  "norm_number": "472",
+  "year": 1998,
+  "requested_url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=188",
+  "source_url": "https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=188",
+  "http_status": 200,
+  "content_type": "text/html; charset=UTF-8",
+  "bytes": 130792,
+  "source_sha256": "e4e74cb43e1b1aa94ddbc604052cd4137471f9bbf3cf85331af4c39d04f6730d",
+  "retrieved_at": "2026-10-02T16:48:19.959277+00:00",
+  "tls_verified": true,
+  "status": "downloaded",
+  "raw_path": "corpora/corpus-additions-v1/raw/ley_472_de_1998.html",
+  "source_title": "Ley 472 de 1998 - Gestor Normativo - Función Pública"
+}

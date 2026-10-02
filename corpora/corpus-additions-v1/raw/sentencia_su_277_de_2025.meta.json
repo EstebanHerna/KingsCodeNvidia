@@ -1,0 +1,27 @@
+{
+  "doc_id": "sentencia_su_277_de_2025",
+  "norm_name": "Sentencia SU-277 de 2025",
+  "canonical_body": [
+    "jurisprudencia",
+    "SU-277",
+    "2025"
+  ],
+  "areas": [
+    "Derecho administrativo"
+  ],
+  "priority": 1,
+  "source_type": "decision",
+  "norm_number": "SU-277",
+  "year": 2025,
+  "requested_url": "https://www.corteconstitucional.gov.co/relatoria/2025/SU277-25.htm",
+  "source_url": "https://www.corteconstitucional.gov.co/relatoria/2025/SU277-25.htm",
+  "http_status": 200,
+  "content_type": "text/html",
+  "bytes": 741538,
+  "source_sha256": "7a41f87c5d62693684a32183a58591fc1c35badeaf36efed33fdb9e5251a25be",
+  "retrieved_at": "2026-10-02T16:48:23.553804+00:00",
+  "tls_verified": true,
+  "status": "downloaded",
+  "raw_path": "corpora/corpus-additions-v1/raw/sentencia_su_277_de_2025.html",
+  "source_title": ""
+}

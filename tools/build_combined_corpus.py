@@ -38,32 +38,39 @@ def _doc_ids(manifest: dict) -> set:
     return {d["doc_id"] for d in manifest.get("documentos") or manifest.get("documents") or []}
 
 
-def combine(base: Path, addition: Path, out: Path) -> dict:
+def combine(base: Path, addition, out: Path) -> dict:
+    """addition: one directory or a list of directories, concatenated in order after base."""
     base = Path(base)
-    addition = Path(addition)
+    additions = [Path(a) for a in (addition if isinstance(addition, (list, tuple)) else [addition])]
     out = Path(out)
-    if out.resolve() in {base.resolve(), addition.resolve()}:
+    if out.resolve() in {base.resolve(), *(a.resolve() for a in additions)}:
         raise ValueError("Output must be a new directory; inputs are never modified")
     if (out / "manifest.json").exists():
         raise FileExistsError(f"{out} already holds a combined corpus; remove it explicitly to rebuild")
-    base_manifest, add_manifest = read_json(base / "manifest.json"), read_json(addition / "manifest.json")
+    base_manifest = read_json(base / "manifest.json")
     _check_inputs(base, base_manifest)
-    _check_inputs(addition, add_manifest)
-    overlap = _doc_ids(base_manifest) & _doc_ids(add_manifest)
-    if overlap:
-        raise ValueError(f"doc_id present in both corpora: {sorted(overlap)}")
-    passages = read_jsonl(base / "passages.jsonl") + read_jsonl(addition / "passages.jsonl")
+    inputs = [(base, base_manifest)]
+    seen_docs = set(_doc_ids(base_manifest))
+    for a in additions:
+        m = read_json(a / "manifest.json")
+        _check_inputs(a, m)
+        overlap = seen_docs & _doc_ids(m)
+        if overlap:
+            raise ValueError(f"doc_id present in both corpora: {sorted(overlap)}")
+        seen_docs |= _doc_ids(m)
+        inputs.append((a, m))
+    passages = [p for d, _ in inputs for p in read_jsonl(d / "passages.jsonl")]
     ids = [p["passage_id"] for p in passages]
     if len(ids) != len(set(ids)):
         raise ValueError("passage_id present in both corpora")
     nodes, conflicts = {}, 0
-    for node in read_jsonl(base / "graph/nodes.jsonl") + read_jsonl(addition / "graph/nodes.jsonl"):
+    for node in [n for d, _ in inputs for n in read_jsonl(d / "graph/nodes.jsonl")]:
         if node["node_id"] not in nodes:
             nodes[node["node_id"]] = node
         elif nodes[node["node_id"]] != node:
             conflicts += 1
     edges, seen = [], set()
-    for edge in read_jsonl(base / "graph/edges.jsonl") + read_jsonl(addition / "graph/edges.jsonl"):
+    for edge in [e for d, _ in inputs for e in read_jsonl(d / "graph/edges.jsonl")]:
         key = json.dumps(edge, ensure_ascii=False, sort_keys=True)
         if key not in seen:
             seen.add(key)
@@ -84,17 +91,17 @@ def combine(base: Path, addition: Path, out: Path) -> dict:
             return str(resolved)
 
     manifest = {
-        "version": "corpus-v0.1+v0.2-initial-combined",
+        "version": "corpus-v0.1+v0.2-initial-combined" + ("" if len(inputs) == 2 else f"+{len(inputs) - 2}-additions"),
         "status": "diagnostic_not_competitive_freeze",
         "inputs": {display_path(d):
                    {"version": m.get("version"), "manifest_sha256": file_hash(d / "manifest.json"),
                     "passages_sha256": file_hash(d / "passages.jsonl")}
-                   for d, m in ((base, base_manifest), (addition, add_manifest))},
-        "n_documentos": len(_doc_ids(base_manifest)) + len(_doc_ids(add_manifest)),
+                   for d, m in inputs},
+        "n_documentos": len(seen_docs),
         "n_fragmentos": len(passages), "n_indexed": len(index.passages),
         "n_nodes": len(nodes), "n_edges": len(edges), "node_id_conflicts_kept_base": conflicts,
         "hashes": hashes, "bm25_sha256": file_hash(out / "index/bm25.json"),
-        "documentos": (base_manifest.get("documentos") or []) + (add_manifest.get("documents") or []),
+        "documentos": [doc for _, m in inputs for doc in (m.get("documentos") or m.get("documents") or [])],
         "policy": "Concatenation only; no passage text, id or metadata is rewritten. Dense index not built.",
     }
     write_json(out / "manifest.json", manifest)
@@ -104,10 +111,13 @@ def combine(base: Path, addition: Path, out: Path) -> dict:
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--base", type=Path, default=ROOT / "corpus")
-    parser.add_argument("--addition", type=Path, default=ROOT / "corpora/corpus-v0.2")
+    parser.add_argument("--addition", type=Path, action="append",
+                        help="repeatable; default: corpora/corpus-v0.2 (+ corpora/corpus-additions-v1 if present)")
     parser.add_argument("--out", type=Path, default=ROOT / "corpus_v01_v02")
     args = parser.parse_args(argv)
-    print(json.dumps(combine(args.base, args.addition, args.out), ensure_ascii=False, indent=2))
+    additions = args.addition or [ROOT / "corpora/corpus-v0.2"] + (
+        [ROOT / "corpora/corpus-additions-v1"] if (ROOT / "corpora/corpus-additions-v1/manifest.json").exists() else [])
+    print(json.dumps(combine(args.base, additions, args.out), ensure_ascii=False, indent=2))
     return 0
 
 

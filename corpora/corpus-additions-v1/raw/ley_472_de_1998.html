@@ -1,0 +1,1051 @@
+	
+﻿<!doctype html>
+<html lang="es">
+<head>
+
+
+
+<!-- Required meta tags -->
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="og:title" content="Ley 472 de 1998 - Gestor Normativo" />
+<meta property="og:description" content="Creación y Fuente de Recursos, art. 70. Funciones, art. 71. Manejo, art. 72. Monto, art. 73." />
+<meta property="og:image" content="https://www.funcionpublica.gov.co/documents/28587425/35428802/Logo_gestor_normativo_iconos.jpg/704e6daf-bdde-be35-374c-dee67809d4d1?t=1654122375247" />
+<meta name="description" content="">
+<meta name="author" content="">
+<meta name="keywords" content="sentencia,fallo,consejo,notificación,admisorio,práctica,indemnización,presentación,omisión,ordenará,acción,grupo,titularidad,procedimiento,reglamentación,acciones,populares,caducidad,fondos,nacionales,fondo,la,defensa,derechos,intereses,colectivos">    <meta itemprop="dateModified" content="2022-01-20">
+<title>Ley 472 de 1998 - Gestor Normativo - Función Pública</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta http-equiv="Expires" content="0">
+<!-- <meta> -->
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="css_nuevo/style_gn.css"/>
+<!--Fontawesome-->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+
+<script>
+	//Cambiar tamaño fuente
+	function cambia_tamano_fuente(accion){
+		<!-- console.log('Entró a cambia_tamano_fuente'); -->
+		var vcontenido;
+		
+		//div que contiene el texto de la norma
+		var divspag = document.getElementsByTagName('div'); //descripcion-contenido
+		for ( var j = 0; j < divspag.length; j++) {
+			<!-- console.log('className: ' + divspag[j].className); -->
+			if(divspag[j].className == 'descripcion-contenido'){
+				vcontenido = divspag[j];
+			}
+		}
+		
+		<!-- console.log('ENCONTRADO!!!!: ' + vcontenido.className); -->
+		
+		
+		var elementos_parrafo = vcontenido.getElementsByTagName('p');
+		var tam_actual;
+		for ( var i = 0; i < elementos_parrafo.length; i++) {
+			<!-- console.log(elementos_parrafo[i].style.fontSize); -->
+			tam_actual = parseInt(elementos_parrafo[i].style.fontSize.replace('px',''));
+			<!-- console.log('tam_actual:' + tam_actual); -->
+			if(Number.isNaN(tam_actual))
+				tam_actual = 16;
+			<!-- console.log('tam_actual:' + tam_actual); -->
+			if(accion=='aumenta'){
+					elementos_parrafo[i].style.fontSize = (tam_actual + 1) + 'px';
+			}
+			if(accion=='reduce'){
+					elementos_parrafo[i].style.fontSize = (tam_actual - 1) + 'px';
+			}
+		}
+	}
+	
+	
+
+	
+</script>
+<style>
+p {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+</style>
+
+</head>
+<body>
+
+  
+
+
+<!--header-->
+<header class="header" style="margin-top:-28px;">
+  <div class="header-top d-none d-lg-block">
+    <div class="container logo-nav-container"> <a href="https://www.gov.co/home/" class="img-fluid"><img src="img_nuevo/logo-gov1.png" alt="Logo gov.co"/></a>
+      <nav class="navigation accesibilidad">
+        <ul>
+          <li class="mr-5" style="font-size: 15px;"><a href="https://www.funcionpublica.gov.co/inicio?p_p_id=com_liferay_login_web_portlet_LoginPortlet&p_p_lifecycle=0&p_p_state=maximized&p_p_mode=view&saveLastPath=false&_com_liferay_login_web_portlet_LoginPortlet_mvcRenderCommandName=%2Flogin%2Flogin">INGRESAR A LA INTRANET</a></li>
+          <li class="mr-1"> <button href="https://www.funcionpublica.gov.co/rss" type="button" role="button" class="btn btn-white" alt="Página principal de Función Pública"><i class="fa fa-rss pr-1 pl-1" aria-hidden="true"></i></button> </li>
+          <li class="mr-1">
+            <button type="button" class="btn btn-white" onclick="cambia_tamano_fuente('aumenta')">A+</button>
+          </li>
+          <li>
+            <button type="button" class="btn btn-white" onclick="cambia_tamano_fuente('reduce')">A-</button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+  <!-- 
+  <div class="navbar-right">
+		<div id="iconos_barra">
+			<a class="navbar-link link-intranet" href="/web/intranet/inicio" title="Ingresar a la intranet">INGRESAR A LA INTRANET</a>
+			<a class="opcion" href="/rss" aria-label="Rss" target="_blank"><i class="icon-rss" aria-hidden="true"></i><span class="sr-only">RSS</span></a>
+			<a class="opcion" onclick="aumentarTexto()">A+</a>
+			<a class="opcion" onclick="reducirTexto()">A-</a>
+			<a title="Reestablecer el tama?o de la fuente" class="opcion" onclick="reducirTexto()"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+		</div>					
+	</div> -->
+  
+  
+  <!--Reemplazar img Banner acÃ¡-->
+  <!-- <div class="banner  d-none d-lg-block"><a href="#"><img src="img_nuevo/banner1.png" alt="" width="1440" class="img-fluid" height="120" border="0"/></a></div> -->
+  <!--fin banner--> 
+  <!--logo y buscador-->
+  <div class="container ">
+    <div class="row align-items-center logo2-search">
+      <div class="col-lg-4 col-md-6"> 
+		<a href="https://www.funcionpublica.gov.co" class="logo">
+			<!--<img src="https://www.funcionpublica.gov.co/documents/418537/37421537/logo-CP-2023.png/63ca9626-0978-03ad-1312-b0050ab726b0?t=1684959039170" width="285px" class="img-fluid" alt="Logo Función Pública"/>-->
+			<img src="https://www.funcionpublica.gov.co/image/layout_set_logo?img_id=224510&t=1718837174316" width="285px" class="img-fluid" alt="Logo Función Pública"/>
+		</a> 
+	  </div>
+      <div class="col-lg-4 col-md-6"> 
+		<!--<a href="https://www.funcionpublica.gov.co/" class="logo">
+			<img src="https://www.funcionpublica.gov.co/documents/418537/37421537/layout_set_logo_FP.png/0587270b-880a-4f78-9b74-aaf988700c87?t=1659904736491" width="285px" class="img-fluid" alt="Logo Función Pública"/>
+		</a>--> 
+	  </div>      
+	  <form action="/web/eva/curso-para-veedurias-ciudadanas?p_p_id=com_liferay_portal_search_web_portlet_SearchPortlet&amp;p_p_lifecycle=0&amp;p_p_state=maximized&amp;p_p_mode=view&amp;_com_liferay_portal_search_web_portlet_SearchPortlet_mvcPath=%2Fsearch.jsp&amp;_com_liferay_portal_search_web_portlet_SearchPortlet_redirect=http%3A%2F%2Fwww.funcionpublica.gov.co%2Fweb%2Feva%2Fcurso-para-veedurias-ciudadanas%3Fp_p_id%3Dcom_liferay_portal_search_web_portlet_SearchPortlet%26p_p_lifecycle%3D0%26p_p_state%3Dnormal%26p_p_mode%3Dview" class="form " data-fm-namespace="_com_liferay_portal_search_web_portlet_SearchPortlet_" id="_com_liferay_portal_search_web_portlet_SearchPortlet_fm" method="get" name="_com_liferay_portal_search_web_portlet_SearchPortlet_fm"> 
+	  <div class="col d-none d-lg-block  mt-md-4 align-self-end "> <span name="btnsearch" style="cursor: pointer;" class="g-pos-abs g-right-20 d-block g-width-50 h-100"> <i class="admin-search g-absolute-centered"></i> </span>
+	    <input class="field form-control" id="_com_liferay_portal_search_web_portlet_SearchPortlet_formDate" name="_com_liferay_portal_search_web_portlet_SearchPortlet_formDate" value="1535491536559" type="hidden"> 
+		<input name="p_p_id" value="com_liferay_portal_search_web_portlet_SearchPortlet" type="hidden">
+		<input name="p_p_lifecycle" value="0" type="hidden">
+		<input name="p_p_state" value="maximized" type="hidden">
+		<input name="p_p_mode" value="view" type="hidden">
+		<input name="_com_liferay_portal_search_web_portlet_SearchPortlet_mvcPath" value="/search.jsp" type="hidden">
+		<input name="_com_liferay_portal_search_web_portlet_SearchPortlet_redirect" value="/web/eva/curso-para-veedurias-ciudadanas?p_p_id=com_liferay_portal_search_web_portlet_SearchPortlet&amp;p_p_lifecycle=0&amp;p_p_state=normal&amp;p_p_mode=view" type="hidden"> 
+        <input name="_com_liferay_portal_search_web_portlet_SearchPortlet_keywords" class="form-control mr-sm-2 buscador_fp" type="search" placeholder="Buscar..." aria-label="Search">
+		</div>
+	  </form>
+      
+    </div>
+  </div>
+  
+  <!--menu principal-->
+  <div class="container">
+  
+
+  
+  
+  
+  
+    <nav class="navbar navbar-expand-lg navbar-light"> <a class="navbar-brand" href="https://www.funcionpublica.gov.co/web/eva">EVA</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item "> <a class="nav-link" href="https://www.funcionpublica.gov.co/web/eva/publicaciones">Publicaciones </a> </li>
+          <li class="nav-item active"> <a class="nav-link" href="https://www.funcionpublica.gov.co/web/eva/gestor-normativo">Gestor Normativo</a> </li>
+          <li class="nav-item"> <a class="nav-link" href="https://www.funcionpublica.gov.co/eva/red">Red de servidores</a> </li>
+          <li class="nav-item dropdown"> <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Cursos virtuales </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown"> <a class="dropdown-item" href="https://www.funcionpublica.gov.co/web/eva/curso-integridad">Curso de integridad</a> <a class="dropdown-item" href="https://www.funcionpublica.gov.co/web/eva/programa-de-induccion-y-reinduccion">Programa de inducción y reinducción</a> <a class="dropdown-item" href="https://www.funcionpublica.gov.co/web/eva/curso-para-veedurias-ciudadanas">Curso para Veedurías Ciudadanas</a> <a class="dropdown-item" href="https://www.funcionpublica.gov.co/web/eva/curso-gerentes-publicos">Curso para Gerentes PÃºblicos</a> <a class="dropdown-item" href="https://www.funcionpublica.gov.co/web/eva/curso-mipg">Curso MIPG</a> <a class="dropdown-item" href="https://www.funcionpublica.gov.co/web/eva/curso-de-empleo-publico">Curso de Empleo PÃºblico</a> </div>
+          </li>
+          <li class="nav-item"> <a class="nav-link" href="https://www.funcionpublica.gov.co/eva/es/formatos-administracion-publica">Formatos</a> </li>
+          <li class="nav-item"> <a class="nav-link" href="https://www.funcionpublica.gov.co/web/eva/contactenos">Contáctenos</a> </li>
+          <li class="nav-item"> <a class="nav-link" href="https://www.funcionpublica.gov.co/web/eva/preguntas-frecuentes">Preguntas frecuentes</a> </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  
+  <!---breadcrumb-->
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb"  id="spanmiga" >
+        <li class="breadcrumb-item"><a href="https://www.funcionpublica.gov.co/web/eva">EVA</a></li>
+        <li class="breadcrumb-item"><a href="https://www.funcionpublica.gov.co/web/eva/gestor-normativo">Gestor Normativo</a></li>
+		<li class="breadcrumb-item active" aria-current="page">Normas de la Función Pública</li>
+      </ol>
+    </nav>
+  </div>
+  </div>
+  <!-- End Breadcrumbs --> 
+
+</header>
+
+<!---End header-->
+	
+	<script>
+	
+
+
+	
+	
+	
+	function Scrolldown() {
+			window.scroll(0,-30); 
+	}
+	function eliminateDuplicates(arr) {
+				//console.log(arr);
+			  var i,
+				  len=arr.length,
+				  out=[],
+				  obj={};
+
+			  for (i=len-1;i>=0;i--) {
+					obj[arr[i]]=0;
+			  }
+			  //console.log(obj);
+			  for (i in obj) {
+					out.push(i);
+					//console.log(i);
+			  }
+			  out.reverse();
+			  return out;
+	}
+		
+	function mostrar_ocultar_jurisprudencia(iddiv){
+		if(document.getElementById("juris"+iddiv).style.display=='none'){
+			document.getElementById("juris"+iddiv).style.display='block';
+		}else{
+			document.getElementById("juris"+iddiv).style.display='none';
+		}
+	}
+	
+	if (sessionStorage.migapan) {
+				sessionStorage.migapan = sessionStorage.migapan + '+Ley 472/98|188';
+				var normas = sessionStorage.migapan.split('+');
+				normas = eliminateDuplicates(normas);
+				sessionStorage.migapan = normas.join('+');
+	} else {
+				sessionStorage.migapan = 'Ley 472/98|188';
+	}
+	var migadepan = sessionStorage.migapan.split("+");
+	var txt_miga='<li class="breadcrumb-item"><a href="https://www.funcionpublica.gov.co/web/eva">EVA</a></li>'+
+        '<li class="breadcrumb-item"><a href="https://www.funcionpublica.gov.co/web/eva/gestor-normativo">Gestor Normativo</a></li>'+
+	    '<li class="breadcrumb-item"><a href="https://www.funcionpublica.gov.co/eva/gestornormativo/consulta_avanzada.php">Consulta</a></li>';
+	for (j=0;j<migadepan.length;j++) {
+		var xnorma=migadepan[j].split("|");
+		txt_miga+='<li class="breadcrumb-item"><a href="/eva/gestornormativo/norma.php?i='+xnorma[1]+'">'+xnorma[0]+'</a></li>'; 
+	}
+	document.getElementById("spanmiga").innerHTML=txt_miga;
+	//document.getElementById("result").innerHTML = "You have clicked the button " +
+	//sessionStorage.migapan + " time(s) in this session.";
+
+	function mostrarMensajeNoDisponible() {
+		alert("Esta funcionalidad no está disponible por el momento.");
+	}
+	
+	</script>
+	<style>
+		h2,h3,h4 {
+			  text-align: center;
+			      font-size: 1em;
+			}
+		.titulo-norma{
+			  font-size: 2.441em;
+			  text-align: left;
+			}
+		h1 {
+			  text-align: center;
+			      font-size: 1em;
+			}
+		.jurisprudencia a {
+			color: #007bff!important;
+		}
+		ol {
+			padding-inline-start: 20px;
+		}
+	</style>
+  	
+  <main class="main"> 
+  <!-- Breadcrumbs -->
+  
+  <!-- getRealIP 157.253.220.141, 54.198.165.25-->  <!-- cache: cache/188-20220120161925.fp -->  
+  
+  <div class="container">
+    <h2 class="titulo-norma"><strong>Ley 472 de 1998</strong></h2>  
+  <div class="row" style="margin-top: 4rem">
+  <!--col left-->
+        <div class="col-lg-3 col-md-12">
+							
+		<a href="norma_pdf.php?i=188" target="_blank">
+		<!--<a href="#" onclick="mostrarMensajeNoDisponible(); return false;" target="_blank">-->
+			<button type="button" class="btn btn-yellow">Descargar PDF</button>
+		</a>
+					 <!--accordion-->
+      <div class="accordion" id="accordion">
+	  <div class="card-accordion">
+	  <div class="card-header" id="headingOne">
+	  <h5 class="mb-0">
+	  <button class="btn btn-link collapsed  btn-accordion" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+          Fechas
+        </button>
+	  </h5>
+	  </div>
+	  <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+      <div class="card-body">
+			<p>Fecha de Expedición: 05 de agosto de 1998</p>
+			<p class="subrayado2"></p>
+			<p>Fecha de Entrada en Vigencia: 05 de agosto de 1998</p>
+			<p class="subrayado2"></p>
+			<p>Medio de Publicación: Diario Oficial No. 43.357 de agosto 6 de 1998</p>
+			<p class="subrayado2"></p>
+      </div>
+    </div>
+	  </div>
+	  
+	  <div class="card-accordion">
+			<div class="card-header" id="headingTwo">
+			  <h5 class="mb-0">
+				<button class="btn btn-link collapsed ; btn-accordion" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+				 Temas (8)
+				</button>
+			  </h5>
+			</div>
+			
+			<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+			  <div class="card-body">
+			  				  <h5 class="txt-18">ACCIÓN DE GRUPO</h5> 
+				  <h6>- Subtema: Procedimiento</h6>
+				  
+				  				  <p>  Objeto, definiciones, principios generales y finalidades, art. 1 a 8. Procedencia, legitimación, jurisdicción y competencia, art. 46 a 51. Requisitos y admisión de la demanda, art. 52 a 57. medidas cautelares, art. 58 a 61. Período probatorio, art. 62. Alegatos, sentencia y recursos, art. 63 a 67. Disposiciones complementarias, art. 68 y 69. Disposiciones comunes a acciones populares y de grupo, en materia probatoria, art. 74 a 79. Disposiciones finales, art. 80 a 85. Vigencia, art. 86.</p>
+										
+								  				  <h5 class="txt-18">ACCIÓN DE GRUPO</h5> 
+				  <h6>- Subtema: Reglamentación</h6>
+				  
+				  				  <p>  Objeto, definiciones, principios generales y finalidades, art. 1 a 8. Procedencia, legitimación, jurisdicción y competencia, art. 46 a 51. Requisitos y admisión de la demanda, art. 52 a 57. medidas cautelares, art. 58 a 61. Período probatorio, art. 62. Alegatos, sentencia y recursos, art. 63 a 67. Disposiciones complementarias, art. 68 y 69. Disposiciones comunes a acciones populares y de grupo, en materia probatoria, art. 74 a 79. Disposiciones finales, art. 80 a 85. Vigencia, art. 86.</p>
+										
+								  				  <h5 class="txt-18">ACCIÓN DE GRUPO</h5> 
+				  <h6>- Subtema: Titularidad</h6>
+				  
+				  				  <p>  Objeto, definiciones, principios generales y finalidades, art. 1 a 8. Procedencia, legitimación, jurisdicción y competencia, art. 46 a 51. Requisitos y admisión de la demanda, art. 52 a 57. medidas cautelares, art. 58 a 61. Período probatorio, art. 62. Alegatos, sentencia y recursos, art. 63 a 67. Disposiciones complementarias, art. 68 y 69. Disposiciones comunes a acciones populares y de grupo, en materia probatoria, art. 74 a 79. Disposiciones finales, art. 80 a 85. Vigencia, art. 86.</p>
+										
+								  				  <h5 class="txt-18">ACCIONES POPULARES</h5> 
+				  <h6>- Subtema: Caducidad</h6>
+				  
+				  				  <p>  Objeto, definiciones, principios generales y finalidades, art. 1 a 8. Procedencia, agotamiento opcional de la Vía Gubernativa, Caducidad, Legitimación, art. 9 a 14. jurisdicción y competencia, art. 15 y 16. Presentación de la demanda o petición, art. 17 a 19. Admisión, notificación y traslado, art. 20 a23. Coadyuvancia y medidas cautelares, art. 24 a 26. Pacto de cumplimiento, art. 27. Período probatorio, art. 28 a 32. Sentencia, art. 33 a 35. Recursos y costas, art. 36 a 38. Incentivos art. 39 y 40. Medidas coercitivas y otras disposiciones art. 41 a 45. Disposiciones comunes a acciones populares y de grupo, en materia probatoria, art. 74 a 79. Disposiciones finales, art. 80 a 85. Vigencia, art. 86.</p>
+										
+								  				  <h5 class="txt-18">ACCIONES POPULARES</h5> 
+				  <h6>- Subtema: Procedimiento</h6>
+				  
+				  				  <p>  Objeto, definiciones, principios generales y finalidades, art. 1 a 8. Procedencia, agotamiento opcional de la Vía Gubernativa, Caducidad, Legitimación, art. 9 a 14. jurisdicción y competencia, art. 15 y 16. Presentación de la demanda o petición, art. 17 a 19. Admisión, notificación y traslado, art. 20 a23. Coadyuvancia y medidas cautelares, art. 24 a 26. Pacto de cumplimiento, art. 27. Período probatorio, art. 28 a 32. Sentencia, art. 33 a 35. Recursos y costas, art. 36 a 38. Incentivos art. 39 y 40. Medidas coercitivas y otras disposiciones art. 41 a 45. Disposiciones comunes a acciones populares y de grupo, en materia probatoria, art. 74 a 79. Disposiciones finales, art. 80 a 85. Vigencia, art. 86.</p>
+										
+								  				  <h5 class="txt-18">ACCIONES POPULARES</h5> 
+				  <h6>- Subtema: Reglamentación</h6>
+				  
+				  				  <p>  Objeto, definiciones, principios generales y finalidades, art. 1 a 8. Procedencia, agotamiento opcional de la Vía Gubernativa, Caducidad, Legitimación, art. 9 a 14. jurisdicción y competencia, art. 15 y 16. Presentación de la demanda o petición, art. 17 a 19. Admisión, notificación y traslado, art. 20 a23. Coadyuvancia y medidas cautelares, art. 24 a 26. Pacto de cumplimiento, art. 27. Período probatorio, art. 28 a 32. Sentencia, art. 33 a 35. Recursos y costas, art. 36 a 38. Incentivos art. 39 y 40. Medidas coercitivas y otras disposiciones art. 41 a 45. Disposiciones comunes a acciones populares y de grupo, en materia probatoria, art. 74 a 79. Disposiciones finales, art. 80 a 85. Vigencia, art. 86.</p>
+										
+								  				  <h5 class="txt-18">ACCIONES POPULARES</h5> 
+				  <h6>- Subtema: Titularidad</h6>
+				  
+				  				  <p>  Objeto, definiciones, principios generales y finalidades, art. 1 a 8. Procedencia, agotamiento opcional de la Vía Gubernativa, Caducidad, Legitimación, art. 9 a 14. jurisdicción y competencia, art. 15 y 16. Presentación de la demanda o petición, art. 17 a 19. Admisión, notificación y traslado, art. 20 a23. Coadyuvancia y medidas cautelares, art. 24 a 26. Pacto de cumplimiento, art. 27. Período probatorio, art. 28 a 32. Sentencia, art. 33 a 35. Recursos y costas, art. 36 a 38. Incentivos art. 39 y 40. Medidas coercitivas y otras disposiciones art. 41 a 45. Disposiciones comunes a acciones populares y de grupo, en materia probatoria, art. 74 a 79. Disposiciones finales, art. 80 a 85. Vigencia, art. 86.</p>
+										
+								  				  <h5 class="txt-18">FONDOS NACIONALES</h5> 
+				  <h6>- Subtema: Fondo para la Defensa de los Derechos e Intereses Colectivos</h6>
+				  
+				  				  <p>  Creación y Fuente de Recursos, art. 70. Funciones, art. 71. Manejo, art. 72. Monto, art. 73.</p>
+										
+								  			  </div>
+			</div>
+	</div>
+	  
+		
+	
+	 <div class="card-accordion">
+    <div class="card-header" id="headingThree">
+      <h5 class="mb-0">
+		<button class="btn btn-link collapsed; btn-accordion" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+          Vigencias(1)
+        </button>
+      </h5>
+    </div>
+    <div id="collapseThree" class="collapse  show" aria-labelledby="headingThree" data-parent="#accordion">
+      <div class="card-body">
+	  <p><a href="norma.php?i=175606#">Adicionado por Ley 2195 de 2022</a><p>	  <p class="subrayado2"></p>
+      </div>
+    </div>
+  </div> 
+
+  </div>
+	   <!--end accordion-->
+	  </div>
+	  
+	  <!--end col left-->
+
+<!--col right-->
+<div class="col-lg-9 col-md-12">
+
+			
+											
+						
+						
+											<div class="alert alert-dismissible alert-info">
+												  <!-- <button type="button" class="close" data-dismiss="alert">X</button> -->
+												  <p ><small>Los datos publicados tienen propósitos exclusivamente informativos. El Departamento Administrativo de la Función Pública no se hace responsable de la vigencia de la presente norma. Nos encontramos en un proceso permanente de actualización de los contenidos.</small></p>
+											</div>
+
+
+	<div class="descripcion-contenido">
+		<p align="center"><strong>LEY 472 DE 1998</strong></p>
+<p align="center"><strong>(Agosto 5)</strong></p>
+<p align="center"><strong><em>&ldquo;Por la cual se desarrolla el art&iacute;culo 88 de la Constituci&oacute;n Pol&iacute;tica de Colombia en relaci&oacute;n con el ejercicio de las acciones populares y de grupo y se dictan otras disposiciones.&rdquo;</em></strong></p>
+<p align="center"><strong>EL CONGRESO DE COLOMBIA</strong></p>
+<p align="center"><strong>DECRETA:</strong></p>
+<p align="center"><strong>T&Iacute;TULO I</strong></p>
+<p align="center"><strong>OBJETO, DEFINICIONES, PRINCIPIOS GENERALES Y FINALIDADES</strong></p>
+<p align="center"><strong>CAP&Iacute;TULO I</strong></p>
+<p align="center"><strong>OBJETO</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 1&ordm;.- </strong><em>Objeto de la Ley. </em>La presente Ley tiene por objeto regular las acciones populares y las acciones de grupo de qu&eacute; trata el art&iacute;culo 88 de la Constituci&oacute;n Pol&iacute;tica de Colombia. Estas acciones est&aacute;n orientadas a garantizar la defensa y protecci&oacute;n de los derechos e intereses colectivos, as&iacute; como los de grupo o de un n&uacute;mero plural de personal.</p>
+<p align="center"><strong>CAP&Iacute;TULO II</strong></p>
+<p align="center"><strong>DEFINICIONES</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 2&ordm;.- </strong><em>Acciones Populares. </em>Son los medios procesales para la protecci&oacute;n de los derechos e intereses colectivos.</p>
+<p class="MsoNormal">Las acciones populares se ejercen para evitar el da&ntilde;o contingente, hacer cesar el peligro, la amenaza, la vulneraci&oacute;n o agravio sobre los derechos e intereses colectivos, o restituir las cosas a su estado anterior cuando fuere posible.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 3&ordm;.- </strong>Acci&oacute;n de Grupo. <em>Son aquellas acciones interpuestas por un n&uacute;mero plural o un conjunto de personas que re&uacute;nen condiciones uniformes respecto de una misma causa que origin&oacute; perjuicios individuales para dichas personas</em>. <strong><u>Las condiciones uniformes deben tener tambi&eacute;n lugar respecto de todos los elementos que configuran la responsabilidad</u></strong>. <strong>Texto subrayado declarado INEXEQUIBLE por la Corte Constitucional mediante</strong> <a href="norma.php?i=14321#0">Sentencia C-569 de 2004</a> <strong>y el texto en cursiva declarado EXEQUIBLE</strong></p>
+<p class="MsoNormal">La acci&oacute;n de grupo se ejercer&aacute; exclusivamente para obtener el reconocimiento y pago de indemnizaci&oacute;n de los perjuicios.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO <a id="sp4" name="4"></a>4&ordm;.- </strong><em>Derechos e Intereses Colectivos. </em>Son derechos e intereses colectivos, entre otros, los relacionados con:</p>
+<p class="MsoNormal">a) El goce de un ambiente sano, de conformidad con lo establecido en la Constituci&oacute;n, la ley y las disposiciones reglamentarias; <a href="norma.php?i=43665#0">Ver el Fallo del Consejo de Estado 1330 de 2011</a></p>
+<p class="MsoNormal">b) La moralidad administrativa; <a href="norma.php?i=43665#0">Ver el Fallo del Consejo de Estado 1330 de 2011</a></p>
+<p class="MsoNormal">c) La existencia del equilibrio ecol&oacute;gico y el manejo y aprovechamiento racional de los recursos naturales para garantizar su desarrollo sostenible, su conservaci&oacute;n, restauraci&oacute;n o sustituci&oacute;n. La conservaci&oacute;n de las especies animales y vegetales, la protecci&oacute;n de &aacute;reas de especial importancia ecol&oacute;gica, de los ecosistemas situados en las zonas fronterizas, as&iacute; como los dem&aacute;s intereses de la comunidad relacionados con la preservaci&oacute;n y restauraci&oacute;n del medio ambiente;</p>
+<p class="MsoNormal">d) El goce del espacio p&uacute;blico y la utilizaci&oacute;n y defensa de los bienes de uso p&uacute;blico; <a href="norma.php?i=5547#1">Ver Fallo Consejo de Estado 071 de 2001</a> , <a href="norma.php?i=6135#1">Ver Fallo Consejo de Estado 116 de 2001</a></p>
+<p class="MsoNormal">e) La defensa del patrimonio p&uacute;blico; <a href="norma.php?i=5547#1">Ver Fallo Consejo de Estado 071 de 2001</a>, <a href="norma.php?i=43665#0">Ver el Fallo del Consejo de Estado 1330 de 2011</a></p>
+<p class="MsoNormal">f) La defensa del patrimonio cultural de la Naci&oacute;n;</p>
+<p class="MsoNormal">g) La seguridad y salubridad p&uacute;blicas;</p>
+<p class="MsoNormal">h) El acceso a una infraestructura de servicios que garantice la salubridad p&uacute;blica;</p>
+<p class="MsoNormal">i) La libre competencia econ&oacute;mica;</p>
+<p class="MsoNormal">j) El acceso a los servicios p&uacute;blicos y a que su prestaci&oacute;n sea eficiente y oportuna;</p>
+<p class="MsoNormal">k) La prohibici&oacute;n de la fabricaci&oacute;n, importaci&oacute;n, posesi&oacute;n, uso de armas qu&iacute;micas, biol&oacute;gicas y nucleares, as&iacute; como la introducci&oacute;n al territorio nacional de residuos nucleares o t&oacute;xicos;</p>
+<p class="MsoNormal">l) El derecho a la seguridad y prevenci&oacute;n de desastres previsibles t&eacute;cnicamente; <a href="norma.php?i=5547#1">Ver Fallo Consejo de Estado 071 de 2001</a></p>
+<p class="MsoNormal">m) La realizaci&oacute;n de las construcciones, edificaciones y desarrollos urbanos respetando las disposiciones jur&iacute;dicas, de manera ordenada, y dando prevalencia al beneficio de la calidad de vida de los habitantes; <a href="norma.php?i=5547#1">Ver Fallo Consejo de Estado 071 de 2001</a></p>
+<p class="MsoNormal">n) Los derechos de los consumidores y usuarios. <a href="norma.php?i=8029#1">Ver Fallo Consejo de Estado 560 de 2002</a></p>
+<p class="MsoNormal">Igualmente son derechos e intereses colectivos los definidos como tales en la Constituci&oacute;n, las leyes ordinarias y los tratados de Derecho Internacional celebrados por Colombia.</p>
+<p class="MsoNormal"><strong>PAR&Aacute;GRAFO.- </strong>Los derechos e intereses enunciados en el presente art&iacute;culo estar&aacute;n definidos y regulados por las normas actualmente vigentes o las que se expidan con posterioridad a la vigencia de la presente Ley.</p>
+<p align="center"><strong>CAP&Iacute;TULO III</strong></p>
+<p align="center"><strong>PRINCIPIOS</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 5&ordm;.- </strong><em>Tr&aacute;mite. </em>El tr&aacute;mite de las acciones reguladas en esta ley se desarrollar&aacute; con fundamento en los principios constitucionales y especialmente en los de prevalencia del derecho sustancial, publicidad, econom&iacute;a, celeridad y eficacia. Se aplicar&aacute;n tambi&eacute;n los principios generales del C&oacute;digo de Procedimiento Civil, cuando &eacute;stos no se contrapongan a la naturaleza de dichas acciones.</p>
+<p class="MsoNormal">El Juez velar&aacute; por el respeto al debido proceso, las garant&iacute;as procesales y el equilibrio entre las partes.</p>
+<p class="MsoNormal">Promovida la acci&oacute;n, es obligaci&oacute;n del Juez impulsarla oficiosamente y producir decisi&oacute;n de m&eacute;rito so pena de incurrir en falta disciplinaria, sancionable con destituci&oacute;n. Para este fin el funcionario de conocimiento deber&aacute; adoptar las medidas conducentes para adecuar la petici&oacute;n a la acci&oacute;n que corresponda.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 6&ordm;.- </strong><em>Tr&aacute;mite Preferencial. </em>Las acciones populares preventivas se tramitar&aacute;n con preferencia a las dem&aacute;s que conozca el juez competente, excepto el recurso de Habeas Corpus, la Acci&oacute;n de Tutela y la Acci&oacute;n de cumplimiento.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 7&ordm;.- </strong><em>Interpretaci&oacute;n de los Derechos Protegidos. </em>Los derechos e intereses protegidos por las Acciones Populares y de Grupo, de conformidad con el art&iacute;culo 4 de la presente Ley se observar&aacute;n y aplicar&aacute;n de acuerdo a como est&aacute;n definidos y regulados en la Constituci&oacute;n, las leyes y los tratados internacionales que vinculen a Colombia.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 8&ordm;.- </strong><em>Estados de Excepci&oacute;n. </em>Las acciones populares podr&aacute;n incoarse y tramitarse en todo tiempo.</p>
+<p align="center"><strong>T&Iacute;TULO II</strong></p>
+<p align="center"><strong>DE LAS ACCIONES POPULARES</strong></p>
+<p align="center"><strong>CAP&Iacute;TULO I</strong></p>
+<p align="center"><strong>PROCEDENCIA Y CADUCIDAD</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 9&ordm;.- </strong><em>Procedencia de las Acciones Populares. </em>Las acciones populares proceden contra toda acci&oacute;n u omisi&oacute;n de las autoridades p&uacute;blicas o de los particulares, que hayan violado o amenacen violar los derechos e intereses colectivos.</p>
+<p class="MsoNormal"><a href="norma.php?i=5549#1">Ver Fallo Consejo de Estado 064 de 2001</a></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 10&ordm;.- </strong><em>Agotamiento Opcional de la V&iacute;a Gubernativa. </em>Cuando el derecho o inter&eacute;s colectivo se vea amenazado o vulnerado por la actividad de la administraci&oacute;n, no ser&aacute; necesario interponer previamente los recursos administrativos como requisito para intentar la acci&oacute;n popular.</p>
+<p class="MsoNormal"><a href="norma.php?i=5549#1">Ver Fallo Consejo de Estado 064 de 2001</a></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 11.- </strong><em>Caducidad. </em>La Acci&oacute;n Popular podr&aacute; promoverse durante el tiempo que subsista la amenaza o peligro al derecho e inter&eacute;s colectivo. <strong><u>Cuando dicha acci&oacute;n est&eacute; dirigida a volver las cosas a su estado anterior, el t&eacute;rmino para interponerla ser&aacute; de cinco (5) a&ntilde;os, contados a partir de la acci&oacute;n u omisi&oacute;n que produjo la alteraci&oacute;n</u></strong>. <strong>Art&iacute;culo 11 declarado exequible, salvo la expresi&oacute;n subrayada que se declara inexequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p class="MsoNormal"><a href="norma.php?i=5549#1">Ver Fallo Consejo de Estado 064 de 2001</a>, <a href="norma.php?i=28830#0">Ver Fallo Consejo de Estado 6569 de 2001</a></p>
+<p align="center"><strong>CAP&Iacute;TULO II</strong></p>
+<p align="center"><strong>LEGITIMACI&Oacute;N</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 12.- </strong><em>Titulares de las Acciones. </em>Podr&aacute;n ejercitar las acciones populares:</p>
+<p class="MsoNormal">1. Toda persona natural o jur&iacute;dica.</p>
+<p class="MsoNormal">2. Las organizaciones No Gubernamentales, la Organizaciones Populares, C&iacute;vicas o de &iacute;ndole similar.</p>
+<p class="MsoNormal">3. Las entidades p&uacute;blicas que cumplan funciones de control, intervenci&oacute;n o vigilancia, siempre que la amenaza o vulneraci&oacute;n a los derechos e intereses colectivos no se hayan originado en su acci&oacute;n u omisi&oacute;n.</p>
+<p class="MsoNormal">4. El Procurador General de la Naci&oacute;n, el Defensor del Pueblo y los Personeros Distritales y municipales, en lo relacionado con su competencia.<strong> Declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p class="MsoNormal">5. Los alcaldes y dem&aacute;s servidores p&uacute;blicos que por raz&oacute;n de sus funciones deban promover la protecci&oacute;n y defensa de estos derechos o intereses.<strong> Declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 13.- </strong><em>Ejercicio de la Acci&oacute;n Popular. </em>Los legitimados para ejercer acciones populares pueden hacerlo por s&iacute; mismos o por quien act&uacute;e en su nombre.</p>
+<p class="MsoNormal">Cuando se interponga una acci&oacute;n popular sin la intermediaci&oacute;n de un apoderado judicial, la Defensor&iacute;a del Pueblo podr&aacute; intervenir, para lo cual, el juez deber&aacute; notificarle el auto admisorio de la demanda.</p>
+<p class="MsoNormal"><strong>Declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 14.- </strong><em>Personas Contra Quienes se Dirige la Acci&oacute;n. </em>La Acci&oacute;n Popular se dirigir&aacute; contra el particular, persona natural o jur&iacute;dica, o la autoridad p&uacute;blica cuya actuaci&oacute;n u omisi&oacute;n se considere que amenaza, viola o ha violado el derecho o inter&eacute;s colectivo. En caso de existir la vulneraci&oacute;n o amenaza y se desconozcan los responsables, corresponder&aacute; al juez determinarlos.</p>
+<p align="center"><strong>CAP&Iacute;TULO III</strong></p>
+<p align="center"><strong>DE LA JURISDICCI&Oacute;N Y COMPETENCIA</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 15.- </strong><em>Jurisdicci&oacute;n. </em>La jurisdicci&oacute;n de lo Contencioso Administrativo conocer&aacute; de los procesos que se susciten con ocasi&oacute;n del ejercicio de las Acciones Populares originadas en actos, acciones y omisiones de las entidades p&uacute;blicas y de las personas privadas que desempe&ntilde;en funciones administrativas, de conformidad con lo dispuesto en las disposiciones vigentes sobre la materia.</p>
+<p class="MsoNormal">En los dem&aacute;s casos, conocer&aacute; la jurisdicci&oacute;n ordinaria civil.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 16.- </strong><em>Competencia. </em>De las Acciones Populares conocer&aacute;n en primera instancia los jueces administrativos y los jueces civiles de circuito. En segunda instancia la competencia corresponder&aacute; a la secci&oacute;n primera del Tribunal Contencioso Administrativo o a la Sala Civil del Tribunal de Distrito Judicial al que pertenezca el Juez de primera instancia.</p>
+<p class="MsoNormal">Ser&aacute; competente el juez del lugar de ocurrencia de los hechos o el del domicilio del demandado a elecci&oacute;n del actor popular. Cuando por los hechos sean varios los jueces competentes, conocer&aacute; a prevenci&oacute;n el juez ante el cual se hubiere presentado la demanda.</p>
+<p class="MsoNormal"><strong>PAR&Aacute;GRAFO.-</strong> Hasta tanto entren en funcionamiento, los juzgados administrativos, de las acciones populares interpuestas ante la Jurisdicci&oacute;n Contencioso Administrativa conocer&aacute;n en primera instancia los Tribunales Contencioso Administrativos y en segunda instancia el consejo de Estado.</p>
+<p align="center"><strong>CAP&Iacute;TULO IV</strong></p>
+<p align="center"><strong>PRESENTACI&Oacute;N DE LA DEMANDA O PETICI&Oacute;N</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 17.- </strong><em>Facilidades para Promover las Acciones Populares. </em>El interesado podr&aacute; acudir ante el Personero Distrital o Municipal, o a la Defensor&iacute;a del Pueblo para que se le colabore en la elaboraci&oacute;n de su demanda o petici&oacute;n, as&iacute; como en los eventos de urgencia o cuando el solicitante no sepa escribir.</p>
+<p class="MsoNormal">Donde no exista juez del circuito o de lo Contencioso Administrativo, podr&aacute; presentarse la demanda ante cualquier juez Civil Municipal o Promiscuo, quien dentro de los dos (2) d&iacute;as siguientes deber&aacute; remitirla al funcionario competente. En el evento de comprometerse grave y permanentemente uno o varios de los derechos amparados en la presente ley, el Juez civil Municipal o Promiscuo deber&aacute; remitir de inmediato y por el medio m&aacute;s eficaz las diligencias al juez competente.</p>
+<p class="MsoNormal">En desarrollo del principio de la prevalencia del derecho sustancial sobre el procesal, el juez competente que reciba la acci&oacute;n popular tendr&aacute; la facultad de tomar las medidas cautelares necesarias para impedir perjuicios irremediables e irreparables o suspender los hechos generadores de la amenaza a los derechos e intereses colectivos.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 18.- </strong><em>Requisitos de la Demanda o Petici&oacute;n. </em>Para promover una acci&oacute;n popular se presentar&aacute; una demanda o petici&oacute;n con los siguientes requisitos:</p>
+<p class="MsoNormal">a) La indicaci&oacute;n del derecho o inter&eacute;s colectivo amenazado o vulnerado;</p>
+<p class="MsoNormal">b) La indicaci&oacute;n de los hechos, actos, acciones u omisiones que motivan su petici&oacute;n;</p>
+<p class="MsoNormal">c) La enunciaci&oacute;n de las pretensiones;</p>
+<p class="MsoNormal">d) La indicaci&oacute;n de la persona natural o jur&iacute;dica, o la autoridad p&uacute;blica presuntamente responsable de la amenaza o del agravio, si fuere posible;</p>
+<p class="MsoNormal">e) Las pruebas que pretenda hacer valer;</p>
+<p class="MsoNormal">f) Las direcciones para notificaciones;</p>
+<p class="MsoNormal">g) Nombre e identificaci&oacute;n de quien ejerce la acci&oacute;n.</p>
+<p class="MsoNormal">La demanda se dirigir&aacute; contra el presunto responsable del hecho u omisi&oacute;n que la motiva, si fuere conocido. No obstante, cuando en el curso del proceso se establezca que existen otros posibles responsables, el juez de primera instancia de oficio ordenar&aacute; su citaci&oacute;n en los t&eacute;rminos en que aqu&iacute; se prescribe para el demandado.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 19.- </strong><em>Amparo de Pobreza. </em>El juez podr&aacute; conceder el amparo de pobreza cuando fuere pertinente, de acuerdo con lo establecido en el C&oacute;digo de Procedimiento Civil, o cuando el Defensor del Pueblo o sus delegados lo soliciten expresamente.</p>
+<p class="MsoNormal"><strong>PAR&Aacute;GRAFO.- </strong>El costo de los peritazgos, en los casos de amparo de pobreza, correr&aacute; a cargo del Fondo para la Defensa de los Derechos e Intereses Colectivos, a partir de su creaci&oacute;n. Estos costos se reembolsar&aacute;n al Fondo por el demandado, en el momento de satisfacer la liquidaci&oacute;n de costas, siempre y cuando fuere condenado.</p>
+<p align="center"><strong>CAP&Iacute;TULO V</strong></p>
+<p align="center"><strong>ADMISI&Oacute;N, NOTIFICACI&Oacute;N Y TRASLADO</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 20.- </strong><em>Admisi&oacute;n de la Demanda. </em>Dentro de los tres (3) d&iacute;as h&aacute;biles siguientes a la presentaci&oacute;n de la demanda o petici&oacute;n inicial, el juez competente se pronunciar&aacute; sobre su admisi&oacute;n.</p>
+<p class="MsoNormal">Inadmitir&aacute; la demanda que no cumpla con los requisitos se&ntilde;alados en esta ley, precisando los defectos de que adolezca para que el demandante los subsane en el t&eacute;rmino de tres (3) d&iacute;as. Si &eacute;ste no lo hiciere, el juez la rechazar&aacute;.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO <a id="sp21" name="21"></a>21.- </strong><em>Notificaci&oacute;n del Auto Admisorio de la Demanda. </em>En el auto que admita la demanda el juez ordenar&aacute; su notificaci&oacute;n personal al demandado. A los miembros de la comunidad se les podr&aacute; informar a trav&eacute;s de un medio masivo de comunicaci&oacute;n o de cualquier mecanismo eficaz, habida cuenta de los eventuales beneficiarios.</p>
+<p class="MsoNormal">Para este efecto, el juez podr&aacute; utilizar simult&aacute;neamente diversos medios de comunicaci&oacute;n.</p>
+<p class="MsoNormal">Cuando se trate de entidades p&uacute;blicos, el auto admisorio de la demanda deber&aacute; notificarse personalmente a su representante legal o a quien &eacute;ste haya delegado la facultad de recibir notificaciones, todo de acuerdo con lo dispuesto por el C&oacute;digo Contencioso Administrativo.</p>
+<p class="MsoNormal">Cuando el demandado sea un particular, la notificaci&oacute;n personal del auto admisorio se practicar&aacute; de acuerdo con lo dispuesto en el C&oacute;digo de Procedimiento Civil.</p>
+<p class="MsoNormal">En todo caso, si la persona a quien deba hacerse la notificaci&oacute;n, o su delegado, no se encontrare o no pudiere; por cualquier motivo, recibir la notificaci&oacute;n, &eacute;sta se practicar&aacute; mediante entrega que el notificador haga al empleado que all&iacute; se encuentre de copia aut&eacute;ntica de la demanda y del auto admisorio y del aviso que enviar&aacute;, por el mismo conducto, al notificado.</p>
+<p class="MsoNormal">Si la demanda no hubiere sido promovida por el Ministerio P&uacute;blico se le comunicar&aacute; a &eacute;ste el auto admisorio de la demanda, con el fin de que intervengan como parte p&uacute;blica en defensa de los derechos e intereses colectivos, en aquellos procesos que lo considere conveniente.</p>
+<p class="MsoNormal">Adem&aacute;s, se le comunicar&aacute; a la entidad administrativa encargada de proteger el derecho o el inter&eacute;s colectivo afectado.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 22.- </strong><em>Traslado y Contestaci&oacute;n de la Demanda. </em>En el auto admisorio de la demanda el juez ordenar&aacute; su traslado por el t&eacute;rmino de diez (10) d&iacute;as para contestarla. Tambi&eacute;n dispondr&aacute; informarle que la decisi&oacute;n ser&aacute; proferida dentro de los treinta (30) d&iacute;as siguientes al vencimiento del t&eacute;rmino de traslado y que tiene derecho a solicitar la pr&aacute;ctica de pruebas con la contestaci&oacute;n de la demanda.</p>
+<p class="MsoNormal">Si hubiere varios demandados, podr&aacute;n designar un representante com&uacute;n.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 23.- </strong><em>Excepciones. </em>En la contestaci&oacute;n de la demanda s&oacute;lo podr&aacute; proponerse las excepciones de m&eacute;rito y las previas de falta de jurisdicci&oacute;n y cosa juzgada, las cuales ser&aacute;n resueltas por el juez en la sentencia.</p>
+<p class="MsoNormal">En consecuencia, las pruebas pertinentes se practicar&aacute;n en el mismo plazo se&ntilde;alado para las pruebas solicitadas en la demanda y en la contestaci&oacute;n de la misma.</p>
+<p align="center"><strong>CAP&Iacute;TULO VI</strong></p>
+<p align="center"><strong>COADYUVANCIA Y MEDIDAS CAUTELARES</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 24.- </strong><em>Coadyuvancia. </em>Toda persona natural o jur&iacute;dica podr&aacute; coadyuvar estas acciones, antes de que se profiera el fallo de primera instancia. La coadyuvancia operar&aacute; hacia la actuaci&oacute;n futura. Podr&aacute;n coadyuvar igualmente estas acciones las organizaciones populares, c&iacute;vicas y similares, as&iacute; como el Defensor del Pueblo o sus delegados, los Personero Distritales o Municipales y dem&aacute;s autoridades que por raz&oacute;n de sus funciones deban proteger o defender los derechos e intereses colectivos.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 25.- </strong><em>Medidas Cautelares. </em>Antes de ser notificada la demanda y en cualquier estado del proceso podr&aacute; el juez, de oficio o a petici&oacute;n de parte, decretar, debidamente motivadas, las medidas previas que estime pertinentes para prevenir un da&ntilde;o inminente o para hacer cesar el que se hubiere causado. En particular, podr&aacute; decretar las siguientes:</p>
+<p class="MsoNormal">a) Ordenar la inmediata cesaci&oacute;n de las actividades que puedan originar el da&ntilde;o, que lo hayan causado o lo sigan ocasionando:</p>
+<p class="MsoNormal">b) Ordenar que se ejecuten los actos necesarios, cuando la conducta potencialmente perjudicial o da&ntilde;ina sea consecuencia de la omisi&oacute;n del demandado;</p>
+<p class="MsoNormal">c) Obligar al demandado a prestar cauci&oacute;n para garantizar el cumplimiento de cualquiera de las anteriores medidas previas;</p>
+<p class="MsoNormal">d) Ordenar con cargo al Fondo para la Defensa de los Derechos e Intereses Colectivos los estudios necesarios para establecer la naturaleza del da&ntilde;o y las medidas urgentes a tomar para mitigarlo.</p>
+<p class="MsoNormal"><strong>PAR&Aacute;GRAFO 1&ordm;.- </strong>El decreto y pr&aacute;ctica de las medidas previas no suspender&aacute; el curso del proceso.</p>
+<p class="MsoNormal"><strong>PAR&Aacute;GRAFO 2&ordm;.- </strong>Cuando se trate de una amenaza por raz&oacute;n de una omisi&oacute;n atribu&iacute;da a una autoridad o persona particular, el juez deber&aacute; ordenar el cumplimiento inmediato de la acci&oacute;n que fuere necesaria, para lo cual otorgar&aacute; un t&eacute;rmino perentorio. Si el peligro es inminente podr&aacute; ordenar que el acto, la obra o la acci&oacute;n la ejecute el actor o la comunidad amenazada, a costa del demandado.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 26.- </strong><em>Oposici&oacute;n a las Medidas Cautelares. </em>El auto que decrete las medidas previas ser&aacute; notificado simult&aacute;neamente con la administraci&oacute;n de la demanda y podr&aacute; ser objeto de los cursos de reposici&oacute;n y de apelaci&oacute;n; los recursos se conceder&aacute;n en el efecto devolutivo y deber&aacute;n ser resueltos en el t&eacute;rmino de cinco d&iacute;as. La oposici&oacute;n a las medidas previas s&oacute;lo podr&aacute; fundamentarse en los siguientes casos:</p>
+<p class="MsoNormal">a) Evitar mayores perjuicios al derecho o inter&eacute;s colectivo que se pretende proteger;</p>
+<p class="MsoNormal">b) Evitar perjuicios ciertos e inminentes al inter&eacute;s p&uacute;blico;</p>
+<p class="MsoNormal">c) Evitar al demandado perjuicios cuya gravedad sea tal que le haga pr&aacute;cticamente imposible cumplir un eventual fallo desfavorable.</p>
+<p class="MsoNormal">d) Corresponde al quien alegue estas causales demostrarlas.</p>
+<p align="center"><strong>CAP&Iacute;TULO VII</strong></p>
+<p align="center"><strong>PACTO DE CUMPLIMIENTO</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO <a id="sp27" name="27"></a>27.- </strong><em>Pacto de Cumplimiento. </em>El juez, dentro de los tres (3) d&iacute;as siguientes al vencimiento del t&eacute;rmino de traslado de la demanda, citar&aacute; a las partes y al Ministerio P&uacute;blico a una audiencia especial en la cual el juez escuchar&aacute; las diversas posiciones sobre la acci&oacute;n instaurada, pudiendo intervenir tambi&eacute;n las personas naturales o jur&iacute;dicas que hayan registrado comentarios escritos sobre el proyecto. La intervenci&oacute;n del Ministerio P&uacute;blico y de la entidad responsable de velar por el derecho o inter&eacute;s colectivo ser&aacute; obligatorio.</p>
+<p class="MsoNormal">La inasistencia a esta audiencia por parte de los funcionarios competentes, har&aacute; que incurra en causal de mala conducta, sancionable con destituci&oacute;n del cargo.</p>
+<p class="MsoNormal">Si antes de la hora se&ntilde;alada para la audiencia, algunas de las partes presentan prueba siquiera sumaria de una justa causa para no comparecer, el juez se&ntilde;alar&aacute; nueva fecha para la audiencia, no antes del quinto d&iacute;a siguiente ni despu&eacute;s del d&eacute;cimo d&iacute;a, por auto que no tendr&aacute; recursos, sin que pueda haber otro aplazamiento.</p>
+<p class="MsoNormal">En dicha audiencia podr&aacute; establecerse un pacto de cumplimiento a iniciativa del juez en el que se determine la forma de protecci&oacute;n de los derechos e intereses colectivos y el restablecimiento de las cosas a su estado anterior, de ser posible.</p>
+<p class="MsoNormal">El pacto de cumplimiento as&iacute; celebrado ser&aacute; revisado por el juez en un plazo de cinco (5) d&iacute;as, contados a partir de su celebraci&oacute;n. Si observar&eacute; vicios de ilegalidad en alguno de los contenidos del proyecto de pacto, &eacute;stos ser&aacute;n corregidos por el juez con el consentimiento de las partes interesadas.</p>
+<p class="MsoNormal">La audiencia se considerar&aacute; fallida en los siguientes eventos:</p>
+<p class="MsoNormal">a) Cuando no compareciere la totalidad de las partes interesadas;</p>
+<p class="MsoNormal">b) Cuando no se formule proyecto de pacto de cumplimiento;</p>
+<p class="MsoNormal">c) Cuando las partes no consientan en las correcciones que el juez proponga al proyecto de pacto de cumplimiento.</p>
+<p class="MsoNormal">En estos eventos el juez ordenar&aacute; la pr&aacute;ctica de pruebas, sin perjuicio de las acciones que procedieren contra los funcionarios p&uacute;blicos ausentes en el evento contemplado en el literal a).</p>
+<p class="MsoNormal">La aprobaci&oacute;n del pacto de cumplimiento se surtir&aacute; mediante sentencia, cuya parte resolutiva ser&aacute; publicada en un diario de amplia circulaci&oacute;n nacional a costa de las partes involucradas.</p>
+<p class="MsoNormal">El juez conservar&aacute; la competencia para su ejecuci&oacute;n y podr&aacute; designar a una persona natural o jur&iacute;dica como auditor que vigile y asegure el cumplimiento de la f&oacute;rmula de soluci&oacute;n del conflicto.</p>
+<p class="MsoNormal"><strong>Declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a> , <strong>en el entendido de que la sentencia que aprueba el pacto de cumplimiento hace tr&aacute;nsito a cosa juzgada, salvo que se presenten hechos nuevos y causas distintas a las alegadas en el respectivo proceso, as&iacute; como informaciones de car&aacute;cter t&eacute;cnico que no fueron apreciadas por el juez y las partes al momento de celebrarse dicho pacto, evento en el cual la sentencia hace tr&aacute;nsito a cosa juzgada relativa.</strong></p>
+<p class="MsoNormal"><strong>As&iacute; mismo, esa declaraci&oacute;n se entiende en el sentido de que las expresiones <em>"partes involucradas", </em>contenidas en el pen&uacute;ltimo inciso del art&iacute;culo 27 de la Ley 472 de 1998, se refieren &uacute;nicamente al infractor demandado por la violaci&oacute;n de derechos e intereses colectivos.</strong></p>
+<p align="center"><strong>CAP&Iacute;TULO VIII</strong></p>
+<p align="center"><strong>PER&Iacute;ODO PROBATORIO</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 28.- </strong><em>Pruebas. </em>Realizada la citaci&oacute;n para establecer el proyecto de pacto de cumplimiento, sin lograr acuerdo, o citada &eacute;sta y no efectuada por ausencia de las partes, el juez decretar&aacute;, previo an&aacute;lisis de conducencia, pertinente y eficacia, las pruebas solicitar&aacute; y las que de oficio estime pertinente, se&ntilde;alando d&iacute;a y hora para su pr&aacute;ctica, dentro del t&eacute;rmino de veinte (20) d&iacute;as prorrogables por veinte (20) d&iacute;as m&aacute;s si la complejidad del proceso lo requiere.</p>
+<p class="MsoNormal">El juez podr&aacute; ordenar o practicar cualquier prueba conducente, incluida la presentaci&oacute;n de estad&iacute;stica provenientes de fuentes que ofrezcan credibilidad.</p>
+<p class="MsoNormal">Tambi&eacute;n podr&aacute; el juez ordenar a las entidades p&uacute;blicas y a sus empleados rendir conceptos a manera de peritos, o aportar documentos u otros informes que puedan tener valor probatorio. As&iacute; mismo, podr&aacute; requerir de los particulares certificaciones, informaciones, ex&aacute;menes o conceptos. En uno u otro caso las &oacute;rdenes deber&aacute;n cumplirse en el estricto t&eacute;rmino definido por el juez.</p>
+<p class="MsoNormal">El juez practicar&aacute; personalmente las pruebas; pero si ello fuere imposible, podr&aacute; comisionar en aras de la econom&iacute;a procesal.</p>
+<p class="MsoNormal">En los procesos a que se refiere esta ley, el juez podr&aacute; ordenar la pr&aacute;ctica de pruebas dentro o fuera del territorio nacional.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 29.- </strong><em>Clases y Medios de Prueba. </em>Para estas acciones son procedentes los medios de prueba establecidos en el C&oacute;digo de Procedimiento Civil, sin perjuicio de lo que respecto de ellos se disponga en la presente Ley.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 30.- </strong><em>Carga de la Prueba. </em>La carga de la prueba corresponder&aacute; al demandante. Sin embargo, si por razones de orden econ&oacute;mico o t&eacute;cnico, si dicha carga no pudiere se cumplida, el juez impartir&aacute; las &oacute;rdenes necesarias para suplir la deficiencia y obtener los elementos probatorios indispensables para proferir un fallo de m&eacute;rito, solicitando dichos experticios probatorios a la entidad p&uacute;blica cuyo objeto est&eacute; referido al tema materia de debate y con cargo a ella.</p>
+<p class="MsoNormal">En el evento de no existir la posibilidad de allegar la prueba respectiva, en virtud de lo establecido en el inciso anterior, el juez podr&aacute; ordenar su pr&aacute;ctica con cargo al Fondo para la Defensa de los Derechos e Intereses Colectivos. <strong>Declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 31.- </strong><em>Pruebas Anticipadas. </em>Conforme a las disposiciones legales podr&aacute;n solicitarse y practicarse antes del proceso las pruebas necesarias con el objeto de impedir que se desvirt&uacute;en o se pierdan, o que su pr&aacute;ctica se haga imposible y para conservar las cosas y las circunstancias de hecho que posteriormente deben ser probadas en el proceso.</p>
+<p class="MsoNormal"><strong>PAR&Aacute;GRAFO.- </strong>Los jueces de la rep&uacute;blica le dar&aacute;n tr&aacute;mite preferencia a las solicitudes y pr&aacute;cticas de pruebas anticipadas con destino a los procesos en que se adelanten acciones populares.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 32.- </strong><em>Prueba Pericial. </em>En el auto en que se decrete el peritazgo se fijar&aacute; la fecha de entrega del informe al juzgado y a partir de esta fecha estar&aacute; a disposici&oacute;n de las partes durante cinco (5) d&iacute;as h&aacute;biles. El informe del perito deber&aacute; rendirse en original y tres copias.</p>
+<p class="MsoNormal">Los informes t&eacute;cnicos se valorar&aacute;n en conjunto con el acervo probatorio existentes, conforme a las reglas de la sana cr&iacute;tica y podr&aacute;n tenerse como suficientes para verificar los hechos a los cuales se refieren.</p>
+<p class="MsoNormal">El segundo dictamen es inobjetable y el juez podr&aacute; acogerlo en su sentencia.</p>
+<p class="MsoNormal"><strong>PAR&Aacute;GRAFO 1&ordm;.- </strong>Los impedimentos deber&aacute;n manifestarse en los tres (3) d&iacute;as siguientes al conocimientos del nombramiento. La omisi&oacute;n en esta materia, har&aacute; incurrir al perito en las sanciones que determina esta Ley.</p>
+<p class="MsoNormal"><strong>PAR&Aacute;GRAFO 2&ordm;.-</strong> El juez podr&aacute; imponer al perito, cuando se violen estas disposiciones, las siguientes sanciones:</p>
+<p class="MsoNormal">- Ordenar su retiro del registro p&uacute;blico de peritos para acciones populares y de grupo.</p>
+<p class="MsoNormal">- Decretar su inhabilidad para contratar con el Estado durante cinco (5) a&ntilde;os.</p>
+<p class="MsoNormal">Ordenar la investigaci&oacute;n disciplinaria y/o penal correspondiente.</p>
+<p align="center"><strong>CAP&Iacute;TULO IX</strong></p>
+<p align="center"><strong>SENTENCIA</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 33.- </strong><em>Alegatos. </em>Vencido el t&eacute;rmino para practicar pruebas, el juez dar&aacute; traslado a las partes para alegar por el t&eacute;rmino com&uacute;n de cinco (5) d&iacute;as.</p>
+<p class="MsoNormal">Vencido el t&eacute;rmino del traslado para alegar, el secretario inmediatamente pasar&aacute; el expediente al despacho para que dicte sentencia, sin que puedan proponerse incidentes, salvo el de recusaci&oacute;n, no surtirse actuaciones posteriores distintas a la de expedici&oacute;n de copias, desgloses o certificados, las cuales no interrumpir&aacute;n el t&eacute;rmino para proferirlas, ni el turno que le corresponda al proceso.</p>
+<p class="MsoNormal">El secretario se abstendr&aacute; de pasar al despacho los escritos que contravengan esta disposici&oacute;n.</p>
+<p class="MsoNormal"><strong>La Corte Constitucional se INHIBI&Oacute; para resolver de m&eacute;rito en relaci&oacute;n con la constitucionalidad del presente art&iacute;culo, por lo se&ntilde;alado en las consideraciones de la</strong> <a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO <a id="sp34" name="34"></a>34.- </strong><em>Sentencia<strong><u>. </u></strong></em><strong><u>Vencido el t&eacute;rmino para alegar, el juez dispondr&aacute; de veinte (20) d&iacute;as para proferir sentencia.</u></strong> La sentencia que acoja las pretensiones del demandante de una acci&oacute;n popular podr&aacute; contener una orden de hacer o de no hacer, condenar al pago de perjuicios cuando se haya causado da&ntilde;o a un derecho o inter&eacute;s colectivo <strong><u>en favor de la entidad p&uacute;blica no culpable que los tenga a su cargo, </u></strong>y exigir la realizaci&oacute;n de conductas necesarias para volver las cosas al estado anterior a la vulneraci&oacute;n del derecho o del inter&eacute;s colectivo, cuando fuere f&iacute;sicamente posible. La orden de hacer o de no hacer definir&aacute; de manera precisa la conducta a cumplir con el fin de proteger el derecho o el inter&eacute;s colectivo amenazado o vulnerado y de prevenir que se vuelva a incurrir en las acciones u omisiones que dieron m&eacute;rito para acceder a la pretensiones del demandante. Igualmente fijar&aacute; el monto del incentivo para el actor popular.</p>
+<p class="MsoNormal"><strong><u>La condena al pago de los perjuicios se har&aacute; "<em>in genere" </em>y se liquidar&aacute; en el incidente previsto en el art&iacute;culo 307 del C.P.C.; en tanto, se le dar&aacute; cumplimiento a las &oacute;rdenes y dem&aacute;s condenas. Al t&eacute;rmino del incidente se adicionar&aacute; la sentencia con la determinaci&oacute;n de la correspondiente condena incluy&eacute;ndose la del incentivo adicional en favor del actor.</u></strong></p>
+<p class="MsoNormal">En caso de da&ntilde;o a los recursos naturales el juez procurar&aacute; asegurar la restauraci&oacute;n del &aacute;rea afectada destinando para ello una parte de la indemnizaci&oacute;n.</p>
+<p class="MsoNormal">En la sentencia el juez se&ntilde;alar&aacute; un plazo prudencia, de acuerdo con el alcance de sus determinaciones, dentro del cual deber&aacute; iniciarse el cumplimiento de la providencia y posteriormente culminar&aacute; su ejecuci&oacute;n. En dicho t&eacute;rmino el juez conservar&aacute; la competencia para tomar las medidas necesarias para la ejecuci&oacute;n de la sentencia de conformidad con las normas contenidas en el C&oacute;digo de Procedimiento Civil y podr&aacute; conformar un comit&eacute; para la verificaci&oacute;n del cumplimiento de la sentencia en el cual participar&aacute;n adem&aacute;s del juez, las partes, la entidad p&uacute;blica encargada de velar por el derecho o inter&eacute;s colectivo, el Ministerio P&uacute;blico y una organizaci&oacute;n no gubernamental con actividades en el objeto del fallo.</p>
+<p class="MsoNormal">Tambi&eacute;n comunicar&aacute; a las entidades o autoridades administrativas para que, en lo que sea de su competencia, colaboren en orden a obtener el cumplimiento del fallo.</p>
+<p class="MsoNormal"><strong>Subrayado Declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p class="MsoNormal">Definici&oacute;n de v&iacute;nculos para la Norma:</p>
+<p><strong>ART&Iacute;CULO</strong><a id="sp34" name="34"></a> <a id="sp34A" name="34A"></a> <a href="norma.php?i=188#34A">34A</a>. <strong>Sentencia en los casos de corrupci&oacute;n.</strong> En los casos en que la amenaza o vulneraci&oacute;n al derecho colectivo hayan sido producto de un acto de corrupci&oacute;n que causare un da&ntilde;o al patrimonio p&uacute;blico, el juez en la sentencia deber&aacute; imponer, adicional al da&ntilde;o probado en el proceso, una multa al responsable de hasta mil de (1.000) salarios m&iacute;nimos mensuales legales vigentes, la cual atender&aacute; a la gravedad de la conducta, el grado de participaci&oacute;n del demandado y su capacidad econ&oacute;mica. El pago de la multa impuesta deber&aacute; dirigirse al Fondo de Reparaci&oacute;n de las V&iacute;ctimas de Actos de Corrupci&oacute;n.</p>
+<p>En la sentencia se deber&aacute;n decretar las medidas cautelares que garanticen el pago de la sanci&oacute;n.</p>
+<p>(Adicionado por el Art. 60 de la Ley 2195 de 2022).</p>
+<p> </p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 35.- </strong><em>Efectos de la Sentencia. </em>La sentencia tendr&aacute; efectos de cosa juzgada respecto de las partes y del p&uacute;blico en general.</p>
+<p class="MsoNormal"><strong>Art&iacute;culo declarado EXEQUIBLE por la Corte Constitucional mediante Sentencia </strong><a href="norma.php?i=30241#0">C-622</a><strong> de 2007, en el entendido que las sentencias que resuelven los procesos de acci&oacute;n popular hacen tr&aacute;nsito a cosa juzgada respecto de las partes y del p&uacute;blico en general, salvo cuando surjan con posterioridad a la sentencia desestimatoria, nuevas pruebas trascendentales que pudieran variar la decisi&oacute;n anterior</strong>.</p>
+<p align="center"><strong>CAP&Iacute;TULO X</strong></p>
+<p align="center"><strong>RECURSOS Y COSTAS</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 36.- </strong><em>Recursos de Reposici&oacute;n. </em>Contra los autos dictados durante el tr&aacute;mite de la Acci&oacute;n Popular procede el recursos de reposici&oacute;n, el cual ser&aacute; interpuesto en los t&eacute;rminos del C&oacute;digo de Procedimiento Civil.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 37.- </strong><em>Recurso de Apelaci&oacute;n. </em>El recurso de apelaci&oacute;n proceder&aacute; contra la sentencia que se dicte en primera instancia, en la forma y oportunidad se&ntilde;alada en el C&oacute;digo de Procedimiento Civil, y deber&aacute; ser resuelto dentro de los veinte (20) d&iacute;as siguientes contados a partir de la radicaci&oacute;n del expediente en la Secretar&iacute;a del Tribunal competente.</p>
+<p class="MsoNormal">La pr&aacute;ctica de pruebas durante la segunda instancia se sujetar&aacute;, tambi&eacute;n, a la forma prevista en el C&oacute;digo de Procedimiento Civil; en el auto que admite el recurso se fijar&aacute; un plazo para la pr&aacute;ctica de las pruebas que, en ning&uacute;n caso, exceder&aacute; de diez (10) d&iacute;as contados a partir de la notificaci&oacute;n de dicho auto; el plazo para resolver el recurso se entender&aacute; ampliado en el t&eacute;rmino se&ntilde;alado para la pr&aacute;ctica de pruebas.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 38.- </strong><em>Costas. </em>El juez aplicar&aacute; las normas de procedimiento civil relativas a las costas. S&oacute;lo podr&aacute; condenar el demandante a sufragar los honorarios, gastos y costos ocasionados al demandado, cuando la acci&oacute;n presentada sea temeraria o de mala fe. En caso de mala fe de cualquiera de las partes, el juez podr&aacute; imponer una multa hasta de veinte (20) salarios m&iacute;nimos mensuales, los cuales ser&aacute;n destinados al Fondo para la Defensa de los Derechos e Intereses Colectivos, sin perjuicio de las dem&aacute;s acciones a que haya lugar.</p>
+<p align="center"><strong>CAP&Iacute;TULO XI</strong></p>
+<p align="center"><strong>INCENTIVOS</strong></p>
+<p class="MsoNormal"><a href="norma.php?i=17774#0">Ver el Fallo del Consejo de Estado AP-2571 de 2001</a></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 39.- </strong><em>Incentivos. </em><a href="norma.php?i=41034#1">Derogado por la ley 1425 de 2010</a> El demandante en una acci&oacute;n popular tendr&aacute; derecho a recibir un incentivo que el juez fijar&aacute; entre diez (10) y ciento cincuenta (150) salarios m&iacute;nimos mensuales.</p>
+<p class="MsoNormal">Cuando el actor sea una entidad p&uacute;blica, el incentivo se destinar&aacute; al Fondo de Defensa de Intereses Colectivos.</p>
+<p class="MsoNormal"><a href="norma.php?i=42011#0">Ver Fallo Consejo de Estado 2486 de 2011</a></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 40.- </strong><em>Incentivo Econ&oacute;mico en Acciones Populares sobre Moral Administrativa. </em><a href="norma.php?i=41034#1">Derogado por la ley 1425 de 2010</a> En la acciones populares que se generen en la violaci&oacute;n del derecho colectivo a la moralidad administrativa, el demandante o demandantes tendr&aacute;n derechos a recibir el quince por ciento (15%) del valor que recupere la entidad p&uacute;blica en raz&oacute;n a la acci&oacute;n popular.</p>
+<p class="MsoNormal"><strong><u>Para los fines de este art&iacute;culo y cuando se trate de sobrecostos o de otras irregularidades provenientes de la contrataci&oacute;n, responder&aacute; patrimonialmente el representante legal del respectivo organismo o entidad contratante y contratista, en forma solidaria con quienes concurran al hecho, hasta la recuperaci&oacute;n total de lo pagado en exceso. </u></strong><strong>Texto Subrayado</strong><a href="norma.php?i=5957#1"> Declarado Exequible Sentencia Corte Constitucional C-88 de 2000</a></p>
+<p class="MsoNormal">Para hacer viable esta acci&oacute;n, en materia probatoria los ciudadanos tendr&aacute;n derechos a solicitar y obtener se les expida copia aut&eacute;ntica de los documentos referidos a la contrataci&oacute;n, en cualquier momento. No habr&aacute; reserva sobre tales documentos.</p>
+<p class="MsoNormal"><a href="norma.php?i=42011#0">Ver Fallo Consejo de Estado 2486 de 2011</a></p>
+<p align="center"><strong>CAP&Iacute;TULO XII</strong></p>
+<p align="center"><strong>MEDIDAS COERCITIVAS Y OTRAS DISPOSICIONES</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 41.- </strong><em>Desacato. </em>La persona que incumpliere una orden judicial proferida por la autoridad competente en los procesos que se adelanten por acciones populares, incurrir&aacute; en multa hasta de cincuenta (50) salarios m&iacute;nimos mensuales con destino al Fondo para la Defensa de los Derechos e Intereses Colectivos, conmutables en arresto hasta de seis (6) meses, sin perjuicio de las sanciones penales a que hubiere lugar.</p>
+<p class="MsoNormal">La sanci&oacute;n ser&aacute; impuesta por la misma autoridad que profiri&oacute; la orden judicial, mediante tr&aacute;mite incidental y ser&aacute; consultada al superior jer&aacute;rquico, quien decidir&aacute; en el t&eacute;rmino de tres (3) d&iacute;as si debe revocarse o no la sanci&oacute;n. La consulta se har&aacute; en efecto devolutivo.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 42.- </strong><em>Garant&iacute;a. </em>La parte vencida en el juicio deber&aacute; otorgar una garant&iacute;a bancaria o p&oacute;liza de seguros, por el monto que el juez determine, la que se har&aacute; efectiva en caso de incumplimiento a lo dispuesto por la sentencia. Si el demandado presta la garant&iacute;a a satisfacci&oacute;n, no habr&aacute; al embargo, o se levantar&aacute; el que hubiese sido proferido.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO <a id="sp43" name="43"></a>43.- </strong><em>Moral Administrativa. </em>En acciones populares que versen sobre la moral administrativa y con miras a evitar la duplicidad de funciones para los efectos de los art&iacute;culos 277 y 278 de la Constituci&oacute;n Pol&iacute;tica, el juez que conozca de estas acciones decretar&aacute; las medidas previas o cautelares que estime procedentes y comunicar&aacute; la demanda a la Procuradur&iacute;a para que la misma se haga parte si lo considera conveniente.</p>
+<p class="MsoNormal">Si de los hechos se desprende que se ha incurrido en una situaci&oacute;n de orden disciplinario, la acci&oacute;n popular se adelantar&aacute; sin perjuicio de la competencia que corresponda a la Procuradur&iacute;a en materia disciplinaria. La acci&oacute;n popular no puede interferir las acciones disciplinarias o penales que para el caso procedan.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 44.- </strong><em>Aspectos no Regulados. </em>En los procesos por acciones populares se aplicar&aacute;n las disposiciones del C&oacute;digo de Procedimiento Civil y del C&oacute;digo Contencioso Administrativo dependiendo de la jurisdicci&oacute;n que le corresponda, en los aspectos no regulados en la presente Ley, mientras no se oponga a la naturaleza y a la finalidad de tales acciones.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 45.- </strong><em>Aplicaci&oacute;n. </em>Continuar&aacute;n vigentes las acciones populares consagradas en la legislaci&oacute;n nacional, pero su tr&aacute;mite y procedimientos se sujetar&aacute;n a la presente Ley. <strong>Declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p align="center"><strong>T&Iacute;TULO III</strong></p>
+<p align="center"><strong>DEL PROCESO EN LAS ACCIONES DE GRUPO</strong></p>
+<p align="center"><strong>CAP&Iacute;TULO I</strong></p>
+<p align="center"><strong>PROCEDENCIA</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 46.- </strong>Procedencia de las Acciones de Grupo<em>. Las acciones de grupo son aquellas acciones interpuestas por un n&uacute;mero plural o un conjunto de personas que re&uacute;nen condiciones uniformes respecto de una misma causa que origin&oacute; perjuicios individuales para dichas personas</em>. <strong><u>Las condiciones uniformes deben tener tambi&eacute;n lugar respecto de los elementos que configuran la responsabilidad</u></strong>. <strong>Texto subrayado declarado INEXEQUIBLE por la Corte Constitucional mediante</strong> <a href="norma.php?i=#0">Sentencia C-569 de 2004</a> <strong>y el texto en cursiva declarado EXEQUIBLE</strong></p>
+<p class="MsoNormal">La acci&oacute;n de grupo se ejercer&aacute; exclusivamente para obtener el reconocimiento y pago de la indemnizaci&oacute;n de los perjuicios.</p>
+<p class="MsoNormal"><strong><u>El grupo estar&aacute; integrado al menos por veinte (20) personas</u></strong>. <strong>Texto subrayado declarado EXEQUIBLE por la Corte Constitucional mediante Sentencia</strong><a href="norma.php?i=32533#0">C-116</a><strong> de 2008, en el entendido de que la legitimaci&oacute;n activa en las acciones de grupo no se requiere conformar un n&uacute;mero de veinte personas que instauren la demanda, pues basta que un miembro del grupo que act&uacute;e a su nombre establezca en la demanda los criterios que permitan establecer la identificaci&oacute;n del grupo afectado</strong>.</p>
+<p class="MsoNormal"><strong>Declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 47.- </strong><em>Caducidad. </em>Sin perjuicio de la acci&oacute;n individual que corresponda por la indemnizaci&oacute;n de perjuicios, la acci&oacute;n de grupo deber&aacute; promoverse dentro de los dos (2) a&ntilde;os siguientes a la fecha en que se caus&oacute; el da&ntilde;o o ces&oacute; la acci&oacute;n vulnerable causante del mismo. <strong>Declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p align="center"><strong>CAP&Iacute;TULO II</strong></p>
+<p align="center"><strong>LEGITIMACI&Oacute;N</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 48.- </strong><em>Titulares de las Acciones. </em>Podr&aacute;n presentar acciones de grupo las personas naturales o jur&iacute;dicas que hubieren sufrido un perjuicio individual conforme lo estable el art&iacute;culo 47.</p>
+<p class="MsoNormal">El Defensor del Pueblo, los Personeros Municipales y Distritales podr&aacute;n, sin perjuicio del derecho que asiste a los interesados, interponer acciones de grupo en nombre de cualquier persona que se lo solicite o que se encuentre en situaci&oacute;n de desamparo o indefensi&oacute;n. En este caso ser&aacute; parte en el proceso judicial junto con los agraviados. <strong>Inciso Declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p class="MsoNormal"><strong>PAR&Aacute;GRAFO.- </strong>En la acci&oacute;n de grupo el actor o quien act&uacute;e como demandante, representa a las dem&aacute;s personas que hayan sido afectada individualmente por los hechos vulnerantes, sin necesidad de que cada uno de los interesados ejerza por separado su propia acci&oacute;n, ni haya otorgado poder.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 49.- </strong><em>Ejercicio de la Acci&oacute;n. </em>Las acciones de grupo deben ejercerse por conducto de abogado.</p>
+<p class="MsoNormal">Cuando los miembros del grupo otorguen poder a varios abogados, deber&aacute; integrarse un comit&eacute; y el juez reconocer&aacute; como coordinador y apoderado legal del grupo, a quien represente el mayor n&uacute;mero de v&iacute;ctimas, o en su defecto al que nombre el comit&eacute;.</p>
+<p align="center"><strong>CAP&Iacute;TULO III</strong></p>
+<p align="center"><strong>DE LA JURISDICCI&Oacute;N Y COMPETENCIA</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 50.- </strong><em>Jurisdicci&oacute;n. </em>La jurisdicci&oacute;n de lo Contencioso Administrativo conocer&aacute; de los procesos que se susciten con ocasi&oacute;n del ejercicio de las acciones de grupo originadas en la actividad de las entidades p&uacute;blicas y de las personas privadas que desempe&ntilde;en funciones administrativas.</p>
+<p class="MsoNormal">La jurisdicci&oacute;n civil ordinaria conocer&aacute; de los dem&aacute;s procesos que se susciten con ocasi&oacute;n del ejercicio de las acciones de grupo.</p>
+<p class="MsoNormal"><strong>Declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 51.- </strong><em>Competencia. </em>De las acciones de grupo conocer&aacute; en primera instancia los jueces administrativos y los jueces civiles de circuito. En segunda instancia la competencia corresponder&aacute; a la secci&oacute;n primera del Tribunal Contencioso Administrativo o a la Sala Civil del Tribunal del Distrito Judicial al que pertenezca el juez de primera instancia.</p>
+<p class="MsoNormal">Ser&aacute; competente el juez de lugar de ocurrencia de los hechos o el del domicilio del demandado o demandante, a elecci&oacute;n de &eacute;ste. Cuando por los hechos sean varios los jueces competentes, conocer&aacute; a prevenci&oacute;n el juez ante el cual se hubiere presentado la demanda.</p>
+<p class="MsoNormal"><strong>PAR&Aacute;GRAFO.- </strong>Hasta tanto entren en funcionamiento, los Juzgado Administrativos, de las acciones de grupo interpuesta ante la jurisdicci&oacute;n contencioso administrativa conocer&aacute;n en primera instancia los Tribunales Contencioso Administrativo y en segunda instancia el Consejo de Estado.</p>
+<p align="center"><strong>CAP&Iacute;TULO IV</strong></p>
+<p align="center"><strong>REQUISITOS Y ADMISI&Oacute;N DE LA DEMANDA</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 52.- </strong><em>Requisitos de la Demanda. </em>La demanda mediante la cual se ejerza una acci&oacute;n de grupo deber&aacute; reunir los requisitos establecidos en el C&oacute;digo de Procedimiento Civil o en el C&oacute;digo Contencioso Administrativo, seg&uacute;n el caso, y adem&aacute;s expresar en ella:</p>
+<p class="MsoNormal">1. El nombre del apoderado o apoderados, anexando el poder legalmente conferido.</p>
+<p class="MsoNormal">2. La identificaci&oacute;n de los poderantes, identificado sus nombres, documentos de identidad y domicilio.</p>
+<p class="MsoNormal">3. El estimativo del valor de perjuicios que se hubieren ocasionado por la eventual vulneraci&oacute;n.</p>
+<p class="MsoNormal">4. Si no fuere posible proporcionar el nombre de todos los individuos de un mismo grupo, expresar los criterios para identificarlos y definir el grupo.</p>
+<p class="MsoNormal">5. La identificaci&oacute;n del demandado.</p>
+<p class="MsoNormal">6. La justificaci&oacute;n sobre la procedencia de la acci&oacute;n de grupo en los t&eacute;rminos de los art&iacute;culos 3 y 49 de la presente Ley.</p>
+<p class="MsoNormal">7. Los hechos de la demanda y las pruebas que se pretendan hacer valer dentro del proceso.</p>
+<p class="MsoNormal"><strong>Par&aacute;grafo.- </strong>La demanda se dirigir&aacute; contra el presunto responsable del hecho u omisi&oacute;n que la motiva, el cual debe ser determinado. No obstante, cuando en el curso del proceso se establezca que existen otros posibles responsables, el juez de primera instancia, de oficio ordenar&aacute; su citaci&oacute;n.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 53.- </strong><em>Admisi&oacute;n, Notificaci&oacute;n y Traslado. </em>Dentro de los diez (10) d&iacute;as h&aacute;biles siguientes a la presentaci&oacute;n de la demanda, el juez competente se pronunciar&aacute; sobre su admisi&oacute;n. En el auto que admita al demanda, adem&aacute;s de disponer su traslado al demandado por el t&eacute;rmino de diez (10) d&iacute;as, el juez ordenar&aacute; la notificaci&oacute;n personal a los demandados. A los miembros del grupo se les informar&aacute; a trav&eacute;s de un medio masivo de comunicaci&oacute;n o de cualquier mecanismo eficaz, habida cuenta de los eventuales beneficiarios. Para este efecto el juez podr&aacute; utilizar simult&aacute;neamente diversos medios de comunicaci&oacute;n.</p>
+<p class="MsoNormal">Si la demanda no hubiere sido promovida por el Defensor del Pueblo, se le notificar&aacute; personalmente el auto admisorio de la demanda con el fin de que intervenga en aquellos procesos en que lo considere conveniente. <strong>Inciso Declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p class="MsoNormal"><strong>PAR&Aacute;GRAFO.- </strong>El auto admisorio deber&aacute; valorar la procedencia de la acci&oacute;n de grupo en los t&eacute;rminos de los art&iacute;culos 3 y 47 de la presente Ley.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 54.- </strong><em>Notificaci&oacute;n del Auto Admisorio de la Demanda a Entidades P&uacute;blicas y Sociedades. </em>Cuando se trate de entidades p&uacute;blicas, el auto admisorio de la demanda deber&aacute; notificarse personalmente a su representante legal o a quien &eacute;ste haya delegado la facultad de recibir notificaciones. Sin embargo, si la persona a quien deba hacerse la notificaci&oacute;n, o su delegado, no se encontrare o no pudiere, por cualquier motivo, recibir la notificaci&oacute;n, esta se practicar&aacute; mediante entrega que el notificador haga al empleado que lo reciba de copia aut&eacute;ntica de la demanda y del auto admisorio al notificado.</p>
+<p class="MsoNormal">Cuando se trate de sociedades, el auto admisorio de la demanda deber&aacute; notificarse personalmente a su representante legal, en la direcci&oacute;n que indique el demandante. De no conocerla deber&aacute; hacer dicha afirmaci&oacute;n bajo la gravedad de juramento, caso en el cual se notificar&aacute; en la direcci&oacute;n que aparezca registrada en la C&aacute;mara de Comercio respectiva. Sin embargo, si la persona a quien deba hacerse la notificaci&oacute;n, no se encontrare o no pudiere, por cualquier motivo, recibir la notificaci&oacute;n esta se practicar&aacute; mediante entrega que el notificador haga al empleado que lo reciba de copia aut&eacute;ntica de la demanda y del auto admisorio al notificado.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 55.- </strong><em>Integraci&oacute;n al Grupo. </em>Cuando la demanda se haya originado en da&ntilde;os ocasionados a un n&uacute;mero plural de personas por una misma acci&oacute;n u omisi&oacute;n, o por varias acciones u omisiones, <strong><u>derivadas de la vulneraci&oacute;n de derechos o intereses colectivos,</u></strong> quienes hubieren sufrido un perjuicio podr&aacute;n hacerse parte dentro del proceso, antes de la apertura a pruebas, mediante la presentaci&oacute;n de un escrito en el cual se indique su nombre, el da&ntilde;o sufrido, el origen del mismo y el deseo de acogerse al fallo y de pertenecer al conjunto de individuos que interpuso la demanda como un mismo grupo. Quien no concurra al proceso, <strong>y siempre y cuando su acci&oacute;n no haya prescrito y/o caducado de conformidad con las disposiciones vigentes</strong>, podr&aacute; acogerse posteriormente, <strong><u>dentro de los veinte (20) d&iacute;as siguientes a la publicaci&oacute;n de la sentencia, suministrando la informaci&oacute;n anterior</u></strong>, pero no podr&aacute; invocar da&ntilde;os extraordinarios o excepcionales para obtener una indemnizaci&oacute;n mayor y tampoco se beneficiar&aacute; de la condena en costas.</p>
+<p class="MsoNormal"><strong>NOTA: El texto subrayado fue declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6787#1">Sentencia 1062 de 2000</a>; <strong>el texto en negrilla fue declarado INEXEQUIBLE por la Corte Constitucional mediante Sentencia </strong><a href="norma.php?i=36641#0">C-241</a><strong> de 2009</strong>.</p>
+<p class="MsoNormal"><strong>NOTA: El texto subrayado fue declarado Exequible por la Corte Constitucional mediante Sentencia C-242 de 2012</strong>.</p>
+<p class="MsoNormal">La integraci&oacute;n de nuevos miembros al grupo, con posterioridad a la sentencia, no incrementar&aacute; el monto de la indemnizaci&oacute;n contenida en ella.</p>
+<p class="MsoNormal">Las acciones individuales relativas a los mismos hechos podr&aacute;n acumularse a la acci&oacute;n de grupo, a solicitud del interesado. En este evento, el interesado ingresar&aacute; al grupo, terminar&aacute; la tramitaci&oacute;n de la acci&oacute;n individual y se acoger&aacute; a los resultados de la acci&oacute;n de grupo.</p>
+<p class="MsoNormal"><strong>Declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 56.- </strong><em>Exclusi&oacute;n del Grupo. </em>Dentro de los cinco (5) d&iacute;as siguientes al vencimiento del t&eacute;rmino de traslado de la demanda, cualquier miembro de un mismo grupo podr&aacute; manifestar su deseo de ser exclu&iacute;do del grupo y, en consecuencia, no ser vinculado por el acuerdo de conciliaci&oacute;n o la sentencia. Un miembro del grupo no quedar&aacute; vinculado a los efectos de la sentencia en dos situaciones:</p>
+<p class="MsoNormal">a) Cuando se haya solicitado en forma expresa la exclusi&oacute;n del grupo en el t&eacute;rmino previsto en el inciso anterior;</p>
+<p class="MsoNormal">b) Cuando la persona vinculada por una sentencia pero que no particip&oacute; en el proceso, demuestre en el mismo t&eacute;rmino que sus intereses no fueron representados en forma adecuada por el representante del grupo que hubo graves errores en la notificaci&oacute;n.</p>
+<p class="MsoNormal">Transcurrido el t&eacute;rmino sin que miembro as&iacute; lo exprese, los resultados del acuerdo o de la sentencia lo vincular&aacute;n. Si decide excluirse del grupo, podr&aacute; intentar acci&oacute;n individual por indemnizaci&oacute;n de perjuicios.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 57.- </strong><em>Contestaci&oacute;n, Excepciones Previas. </em>La parte demandada podr&aacute; interponerse excepciones de m&eacute;rito con la contestaci&oacute;n de la demanda, as&iacute; como las excepciones previas se&ntilde;aladas en el C&oacute;digo de Procedimiento Civil. Las excepciones de acuerdo con su naturaleza, se resolver&aacute;n de conformidad con las reglas previstas en el C&oacute;digo de Procedimiento Civil.</p>
+<p align="center"><strong>CAP&Iacute;TULO V</strong></p>
+<p align="center"><strong>DE LAS MEDIDAS CAUTELARES</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 58.- </strong><em>Clases de Medidas. </em>Para las acciones de grupo proceden las medidas cautelares previstas en el C&oacute;digo de Procedimiento Civil para los procesos ordinarios. El tr&aacute;mite para la interposici&oacute;n de dichas medidas, al igual que la oposici&oacute;n a las mismas, se har&aacute; de acuerdo con lo establecido en el C&oacute;digo de Procedimiento Civil.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 59.- </strong><em>Petici&oacute;n y Decreto de estas Medidas. </em>La parte demandante solicitar&aacute; en la demanda las respectivas medidas y se decretar&aacute;n con el auto admisorio.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 60.- </strong><em>Cumplimiento de las Medidas. </em>Las medidas decretadas se cumplir&aacute;n antes de la notificaci&oacute;n de la demanda.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO <a id="sp61" name="61"></a>61.- </strong><em>Diligencia de Conciliaci&oacute;n. </em>De oficio el juez, dentro de los cinco (5) d&iacute;as siguientes al vencimiento del t&eacute;rmino que tienen los miembros del grupo demandante para solicitar su exclusi&oacute;n del mismo, deber&aacute; convocar a una diligencia de conciliaci&oacute;n con el prop&oacute;sito de lograr un acuerdo entre las partes, que constar&aacute; por escrito.</p>
+<p class="MsoNormal">La diligencia deber&aacute; celebrarse dentro de los diez (10) d&iacute;as siguientes a la fecha de convocatoria. No obstante, en cualquier estado del proceso las partes podr&aacute;n solicitar al juez la celebraci&oacute;n de una nueva diligencia a efectos de conciliar sus intereses y poner fin al proceso.</p>
+<p class="MsoNormal">En la diligencia podr&aacute; participar el Defensor del Pueblo o su delegado, para servir de mediador y facilitar el acuerdo; si el Defensor hubiere presentado la demanda, dicha funci&oacute;n corresponder&aacute; al Procurador General de la Naci&oacute;n o su delegado, quien obrar&aacute; con plena autonom&iacute;a. En la audiencia tambi&eacute;n podr&aacute;n intervenir los apoderados de las partes.</p>
+<p class="MsoNormal">El acuerdo entre las partes se asimilar&aacute; a una sentencia y tendr&aacute; los efectos que para ella se establecen en esta Ley. El acta de conciliaci&oacute;n que contenga el acuerdo hace tr&aacute;nsito a cosa juzgada y presta m&eacute;rito ejecutivo.</p>
+<p class="MsoNormal">El juez ordenar&aacute; la publicaci&oacute;n del acuerdo de conciliaci&oacute;n en un medio de comunicaci&oacute;n de amplia circulaci&oacute;n nacional.</p>
+<p align="center"><strong>CAP&Iacute;TULO VI</strong></p>
+<p align="center"><strong>PER&Iacute;ODO PROBATORIO</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 62.- </strong><em>Pruebas. </em>Realizada la audiencia de conciliaci&oacute;n, el Juez decretar&aacute; las pruebas solicitadas y las que de oficio estime pertinentes, y se&ntilde;alar&aacute; un t&eacute;rmino de veinte (20) d&iacute;as para que se practiquen, dentro del cual fijar&aacute; las fechas de las diligencias necesarias. Si la complejidad del proceso lo requiere, dicho t&eacute;rmino podr&aacute; ser prorrogado de oficio o a solicitud de parte, hasta por otro t&eacute;rmino igual.</p>
+<p align="center"><strong>CAP&Iacute;TULO VII</strong></p>
+<p align="center"><strong>ALEGATOS, SENTENCIA Y RECURSOS</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 63.- </strong><em>Alegatos. </em>Vencido el t&eacute;rmino para practicar pruebas, el Juez dar&aacute; traslado a las partes para alegar de conclusi&oacute;n por el t&eacute;rmino com&uacute;n de cinco (5) d&iacute;as.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 64.- </strong><em>Sentencias. </em>Expirado el t&eacute;rmino para alegar de conclusi&oacute;n, el Secretario pasar&aacute; inmediatamente el expediente al despacho con el fin de que se dicte sentencia en el perentorio e improrrogable t&eacute;rmino de veinte (20) d&iacute;as.</p>
+<p class="MsoNormal">Una vez que el expediente haya pasado al despacho para proferir sentencia, no podr&aacute; surtirse actuaci&oacute;n alguna hasta tanto no se haya proferido &eacute;sta, excepci&oacute;n hecha de la declaratoria de impedimento o recusaci&oacute;n.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 65.- </strong><em>Contenido de la Sentencia. </em>La sentencia que ponga fin al proceso se sujetar&aacute; a las disposiciones generales del C&oacute;digo de Procedimiento Civil y adem&aacute;s, cuando acoja las pretensiones incoadas; dispondr&aacute;:</p>
+<p class="MsoNormal">1. El pago de una indemnizaci&oacute;n colectiva, que contenga la suma ponderada de las indemnizaciones individuales.</p>
+<p class="MsoNormal">2. El se&ntilde;alamiento de los requisitos que deben cumplir los beneficiarios que han estado ausentes del proceso a fin de que puedan reclamar la indemnizaci&oacute;n correspondiente, en los t&eacute;rminos establecidos en el art&iacute;culo 61 de la presente Ley. <a href="norma.php?i=6911#1">Declarado Exequible Corte Constitucional Sentencia C-732 de 2000</a></p>
+<p class="MsoNormal">3. El monto de dicha indemnizaci&oacute;n se entregar&aacute; al Fondo para la Defensa de los Derechos e Intereses Colectivos, dentro de los diez (10) d&iacute;as siguientes a la ejecutoria, el cual ser&aacute; administrado por el Defensor del Pueblo y a cargo del cual se pagar&aacute;n:</p>
+<p class="MsoNormal">a) Las indemnizaciones individuales de quienes formaron parte del proceso como integrantes del grupo, seg&uacute;n la porcentualizaci&oacute;n que se hubiere precisado en el curso del proceso. El Juez podr&aacute; dividir el grupo en subgrupos, para efectos de establecer y distribuir la indemnizaci&oacute;n, cuando lo considere conveniente por razones de equidad y seg&uacute;n las circunstancias propias de cada caso;</p>
+<p class="MsoNormal">b) Las indemnizaciones correspondientes a <strong><u>las solicitudes que llegaren a presentar oportunamente</u></strong> los interesados que no hubieren intervenido en el proceso y que re&uacute;nan los requisitos exigidos por el Juez en la sentencia.</p>
+<p class="MsoNormal"><strong>NOTA: Expresi&oacute;n subrayada declarada Exequible por la Corte Constitucional mediante Sentencia C-242 de 2012.</strong></p>
+<p class="MsoNormal">Todas <strong><u>las solicitudes presentadas</u></strong> oportunamente se tramitar&aacute;n y decidir&aacute;n conjuntamente mediante Acto Administrativo en el cual se reconocer&aacute; el pago de la indemnizaci&oacute;n previa comprobaci&oacute;n de los requisitos exigidos en la sentencia para demostrar que forma parte del grupo en cuyo favor se decret&oacute; la condena.</p>
+<p class="MsoNormal"><strong>NOTA: Expresi&oacute;n subrayada declarada Exequible por la Corte Constitucional mediante Sentencia C-242 de 2012</strong>.</p>
+<p class="MsoNormal">Cuando el estimativo de integrantes del grupo o el monto de las indemnizaciones fuere inferior a las solicitudes presentadas, el Juez o el Magistrado podr&aacute; revisar, por una sola vez, la distribuci&oacute;n del monto de la condena, dentro de los veinte (20) d&iacute;as siguientes contados a partir del fenecimiento del t&eacute;rmino consagrado para la integraci&oacute;n al grupo de qu&eacute; trata el art&iacute;culo 61 de la presente Ley. Los dineros restantes despu&eacute;s de haber pagado todas las indemnizaciones ser&aacute;n devueltos al demandando. <strong>Numeral 3 </strong><a href="norma.php?i=6908#1">Declarado Exequible Corte Constitucional Sentencia C-215 de 1999</a></p>
+<p class="MsoNormal">4. La publicaci&oacute;n, por una sola vez, de un extracto de las sentencia, en un diario de amplia circulaci&oacute;n nacional, dentro del mes siguiente a su ejecutoria o a la notificaci&oacute;n del auto que hubiere ordenado obedecer lo dispuesto por el superior, con la prevenci&oacute;n a todos los interesados igualmente lesionados por los mismos hechos y que no concurrieron al proceso, <strong><u>para que se presenten al Juzgado, dentro de los veinte (20) d&iacute;as siguientes a la publicaci&oacute;n,</u></strong> para reclamar la indemnizaci&oacute;n. <a href="norma.php?i=6911#1">Declarado Exequible Corte Constitucional Sentencia C-732 de 2000</a></p>
+<p class="MsoNormal"><strong>NOTA: Expresi&oacute;n subrayada declarada Exequible por la Corte Constitucional mediante Sentencia C-242 de 2012</strong>.</p>
+<p class="MsoNormal">5. La liquidaci&oacute;n de las costas a cargo de la parte vencida, teniendo en cuanta las expensas necesarias para la publicaci&oacute;n del extracto de la sentencia.</p>
+<p class="MsoNormal">6. La liquidaci&oacute;n de los honorarios del abogado coordinador, que corresponder&aacute; al diez por ciento (10%) de la indemnizaci&oacute;n que obtengan cada uno de los miembros del grupo que no hayan sido representado judicialmente.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 66.- </strong><em>Efectos de la Sentencia. </em>La sentencia tendr&aacute; efectos de cosa juzgada en relaci&oacute;n con quienes fueron parte del proceso y de las personas que, perteneciendo al grupo interesado no manifestaron oportuna y expresamente su decisi&oacute;n de excluirse del grupo y de las resultas del proceso.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 67.- </strong><em>Recurso Contra la Sentencia. </em>La sentencia es apelable en el efecto suspensivo. En este evento el Juez ordenar&aacute; se preste cauci&oacute;n para garantizar las medidas cautelares de embargo y secuestro.</p>
+<p class="MsoNormal">El recurso de apelaci&oacute;n deber&aacute; resolverse por la autoridad judicial competente en un t&eacute;rmino m&aacute;ximo de veinte (20) d&iacute;as, contados a partir de la fecha de radicaci&oacute;n del expediente en la Secretar&iacute;a General; sin embargo cuando sea necesario practicar nuevas pruebas, el t&eacute;rmino para decidir el recurso podr&aacute; ampliarse en diez (10) d&iacute;as.</p>
+<p class="MsoNormal">Contra las sentencias proferidas en los procesos adelantados en ejercicio de las Acciones de Grupo proceden el recurso de revisi&oacute;n y el de casaci&oacute;n, seg&uacute;n el caso, de conformidad con las disposiciones legales vigentes; pero en ning&uacute;n casos el t&eacute;rmino para decidir estos recursos podr&aacute; exceder de noventa (90) d&iacute;as contados a partir de la fecha que se radic&oacute; el asunto en la Secretar&iacute;a General de la Corporaci&oacute;n.</p>
+<p align="center"><strong>CAP&Iacute;TULO VIII</strong></p>
+<p align="center"><strong>DISPOSICIONES COMPLEMENTARIAS</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 68.- </strong><em>Aspectos no Regulados. </em>En lo que no contrar&iacute;e lo dispuesto en las normas del presente t&iacute;tulo, se aplicar&aacute;n a las Acciones de Grupo las normas del C&oacute;digo de Procedimiento Civil.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 69.- </strong><em>Otras Acciones de Grupo que se Tramitar&aacute;n por la Presente Ley. </em>Las Acciones de Grupo contempladas en el art&iacute;culo 76 de la Ley 45 de 1990, en el art&iacute;culo 1.2.3.2. del Decreto 653 de 1993 (Estatuto Org&aacute;nico del Mercado P&uacute;blico de Valores) y en el Decreto 3466 del 1982 art&iacute;culo 36 y 37, se tramitar&aacute;n de conformidad con lo dispuesto en el presente t&iacute;tulo.</p>
+<p align="center"><strong>T&Iacute;TULO IV</strong></p>
+<p align="center"><strong>FONDO PARA LA DEFENSA DE LOS DERECHOS E INTERESES COLECTIVOS</strong></p>
+<p align="center"><strong>CAP&Iacute;TULO &Uacute;NICO</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 70.- </strong><em>Creaci&oacute;n y Fuente de Recursos. </em>Cr&eacute;ase el Fondo para la Defensa de los Derechos e Intereses Colectivos, el cual contar&aacute; con los siguientes recursos:</p>
+<p class="MsoNormal">a) Las apropiaciones correspondientes del Presupuesto Nacional;</p>
+<p class="MsoNormal">b) Las donaciones de organizaciones privadas nacionales o extranjeras que no manejen recursos p&uacute;blicos;</p>
+<p class="MsoNormal">c) El monto de las indemnizaciones de las Acciones Populares y de Grupo a las cuales hubiere renunciado expresamente el beneficiario <strong><u>o cuando &eacute;ste no concurriere a reclamarlo dentro del plazo de un (1) a&ntilde;o contado a partir de la sentencia; </u>Literal c) declarado exequible, salvo las expresiones subrayadas que se declaran inexequibles por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p class="MsoNormal">d) El diez por ciento (10%) del monto total de las indemnizaciones decretadas en los procesos que hubiere financiado el Fondo;</p>
+<p class="MsoNormal">e) El rendimiento de sus bienes;</p>
+<p class="MsoNormal">f) Los incentivos en caso de Acciones Populares interpuestas por entidades p&uacute;blicas;</p>
+<p class="MsoNormal">g) El diez por ciento (10%) de la recompensa en las Acciones Populares en que el Juez otorgue amparo de pobreza y se financie la prueba pericial a trav&eacute;s del Fondo;</p>
+<p class="MsoNormal">h) El valor de las multas que imponga el Juez en los procesos de Acciones Populares y de Grupo.</p>
+<p class="MsoNormal"><strong>Art&iacute;culo 71&ordm;.- </strong><em>Funciones del Fondo. </em>El Fondo tendr&aacute; las siguiente funciones:</p>
+<p class="MsoNormal">a) Promover la difusi&oacute;n y conocimiento de los derechos e intereses colectivos y sus mecanismos de protecci&oacute;n;</p>
+<p class="MsoNormal">b) Evaluar las solicitudes de financiaci&oacute;n que le sean presentadas y escoger aquellas que a su juicio ser&iacute;a conveniente respaldar econ&oacute;micamente, atendiendo a criterios como la magnitud y las caracter&iacute;sticas del da&ntilde;o, el inter&eacute;s social, la relevancia del bien jur&iacute;dico amenazado o vulnerado y la situaci&oacute;n econ&oacute;mica de los miembros de la comunidad o del grupo;</p>
+<p class="MsoNormal">c) Financiar la presentaci&oacute;n de las Acciones Populares o de Grupo, la consecuci&oacute;n de pruebas y los dem&aacute;s gastos en que pueda incurrir al adelantar el proceso;</p>
+<p class="MsoNormal">d) Efectuar los pagos correspondientes de acuerdo con las costas adjudicadas en contra de un demandante que haya recibido ayuda financiera del Fondo;</p>
+<p class="MsoNormal">e) Administrar y pagar las indemnizaciones de que trata el art&iacute;culo 68 numeral 3 de la presente Ley.</p>
+<p class="MsoNormal"><strong>Declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 72.- </strong><em>Manejo del Fondo. </em>El manejo del Fondo para la Defensa de los Derechos e Intereses Colectivos, estar&aacute; a cargo de la Defensor&iacute;a del Pueblo.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 73.- </strong><em>Monto de la Financiaci&oacute;n. </em>El monto de la financiaci&oacute;n por parte del Fondo a los demandantes en Acciones Populares o de Grupo ser&aacute; determinado por la Defensor&iacute;a del Pueblo de acuerdo con las circunstancias particulares de cada caso, teniendo en cuenta, entre otros criterios, la situaci&oacute;n socioecon&oacute;mica de los peticionarios y los fundamentos de la posible demanda.</p>
+<p class="MsoNormal"><strong>Declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p align="center"><strong>T&Iacute;TULO V</strong></p>
+<p align="center"><strong>CAP&Iacute;TULO &Uacute;NICO</strong></p>
+<p align="center"><strong>DISPOSICIONES COMUNES A ACCIONES POPULARES Y DE GRUPO, EN MATERIA PROBATORIA</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 74.- </strong><em>Registro P&uacute;blico de Peritos para Acciones Populares y de Grupo. </em>El Registro P&uacute;blico de Peritos para Acciones Populares y de Grupo se organizar&aacute; con base en los siguientes criterios:</p>
+<p class="MsoNormal">1. Ser&aacute; obligatoria la inscripci&oacute;n en el registro, de las autoridades p&uacute;blicas y de los particulares a quienes se les haya atribuido o adjudicado funci&oacute;n p&uacute;blica, que disponga de soporte t&eacute;cnico, log&iacute;stico, investigativo, personal o de apoyo que sirva para la pr&aacute;ctica de pruebas en Acciones Populares, de las entidades que tengan el car&aacute;cter de consultoras del Gobierno y de las Universidades P&uacute;blicas.</p>
+<p class="MsoNormal">Los servidores p&uacute;blicos que fuesen nombrados peritos deber&aacute;n dedicarse de manera prioritaria a su funci&oacute;n de colaboraci&oacute;n con la administraci&oacute;n de justicia.</p>
+<p class="MsoNormal">2. Los particulares, ya sean personas naturales o jur&iacute;dicas, podr&aacute;n registrarse demostrando su idoneidad y experiencia en &aacute;rea t&eacute;cnicas.</p>
+<p class="MsoNormal">3. Una vez registrado como perito de acciones populares, el cargo ser&aacute; de forzosa aceptaci&oacute;n, salvo que exista impedimento.</p>
+<p class="MsoNormal">4. Cualquier juez que conozca de una Acci&oacute;n Popular o de Grupo, podr&aacute; solicitar la lista de peritos registrado para llevar a cabo la elecci&oacute;n de Auxiliares de la Justicia en estos procesos.</p>
+<p class="MsoNormal">5. El registro p&uacute;blico de peritos sistematizado e incluir&aacute; como m&iacute;nimo los datos generales del perito, su experiencia, profesi&oacute;n, especializaciones, publicaciones y los procesos en que haya intervenido como perito.</p>
+<p class="MsoNormal">El registro p&uacute;blico de peritos ser&aacute; organizado por la Sala Administrativa del Consejo Superior de la Judicatura, en un per&iacute;odo de seis (6) meses contados a partir de la vigencia de esta Ley.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 75.- </strong><em>Colaboraci&oacute;n en la Pr&aacute;ctica de Pruebas. </em>En los procesos de qu&eacute; trata esta ley, las partes de com&uacute;n acuerdo pueden, antes de que se dicte sentencia de primera instancia, realizar los siguientes actos probatorios:</p>
+<p class="MsoNormal">1. Presentar informes cient&iacute;ficos, t&eacute;cnicos o art&iacute;sticos, emitidos por cualquier persona natural o jur&iacute;dica, sobre la totalidad o parte de los puntos objeto de dictamen pericial; en este caso, el Juez ordenar&aacute; agregarlo al expediente, y se prescindir&aacute; total o parcialmente de dictamen pericial en la forma que soliciten las partes al presentarlo. Estos informes deber&aacute;n allegarse con reconocimiento notarla o judicial o presentaci&oacute;n personal.</p>
+<p class="MsoNormal">2. Si se trata de documento que deban ser reconocido, pueden presentar documento aut&eacute;ntico proveniente de quien deba reconocerlo, en el cual coste su reconocimiento en los t&eacute;rminos del art&iacute;culo 273 del C&oacute;digo de Procedimiento Civil. La declaraci&oacute;n se entender&aacute; allegada bajo juramento con el reconocimiento notarial o judicial o presentaci&oacute;n personal.</p>
+<p class="MsoNormal">Este escrito suplir&aacute; la diligencia de reconocimiento.</p>
+<p class="MsoNormal">3. Presentar la versi&oacute;n que, de hechos que interesen al proceso, haya efectuado ante ellas un testigo. Este documento deber&aacute; ser allegado bajo juramento con el reconocimiento notarial o judicial o presentaci&oacute;n personal y se incorporar&aacute; al expediente y suplir&aacute; la recepci&oacute;n de dicho testimonio.</p>
+<p class="MsoNormal">4. Presentar documento en el cual consten los puntos y hechos objeto de una inspecci&oacute;n judicial; en este caso se incorporar&aacute; al expediente y suplir&aacute; esta prueba. El escrito deber&aacute; aportarse con el reconocimiento notarial o judicial o presentaci&oacute;n personal.</p>
+<p class="MsoNormal">5. Solicitar, salvo que alguna de las partes est&eacute; representada por curador <em>adlitem, </em>que la inspecci&oacute;n judicial se practique por la persona que ellas determinen.</p>
+<p class="MsoNormal">6. Presentar documentos objeto de exhibici&oacute;n.</p>
+<p class="MsoNormal">Si se trata de documentos que est&eacute;n en poder de un tercero o provenientes de &eacute;ste, estos deber&aacute;n allegarse con el reconocimiento notarial o judicial o presentaci&oacute;n personal y acompa&ntilde;ados de un escrito, en cual conste expresamente la aquiescencia del tercero para su aportaci&oacute;n.</p>
+<p class="MsoNormal">En estos casos, el Juez ordenar&aacute; agregar los documentos al expediente y se prescindir&aacute; de la exhibici&oacute;n, total o parcialmente, en la forma como lo soliciten las partes.</p>
+<p class="MsoNormal">7. Presentar la declaraci&oacute;n de parte que ante ellas se haya expuesto el absolvente. Este documento deber&aacute; ser firmado por los apoderados y el interrogado, se incorporar&aacute; la expediente y suplir&aacute; el interrogatorio respectivo. La declaraci&oacute;n ser&aacute; bajo juramento que se entender&aacute; prestado por la firma del mismo.</p>
+<p class="MsoNormal">La pruebas aportadas en la forma mencionada en este art&iacute;culo, ser&aacute;n apreciadas por el Juez en la respectiva decisi&oacute;n tal como lo dispone el art&iacute;culo 174 del C&oacute;digo de Procedimiento Civil y en todo caso el Juez podr&aacute; dar aplicaci&oacute;n al art&iacute;culo 179 del mismo C&oacute;digo.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 76.- </strong><em>Colaboraci&oacute;n para la evaluaci&oacute;n de la prueba. </em>Para la pr&aacute;ctica de pruebas, adem&aacute;s de las disposiciones generales contenidas en el C&oacute;digo de Procedimiento Civil, se dar&aacute; aplicaci&oacute;n a las siguientes reglas:</p>
+<p class="MsoNormal">1. Cualquiera de las partes, en las oportunidades procesales para solicitar pruebas, podr&aacute; presentar experticios producidos por instituciones o profesionales especializados. De existir contradicci&oacute;n entre varios experticios, el Juez proceder&aacute; a decretar el peritazgo correspondiente.</p>
+<p class="MsoNormal">2. Los documentos declarativos emanados de terceros se estimar&aacute;n por Juez sin necesidad de ratificar su contenido, salvo que la parte contra la cual se aducen solicite su ratificaci&oacute;n de manera expresa.</p>
+<p class="MsoNormal">3. Las partes y los testigos que rindan declaraci&oacute;n podr&aacute;n presentar documentos relacionados con los hechos, los cuales se agregar&aacute;n al expediente.</p>
+<p class="MsoNormal">4. Las personas naturales o jur&iacute;dicas, sometidas a vigilancia estatal podr&aacute;n presentar informes o certificaciones en la forma establecidas en el art&iacute;culo 278 del C&oacute;digo de Procedimiento Civil.</p>
+<p class="MsoNormal">5. Las constancias debidamente autenticada, emanadas de personas naturales o jur&iacute;dicas distintas de las indicadas en el numeral anterior, y aportadas a un proceso mediante orden judicial proferida de oficio o a petici&oacute;n de parte, se tendr&aacute;n como prueba sumaria. Esto sin perjuicio de lo dispuesto en relaci&oacute;n con documentos emanados de terceros.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 77.- </strong><em>Referencia a un Tercero en Declaraci&oacute;n. Citaci&oacute;n. </em>Cuando en interrogatorio de parte el absolvente, o en declaraci&oacute;n de tercero el declarante, manifieste que el conocimiento de los hechos lo tiene otra persona, deber&aacute; indicar el nombre de &eacute;stas y explicar la raz&oacute;n de su conocimiento. En este caso el Juez si lo considera conveniente, citar&aacute; de oficio a esa persona aun cuando se hayan vencido el t&eacute;rmino probatorio.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 78.- </strong><em>Aspecto Complementario de Testimonio. </em>La parte o el testigo, al rendir su declaraci&oacute;n, podr&aacute; hacer dibujos, gr&aacute;ficas o representaciones con el fin de ilustrar su testimonio y no como documentos. As&iacute; mismo, el testigo podr&aacute; reconocer documentos durante la declaraci&oacute;n.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 79.- </strong><em>Eficacia de la Prueba. </em>El Juez apreciar&aacute; al eficacia de la prueba cuando haga su valoraci&oacute;n o apreciaci&oacute;n, ya sea en la sentencia o en la providencia interlocutoria seg&uacute;n el caso, y en ninguna circunstancia lo har&aacute; en el momento de pronunciarse sobre la admisibilidad de la prueba.</p>
+<p align="center"><strong>T&Iacute;TULO VI</strong></p>
+<p align="center"><strong>CAP&Iacute;TULO &Uacute;NICO</strong></p>
+<p align="center"><strong>DISPOSICIONES FINALES</strong></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 80.- </strong><em>Registro P&uacute;blico de Acciones Populares y de Grupo. </em>La Defensor&iacute;a del Pueblo organizar&aacute; un Registro P&uacute;blico centralizado de las Acciones Populares y de las Acciones de Grupo que se interpongan en el pa&iacute;s. Todo Juez que conozca de estos procesos deber&aacute; enviar una copia de la demanda del auto admisorio de la demanda y del fallo definitivo. La informaci&oacute;n contenida en este registro ser&aacute; de car&aacute;cter p&uacute;blico.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 81.- </strong><em>Creaci&oacute;n de Organizaciones C&iacute;vica, Populares y Similares para la Defensa de los Derechos e Intereses Colectivos. </em>Las autoridades estar&aacute;n obligadas a colaborar y facilitar la creaci&oacute;n y funcionamiento de las organizaciones c&iacute;vicas, populares y similares que se establezcan por iniciativa de la comunidad para la defensa de los derechos e intereses colectivos.</p>
+<p class="MsoNormal">De igual modo se colaborar&aacute; con las dem&aacute;s organizaciones que se funden con la misma finalidad, por los ciudadanos.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO <a id="sp82" name="82"></a>82.- </strong><em>Ministerio P&uacute;blico. </em>De acuerdo con la presente Ley, las actuaciones que correspondan al Procurador General de la Naci&oacute;n o el Defensor del Pueblo, podr&aacute;n ser delegadas en sus representantes.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 83.- </strong><em>Colaboraci&oacute;n de la Polic&iacute;a. </em>Las autoridades de polic&iacute;a deber&aacute;n prestar toda la colaboraci&oacute;n que el Juez o Magistrado solicite para la pr&aacute;ctica y permanencia de las medidas previas y cautelares, so pena de incurrir en causal de mala conducta sancionable hasta con la p&eacute;rdida del empleo.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 84.- </strong><em>Plazos Perentorios e Improrrogables. </em>La inobservancia de los t&eacute;rminos procesales establecidos en esta Ley, har&aacute; incurrir al Juez en causal de mala conducta, sancionables con destituci&oacute;n del cargo.</p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 85.- </strong><em>Pedagog&iacute;a. </em>El Gobierno Nacional realizar&aacute; durante el a&ntilde;o siguiente a la promulgaci&oacute;n de esta Ley, programa de pedagog&iacute;a que incluyan campa&ntilde;as masivas de educaci&oacute;n y divulgaci&oacute;n sobre los derechos colectivos y su procedimiento para hacerlos efectivos.</p>
+<p class="MsoNormal">La campa&ntilde;a de educaci&oacute;n y divulgaci&oacute;n ser&aacute; coordinada por el Ministerio de Educaci&oacute;n, la Procuradur&iacute;a General de la Naci&oacute;n, y la Defensor&iacute;a del Pueblo.</p>
+<p class="MsoNormal"><strong>Declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p class="MsoNormal"><strong>ART&Iacute;CULO 86.- </strong><em>Vigencia. </em>La presente Ley rige un a&ntilde;o despu&eacute;s de su promulgaci&oacute;n y deroga todas las disposiciones que le sean contrarias, y expresamente los tr&aacute;mites y procedimientos existentes en otras normas sobre la materia.</p>
+<p class="MsoNormal"><strong>Declarado Exequible por la Corte Constitucional mediante </strong><a href="norma.php?i=6908#1">Sentencia C-215 de 1999</a></p>
+<p class="MsoNormal"><a href="norma.php?i=5492#0">Ver Fallo Consejo de Estado N&deg; 003 de 2000</a>, <a href="norma.php?i=47628#0">Ver Fallo Consejo de Estado 537 de 2012</a>.</p>
+<p align="center"><strong>EL PRESIDENTE DEL HONORABLE SENADO DE LA REP&Uacute;BLICA,</strong></p>
+<p align="center"><strong>AMYLKAR ACOSTA M&Eacute;DINA.</strong></p>
+<p align="center"><strong>EL SECRETARIO DEL HONORABLE SENADO DE LA REP&Uacute;BLICA,</strong></p>
+<p align="center"><strong>PEDRO PUMAREJO VEGA.</strong></p>
+<p align="center"><strong>EL PRESIDENTE DE LA HONORABLE C&Aacute;MARA DE REPRESENTANTES,</strong></p>
+<p align="center"><strong>CARLOS &Aacute;RDILA BALLESTEROS.</strong></p>
+<p align="center"><strong>EL SECRETARIO GENERAL DE LA HONORABLE C&Aacute;MARA DE REPRESENTANTES,</strong></p>
+<p align="center"><strong>DIEGO VIVAS TAFUR.</strong></p>
+<p align="center"><strong>REP&Uacute;BLICA DE COLOMBIA - GOBIERNO NACIONAL</strong></p>
+<p align="center"><strong>PUBL&Iacute;QUESE Y EJEC&Uacute;TESE.</strong></p>
+<p align="center"><strong>Dada en Santa Fe de Bogot&aacute;, D.C., a los 5 d&iacute;as del mes de agosto de 1998.</strong></p>
+<p align="center"><strong>EL PRESIDENTE DE LA REP&Uacute;BLICA,</strong></p>
+<p align="center"><strong>ERNESTO SAMPER PIZANO.</strong></p>
+<p align="center"><strong>EL MINISTRO DEL INTERIOR,</strong></p>
+<p align="center"><strong>ALFONSO L&Oacute;PEZ CABALLERO.</strong></p>
+<p align="center"><strong>LA MINISTRA DE JUSTICIA Y DEL DERECHO,</strong></p>
+<p align="center"><strong>ALMABEATRIZ RENGIFO L&Oacute;PEZ.</strong></p>
+<p class="MsoNormal"><strong>NOTA: Publicado en el Diario Oficial No. 43.357 de agosto 6 de 1998.</strong></p>	</div>
+	
+		
+</div>
+<!--end col right-->
+	  
+  </div>
+    </div>
+  
+  </main>
+	
+	
+    <div class="container">
+
+		<style type="text/css">
+		.stl-1-white-blue-second {
+			background-color: transparent;
+			border: 2px solid #1E3559 !important;
+			color: #1E3559;
+			transition-duration: .4s;
+			border-radius: 3px;
+			padding: 10px 30px;
+			font-size: 1.0em;
+			font-weight: 700;
+			display: inline-block;
+		}
+
+		.stl-1-white-blue-second:hover {
+			background-color: #1E3559;
+			color: #fff;
+			border: 2px solid #1E3559;
+			border-radius: 3px;
+			padding: 10px 30px;
+			font-weight: 700;
+			text-decoration: none;
+		}
+
+		.stl-1-white-blue-second:active {
+			background-color: #bfbfbf;
+			color: white;
+		}
+
+		</style>
+		<a href="javascript:history.back(1)">
+			<div class="col-md-4"><button type="submit" class="stl-1-white-blue-second mtop20">Volver Atrás</button>
+			</div>
+		</a>
+</div>
+
+
+<footer class="footer">
+  <div class="menu-gobierno">
+    <div class="container">
+      <div class="row" style="align-items: center">
+        <div class="col-lg-4 col-md-12 text-center mb-5"> <a href="https://www.presidencia.gov.co/" class="logo img-fluid"><img width="40%" src="https://www.funcionpublica.gov.co/documents/418537/37421537/logo-gobierno.png/af775a00-cdd7-3268-7e00-d2d89fabf76b?t=1659904736649" alt="Gobierno de Colombia"/></a> </div>
+        <div class="col-lg-2 col-md-3">
+          <ul>
+            <!-- <li><a href="https://www.presidencia.gov.co/">Presidencia</a></li> -->
+            <li><a href="https://www.vicepresidencia.gov.co/">Vicepresidencia</a></li>
+            <li><a href="https://www.minjusticia.gov.co/">MinJusticia</a></li>
+            <li><a href="https://www.mindefensa.gov.co/irj/portal/Mindefensa">MinDefensa</a></li>
+            <li><a href="https://www.mintrabajo.gov.co/web/guest/inicio">MinTrabajo</a></li>
+            <li><a href="https://www.mininterior.gov.co/">MinInterior</a></li>
+            <li><a href="https://minciencias.gov.co/">MinCiencias</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-3">
+          <ul>
+            <li><a href="https://www.cancilleria.gov.co/">MinRelaciones</a></li>
+            <li><a href="https://www.minhacienda.gov.co/">MinHacienda</a></li>
+            <li><a href="https://www.minsalud.gov.co/portada-covid-19.html">MinSalud</a></li>
+            <li><a href="https://www.minenergia.gov.co/">MinEnergía</a></li>
+            <li><a href="https://www.mincit.gov.co/">MinComercio</a></li>
+            <li><a href="https://www.mindeporte.gov.co/">MinDeporte</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-3">
+          <ul>
+            <li><a href="https://www.mintic.gov.co/portal/inicio/">MinTIC</a></li>
+            <li><a href="https://www.mineducacion.gov.co/portal/">MinEducacion</a></li>
+            <li><a href="https://www.mincultura.gov.co/Paginas/Inicio.aspx">MinCultura</a></li>
+            <li><a href="https://www.minagricultura.gov.co/paginas/default.aspx">MinAgricultura</a></li>
+            <li><a href="https://www.minambiente.gov.co">MinAmbiente</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-3">
+          <ul>
+            <li><a href="https://www.mintransporte.gov.co/">MinTransporte</a></li>
+            <li><a href="http://www.minvivienda.gov.co/">MinVivienda</a></li>
+            <li><a href="https://www.urnadecristal.gov.co/">Urna de Cristal</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-menu">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-2">
+          <div class="row text-center align-items-center">
+            <div class="col-lg-12 col-sm-6 mb-5">
+              <p><a haref="#"><img src="https://www.funcionpublica.gov.co/o/Fpublica-2021-theme/images/logos/logofinal_gov.png" class="img-fluid p-2" alt="Logo gov.co"/></a></p>
+            </div>
+            <div class="col-lg-12 col-sm-6 mb-5">
+              <p><a haref="#"><img src="img_nuevo/colombia-co.png" class="img-fluid" alt="Logo Marca Pais Colombia"/></a></p>
+            </div>
+          </div>
+          <div class="d-none d-lg-block">
+            <p style="text-align: left; text-transform: uppercase; font-size: 17px;">entidad del sector</p>
+            <p class="subrayado1"></p>
+            <br>
+            <br>
+            <p><a haref="#"><img src="img_nuevo/logo-esap.png" class="img-fluid" alt="Logo ESAP"/></a></p>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-7">
+          <p style="text-align: left; text-transform: uppercase; font-size: 17px;">función publica</p>
+          <p class="subrayado1"></p>
+          <!--direccion-->
+          <div style="background-image: url(img_nuevo/map2.png); background-repeat: no-repeat;background-position: center top;">
+            <div class="d-flex">
+              <div class="mr-2"> <i class="fa fa-map-marker bg-white-opacity-0_1 g-color-white-opacity-0_6"></i> </div>
+              <p class="ml-1">Carrera 6 # 12-62,<br>
+                Bogotá D.C.</p>
+            </div>
+            <!--phone-->
+            <div class="d-flex mt-1">
+              <div class="mr-2"> <i class="fa fa-phone bg-white-opacity-0_1 g-color-white-opacity-0_6"></i> </div>
+              <p class="ml-1"><strong>Código Postal: </strong>111711<br>
+                <strong>Teléfono Conmutador::</strong> (+57) 601 5956600 <br>
+                <strong>Línea gratuita nacional:</strong> 018000931186 <br>
+              </p>
+            </div>
+          </div>
+          <!--url-->
+          <div class="d-flex">
+            <div class="mr-2"> <i class="fa fa-globe bg-white-opacity-0_1 g-color-white-opacity-0_6"></i> </div>
+            <p class="ml-1" style="word-wrap: break-word"><a href="#">www.funcionpublica.gov.co</a> <br>
+              Correo de Contacto: <a href="mailto:eva@funcionpublica.gov.co">eva@funcionpublica.gov.co</a><br>
+              <span class="d-none d-lg-block d-lg-block d-md-block"> Notificaciones judiciales:<br>
+              <a style="word-wrap: break-word" href="mailto:notificacionesjudiciales@funcionpublica.gov.co?Subject=Notificación%20judicial" target="_top">notificacionesjudiciales@funcionpublica.gov.co</a></span> <br>
+            </p>
+          </div>
+          <p class="mt-2" style="text-align: left; text-transform: uppercase; font-size: 17px;">contacto</p>
+          <p class="subrayado1"></p>
+          <p>Horario de atención presencial grupo de Servicio al ciudadano:<br>
+            Lunes a Viernes, 7:30 a.m a 6:00 p.m</p>
+          <p class="border-footer"></p>
+          <p>Recepción de correspondencia:<br>
+            Lunes a viernes, 8:00 am a 4:00 pm Jornada Continua</p>
+          <p class="subrayado2"></p>
+          <!--<p>Línea gratuita nacional: 018000917770</p>-->
+          <p class="subrayado2"></p>
+        </div>
+        <div class="col-lg-4 col-md-5">
+          <p style="text-align: left; text-transform: uppercase; font-size: 17px;">servicios al ciudadano</p>
+          <p class="subrayado1"></p>
+          <p><a href="mailto:notificacionesjudiciales@funcionpublica.gov.co?Subject=Notificación%20judicial" target="_top">Notificaciones judiciales</a></p>
+          <p class="subrayado2"></p>
+          <p><a href="mailto:actosadministrativos@funcionpublica.gov.co?Subject=Notificaciones o comunicaciones de acto administrativo" target="_top">Notificación de actos administrativos</a></p>
+          <p class="subrayado2"></p>
+          <p><a href="https://www.funcionpublica.gov.co/notificaciones-a-terceros" target="_top">Notificaciones a terceros</a></p>
+          <p class="subrayado2"></p>
+          <p><a href="https://www.funcionpublica.gov.co/denuncias-por-actos-de-corrupci%C3%B3n">Denuncias por actos de corrupción</a></p>
+          <p class="subrayado2"></p>
+          <p><a href="https://www.funcionpublica.gov.co/web/intranet/registrosyencuestas">Participación ciudadana</a></p>
+          <p class="subrayado2"></p>
+          <p><a href="https://www.funcionpublica.gov.co/preguntas-frecuentes">Preguntas frecuentes</a></p>
+          <p class="subrayado2"></p>
+          <p><a href="https://www.funcionpublica.gov.co/formule-su-peticion">Formule su petición PQRS</a></p>
+          <p class="subrayado2"></p>
+          <p><a href="https://www.funcionpublica.gov.co/mapa-del-sitio">Mapa del sitio</a></p>
+          <p class="subrayado2"></p>
+          <p><a href="https://mail.office365.com/">Ingreso correo institucional</a></p>
+          <p class="subrayado2"></p>
+          <p><a href="https://www.funcionpublica.gov.co/estadisticas-sitio">Estadísticas del sitio</a></p>
+          <p class="subrayado2"></p>
+          <p><a href="https://www.funcionpublica.gov.co/inicio?p_p_id=com_liferay_login_web_portlet_LoginPortlet&p_p_lifecycle=0&p_p_state=maximized&p_p_mode=view&saveLastPath=false&_com_liferay_login_web_portlet_LoginPortlet_mvcRenderCommandName=%2Flogin%2Flogin">Acceder</a></p>
+          <p class="subrayado2"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--redes sociales-->
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-8 col-lg-6"> <a href="https://www.funcionpublica.gov.co/politica-de-privacidad-y-condiciones-de-uso">Política de Privacidad &nbsp; | &nbsp; </a><a href="https://www.funcionpublica.gov.co/politica-de-privacidad-y-condiciones-de-uso"> Términos y condiciones de uso</a> </div>
+        <div class="col-sm-4 col-lg-6 text-left  text-md-right text-xl-right">
+          <nav class="navigation">
+            <ul>
+              <li class="mr-2"><a href="https://www.facebook.com/FuncionPublica" target="_blank" title="Icono facebook"> <i class="fa fa-facebook fa-2x g-color-white-opacity-0_6 link-footer-img"></i></a></li>
+              <li class="mr-2"><a href="https://www.linkedin.com/company/departamento-administrativo-de-la-funci%C3%B3n-p%C3%BAblica" target="_blank" title="Icono Linkedin"> <i class="fa fa-linkedin fa-2x g-color-white-opacity-0_6 link-footer-img" ></i> </a></li>
+              <li class="mr-2"><a href="https://twitter.com/dafp_colombia"  target="_blank" title="Icono Twitter"> <i class="fa fa-twitter fa-2x g-color-white-opacity-0_6 link-footer-img" ></i> </a></li>
+              <li><a href="https://www.instagram.com/funcionpublicacolombia/" target="_blank" title="Icono Instagram"> <i class="fa fa fa-instagram fa-2x g-color-white-opacity-0_6 link-footer-img"></i> </a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Optional JavaScript --> 
+<!-- jQuery first, then Popper.js, then Bootstrap JS --> 
+<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script> -->
+<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>  -->
+<!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script> 
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>  -->
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+  <!-- Script para mostrar el modal al cargar la página -->
+  <script>
+    $(document).ready(function(){
+      // Verificar si el sessionStorage tiene la fecha guardada
+      var modalShownTime = sessionStorage.getItem('modalShownTime');
+      if (!modalShownTime) {
+        // Si no hay fecha guardada, guardar la fecha actual
+        sessionStorage.setItem('modalShownTime', new Date().getTime());
+      } else {
+        // Si hay fecha guardada, verificar si han pasado 2 minutos desde entonces
+        var currentTime = new Date().getTime();
+		sessionStorage.setItem('modalShownTimeresta', (currentTime - modalShownTime));
+        if ((currentTime - modalShownTime) < (15 * 1000)) {
+          // Si han pasado menos de 2 minutos, no mostrar el modal
+          return;
+        }
+      }
+      // Verificar si el modal existe antes de mostrarlo
+      if ($('#exampleModal').length) {
+        $('#exampleModal').modal('show');
+		sessionStorage.setItem('modalShownTime', new Date().getTime());
+		
+      }
+    });
+  </script>
+  <!-- Lupa del buscador del Header -->
+<script>
+	 $('[name="btnsearch"]').click(function(){
+	  $('[name="_com_liferay_portal_search_web_portlet_SearchPortlet_fm"]').submit();
+	});
+</script>
+
+<!-- 
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'anteriorUA-///71957172-1', 'anteriorUA-///71957172-1');
+  ga('send', 'pageview');
+
+</script>
+-->
+
+			
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DVZ2E88S6R"></script>
+<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+	  gtag('config', 'G-DVZ2E88S6R');
+</script>
+
+
+
+
+</body>
+</html>
