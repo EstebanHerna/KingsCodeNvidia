@@ -795,3 +795,13 @@ Artefactos en la rama `lab/c1-30.41-20261001` (commit `18301b9`). Análisis medi
 - **Abstención 218:** `citation_repair_emptied_required_field`: la reparación de citas vació un campo obligatorio aunque la norma de referencia estaba en la evidencia.
 - **Siguiente medición:** c1 con `max_new_tokens` de 768 en cerradas sobre el commit congelado (`-NoPull`).
 
+## 2026-10-01 — Análisis consolidado de todas las corridas; abiertas a 1.280 tokens
+
+Detalle en `docs/ANALISIS_CORRIDAS_2026-10-01.md`.
+- Todos los fallbacks restantes en `turing` son truncados por `max_new_tokens` (21 cerradas en 512, 3 abiertas en 1024). Cerradas ya en 768 (PR #33); **abiertas suben a 1.280** en `config/decoder_bakeoff.json`.
+- Los errores de cerradas son estables entre configuraciones (128, 671, 748, 58): son límite de evidencia o de razonamiento, no ruido de configuración.
+- Normas nunca recuperadas en ninguna configuración: ítems 51, 247, 563, 679 y 748 (trabajo de A/corpus).
+- "Norma en la evidencia sin citar": la norma solo aparece mencionada dentro del texto de otro pasaje. La guarda la rechaza por diseño. Queda una **propuesta para revisión cruzada con Luis, no implementada**: citar a nivel de cuerpo las normas mencionadas en los pasajes declarados, solo en campos que RAGAS no lee.
+- La PC de Luis desborda la VRAM (43–53 GB reservados, 88–252 s de generación): sus tiempos no sirven para presupuestar.
+- `tools/analyze_run.py` exporta una revisión por pregunta, y `diagnostics.raw_response` guarda la salida exacta del decoder (fuera de la fila oficial; la interfaz la oculta).
+
